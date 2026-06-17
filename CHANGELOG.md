@@ -11,7 +11,8 @@ Initial release.
 - Deterministic rule engine (Greek-digraph simplification, nasal-vowel alternation,
   AO1990 accent/trema drops, prefix + r/s doubling, month lowercasing) plus curated,
   sourced exception lexicons (Base IV keep/drop/dual, differential accents, lexicalized
-  hyphens, PT/BR divergences, 1911 irregulars).
+  hyphens, PT/BR divergences, ~200 pre-1911 etymological forms across digraphs,
+  geminates, silent consonants, and k/w regularisations).
 - AO1990 dual-form handling: variant-aware conversion and `permitted_spellings`.
 - Sister-language guard flagging Mirandese, Galician, and Barranquenho.
 - `desacordo` command-line interface.

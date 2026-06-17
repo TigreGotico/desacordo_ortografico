@@ -18,7 +18,6 @@
     {"pt": "económico", "br": "econômico"},
     {"pt": "polémica", "br": "polêmica"},
     {"pt": "fémea", "br": "fêmea"},
-    {"pt": "blénio", "br": "blênio"},
     {"pt": "ténis", "br": "tênis"},
     {"pt": "bónus", "br": "bônus"}
   ],
@@ -29,8 +28,6 @@
     {"pt": "comummente", "br": "comumente"},
     {"pt": "quotidiano", "br": "cotidiano"},
     {"pt": "indemnização", "br": "indenização"},
-    {"pt": "sumptuoso", "br": "suntuoso"},
-    {"pt": "perentório", "br": "peremptório"},
     {"pt": "registo", "br": "registro"}
   ]
 }

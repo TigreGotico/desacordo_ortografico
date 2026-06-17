@@ -1,5 +1,5 @@
 {
-  "_about": "The 1971/73 accent mini-reform: Lei 5.765 de 18-12-1971 (Brazil) and Decreto-Lei 32/73 de 6-2-1973 (Portugal). Two main changes, both largely deterministic: (1) abolition of the differential circumflex on a closed list of homographs (the 'differential' map below), and (2) abolition of the grave/circumflex accent on the subtonic syllable of derived words in -mente, -zinho/-zito, etc. (handled by a regex in rules.py: any grave accent on e/i/o/u that is NOT the crasis 'a' is removed). The base PT/BR divergences (facto/fato, Antonio/Antonio) are untouched by this reform.",
+  "_about": "The 1971/73 accent mini-reform: Lei 5.765 de 18-12-1971 (Brazil) and Decreto-Lei 32/73 de 6-2-1973 (Portugal). The two norms did DIFFERENT things and this file must be applied per-variant: (1) abolition of the differential circumflex on a closed list of homographs (the 'differential' map below) — this was Brazil's 1971 change; PORTUGAL had already dropped these in the 1945 Convencao (Base XXII), so the differential map applies on the BR 1943->1971 edge only, not on the PT 1945->1973 edge; (2) abolition of the grave/circumflex accent on subtonic syllables of derived words (-mente, -zinho, ...), handled by a regex in rules.py (strip a grave accent on e/i/o/u that is not the crasis 'a') — this was the substance of the Portuguese 1973 decree and applies on both lines. The base PT/BR divergences (facto/fato, Antonio/Antonio) are untouched.",
   "_sources": [
     "Lei n. 5.765/1971 (Brasil); Decreto-Lei n. 32/73 (Portugal)",
     "https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1971",
@@ -25,10 +25,7 @@
     "môço": "moço",
     "pôço": "poço",
     "fôsse": "fosse",
-    "gôsto": "gosto",
-    "pôsto": "posto",
-    "tôda": "toda",
-    "agôra": "agora"
+    "tôda": "toda"
   },
   "_subtonic_note": "Grave-accented subtonic vowels existed in pre-1971 spellings such as 'somente'<-'sòmente', 'sozinho'<-'sòzinho', 'cafezinho'<-'cafèzinho', 'unicamente'<-'ùnicamente'. Removal is a clean rule (strip grave accent on e/i/o/u, never on crasis 'a'/'as'), so no exhaustive list is stored.",
   "_kept_differential": ["pôde", "pôr", "pélo", "pêlo", "pólo", "pára"],
