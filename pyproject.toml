@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "desacordo_ortografico"
+dynamic = ["version"]
+description = "Detect and convert between Portuguese orthographies (pre/post AO1990 and the historical reforms)"
+readme = "README.md"
+license = { text = "Apache-2.0" }
+authors = [{ name = "JarbasAi", email = "jarbasai@mailfence.com" }]
+requires-python = ">=3.9"
+dependencies = ["tugalex>=0.0.3a2"]
+keywords = [
+    "portuguese", "orthography", "spelling", "ao1990", "acordo-ortografico",
+    "reforma-1911", "nlp", "language-detection", "transliteration",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+desacordo = "desacordo_ortografico.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/TigreGotico/desacordo_ortografico"
+Repository = "https://github.com/TigreGotico/desacordo_ortografico"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["desacordo_ortografico*"]
+
+[tool.setuptools.package-data]
+desacordo_ortografico = ["data/*.json"]
+
+[tool.setuptools.dynamic]
+version = { attr = "desacordo_ortografico.version.VERSION_STR" }

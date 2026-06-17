@@ -1,0 +1,32 @@
+{
+  "_about": "AO1990 Bases VIII-IX: graphic accents removed on a closed list of words that previously carried a differential (diacritic) accent, plus the accents that AO1990 explicitly KEPT. Forward (old->new) drops the accent; backward (new->old) restores it only for these specific lemmas (it is otherwise ambiguous, e.g. modern 'para' may be the preposition which never had an accent).",
+  "_sources": [
+    "Acordo Ortografico de 1990, Base IX (acentuacao das paroxitonas) and Base VIII",
+    "https://www.flip.pt/acordo-ortografico/texto/base-ix-da-acentuacao-grafica-das-paroxitonas/"
+  ],
+  "dropped": {
+    "pára": "para",
+    "péla": "pela",
+    "pélas": "pelas",
+    "pélo": "pelo",
+    "pêlo": "pelo",
+    "pêlos": "pelos",
+    "pólo": "polo",
+    "pólos": "polos",
+    "pêra": "pera",
+    "côa": "coa",
+    "côas": "coas"
+  },
+  "kept": [
+    "pôr",
+    "pôde",
+    "têm",
+    "vêm",
+    "mantêm",
+    "contêm",
+    "provêm",
+    "pára-",
+    "fôrma"
+  ],
+  "_kept_note": "'pôr' (verb) vs 'por' (prep); 'pôde' (pret.) vs 'pode' (pres.); 'têm/vêm' (3pl) vs 'tem/vem' (3sg); 'fôrma' (mould) optional circumflex to distinguish from 'forma' (shape)."
+}

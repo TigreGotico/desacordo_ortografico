@@ -1,0 +1,227 @@
+"""Curated exception lexicons + a thin, defensive wrapper over :mod:`tugalex`.
+
+The deterministic rules in :mod:`desacordo_ortografico.rules` cover the regular,
+reversible transforms. Everything that is *irreducibly lexical* lives here:
+
+* AO1990 **Base IV** classification (keep / drop / dual) — see ``data/base_iv.json``;
+* the differential-accent and lexicalized-hyphen exception lists;
+* the PT<->BR divergence pairs that stay valid under AO1990;
+* the 1911 irregulars (geminates, ch=/k/, silent consonants);
+* the bulk AO1990 word maps, reused from ``tugalex`` (Portal da Lingua Portuguesa
+  data) instead of being duplicated here.
+
+``tugalex`` is a hard dependency, but every access to it is defensive: if it (or its
+data) is unavailable the lexical AO1990 maps simply fall back to empty and the
+deterministic rule engine still works on its own.
+"""
+from __future__ import annotations
+
+import json
+import os
+from functools import cached_property
+from typing import Dict, List, Optional, Set
+
+_DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+
+def _load(name: str) -> dict:
+    with open(os.path.join(_DATA_DIR, name), "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def _strip_meta(d: dict) -> dict:
+    """Drop ``_underscored`` documentation keys from a loaded JSON object."""
+    return {k: v for k, v in d.items() if not k.startswith("_")}
+
+
+class Lexicon:
+    """Loads the curated data files and exposes ready-to-use lookup maps."""
+
+    def __init__(self) -> None:
+        self._tuga = None
+        self._tuga_tried = False
+
+    # ------------------------------------------------------- raw data files
+    @cached_property
+    def _base_iv(self) -> dict:
+        return _load("base_iv.json")
+
+    @cached_property
+    def _differential(self) -> dict:
+        return _load("differential_accents.json")
+
+    @cached_property
+    def _hyphens(self) -> dict:
+        return _load("lexicalized_hyphens.json")
+
+    @cached_property
+    def _divergences(self) -> dict:
+        return _load("ptbr_divergences.json")
+
+    @cached_property
+    def _reform1911(self) -> dict:
+        return _load("reform_1911_irregular.json")
+
+    @cached_property
+    def _accent_71_73(self) -> dict:
+        return _load("accent_reform_1971_73.json")
+
+    @cached_property
+    def sister_markers(self) -> dict:
+        return _load("sister_markers.json").get("languages", {})
+
+    # ------------------------------------------------------------ tugalex
+    @property
+    def tuga(self):
+        """The shared :class:`tugalex.TugaLexicon`, or ``None`` if unavailable."""
+        if not self._tuga_tried:
+            self._tuga_tried = True
+            try:
+                from tugalex import TugaLexicon
+
+                self._tuga = TugaLexicon()
+            except Exception:  # pragma: no cover - optional at runtime
+                self._tuga = None
+        return self._tuga
+
+    @cached_property
+    def ao_pt_old2new(self) -> Dict[str, str]:
+        return _clean_ao_map(self.tuga, "ao_pt")
+
+    @cached_property
+    def ao_br_old2new(self) -> Dict[str, str]:
+        return _clean_ao_map(self.tuga, "ao_br")
+
+    @cached_property
+    def ao_pt_new2old(self) -> Dict[str, str]:
+        return _invert(self.ao_pt_old2new)
+
+    @cached_property
+    def ao_br_new2old(self) -> Dict[str, str]:
+        return _invert(self.ao_br_old2new)
+
+    @cached_property
+    def voiced_u_words(self) -> Set[str]:
+        t = self.tuga
+        if not t:
+            return set()
+        try:
+            return {w.lower() for w in t.voiced_u_words}
+        except Exception:  # pragma: no cover
+            return set()
+
+    # ----------------------------------------------------------- Base IV
+    @cached_property
+    def base_iv_keep(self) -> Set[str]:
+        return {w.lower() for w in self._base_iv.get("keep", [])}
+
+    @cached_property
+    def base_iv_drop(self) -> Dict[str, str]:
+        return {k.lower(): v.lower() for k, v in self._base_iv.get("drop", {}).items()}
+
+    @cached_property
+    def base_iv_drop_reverse(self) -> Dict[str, str]:
+        return _invert(self.base_iv_drop)
+
+    @cached_property
+    def base_iv_dual(self) -> List[Dict[str, str]]:
+        return self._base_iv.get("dual", [])
+
+    @cached_property
+    def dual_pt2br(self) -> Dict[str, str]:
+        return {d["pt"].lower(): d["br"].lower() for d in self.base_iv_dual}
+
+    @cached_property
+    def dual_br2pt(self) -> Dict[str, str]:
+        return {d["br"].lower(): d["pt"].lower() for d in self.base_iv_dual}
+
+    # ------------------------------------------------- differential accents
+    @cached_property
+    def differential_dropped(self) -> Dict[str, str]:
+        return {k.lower(): v.lower() for k, v in self._differential.get("dropped", {}).items()}
+
+    @cached_property
+    def differential_kept(self) -> Set[str]:
+        return {w.lower() for w in self._differential.get("kept", [])}
+
+    # ------------------------------------------------- lexicalized hyphens
+    @cached_property
+    def hyphen_dropped(self) -> Dict[str, str]:
+        return {k.lower(): v.lower() for k, v in self._hyphens.get("dropped", {}).items()}
+
+    @cached_property
+    def hyphen_dropped_reverse(self) -> Dict[str, str]:
+        return _invert(self.hyphen_dropped)
+
+    # ----------------------------------------------------- PT<->BR divergence
+    @cached_property
+    def divergence_pt2br(self) -> Dict[str, str]:
+        out: Dict[str, str] = {}
+        for group in ("nasal_vowel", "other"):
+            for d in self._divergences.get(group, []):
+                out[d["pt"].lower()] = d["br"].lower()
+        out.update(self.dual_pt2br)
+        return out
+
+    @cached_property
+    def divergence_br2pt(self) -> Dict[str, str]:
+        return _invert(self.divergence_pt2br)
+
+    # ------------------------------------------------------- 1911 irregulars
+    @cached_property
+    def reform1911_old2new(self) -> Dict[str, str]:
+        out: Dict[str, str] = {}
+        for group in ("geminates", "ch_k", "silent_and_h", "digraph_accented"):
+            for k, v in self._reform1911.get(group, {}).items():
+                if k.startswith("_"):
+                    continue
+                out[k.lower()] = v.lower()
+        return out
+
+    @cached_property
+    def reform1911_new2old(self) -> Dict[str, str]:
+        return _invert(self.reform1911_old2new)
+
+    # --------------------------------------------------- 1971/73 differential
+    @cached_property
+    def accent_71_73_old2new(self) -> Dict[str, str]:
+        return {k.lower(): v.lower() for k, v in self._accent_71_73.get("differential", {}).items()}
+
+    @cached_property
+    def accent_71_73_new2old(self) -> Dict[str, str]:
+        return _invert(self.accent_71_73_old2new)
+
+
+def _clean_ao_map(tuga, attr: str) -> Dict[str, str]:
+    """Lowercase a tugalex AO map and drop its stray CSV-header entry."""
+    if not tuga:
+        return {}
+    raw = getattr(tuga, attr, {}) or {}
+    out: Dict[str, str] = {}
+    for k, v in raw.items():
+        if not v:
+            continue
+        kl, vl = k.lower().strip(), v[0].lower().strip()
+        if kl == "old_form" or vl == "new_form" or not kl:
+            continue  # tugalex includes the CSV header as a bogus row
+        out[kl] = vl
+    return out
+
+
+def _invert(mapping: Dict[str, str]) -> Dict[str, str]:
+    """Invert a 1:1-ish map; on collision the first key seen wins (stable)."""
+    out: Dict[str, str] = {}
+    for k, v in mapping.items():
+        out.setdefault(v, k)
+    return out
+
+
+# a process-wide shared instance (the data files are read-only)
+_SHARED: Optional[Lexicon] = None
+
+
+def get_lexicon() -> Lexicon:
+    global _SHARED
+    if _SHARED is None:
+        _SHARED = Lexicon()
+    return _SHARED

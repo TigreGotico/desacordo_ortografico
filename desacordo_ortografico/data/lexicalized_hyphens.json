@@ -1,0 +1,20 @@
+{
+  "_about": "AO1990 Bases XV-XVII: compounds that lost their hyphen(s) because they are felt as a single lexical unit. This is lexical (not derivable from the prefix+r/s doubling rule, which is handled deterministically in rules.py). Forward (old->new) removes the hyphen; backward restores it for these lemmas.",
+  "_sources": [
+    "Acordo Ortografico de 1990, Bases XV, XVI, XVII",
+    "https://www.flip.pt/Acordo-Ortografico/"
+  ],
+  "dropped": {
+    "pára-quedas": "paraquedas",
+    "pára-quedista": "paraquedista",
+    "pára-quedismo": "paraquedismo",
+    "manda-chuva": "mandachuva",
+    "mango-de-tacho": "mangodetacho",
+    "fim-de-semana": "fim de semana",
+    "cor-de-rosa": "cor-de-rosa",
+    "dia-a-dia": "dia a dia",
+    "há-de": "há de",
+    "hão-de": "hão de"
+  },
+  "_kept_note": "'cor-de-rosa' explicitly KEEPS its hyphens under Base XV (consecrated colour locution); listed here as an identity to document the exception."
+}
