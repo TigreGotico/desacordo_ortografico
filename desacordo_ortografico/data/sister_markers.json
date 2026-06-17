@@ -1,0 +1,74 @@
+{
+  "_about": "Markers for languages and recognised varieties of the Iberian/Lusophone area that are easily confused with Portuguese at the orthographic level but are NOT Portuguese orthographies. The detector uses these to RAISE A FLAG ('this is not standard Portuguese — do not auto-convert') rather than silently mangling the text. Markers are scored; a token/pattern hit adds its weight, and a language wins if it clears its threshold and beats Portuguese evidence.",
+  "_sources": [
+    "Mirandese: Convencao Ortografica da Lingua Mirandesa (1999); Lei n. 7/99 de 29-1-1999",
+    "Galician: Normas ortograficas e morfoloxicas do idioma galego (RAG/ILG, 1982/2003); AGAL reintegrationist norm",
+    "https://pt.wikipedia.org/wiki/L%C3%ADngua_mirandesa",
+    "https://en.wikipedia.org/wiki/Reintegrationism"
+  ],
+  "languages": {
+    "mwl": {
+      "name": "Mirandese",
+      "name_pt": "mirandês",
+      "iso639_3": "mwl",
+      "family": "Astur-Leonese (West Iberian) — NOT Galician-Portuguese",
+      "status": "Co-official in the Terra de Miranda (Portugal) since Lei n. 7/99 de 29 de Janeiro de 1999.",
+      "convertible": false,
+      "threshold": 3,
+      "markers": [
+        {"pattern": "(?:^|\\s)lh", "type": "regex", "weight": 3, "note": "word-initial lh- for Latin L- (lhéngua, lhuç, lhibro) — impossible word-initially in Portuguese (anchored to avoid enclitic -lhe)"},
+        {"pattern": "(?:^|\\s)l\\s", "type": "regex", "weight": 2, "note": "the masculine singular definite article 'l' (l mirandés = 'o mirandês')"},
+        {"pattern": "(?:^|\\s)ls\\s", "type": "regex", "weight": 2, "note": "masculine plural article 'ls'"},
+        {"pattern": "you", "type": "word", "weight": 3, "note": "1sg pronoun 'you' (= 'eu')"},
+        {"pattern": "bós", "type": "word", "weight": 2, "note": "2pl pronoun 'bós' (betacism of 'vós')"},
+        {"pattern": "lhéngua", "type": "word", "weight": 3},
+        {"pattern": "mirandés", "type": "word", "weight": 2},
+        {"pattern": "tierra", "type": "word", "weight": 2, "note": "Astur-Leonese diphthong ie (= 'terra')"},
+        {"pattern": "buono", "type": "word", "weight": 2, "note": "Astur-Leonese diphthong uo (= 'bom/bão')"}
+      ]
+    },
+    "oki-barranquenho": {
+      "name": "Barranquenho",
+      "name_pt": "barranquenho",
+      "iso639_3": "por (no distinct ISO code; classed under Portuguese)",
+      "family": "Portuguese-Spanish contact variety (Alentejan Portuguese base + Andalusian/Extremaduran Spanish)",
+      "status": "Recognised and protected as intangible cultural heritage of Portugal by Lei n. 97/2021, de 30 de dezembro (NOT a co-official language). Its orthography (Convencao Ortografica do Barranquenho, Univ. de Evora + CM Barrancos, June 2025) is a DRAFT in public consultation, not a legally adopted norm.",
+      "convertible": false,
+      "convert_note": "Barranquenho is a mixed/contact variety, not an orthography OF Portuguese; turning Portuguese into it is translation (Spanish lexicon, clitic reordering), not orthographic conversion, and its written norm is non-final. Detect and flag only.",
+      "threshold": 4,
+      "markers": [
+        {"pattern": "[aeiouáéíóú]h\\b", "type": "regex", "weight": 3, "note": "aspiration grapheme: post-vowel word-final h for PT s (maih, oh, cruh, detráh)"},
+        {"pattern": "[aeiou]h[ptkcbdgç]", "type": "regex", "weight": 3, "note": "aspiration before consonant (ehtá, pohto, buhcá, Ehpanha)"},
+        {"pattern": "'h", "type": "substr", "weight": 3, "note": "apostrophe+h elision signature (e'hcrebê, mê'htá)"},
+        {"pattern": "barranquenhu", "type": "word", "weight": 3, "note": "endonym with o->u raising"},
+        {"pattern": "nusotrus", "type": "word", "weight": 3, "note": "Spanish-influenced 1pl pronoun"},
+        {"pattern": "boçê", "type": "word", "weight": 2},
+        {"pattern": "debaxo", "type": "word", "weight": 2, "note": "x for PT j/x (debaixo)"},
+        {"pattern": "beio", "type": "word", "weight": 2, "note": "betacism b for v (= veio)"},
+        {"pattern": "labá", "type": "word", "weight": 2, "note": "betacism + dropped infinitive -r (= lavar)"},
+        {"pattern": "comê", "type": "word", "weight": 1, "note": "bare infinitive, dropped -r (= comer)"}
+      ]
+    },
+    "gl": {
+      "name": "Galician",
+      "name_pt": "galego",
+      "iso639_3": "glg",
+      "family": "Galician-Portuguese (West Iberian) — the closest relative of Portuguese",
+      "status": "Co-official in Galicia (Spain). Standard norm: RAG/ILG (1982/2003). A reintegrationist (AGAL) norm writes Galician with near-Portuguese spelling and is the main source of false positives.",
+      "convertible": false,
+      "threshold": 3,
+      "markers": [
+        {"pattern": "ñ", "type": "char", "weight": 3, "note": "standard (RAG) Galician uses ñ; absent from Portuguese"},
+        {"pattern": "ll", "type": "substr", "weight": 2, "note": "RAG digraph ll (vello, muller, cabalo); Portuguese dropped ll in 1911"},
+        {"pattern": "umha", "type": "word", "weight": 3, "note": "reintegrationist feminine article/numeral 'umha' (= 'uma')"},
+        {"pattern": "algumha", "type": "word", "weight": 3},
+        {"pattern": "nengumha", "type": "word", "weight": 3},
+        {"pattern": "nom", "type": "word", "weight": 2, "note": "reintegrationist negator 'nom' (= 'não')"},
+        {"pattern": "\\w+çom\\b", "type": "regex", "weight": 3, "note": "reintegrationist -çom ending (naçom, relaçom = 'nação', 'relação')"},
+        {"pattern": "\\w+çons\\b", "type": "regex", "weight": 3, "note": "reintegrationist plural -çons"},
+        {"pattern": "moito", "type": "word", "weight": 1, "note": "Galician 'moito' (= PT 'muito'); weak on its own"},
+        {"pattern": "xente", "type": "word", "weight": 2, "note": "RAG x for /ʃ/ (= 'gente')"}
+      ]
+    }
+  }
+}

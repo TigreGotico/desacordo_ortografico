@@ -1,0 +1,36 @@
+{
+  "_about": "PT vs BR spelling divergences that remain VALID under AO1990 because they reflect a real difference in pronunciation between the European and Brazilian norms. These are NOT spelling errors to be 'fixed' — both members of each pair are correct, one per norm. The library treats them as a variant-conversion layer (ao1990-pt <-> ao1990-br), never as old->new normalisation.",
+  "_sources": [
+    "Acordo Ortografico de 1990, Base I (open/closed stressed vowels) and Base IV (dual consonants, see base_iv.json)",
+    "https://vocabulario.acad-ciencias.pt/index.php/ortografia/nota-explicativa-do-ao90"
+  ],
+  "_nasal_vowel_rule": "Stressed open vowels e/o before nasal consonant (m/n): European norm writes acute (é/ó), Brazilian norm writes circumflex (ê/ô). This sub-rule is regular and is also applied generatively in rules.py (NasalVowelPTBR); the pairs below are the verified anchor set and the irregular lexical ones.",
+  "nasal_vowel": [
+    {"pt": "António", "br": "Antônio"},
+    {"pt": "fenómeno", "br": "fenômeno"},
+    {"pt": "tónico", "br": "tônico"},
+    {"pt": "atómico", "br": "atômico"},
+    {"pt": "género", "br": "gênero"},
+    {"pt": "génio", "br": "gênio"},
+    {"pt": "académico", "br": "acadêmico"},
+    {"pt": "oxigénio", "br": "oxigênio"},
+    {"pt": "cómodo", "br": "cômodo"},
+    {"pt": "económico", "br": "econômico"},
+    {"pt": "polémica", "br": "polêmica"},
+    {"pt": "fémea", "br": "fêmea"},
+    {"pt": "blénio", "br": "blênio"},
+    {"pt": "ténis", "br": "tênis"},
+    {"pt": "bónus", "br": "bônus"}
+  ],
+  "other": [
+    {"pt": "húmido", "br": "úmido"},
+    {"pt": "amnistia", "br": "anistia"},
+    {"pt": "connosco", "br": "conosco"},
+    {"pt": "comummente", "br": "comumente"},
+    {"pt": "quotidiano", "br": "cotidiano"},
+    {"pt": "indemnização", "br": "indenização"},
+    {"pt": "sumptuoso", "br": "suntuoso"},
+    {"pt": "perentório", "br": "peremptório"},
+    {"pt": "registo", "br": "registro"}
+  ]
+}

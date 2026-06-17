@@ -1,0 +1,36 @@
+{
+  "_about": "The 1971/73 accent mini-reform: Lei 5.765 de 18-12-1971 (Brazil) and Decreto-Lei 32/73 de 6-2-1973 (Portugal). Two main changes, both largely deterministic: (1) abolition of the differential circumflex on a closed list of homographs (the 'differential' map below), and (2) abolition of the grave/circumflex accent on the subtonic syllable of derived words in -mente, -zinho/-zito, etc. (handled by a regex in rules.py: any grave accent on e/i/o/u that is NOT the crasis 'a' is removed). The base PT/BR divergences (facto/fato, Antonio/Antonio) are untouched by this reform.",
+  "_sources": [
+    "Lei n. 5.765/1971 (Brasil); Decreto-Lei n. 32/73 (Portugal)",
+    "https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1971",
+    "https://www.priberam.pt/docs/AcOrtog45_73.pdf"
+  ],
+  "differential": {
+    "êle": "ele",
+    "êles": "eles",
+    "govêrno": "governo",
+    "sêca": "seca",
+    "sêco": "seco",
+    "côr": "cor",
+    "côres": "cores",
+    "pêso": "peso",
+    "êsse": "esse",
+    "êste": "este",
+    "aquêle": "aquele",
+    "dêle": "dele",
+    "nêle": "nele",
+    "fôra": "fora",
+    "almôço": "almoço",
+    "bôlo": "bolo",
+    "môço": "moço",
+    "pôço": "poço",
+    "fôsse": "fosse",
+    "gôsto": "gosto",
+    "pôsto": "posto",
+    "tôda": "toda",
+    "agôra": "agora"
+  },
+  "_subtonic_note": "Grave-accented subtonic vowels existed in pre-1971 spellings such as 'somente'<-'sòmente', 'sozinho'<-'sòzinho', 'cafezinho'<-'cafèzinho', 'unicamente'<-'ùnicamente'. Removal is a clean rule (strip grave accent on e/i/o/u, never on crasis 'a'/'as'), so no exhaustive list is stored.",
+  "_kept_differential": ["pôde", "pôr", "pélo", "pêlo", "pólo", "pára"],
+  "_kept_note": "Several differential accents survived 1971/73 and were only abolished by AO1990 (see differential_accents.json): pára, pélo/pêlo, pólo, pêra. The verbal/grammatical pairs pôde/pode and pôr/por survive AO1990 too."
+}
