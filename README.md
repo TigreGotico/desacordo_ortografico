@@ -40,8 +40,8 @@ from desacordo_ortografico import detect, convert, OrthographyConverter
 
 # --- detection -----------------------------------------------------------
 detect("a pharmacia do theatro").id          # 'etymological'
-detect("o facto é óptimo").id                 # 'pt_1973' (pre-AO1990, European)
-detect("a idéia do vôo").id                   # 'br_1971' (pre-AO1990, Brazilian)
+detect("o facto é óptimo").id                 # 'pt_1973-pt' (pre-AO1990, European)
+detect("a idéia do vôo").id                   # 'br_1971-br' (pre-AO1990, Brazilian)
 detect("o Antônio é econômico").id            # 'ao1990-br'
 
 # --- conversion ----------------------------------------------------------

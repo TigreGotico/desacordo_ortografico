@@ -15,7 +15,7 @@ via ``lossless`` and ``warnings`` instead of silently guessing.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional
 
 from . import rules
 from .eras import NORMS, Era, Norm, find_path
@@ -68,10 +68,14 @@ class OrthographyConverter:
     ) -> ConversionResult:
         src = Norm.parse(source)
         dst = Norm.parse(target)
-        # an explicit variant selects the European/Brazilian AO1990 sub-norm
-        # (so `convert(t, src, "ao1990", variant="br")` lands on ao1990-br)
-        if variant and dst.era == Era.AO1990:
-            dst = NORMS[f"ao1990-{variant}"]
+        if variant is not None:
+            variant = variant.lower()
+            if variant not in ("pt", "br"):
+                raise ValueError(f"variant must be 'pt' or 'br', got {variant!r}")
+            # an explicit variant selects the European/Brazilian AO1990 sub-norm
+            # (so `convert(t, src, "ao1990", variant="br")` lands on ao1990-br)
+            if dst.era == Era.AO1990:
+                dst = NORMS[f"ao1990-{variant}"]
         steps = find_path(src, dst)
         result = ConversionResult(text=text, source=src.id, target=dst.id)
         if not steps:

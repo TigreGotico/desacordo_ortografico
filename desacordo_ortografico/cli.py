@@ -12,9 +12,12 @@ from .guard import NotPortuguese
 
 
 def _read_text(args: argparse.Namespace) -> str:
-    if getattr(args, "stdin", False) or not args.text:
-        return sys.stdin.read().strip()
-    return " ".join(args.text)
+    if args.text:
+        return " ".join(args.text)
+    stdin = sys.stdin
+    if stdin is not None and (getattr(args, "stdin", False) or not stdin.isatty()):
+        return stdin.read().strip()
+    raise ValueError("no text provided: pass it as arguments or pipe it in with --stdin")
 
 
 def _cmd_detect(args: argparse.Namespace) -> int:
@@ -87,7 +90,11 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Optional[List[str]] = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
-    return args.func(args)
+    try:
+        return args.func(args)
+    except ValueError as exc:  # unknown norm, bad variant, missing text, ...
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
 
 
 if __name__ == "__main__":  # pragma: no cover

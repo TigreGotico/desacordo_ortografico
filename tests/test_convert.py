@@ -135,6 +135,17 @@ class TestAuditFixes:
         assert conv.convert("o facto", "ao1990-pt", "ao1990", variant="br").text == "o fato"
         assert conv.convert("o fato", "ao1990-br", "ao1990", variant="pt").text == "o facto"
 
+    def test_variant_is_case_insensitive(self, conv):
+        assert conv.convert("o facto", "ao1990-pt", "ao1990", variant="BR").text == "o fato"
+
+    def test_invalid_variant_raises_clean_valueerror(self, conv):
+        with pytest.raises(ValueError):
+            conv.convert("facto", "ao1990-pt", "ao1990", variant="english")
+
+    def test_invalid_norm_raises_valueerror(self, conv):
+        with pytest.raises(ValueError):
+            conv.convert("x", "bogus", "ao1990-pt")
+
 
 class TestConvenienceApi:
     def test_module_convert_returns_str(self):

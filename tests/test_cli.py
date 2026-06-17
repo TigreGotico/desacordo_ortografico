@@ -38,6 +38,29 @@ class TestConvertCommand:
         assert "warning" in err
 
 
+class TestCliErrorHandling:
+    def test_bad_norm_exits_cleanly_no_traceback(self, capsys):
+        rc = main(["convert", "--from", "bogus", "--to", "ao1990-pt", "x"])
+        captured = capsys.readouterr()
+        assert rc == 2
+        assert "error:" in captured.err
+        assert "Traceback" not in captured.err  # must not dump a stack to the user
+
+    def test_missing_text_no_stdin_errors(self, capsys, monkeypatch):
+        # simulate an interactive TTY with no piped input and no positional text
+        class _TTY:
+            def isatty(self):
+                return True
+
+            def read(self):  # pragma: no cover - must not be reached
+                raise AssertionError("should not block on stdin")
+
+        monkeypatch.setattr("sys.stdin", _TTY())
+        rc = main(["detect"])
+        assert rc == 2
+        assert "no text provided" in capsys.readouterr().err
+
+
 class TestNormsCommand:
     def test_lists_norms(self, capsys):
         rc = main(["norms"])

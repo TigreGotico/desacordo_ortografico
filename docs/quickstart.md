@@ -21,7 +21,7 @@ r.id           # 'etymological'
 r.era          # Era.ETYMOLOGICAL
 r.variant      # None  (variant-neutral)
 r.confidence   # 0.99
-r.markers      # ['etym-pattern:pharmacia', 'etym-pattern:theatro']
+r.markers      # ['etym:pharmacia', 'etym-pattern:theatro']
 ```
 
 Detection works at the granularity orthography actually supports: `etymological`,
@@ -67,3 +67,7 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 - **AO1990 is two targets, not one.** Use `ao1990-pt` / `ao1990-br` (or pass `variant=`)
   to pick the European or Brazilian form of a dual word.
 - **Sister languages are flagged, not converted.** See `docs/api.md`.
+- **Featureless input defaults to `ao1990`.** Text with no orthographic markers — empty,
+  clean modern Portuguese, or non-Portuguese that slips past the guard — returns
+  `ao1990` with a low confidence (~0.34). Check `confidence` if you need to distinguish
+  "confidently modern" from "no signal".

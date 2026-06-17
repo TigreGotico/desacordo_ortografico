@@ -12,7 +12,7 @@ or *one-way* (the inverse is ambiguous and must be resolved by a lexicon upstrea
 from __future__ import annotations
 
 import re
-from typing import Callable, Iterable, List
+from typing import Callable, List
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")

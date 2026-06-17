@@ -63,6 +63,22 @@ class TestVariantDetection:
         assert _orth("a ação direta").variant is None
 
 
+class TestId:
+    @pytest.mark.parametrize(
+        "text,expected_id",
+        [
+            ("a pharmacia do theatro", "etymological"),
+            ("o facto é óptimo", "pt_1973-pt"),
+            ("a idéia do vôo", "br_1971-br"),
+            ("o Antônio é econômico", "ao1990-br"),
+            ("o António é económico", "ao1990-pt"),
+        ],
+    )
+    def test_id_matches_readme(self, text, expected_id):
+        # .id appends the variant suffix for variant-bearing eras
+        assert _orth(text).id == expected_id
+
+
 class TestConfidence:
     def test_strong_markers_high_confidence(self):
         assert _orth("pharmacia e theatro").confidence >= 0.8
