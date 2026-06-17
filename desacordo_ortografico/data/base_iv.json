@@ -1,5 +1,5 @@
 {
-  "_about": "AO1990 Base IV (consonantal sequences c/p in -cc-, -cç-, -ct-, -pc-, -pç-, -pt-). Three classes: kept everywhere (pronounced in all norms), dropped everywhere (mute in all norms), and dual (pronounced in one norm, mute in another -> both spellings are official, one per norm). This classification is irreducibly lexical: it cannot be derived by regex.",
+  "_about": "AO1990 Base IV (consonantal sequences). Chiefly the c/p sequences -cc-, -cç-, -ct-, -pc-, -pç-, -pt-, plus the parallel b/g/m/t oscillations (subtil/sutil, súbdito/súdito, amígdala/amídala). Three classes: kept everywhere (pronounced in all norms), dropped everywhere (mute in all norms), and dual (pronounced in one norm, mute in another -> both spellings are official, one per norm). This classification is irreducibly lexical: it cannot be derived by regex. NB the dual direction is NOT always 'PT drops': for 'corrupto/corruto' the European norm pronounces (and keeps) the p while Brazil may drop it.",
   "_sources": [
     "Acordo Ortografico da Lingua Portuguesa de 1990, Base IV",
     "https://www.flip.pt/Acordo-Ortografico/Texto/Base-IV-Das-sequencias-consonanticas/",
@@ -67,13 +67,11 @@
     {"pt": "espetador", "br": "espectador", "gloss": "spectator (PT espetador vs BR espectador)"},
     {"pt": "perentório", "br": "peremptório"},
     {"pt": "sumptuoso", "br": "suntuoso"},
-    {"pt": "assunção", "br": "assumpção"},
     {"pt": "cetro", "br": "ceptro"},
     {"pt": "carateres", "br": "caracteres"},
-    {"pt": "corruto", "br": "corrupto"},
+    {"pt": "corrupto", "br": "corruto", "gloss": "rare reversed dual: PT pronounces & keeps the p, BR may drop it"},
     {"pt": "subtil", "br": "sutil"},
     {"pt": "súbdito", "br": "súdito"},
-    {"pt": "amígdala", "br": "amídala"},
-    {"pt": "amnistia", "br": "anistia"}
+    {"pt": "amígdala", "br": "amídala"}
   ]
 }

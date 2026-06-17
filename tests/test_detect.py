@@ -38,6 +38,18 @@ class TestEraDetection:
     def test_ao1990(self, text):
         assert _orth(text).era == Era.AO1990
 
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "a piscina tem água",        # 'sci' in piscina is modern, not etymological
+            "a consciência pesa",        # 'sci' in consciência
+            "comummente erramos",        # 'mm' survives in modern European PT
+            "estamos connosco",          # 'nn' survives in modern European PT
+        ],
+    )
+    def test_modern_geminate_sci_not_etymological(self, text):
+        assert _orth(text).era != Era.ETYMOLOGICAL
+
 
 class TestVariantDetection:
     def test_nasal_acute_is_pt(self):

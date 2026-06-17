@@ -82,6 +82,60 @@ class TestResultMetadata:
         assert conv.convert("xilofone azul", "pt_1973", "ao1990-pt").text == "xilofone azul"
 
 
+class TestArchaicExpansion:
+    @pytest.mark.parametrize(
+        "old,new",
+        [
+            ("elephante", "elefante"),
+            ("geographia", "geografia"),
+            ("cavallo", "cavalo"),
+            ("sabbado", "sábado"),
+            ("damno", "dano"),
+            ("psychiatria", "psiquiatria"),
+            ("epitheto", "epíteto"),
+            ("telegrapho", "telégrafo"),
+            ("kiosque", "quiosque"),
+            ("solemne", "solene"),
+            ("synthese", "síntese"),
+        ],
+    )
+    def test_etymological_to_ao1990_pt(self, old, new, conv):
+        assert conv.convert(old, "etymological", "ao1990-pt").text == new
+
+    @pytest.mark.parametrize(
+        "old,br",
+        [("anonymo", "anônimo"), ("kilometro", "quilômetro"), ("phenomeno", "fenômeno")],
+    )
+    def test_br_path_rederives_nasal(self, old, br, conv):
+        # PT form is stored; the Brazilian edge must re-derive the closed nasal vowel
+        assert conv.convert(old, "etymological", "ao1990-br").text == br
+
+
+class TestAuditFixes:
+    def test_corrupto_dual_direction(self, conv):
+        # rare reversed dual: PT pronounces & keeps the p, BR may drop it
+        assert conv.convert("corrupto", "ao1990-pt", "ao1990-br").text == "corruto"
+        assert conv.convert("corruto", "ao1990-br", "ao1990-pt").text == "corrupto"
+
+    def test_egypto_era_separation(self, conv):
+        # 1911 simplifies y->i but KEEPS the p; only AO1990 drops it
+        assert conv.convert("Egypto", "etymological", "reforma_1911").text == "Egipto"
+        assert conv.convert("Egypto", "etymological", "ao1990-pt").text == "Egito"
+
+    def test_addicao_not_adiccao(self, conv):
+        assert conv.convert("addição", "etymological", "ao1990-pt").text == "adição"
+
+    def test_br_differential_circumflex_dropped(self, conv):
+        # the 1943->1971 Brazilian edge removes the differential circumflex
+        assert conv.convert("êle", "br_1943", "br_1971").text == "ele"
+        assert conv.convert("govêrno", "br_1943", "br_1971").text == "governo"
+
+    def test_variant_param_selects_ao1990_subnorm(self, conv):
+        # variant= must actually steer the generic 'ao1990' target to PT or BR
+        assert conv.convert("o facto", "ao1990-pt", "ao1990", variant="br").text == "o fato"
+        assert conv.convert("o fato", "ao1990-br", "ao1990", variant="pt").text == "o facto"
+
+
 class TestConvenienceApi:
     def test_module_convert_returns_str(self):
         assert isinstance(convert("acção", "pt_1973", "ao1990-pt"), str)

@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Dict, List, Optional, Tuple
 
 from . import rules
-from .eras import Norm, find_path
+from .eras import NORMS, Era, Norm, find_path
 from .lexicon import Lexicon, get_lexicon
 
 # a per-edge transform: (word, variant) -> word
@@ -68,20 +68,21 @@ class OrthographyConverter:
     ) -> ConversionResult:
         src = Norm.parse(source)
         dst = Norm.parse(target)
+        # an explicit variant selects the European/Brazilian AO1990 sub-norm
+        # (so `convert(t, src, "ao1990", variant="br")` lands on ao1990-br)
+        if variant and dst.era == Era.AO1990:
+            dst = NORMS[f"ao1990-{variant}"]
         steps = find_path(src, dst)
         result = ConversionResult(text=text, source=src.id, target=dst.id)
         if not steps:
             return result
-
-        # the variant biases dual-form selection when crossing the divergence edge
-        var = variant or (dst.variant.value or src.variant.value or None)
 
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
             fn = edge.forward if forward else edge.backward
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(out, lambda w: fn(w, var))
+            out = rules.apply_to_words(out, lambda w, f=fn: f(w, variant))
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -165,17 +166,23 @@ class OrthographyConverter:
             w = lex.base_iv_drop_reverse.get(w, w)
             return rules.nasal_vowel_to_pt(w)
 
-        # -- 1945 <-> 1973 (PT accent reform) --------------------------------
+        # -- 1945 <-> 1973 (PT): subtonic-grave removal only. The differential
+        #    circumflex (êle->ele) was already abolished for Portugal by the 1945
+        #    Convenção (Base XXII), so it must NOT be applied on this edge.
         def accent_1973_fwd(w: str, _v: Optional[str]) -> str:
-            w = lex.accent_71_73_old2new.get(w, w)
             return rules.strip_subtonic_grave(w)
 
         def accent_1973_bwd(w: str, _v: Optional[str]) -> str:
-            return lex.accent_71_73_new2old.get(w, w)
+            return w  # subtonic graves cannot be reintroduced by rule
 
-        # -- 1943 <-> 1971 (BR accent reform; trema survives until AO1990) ----
-        accent_1971_fwd = accent_1973_fwd
-        accent_1971_bwd = accent_1973_bwd
+        # -- 1943 <-> 1971 (BR): differential-circumflex removal (êle->ele,
+        #    govêrno->governo) + subtonic-grave removal. Trema survives until AO1990.
+        def accent_1971_fwd(w: str, _v: Optional[str]) -> str:
+            w = lex.accent_71_73_old2new.get(w, w)
+            return rules.strip_subtonic_grave(w)
+
+        def accent_1971_bwd(w: str, _v: Optional[str]) -> str:
+            return lex.accent_71_73_new2old.get(w, w)
 
         # -- pre-AO90 PT <-> AO1990 PT ---------------------------------------
         def ao_pt_fwd(w: str, _v: Optional[str]) -> str:

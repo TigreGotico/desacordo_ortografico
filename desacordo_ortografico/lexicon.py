@@ -171,9 +171,11 @@ class Lexicon:
     @cached_property
     def reform1911_old2new(self) -> Dict[str, str]:
         out: Dict[str, str] = {}
-        for group in ("geminates", "ch_k", "silent_and_h", "digraph_accented"):
-            for k, v in self._reform1911.get(group, {}).items():
-                if k.startswith("_"):
+        for group, entries in self._reform1911.items():
+            if group.startswith("_") or not isinstance(entries, dict):
+                continue
+            for k, v in entries.items():
+                if k.startswith("_") or not isinstance(v, str):
                     continue
                 out[k.lower()] = v.lower()
         return out
