@@ -25,7 +25,8 @@ def _load(name):
 def flatten_parallel(rows):
     out = []
     for r in rows:
-        flat = {"id": r["id"], "features": r.get("features", [])}
+        flat = {"id": r["id"], "source": r.get("source", "authored"),
+                "features": r.get("features", [])}
         for n in NORMS:
             flat[n.replace("-", "_")] = r["cells"][n]
         out.append(flat)
@@ -49,7 +50,7 @@ tags:
 - parallel-corpus
 - historical-linguistics
 size_categories:
-- 1K<n<10K
+- 10K<n<100K
 configs:
 - config_name: parallel
   data_files: parallel.jsonl
@@ -82,23 +83,33 @@ The European line (`etymological`, `pt_1973`, `ao1990_pt`) and the Brazilian lin
 
 - **parallel** (default) — {N} sentences × 5 norms, each with a `features` list naming the
   orthographic phenomena it exercises (digraphs, silent consonants, nasal vowels, trema,
-  differential accents, hyphenation, …).
+  differential accents, hyphenation, …) and a `source` field (see Construction).
 - **sisters** — short samples of Mirandese, Galician and Barranquenho (recognised
   varieties that are not Portuguese orthographies) plus Portuguese controls, for a
   language-guard task.
 
 ## Construction
 
-Every rendering was authored from linguistic knowledge against an explicit per-norm rule
-card (a hand-written core plus a fan-out of language models over distinct topic domains),
-independently of any converter, so the corpus is a fair gold standard. It is then
-tightened to reference quality: consistency is checked within each line, dual/divergence
-words are normalised in the modern cells, and any line-inconsistent sentence is dropped.
-The result is self-consistent.
+The `source` field marks how each row was built:
+
+- `authored` — written from linguistic knowledge against an explicit per-norm rule card
+  (a hand-written core plus a fan-out of language models over distinct topic domains),
+  independently of any converter, then audited sentence-by-sentence by a language-model
+  panel and tightened to reference quality.
+- `derived` — a natural modern-European sentence whose other four norms are produced by a
+  **verified derivation**: each word is transformed only via a per-word form confirmed
+  against a curated lexicon (the silent-consonant, trema, nasal-vowel, dual and
+  differential vocabularies were classified word-by-word by a language-model panel); any
+  sentence containing a word whose variation is not verified is dropped, so a derived row
+  is correct by construction. Spelling correctness was confirmed by independent sampling.
+
+Within each line (European: `etymological`/`pt_1973`/`ao1990_pt`; Brazilian:
+`br_1971`/`ao1990_br`) the cells differ only by the documented era transforms; the two
+national lines may also differ lexically in the `authored` rows.
 
 ## Uses
 
-- Benchmark a Portuguese orthography **detector** (classify which norm a text is in).
+- Benchmark or train a Portuguese orthography **detector** (classify which norm a text is in).
 - Benchmark an orthography **converter** (transform between norms) — note that the two
   national lines can diverge lexically, which an orthographic converter does not translate.
 
@@ -117,7 +128,7 @@ def main():
     ap.add_argument("--private", action="store_true")
     args = ap.parse_args()
 
-    parallel = flatten_parallel(_load("gold_corpus.jsonl"))
+    parallel = flatten_parallel(_load("gold_full.jsonl"))
     sisters = _load("gold_sisters.jsonl")
 
     with tempfile.TemporaryDirectory() as d:
