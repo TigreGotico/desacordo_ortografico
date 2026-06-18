@@ -58,6 +58,22 @@ res.alternatives    # {'facto': ['facto', 'fato']}
 conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção']
 ```
 
+### Detection: rules or a learned model
+
+`detect()` defaults to an explainable rule scorer. Two zero-dependency learned models
+also ship — Naive Bayes and an averaged perceptron over character n-grams (the same
+shared-scoring design as `bifonia`). They score higher on sentence-length text
+(~96% vs ~93% compatible accuracy, held-out 5-fold CV; see `benchmark/`):
+
+```python
+detect("o Antônio era um génio econômico", method="nb")          # learned
+detect("o Antônio era um génio econômico", method="perceptron")  # learned
+detect("o Antônio era um génio econômico")                       # rules (default)
+```
+
+The guard runs first in every mode, and rule markers are attached to a learned result
+for explainability.
+
 ### Sister-language guard
 
 Mirandese, Galician (especially reintegrationist), and Barranquenho look like

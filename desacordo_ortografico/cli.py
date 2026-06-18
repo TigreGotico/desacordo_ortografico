@@ -22,7 +22,7 @@ def _read_text(args: argparse.Namespace) -> str:
 
 def _cmd_detect(args: argparse.Namespace) -> int:
     text = _read_text(args)
-    result = detect(text)
+    result = detect(text, method=args.method)
     if isinstance(result, NotPortuguese):
         print(f"not-portuguese\t{result.lang}\t{result.name}\tconfidence={result.confidence}")
         if result.status:
@@ -68,6 +68,8 @@ def build_parser() -> argparse.ArgumentParser:
     d = sub.add_parser("detect", help="classify which orthography a text uses")
     d.add_argument("text", nargs="*", help="text to classify (or use --stdin)")
     d.add_argument("--stdin", action="store_true", help="read text from stdin")
+    d.add_argument("--method", choices=["rules", "nb", "perceptron"], default="rules",
+                   help="classifier: rule scorer (default) or a learned model")
     d.add_argument("-v", "--verbose", action="store_true")
     d.set_defaults(func=_cmd_detect)
 

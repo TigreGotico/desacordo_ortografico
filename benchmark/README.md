@@ -56,6 +56,24 @@ python benchmark/plot_results.py       # -> plots/*.png
 ![by feature](plots/conversion_by_feature.png)
 ![confusion](plots/detection_confusion.png)
 
+## Learned detectors (NB + perceptron)
+
+`train_detector.py` trains two zero-dependency models over character n-grams and
+evaluates them against the rule scorer with **5-fold CV split by sentence** (so no
+near-identical rendering leaks across train/test). Both beat the rules on held-out data:
+
+| detector | strict | compatible |
+|----------|--------|------------|
+| rules | 32.7% | 93.4% |
+| naive bayes | 49.3% | **96.1%** |
+| averaged perceptron | 48.7% | 95.1% |
+
+(Strict accuracy is capped well below 100% because many renderings are spelled
+identically across norms and cannot be told apart; *compatible* is the meaningful
+metric.) Both models ship (`data/detector_nb.json`, `data/detector_perceptron.json`)
+and are opt-in via `detect(text, method="nb"|"perceptron")`; the rule scorer stays the
+default for explainability and robustness on short inputs.
+
 ## Known limitations the benchmark exposes
 
 - **Graphic-accent restoration (etymological edge).** The 1911 reform *introduced*

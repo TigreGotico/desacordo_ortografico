@@ -128,7 +128,7 @@ class TestDataIntegrity:
 
         data_dir = os.path.join(os.path.dirname(desacordo_ortografico.__file__), "data")
         files = glob.glob(os.path.join(data_dir, "*.json"))
-        assert len(files) == 7
+        assert len(files) >= 7  # 7 lexicons + the shipped detector models
         for f in files:
             with open(f, encoding="utf-8") as fh:
                 json.load(fh)  # raises on malformed JSON

@@ -1,4 +1,3 @@
-import pytest
 
 from desacordo_ortografico.cli import main
 

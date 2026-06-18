@@ -19,6 +19,7 @@ from typing import List, Optional, Union
 from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
+from .ml import get_detector_model
 from .rules import words as _words
 
 _VOWELS = "aeiouáàâãéêíóôõúü"
@@ -56,14 +57,60 @@ class Orthography:
         return f"Orthography({self.era.value}{v}, confidence={self.confidence:.2f})"
 
 
-def detect(text: str, lexicon: Optional[Lexicon] = None) -> Union[Orthography, NotPortuguese]:
-    """Classify ``text`` as a Portuguese orthography or a sister variety."""
-    lex = lexicon or get_lexicon()
+def detect(
+    text: str,
+    lexicon: Optional[Lexicon] = None,
+    method: str = "rules",
+) -> Union[Orthography, NotPortuguese]:
+    """Classify ``text`` as a Portuguese orthography or a sister variety.
 
+    ``method`` chooses the classifier (the sister-language guard runs first in every
+    mode, and any mode falls back to the rules if no model is bundled):
+
+    * ``"rules"`` (default) — the deterministic marker scorer: explainable, robust on
+      short inputs, and what the documented ``.id`` examples reflect;
+    * ``"nb"`` — the shipped zero-dependency Naive-Bayes model;
+    * ``"perceptron"`` — the shipped zero-dependency averaged-perceptron model.
+
+    On sentence-length text the learned models score higher (~96% vs ~93% compatible
+    accuracy) on held-out cross-validation — see ``benchmark/train_detector.py``. They
+    are opt-in because they are less reliable on very short, marker-less inputs. Markers
+    from the rule scorer are attached to a learned result for explainability.
+    """
+    lex = lexicon or get_lexicon()
     sister = detect_sister(text, lex)
     if sister is not None:
         return sister
 
+    rule = _detect_rules(text, lex)
+    if method == "rules":
+        return rule
+    model = get_detector_model("perceptron" if method == "perceptron" else "nb")
+    if model is None:
+        return rule
+    col, margin = model.predict_with_margin(text)
+    return _orth_from_column(col, margin, rule)
+
+
+def _orth_from_column(col: str, margin: float, rule: "Orthography") -> "Orthography":
+    """Build an Orthography from the model's predicted column, keeping rule markers."""
+    era, variant = _COLUMN_TO_NORM.get(col, (Era.AO1990, None))
+    conf = round(min(0.99, 0.5 + 0.1 * margin), 2)
+    return Orthography(era=era, variant=variant, confidence=conf,
+                       markers=rule.markers, note=_ERA_NOTES.get(era, ""))
+
+
+_COLUMN_TO_NORM = {
+    "etymological": (Era.ETYMOLOGICAL, None),
+    "pt_1973": (Era.PT_1973, Variant.PT),
+    "ao1990-pt": (Era.AO1990, Variant.PT),
+    "br_1971": (Era.BR_1971, Variant.BR),
+    "ao1990-br": (Era.AO1990, Variant.BR),
+}
+
+
+def _detect_rules(text: str, lex: Lexicon) -> Orthography:
+    """Deterministic marker-based classifier (the original detector)."""
     etym = 0
     old_pt = 0
     old_br = 0
