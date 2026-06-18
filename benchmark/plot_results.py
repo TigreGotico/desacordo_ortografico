@@ -42,7 +42,7 @@ def plot_by_pair(res):
         ax.text(e + 0.01, i - 0.2, f"{e:.0%}", va="center", fontsize=8, color=INK)
         ax.text(t + 0.01, i + 0.2, f"{t:.0%}", va="center", fontsize=8, color="#555")
     ax.set_yticks(y)
-    ax.set_yticklabels([l.replace("->", " → ") for l in labels], fontsize=9)
+    ax.set_yticklabels([lab.replace("->", " → ") for lab in labels], fontsize=9)
     ax.set_xlim(0, 1.08)
     ax.set_xlabel("accuracy")
     ax.set_title("Conversion accuracy by norm pair", fontweight="bold", color=INK)
