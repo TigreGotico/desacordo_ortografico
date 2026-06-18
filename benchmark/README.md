@@ -19,7 +19,7 @@ Each gold item is **one Portuguese sentence written in five orthographic norms**
 
 The parallel corpus is also published as a dataset:
 **[TigreGotico/desacordo_ortografico](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico)**
-on the Hugging Face Hub — **24,197 sentences × 5 norms** (`parallel` + `sisters` configs),
+on the Hugging Face Hub — **24,199 sentences × 5 norms** (`parallel` + `sisters` configs),
 each row tagged `source: authored | derived | coverage`. Regenerate/republish with
 `publish_hf.py`.
 
@@ -45,9 +45,7 @@ circular); the full 20k+ corpus is the HF dataset.
 fraction of each AO1990 change. `cover.py` closes the gap: for every changed word in the
 lexicon still missing from the corpus it emits a short carrier sentence (one quoted term,
 `source: coverage`). Result: **every** changed word — silent c/p, trema, open-diphthong
-accent, dual and divergence — appears at least once (100% of the inventory). The only
-exclusions are two malformed source entries that are old `electro-` compounds rather than
-real modern words.
+accent, dual and divergence — appears at least once — 100% of the inventory, no exclusions.
 
 ## The corpus
 

@@ -115,8 +115,7 @@ A third tag, `coverage`, marks short carrier sentences (one quoted term) added s
 **Every** AO1990-changed word in the reference lexicon appears at least once — silent c/p
 (`acção`, `óptimo`, `director`), trema (`freqüência`, `lingüiça`), open-diphthong accent
 (`idéia`, `heróico`), and dual/divergence (`facto`/`fato`, `húmido`/`úmido`) are each at
-100% of their inventory. (Two malformed source entries that are old `electro-` compounds,
-not real modern words, are the only exclusions.)
+100% of their inventory.
 
 ## Uses
 
