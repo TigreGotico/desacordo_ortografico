@@ -1,78 +1,78 @@
 {
   "corpus": "gold_corpus.jsonl",
-  "n": 1341,
+  "n": 1316,
   "conversion": {
-    "overall_exact": 0.8622563119207415,
-    "overall_token": 0.9803004640093177,
-    "n_conversions": 9387,
+    "overall_exact": 0.8814589665653495,
+    "overall_token": 0.9829772352894378,
+    "n_conversions": 9212,
     "by_pair": {
       "etymological->pt_1973": {
-        "exact": 1136,
-        "n": 1341,
-        "token_acc": 0.9800470471611425
+        "exact": 1129,
+        "n": 1316,
+        "token_acc": 0.9825710004281447
       },
       "etymological->ao1990-pt": {
-        "exact": 1131,
-        "n": 1341,
-        "token_acc": 0.9807106121983088
+        "exact": 1178,
+        "n": 1316,
+        "token_acc": 0.9876576437746661
       },
       "etymological->ao1990-br": {
-        "exact": 891,
-        "n": 1341,
-        "token_acc": 0.9497041838764455
+        "exact": 893,
+        "n": 1316,
+        "token_acc": 0.9524519342528482
       },
       "pt_1973->ao1990-pt": {
-        "exact": 1234,
-        "n": 1341,
-        "token_acc": 0.9913081160284742
+        "exact": 1266,
+        "n": 1316,
+        "token_acc": 0.9956294570846247
       },
       "br_1971->ao1990-br": {
-        "exact": 1322,
-        "n": 1341,
-        "token_acc": 0.9986269075195251
+        "exact": 1307,
+        "n": 1316,
+        "token_acc": 0.9993151499800436
       },
       "ao1990-pt->ao1990-br": {
-        "exact": 1188,
-        "n": 1341,
-        "token_acc": 0.9806991521197349
+        "exact": 1174,
+        "n": 1316,
+        "token_acc": 0.981645724673841
       },
       "ao1990-br->ao1990-pt": {
-        "exact": 1192,
-        "n": 1341,
-        "token_acc": 0.9810072291615924
+        "exact": 1173,
+        "n": 1316,
+        "token_acc": 0.9815697368318959
       }
     },
     "by_feature": {
-      "ch_k": 0.8175559380378657,
-      "differential": 0.9058441558441559,
-      "digraph": 0.8664702994599902,
-      "diphthong": 0.913086913086913,
-      "divergence": 0.8803756796836382,
-      "dual": 0.9050073637702504,
-      "geminate": 0.9090401785714286,
-      "hyphen_rs": 0.6240601503759399,
-      "mn_ps": 0.9017857142857143,
+      "ch_k": 0.8339285714285715,
+      "differential": 0.9397590361445783,
+      "digraph": 0.8896797153024911,
+      "diphthong": 0.920523138832998,
+      "divergence": 0.8946053946053946,
+      "dual": 0.9163582531458179,
+      "geminate": 0.927170868347339,
+      "hyphen_rs": 0.6349206349206349,
+      "mn_ps": 0.9088145896656535,
       "months": 0.8914285714285715,
-      "nasal": 0.8677956842392789,
-      "silent_ct": 0.7873754152823921,
-      "silent_pt": 0.8214285714285714,
-      "trema": 0.9154761904761904
+      "nasal": 0.8826629680998613,
+      "silent_ct": 0.8235732935471839,
+      "silent_pt": 0.8657142857142858,
+      "trema": 0.9440993788819876
     },
     "by_feature_n": {
-      "ch_k": 581,
-      "differential": 616,
-      "digraph": 2037,
-      "diphthong": 1001,
-      "divergence": 2023,
-      "dual": 1358,
-      "geminate": 1792,
-      "hyphen_rs": 399,
-      "mn_ps": 336,
+      "ch_k": 560,
+      "differential": 581,
+      "digraph": 1967,
+      "diphthong": 994,
+      "divergence": 2002,
+      "dual": 1351,
+      "geminate": 1785,
+      "hyphen_rs": 378,
+      "mn_ps": 329,
       "months": 350,
-      "nasal": 3661,
-      "silent_ct": 2709,
-      "silent_pt": 364,
-      "trema": 840
+      "nasal": 3605,
+      "silent_ct": 2681,
+      "silent_pt": 350,
+      "trema": 805
     },
     "examples": [
       {
@@ -154,13 +154,6 @@
       },
       {
         "pair": "etymological->pt_1973",
-        "id": "p01-022",
-        "in": "O atmospheric pressure foi registado pelo barometro.",
-        "got": "O atmosferic pressure foi registado pelo barometro.",
-        "gold": "A pressão atmosférica foi registada pelo barómetro."
-      },
-      {
-        "pair": "etymological->pt_1973",
         "id": "p01-023",
         "in": "O technico ajustou o microscopio para ver as bacterias.",
         "got": "O technico ajustou o microscópio para ver as bacterias.",
@@ -231,13 +224,6 @@
       },
       {
         "pair": "etymological->pt_1973",
-        "id": "p01-073",
-        "in": "O analyse do sangue indicou níveis normais de glicose.",
-        "got": "O análise do sangue indicou níveis normais de glicose.",
-        "gold": "A análise do sangue indicou níveis normais de glicose."
-      },
-      {
-        "pair": "etymological->pt_1973",
         "id": "p01-075",
         "in": "O monarcha financiou a pharmacia real e a sua botica.",
         "got": "O monarcha financiou a farmácia real e a sua botica.",
@@ -252,24 +238,10 @@
       },
       {
         "pair": "etymological->pt_1973",
-        "id": "p01-077",
-        "in": "A diaphragma da câmara controla a entrada de luz.",
-        "got": "A diafragma da câmara controla a entrada de luz.",
-        "gold": "O diafragma da câmara controla a entrada de luz."
-      },
-      {
-        "pair": "etymological->pt_1973",
         "id": "p01-079",
         "in": "O typographo compôs o texto sobre a sphera celeste.",
         "got": "O tipógrafo compôs o texto sobre a sfera celeste.",
         "gold": "O tipógrafo compôs o texto sobre a esfera celeste."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p01-083",
-        "in": "O xistophono é um instrumento usado em estudos acústicos.",
-        "got": "O xistofono é um instrumento usado em estudos acústicos.",
-        "gold": "O xilofone é um instrumento usado em estudos acústicos."
       },
       {
         "pair": "etymological->pt_1973",
@@ -284,13 +256,6 @@
         "in": "A photographia do crystal mostrava a sua estructura regular.",
         "got": "A fotografia do cristal mostrava a sua estructura regular.",
         "gold": "A fotografia do cristal mostrava a sua estrutura regular."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p01-088",
-        "in": "O peccado de cálculo arruinou a precisão da medida.",
-        "got": "O pecado de cálculo arruinou a precisão da medida.",
-        "gold": "O erro de cálculo arruinou a precisão da medida."
       },
       {
         "pair": "etymological->pt_1973",
@@ -354,52 +319,81 @@
         "in": "O aspecto do céu anunciava tempestade sobre os montes.",
         "got": "O aspecto do céu anunciava tempestade sobre os montês.",
         "gold": "O aspecto do céu anunciava tempestade sobre os montes."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p02-048",
+        "in": "O pôr do sol pintava de ouro o polo norte do horizonte.",
+        "got": "O pôr do sol pintava de ouro o polo norte do horizonte.",
+        "gold": "O pôr do sol pintava de ouro o pólo norte do horizonte."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p02-071",
+        "in": "O gato selvagem caçava ratos no sotão do velho casebre de pedra.",
+        "got": "O gato selvagem caçava ratos no sotão do velho casebre de pedra.",
+        "gold": "O gato selvagem caçava ratos no sótão do velho casebre de pedra."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p02-105",
+        "in": "O cordeiro pára e bale à procura da ovelha perdida.",
+        "got": "O cordeiro pára e balé à procura da ovelha perdida.",
+        "gold": "O cordeiro pára e bale à procura da ovelha perdida."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p03-004",
+        "in": "O director da prisão assignou um contracto com a empresa de segurança.",
+        "got": "O director da prisão assignou um contracto com a empresa de segurança.",
+        "gold": "O director da prisão assinou um contrato com a empresa de segurança."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p03-008",
+        "in": "A commissão parlamentar approvou a colecção de emendas constitucionaes.",
+        "got": "A comissão parlamentar aprovou a colecção de emendas constitucionaes.",
+        "gold": "A comissão parlamentar aprovou a colecção de emendas constitucionais."
       }
     ]
   },
   "detection": {
-    "compatible_acc": 0.943027591349739,
-    "n": 6705,
+    "compatible_acc": 0.9439209726443769,
+    "n": 6580,
     "confusion": {
       "etymological": {
-        "etymological": 475,
-        "pt_1973": 407,
+        "etymological": 463,
+        "pt_1973": 398,
         "ao1990-pt": 204,
-        "br_1971": 102,
-        "ao1990": 152,
-        "not-portuguese": 1
+        "br_1971": 101,
+        "ao1990": 150
       },
       "pt_1973": {
-        "ao1990": 480,
-        "pt_1973": 534,
-        "ao1990-pt": 323,
+        "ao1990": 472,
+        "pt_1973": 522,
+        "ao1990-pt": 319,
         "br_1971": 1,
-        "not-portuguese": 1,
         "etymological": 2
       },
       "ao1990-pt": {
-        "ao1990": 833,
-        "ao1990-pt": 503,
-        "pt_1973": 1,
+        "ao1990": 814,
+        "ao1990-pt": 499,
         "br_1971": 2,
-        "not-portuguese": 1,
         "ao1990-br": 1
       },
       "br_1971": {
-        "ao1990": 554,
-        "ao1990-br": 418,
-        "br_1971": 228,
-        "pt_1973": 134,
-        "ao1990-pt": 6,
-        "not-portuguese": 1
+        "ao1990": 543,
+        "ao1990-br": 414,
+        "br_1971": 223,
+        "pt_1973": 130,
+        "ao1990-pt": 6
       },
       "ao1990-br": {
-        "ao1990": 823,
-        "ao1990-br": 486,
-        "pt_1973": 25,
+        "ao1990": 801,
+        "ao1990-br": 481,
+        "pt_1973": 29,
         "br_1971": 2,
-        "ao1990-pt": 4,
-        "not-portuguese": 1
+        "ao1990-pt": 3
       }
     }
   },

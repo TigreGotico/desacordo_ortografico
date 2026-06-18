@@ -16,7 +16,7 @@
       "convertible": false,
       "threshold": 3,
       "markers": [
-        {"pattern": "(?:^|\\s)lh", "type": "regex", "weight": 3, "note": "word-initial lh- for Latin L- (lhéngua, lhuç, lhibro) — impossible word-initially in Portuguese (anchored to avoid enclitic -lhe)"},
+        {"pattern": "(?:^|\\s)lh(?!(?:es?|os?|as?)\\b)", "type": "regex", "weight": 3, "note": "word-initial lh- for Latin L- (lhéngua, lhuç, lhibro); excludes the Portuguese clitics lhe/lhes/lho/lhos/lha/lhas which are the only PT words starting with lh-"},
         {"pattern": "(?:^|\\s)l\\s", "type": "regex", "weight": 2, "note": "the masculine singular definite article 'l' (l mirandés = 'o mirandês')"},
         {"pattern": "(?:^|\\s)ls\\s", "type": "regex", "weight": 2, "note": "masculine plural article 'ls'"},
         {"pattern": "you", "type": "word", "weight": 3, "note": "1sg pronoun 'you' (= 'eu')"},

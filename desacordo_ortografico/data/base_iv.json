@@ -65,6 +65,8 @@
     {"pt": "deceção", "br": "decepção"},
     {"pt": "perceção", "br": "percepção"},
     {"pt": "espetador", "br": "espectador", "gloss": "spectator (PT espetador vs BR espectador)"},
+    {"pt": "recetor", "br": "receptor"},
+    {"pt": "rececionista", "br": "recepcionista"},
     {"pt": "perentório", "br": "peremptório"},
     {"pt": "sumptuoso", "br": "suntuoso"},
     {"pt": "cetro", "br": "ceptro"},

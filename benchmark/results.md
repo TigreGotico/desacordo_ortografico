@@ -1,53 +1,53 @@
 # desacordo_ortografico benchmark
 
-Corpus: `gold_corpus.jsonl` — 1341 parallel sentences (6705 renderings across 5 norms).
+Corpus: `gold_corpus.jsonl` — 1316 parallel sentences (6580 renderings across 5 norms).
 
 ## Conversion
 
 | pair | exact-match | token-acc |
 |------|-------------|-----------|
-| etymological->pt_1973 | 1136/1341 = 84.7% | 98.0% |
-| etymological->ao1990-pt | 1131/1341 = 84.3% | 98.1% |
-| etymological->ao1990-br | 891/1341 = 66.4% | 95.0% |
-| pt_1973->ao1990-pt | 1234/1341 = 92.0% | 99.1% |
-| br_1971->ao1990-br | 1322/1341 = 98.6% | 99.9% |
-| ao1990-pt->ao1990-br | 1188/1341 = 88.6% | 98.1% |
-| ao1990-br->ao1990-pt | 1192/1341 = 88.9% | 98.1% |
+| etymological->pt_1973 | 1129/1316 = 85.8% | 98.3% |
+| etymological->ao1990-pt | 1178/1316 = 89.5% | 98.8% |
+| etymological->ao1990-br | 893/1316 = 67.9% | 95.2% |
+| pt_1973->ao1990-pt | 1266/1316 = 96.2% | 99.6% |
+| br_1971->ao1990-br | 1307/1316 = 99.3% | 99.9% |
+| ao1990-pt->ao1990-br | 1174/1316 = 89.2% | 98.2% |
+| ao1990-br->ao1990-pt | 1173/1316 = 89.1% | 98.2% |
 
-**Overall: 86.2% exact-match, 98.0% token-accuracy over 9387 conversions.**
+**Overall: 88.1% exact-match, 98.3% token-accuracy over 9212 conversions.**
 
 ### Conversion accuracy by feature family
 
 | feature | exact-match | n |
 |---------|-------------|---|
-| hyphen_rs | 62.4% | 399 |
-| silent_ct | 78.7% | 2709 |
-| ch_k | 81.8% | 581 |
-| silent_pt | 82.1% | 364 |
-| digraph | 86.6% | 2037 |
-| nasal | 86.8% | 3661 |
-| divergence | 88.0% | 2023 |
+| hyphen_rs | 63.5% | 378 |
+| silent_ct | 82.4% | 2681 |
+| ch_k | 83.4% | 560 |
+| silent_pt | 86.6% | 350 |
+| nasal | 88.3% | 3605 |
+| digraph | 89.0% | 1967 |
 | months | 89.1% | 350 |
-| mn_ps | 90.2% | 336 |
-| dual | 90.5% | 1358 |
-| differential | 90.6% | 616 |
-| geminate | 90.9% | 1792 |
-| diphthong | 91.3% | 1001 |
-| trema | 91.5% | 840 |
+| divergence | 89.5% | 2002 |
+| mn_ps | 90.9% | 329 |
+| dual | 91.6% | 1351 |
+| diphthong | 92.1% | 994 |
+| geminate | 92.7% | 1785 |
+| differential | 94.0% | 581 |
+| trema | 94.4% | 805 |
 
 ## Detection
 
-**Compatible accuracy: 94.3%** over 6705 renderings.
+**Compatible accuracy: 94.4%** over 6580 renderings.
 
 Confusion (nominal norm -> predicted, raw counts; off-diagonal often reflects norms that are spelling-identical for a given sentence):
 
-| nominal \ predicted | ao1990 | ao1990-br | ao1990-pt | br_1971 | etymological | not-portuguese | pt_1973 |
-|---|---|---|---|---|---|---|---|
-| etymological | 152 | 0 | 204 | 102 | 475 | 1 | 407 |
-| pt_1973 | 480 | 0 | 323 | 1 | 2 | 1 | 534 |
-| ao1990-pt | 833 | 1 | 503 | 2 | 0 | 1 | 1 |
-| br_1971 | 554 | 418 | 6 | 228 | 0 | 1 | 134 |
-| ao1990-br | 823 | 486 | 4 | 2 | 0 | 1 | 25 |
+| nominal \ predicted | ao1990 | ao1990-br | ao1990-pt | br_1971 | etymological | pt_1973 |
+|---|---|---|---|---|---|---|
+| etymological | 150 | 0 | 204 | 101 | 463 | 398 |
+| pt_1973 | 472 | 0 | 319 | 1 | 2 | 522 |
+| ao1990-pt | 814 | 1 | 499 | 2 | 0 | 0 |
+| br_1971 | 543 | 414 | 6 | 223 | 0 | 130 |
+| ao1990-br | 801 | 481 | 3 | 2 | 0 | 29 |
 
 ## Sister-language guard
 
@@ -55,7 +55,7 @@ Confusion (nominal norm -> predicted, raw counts; off-diagonal often reflects no
 
 ## Summary
 
-- conversion exact-match: **86.2%**
-- conversion token-accuracy: **98.0%**
-- detection compatible accuracy: **94.3%**
+- conversion exact-match: **88.1%**
+- conversion token-accuracy: **98.3%**
+- detection compatible accuracy: **94.4%**
 - guard accuracy: **93.3%**

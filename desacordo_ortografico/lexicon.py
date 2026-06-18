@@ -140,7 +140,18 @@ class Lexicon:
                     words.update(w.lower() for w in t.get_wordlist(region))
                 except Exception:  # pragma: no cover - optional/heavy
                     pass
-        return {w.lower() for w in words if w and " " not in w}
+        out = {w.lower() for w in words if w and " " not in w}
+        # enrich with regular gender/number variants of the modern (consonant-dropped)
+        # forms, so the silent-c/p rule generalises to inflections the source list omits
+        # (coletivo -> coletiva/coletivos/coletivas, hence colectiva -> coletiva).
+        sources = (set(self.base_iv_drop.values()) | set(self.ao_pt_old2new.values())
+                   | set(self.ao_br_old2new.values()))
+        for w in sources:
+            if w.endswith("o"):
+                out |= {w[:-1] + "a", w + "s", w[:-1] + "as"}
+            elif w.endswith("a"):
+                out |= {w[:-1] + "o", w + "s", w[:-1] + "os"}
+        return out
 
     @cached_property
     def accent_restore(self) -> Dict[str, str]:
