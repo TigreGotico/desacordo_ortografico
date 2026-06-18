@@ -107,6 +107,23 @@ Within each line (European: `etymological`/`pt_1973`/`ao1990_pt`; Brazilian:
 `br_1971`/`ao1990_br`) the cells differ only by the documented era transforms; the two
 national lines may also differ lexically in the `authored` rows.
 
+A third tag, `coverage`, marks short carrier sentences (one quoted term) added so that
+**every** AO1990-changed word in the reference lexicon appears at least once.
+
+## Word coverage
+
+Each kind of AO1990 change is exercised across (nearly) its whole lexicon inventory:
+
+| change | coverage |
+|--------|----------|
+| trema (`freqüência`, `lingüiça`) | 100% |
+| open-diphthong accent (`idéia`, `heróico`) | 100% |
+| silent c/p (`acção`, `óptimo`, `director`) | 99.7% |
+| dual / divergence (`facto`/`fato`, `húmido`/`úmido`) | ~98% |
+
+The small remainder is a handful of very rare technical terms (e.g. the `mp→n` family
+*peremptório*, plus obscure botanical/zoological entries) that don't reduce cleanly.
+
 ## Uses
 
 - Benchmark or train a Portuguese orthography **detector** (classify which norm a text is in).

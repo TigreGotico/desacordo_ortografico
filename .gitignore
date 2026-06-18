@@ -40,3 +40,5 @@ benchmark/gold_generated.jsonl
 benchmark/qa/spot_*.jsonl
 benchmark/qa/spot_out_*.jsonl
 benchmark/qa/spotcheck.jsonl
+benchmark/coverage/
+benchmark/gold_coverage.jsonl

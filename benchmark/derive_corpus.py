@@ -74,7 +74,9 @@ def main():
     seen = set()
     out = []
     n_in = rejected = 0
-    for path in sorted(glob.glob(os.path.join(HERE, "gen", "out", "*.txt"))):
+    sources = (sorted(glob.glob(os.path.join(HERE, "gen", "out", "*.txt")))
+               + sorted(glob.glob(os.path.join(HERE, "coverage", "out", "*.txt"))))
+    for path in sources:
         for line in open(path, encoding="utf-8"):
             s = line.strip().lstrip("-•0123456789. )").strip()
             if len(s) < 12 or not s[0].isalpha() and s[0] not in "OAEUaeiou":

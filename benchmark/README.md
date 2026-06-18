@@ -36,6 +36,12 @@ derived row is correct by construction; independent sampling found zero spelling
 The benchmark below stays on the authored core (deriving against the library would be
 circular); the full 20k+ corpus is the HF dataset.
 
+
+
+## Word-level coverage
+
+`derive.py` only reaches words it can verify, so the generated sentences alone exercise a fraction of each AO1990 change. `cover.py` closes the gap: for every changed word in the lexicon still missing from the corpus it emits a short carrier sentence (one quoted term), so **every** trema and open-diphthong word (100%) and 99.7% of silent-c/p words appear at least once (`source: coverage`). The small remainder is rare `mp→n` and obscure technical terms that don't reduce cleanly.
+
 ## The corpus
 
 `gold_corpus.jsonl` = a small hand-authored core (`gold_parallel.jsonl`, multi-feature

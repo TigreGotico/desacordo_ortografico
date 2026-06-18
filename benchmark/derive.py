@@ -96,33 +96,27 @@ def _case(form, like):
     return form
 
 
-def _varying(word, M):
-    """The word's spelling could change across some norm pair (excluding the always-safe
-    deterministic nasal-vowel and month transforms)."""
+def _covered(word, M):
+    """A word is safe only if every norm form it needs is verified. A word that varies in
+    the European line needs a verified PT-line form; a word that varies only in the
+    Brazilian line (open-diphthong accent, trema) needs only its verified br_1971 form."""
     w = word.lower()
     lex = M.lex
-    return (any(c in w for c in _CP) or w in _DIFFERENTIAL or w in M.voiced_u
-            or w in lex.dual_pt2br or w in lex.dual_br2pt
-            or w in lex.divergence_pt2br or w in lex.divergence_br2pt
-            or w in lex.ao_pt_new2old or w in lex.ao_br_new2old)
-
-
-def _covered(word, M):
-    """A varying word is safe only if every norm form is verified."""
-    w = word.lower()
     if w in _DIFFERENTIAL:
         return False                                 # verb/prep ambiguity -> reject
     if w not in M.pt and w not in M.keep and (
             _RISK.search(w) or (len(w) >= 6 and _RISK_VT.search(w))):
         return False                                 # could hide a dropped c/p -> reject
-    if not _varying(w, M):
-        return True                                  # invariant (nasal/months are safe)
-    if w not in M.pt:
-        return False                                 # no verified PT-line forms
-    br_form = M.lex.dual_pt2br.get(w) or M.lex.divergence_pt2br.get(w) \
-        or rules.nasal_vowel_to_br(w)
-    if (w in M.voiced_u or w in M.lex.ao_br_new2old) and br_form not in M.br:
-        return False                                 # trema/diphthong form not verified
+    pt_varies = (any(c in w for c in _CP) or w in lex.ao_pt_new2old
+                 or w in lex.dual_pt2br or w in lex.dual_br2pt
+                 or w in lex.divergence_pt2br or w in lex.divergence_br2pt)
+    if pt_varies and w not in M.pt:
+        return False                                 # no verified PT-line form
+    if w in lex.ao_br_new2old or w in M.voiced_u:     # varies in the Brazilian line
+        br_form = lex.dual_pt2br.get(w) or lex.divergence_pt2br.get(w) \
+            or rules.nasal_vowel_to_br(w)
+        if br_form not in M.br and w not in M.br:
+            return False                             # trema/diphthong form not verified
     return True
 
 
