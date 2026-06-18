@@ -19,8 +19,22 @@ Each gold item is **one Portuguese sentence written in five orthographic norms**
 
 The parallel corpus is also published as a dataset:
 **[TigreGotico/desacordo_ortografico](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico)**
-on the Hugging Face Hub (`parallel` + `sisters` configs). Regenerate/republish it with
-`benchmark/publish_hf.py`.
+on the Hugging Face Hub — **21,796 sentences × 5 norms** (`parallel` + `sisters` configs),
+each row tagged `source: authored | derived`. Regenerate/republish with `publish_hf.py`.
+
+## Scaling by verified derivation
+
+`gold_corpus.jsonl` is the 1,329-sentence authored+QA'd benchmark core. The dataset is
+grown to reference scale by `derive.py`: a natural modern-European sentence is turned into
+all five norms by **per-word table lookup + deterministic rules** (nasal vowel, trema,
+month casing). Every word is transformed only via a form verified against a curated
+lexicon — the silent-consonant, trema and blocker vocabularies (`derived_lexicon.json`,
+3,556 PT-line forms + 34 BR trema words) were classified word-by-word by a language-model
+panel. Any sentence containing a word whose variation is not verified is **dropped**, so a
+derived row is correct by construction; independent sampling found zero spelling errors.
+`derive_corpus.py` runs this over the generated sentences and infers each row's features.
+The benchmark below stays on the authored core (deriving against the library would be
+circular); the full 20k+ corpus is the HF dataset.
 
 ## The corpus
 
