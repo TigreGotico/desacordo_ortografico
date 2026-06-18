@@ -74,6 +74,7 @@ def skel(tok: str) -> str:
     t = t.replace("ph", "f").replace("th", "t").replace("rh", "r")
     t = t.replace("ch", "c").replace("qu", "c").replace("k", "c").replace("q", "c")
     t = t.replace("sc", "c").replace("y", "i")  # sciencia<->ciência
+    t = t.replace("mp", "n")                     # assumpção<->assunção, peremptório<->perentório
     for p, r in (("cç", "ç"), ("ct", "t"), ("pç", "ç"), ("pt", "t"), ("pc", "c")):
         t = t.replace(p, r)
     t = t.replace("ü", "u").replace("mn", "n").replace("ps", "s")
