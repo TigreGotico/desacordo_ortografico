@@ -61,14 +61,18 @@ def reform_1911_digraphs(word: str) -> str:
 _GEMINATE_RE = re.compile(r"([bcdfgjlmnpqtvz])\1")
 
 
-def reform_1911_geminates(word: str) -> str:
+def reform_1911_geminates(word: str, wordset=None) -> str:
     """Reduce a doubled consonant to a single one, the way 1911 did.
 
-    Etymological geminates (anno, commando, collectiva, sufficiente) collapse, but
-    the etymological ``rr``/``ss`` survive in modern spelling (carro, passo) and are
-    deliberately excluded from the character class. Applied as a rule fallback so
-    inflections the 1911 lexicon does not list are handled too. One-way.
+    Etymological geminates (anno, commando, collectiva, sufficiente) collapse, but the
+    etymological ``rr``/``ss`` survive in modern spelling (carro, passo) and are excluded
+    from the character class. ``mm``/``nn`` also survive in a few modern PT words
+    (connosco, comummente), so when a word list is supplied a word already in it is left
+    untouched. Applied as a rule fallback so inflections the lexicon omits are handled.
+    One-way.
     """
+    if wordset is not None and word in wordset:
+        return word
     return _GEMINATE_RE.sub(r"\1", word)
 
 
@@ -171,20 +175,24 @@ def ao1990_drop_trema(word: str) -> str:
 _MONTHS = {
     "janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho",
     "agosto", "setembro", "outubro", "novembro", "dezembro",
-    "primavera", "verão", "outono", "inverno",
 }
+# Seasons were lowercase in every norm (only AO1990 also lowercased the months); they
+# are tracked only so a season that OPENS a sentence is still capitalised.
+_SEASONS = {"primavera", "verão", "outono", "inverno"}
 
-
-_MONTH_RE = re.compile(r"\b(%s)\b" % "|".join(sorted(_MONTHS, key=len, reverse=True)),
-                       re.IGNORECASE)
+_MONTH_RE = re.compile(
+    r"\b(%s)\b" % "|".join(sorted(_MONTHS | _SEASONS, key=len, reverse=True)),
+    re.IGNORECASE,
+)
 
 
 def recase_months(text: str, lowercase: bool) -> str:
     """Set month/season casing at the text level (so sentence position is known).
 
     AO1990 lowercases months mid-sentence (``lowercase=True``); the older norms
-    capitalise them. A month that opens a sentence stays capitalised in every norm.
-    This cannot be done per-word, because case is restored from the source token.
+    capitalise them. Seasons stay lowercase in every norm. A month or season opening a
+    sentence stays capitalised. This cannot be done per-word, because case is restored
+    from the source token.
     """
 
     def repl(m):
@@ -192,9 +200,10 @@ def recase_months(text: str, lowercase: bool) -> str:
         low = word.lower()
         cap = low[:1].upper() + low[1:]
         prefix = text[: m.start()].rstrip()
-        sentence_initial = prefix == "" or prefix[-1] in ".!?:—"
-        if sentence_initial:
-            return cap
+        if prefix == "" or prefix[-1] in ".!?:—":
+            return cap  # sentence-initial: capitalised in every norm
+        if low in _SEASONS:
+            return low  # seasons are always lowercase mid-sentence
         return low if lowercase else cap
 
     return _MONTH_RE.sub(repl, text)

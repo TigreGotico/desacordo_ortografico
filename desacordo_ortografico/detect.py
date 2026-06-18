@@ -20,6 +20,7 @@ from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
 from .ml import get_detector_model
+from .rules import _MONTHS
 from .rules import words as _words
 
 _VOWELS = "aeiouáàâãéêíóôõúü"
@@ -119,7 +120,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     br_lean = 0
     markers: List[str] = []
 
-    for raw in _words(text):
+    for i, raw in enumerate(_words(text)):
         w = raw.lower()
 
         # --- pre-1911 etymological evidence -----------------------------
@@ -129,6 +130,16 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         elif _RE_ETYM.search(w):
             etym += 1
             markers.append(f"etym-pattern:{w}")
+
+        # --- pre-AO1990 signals the lexicon misses ----------------------
+        if "êem" in w:  # lêem/crêem/vêem: -êem circumflex, dropped only by AO1990
+            old_pt += 1
+            markers.append(f"verbal-eem:{w}")
+        if i > 0 and raw[:1].isupper() and w in _MONTHS:
+            # a month capitalised mid-sentence is pre-AO1990 European (BR lowercased
+            # months in 1943; AO1990 lowercased them everywhere)
+            old_pt += 1
+            markers.append(f"capital-month:{w}")
 
         # --- pre-AO1990 PT (silent consonants / dropped differentials) --
         if w in lex.ao_pt_old2new or w in lex.base_iv_drop or w in lex.differential_dropped:

@@ -156,7 +156,7 @@ class OrthographyConverter:
         def reform_1911_fwd(w: str, _v: Optional[str]) -> str:
             if w in lex.reform1911_old2new:
                 return lex.reform1911_old2new[w]
-            w = rules.reform_1911_geminates(rules.reform_1911_digraphs(w))
+            w = rules.reform_1911_geminates(rules.reform_1911_digraphs(w), lex.wordset)
             # 1911 also introduced systematic graphic accents the rules can't derive;
             # restore them from the word list where unambiguous (fosforo -> fósforo).
             return rules.restore_accent(w, lex.accent_restore)
@@ -164,16 +164,22 @@ class OrthographyConverter:
         def reform_1911_bwd(w: str, _v: Optional[str]) -> str:
             return lex.reform1911_new2old.get(w, w)
 
-        # -- 1911 <-> 1945 (PT): orthographically near-identical --------------
+        # -- 1911 <-> 1945 (PT): the 1945 Convenção dropped the trema for Portugal
+        #    (ü -> u); otherwise the PT spelling is unchanged across these eras.
         def identity(w: str, _v: Optional[str]) -> str:
             return w
+
+        def pt_1945_fwd(w: str, _v: Optional[str]) -> str:
+            return rules.ao1990_drop_trema(w)
 
         # -- 1911 <-> 1943 (BR) ----------------------------------------------
         def br_1943_fwd(w: str, _v: Optional[str]) -> str:
             w = lex.base_iv_drop.get(w, w)
+            w = lex.divergence_pt2br.get(w, w)   # connosco->conosco, húmido->úmido
             return rules.nasal_vowel_to_br(w)
 
         def br_1943_bwd(w: str, _v: Optional[str]) -> str:
+            w = lex.divergence_br2pt.get(w, w)
             w = lex.base_iv_drop_reverse.get(w, w)
             return rules.nasal_vowel_to_pt(w)
 
@@ -249,7 +255,8 @@ class OrthographyConverter:
                 reversible_backward=False,
                 note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
             ),
-            "pt_1911_to_1945": _Edge(identity, identity),
+            "pt_1911_to_1945": _Edge(pt_1945_fwd, identity, reversible_backward=False,
+                                     note="the trema cannot be reintroduced by rule"),
             "br_1911_to_1943": _Edge(
                 br_1943_fwd, br_1943_bwd,
                 reversible_backward=False,
