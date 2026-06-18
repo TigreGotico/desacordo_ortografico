@@ -17,6 +17,11 @@ Each gold item is **one Portuguese sentence written in five orthographic norms**
 - **Guard** — sister-language samples (`gold_sisters.jsonl`) must be flagged as the
   right non-Portuguese variety; Portuguese controls must not be flagged.
 
+The parallel corpus is also published as a dataset:
+**[TigreGotico/desacordo_ortografico](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico)**
+on the Hugging Face Hub (`parallel` + `sisters` configs). Regenerate/republish it with
+`benchmark/publish_hf.py`.
+
 ## The corpus
 
 `gold_corpus.jsonl` = a small hand-authored core (`gold_parallel.jsonl`, multi-feature

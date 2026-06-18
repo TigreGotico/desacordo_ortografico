@@ -6,10 +6,18 @@ standards, and the *Acordo Ortográfico de 1990*, including the European and Bra
 sub-variants that AO1990 deliberately keeps distinct.
 
 This is a single-purpose library: it does orthography detection and conversion, and
-nothing else. The bulk AO1990 word data is reused from
-[`tugalex`](https://github.com/TigreGotico/tugalex); on top of it this package adds a
-deterministic rule engine, the historical-reform edges, the Base IV exception lexicons,
-and a marker-based detector.
+nothing else.
+
+- **Convert** any text between seven orthographic norms along a graph of historical
+  reforms, with AO1990 dual-form (`facto`/`fato`) handling.
+- **Detect** which orthography a text is written in — an explainable rule scorer, or two
+  shipped zero-dependency learned classifiers (Naive Bayes / averaged perceptron).
+- **Guard** against sister varieties (Mirandese, Galician, Barranquenho) that look like
+  Portuguese but are not.
+- A deterministic rule engine + curated, **sourced** exception lexicons; AO1990 word data
+  reused from [`tugalex`](https://github.com/TigreGotico/tugalex).
+- A **command-line tool** and a parallel benchmark corpus, also published on the
+  [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
 
 ## Why it is not a single find-and-replace
 
