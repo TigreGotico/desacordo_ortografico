@@ -25,6 +25,7 @@ classifiers = [
 
 [project.optional-dependencies]
 test = ["pytest"]
+benchmark = ["matplotlib"]
 
 [project.scripts]
 desacordo = "desacordo_ortografico.cli:main"

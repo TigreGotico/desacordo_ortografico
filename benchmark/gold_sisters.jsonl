@@ -1,0 +1,15 @@
+{"id": "mwl01", "lang": "mwl", "is_portuguese": false, "text": "You falo la lhéngua mirandesa todos ls dies."}
+{"id": "mwl02", "lang": "mwl", "is_portuguese": false, "text": "Bós sodes amigos de la mie tierra."}
+{"id": "mwl03", "lang": "mwl", "is_portuguese": false, "text": "L sol naciu por trás de l castielho de Miranda."}
+{"id": "gl01", "lang": "gl", "is_portuguese": false, "text": "A relaçom da naçom nom tem nengumha soluçom."}
+{"id": "gl02", "lang": "gl", "is_portuguese": false, "text": "Umha vez na vida eu nom direi que nom."}
+{"id": "gl03", "lang": "gl", "is_portuguese": false, "text": "Aquela muller vella colle a galiña no curral."}
+{"id": "bar01", "lang": "oki-barranquenho", "is_portuguese": false, "text": "Oh ombris ehtában na praça a falá."}
+{"id": "bar02", "lang": "oki-barranquenho", "is_portuguese": false, "text": "Bamoh labá la roupa i comê un pã."}
+{"id": "bar03", "lang": "oki-barranquenho", "is_portuguese": false, "text": "Boçê bebê l'agua de la fonti detráh da casa."}
+{"id": "pt-ctl01", "lang": "pt", "is_portuguese": true, "expected_bucket": "ao1990", "text": "O gato preto subiu ao telhado da casa velha."}
+{"id": "pt-ctl02", "lang": "pt", "is_portuguese": true, "expected_bucket": "ao1990", "text": "Ele deu-lhe a chave e partiu cedo de manhã."}
+{"id": "pt-ctl03", "lang": "pt", "is_portuguese": true, "expected_bucket": "ao1990", "text": "Ninguém respondeu com nervosismo à pergunta difícil."}
+{"id": "pt-ctl04", "lang": "pt", "is_portuguese": true, "expected_bucket": "etymological", "text": "A pharmacia do theatro era muito antiga."}
+{"id": "pt-ctl05", "lang": "pt", "is_portuguese": true, "expected_bucket": "pt_1973", "text": "O facto é que estava tudo óptimo e correcto."}
+{"id": "pt-ctl06", "lang": "pt", "is_portuguese": true, "expected_bucket": "ao1990-pt", "text": "Comummente falamos connosco sobre o assunto."}

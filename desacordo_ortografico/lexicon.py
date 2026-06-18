@@ -18,10 +18,21 @@ from __future__ import annotations
 
 import json
 import os
+import unicodedata
 from functools import cached_property
 from typing import Dict, List, Optional, Set
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
+
+
+def deaccent(word: str) -> str:
+    """Strip graphic accents but keep ç: 'fósforo' -> 'fosforo'; 'maçã' -> 'maça'."""
+    # keep the combining cedilla (U+0327); drop every other combining mark
+    out = "".join(
+        c for c in unicodedata.normalize("NFD", word)
+        if not unicodedata.combining(c) or c == "\u0327"
+    )
+    return unicodedata.normalize("NFC", out)
 
 
 def _load(name: str) -> dict:
@@ -109,6 +120,59 @@ class Lexicon:
             return {w.lower() for w in t.voiced_u_words}
         except Exception:  # pragma: no cover
             return set()
+
+    @cached_property
+    def wordset(self) -> Set[str]:
+        """All known modern Portuguese word forms (lowercase), for rule validation.
+
+        Sourced from the tugalex word list (Portal da Língua Portuguesa) plus the AO and
+        1911 map values. Used to keep deterministic rules honest: a rule only fires if
+        its output is an attested word.
+        """
+        words: Set[str] = set()
+        words.update(self.ao_pt_old2new.values())
+        words.update(self.ao_br_old2new.values())
+        words.update(self.reform1911_old2new.values())
+        t = self.tuga
+        if t:
+            for region in ("lbx", "rjx"):
+                try:
+                    words.update(w.lower() for w in t.get_wordlist(region))
+                except Exception:  # pragma: no cover - optional/heavy
+                    pass
+        return {w.lower() for w in words if w and " " not in w}
+
+    @cached_property
+    def accent_restore(self) -> Dict[str, str]:
+        """Map an unaccented word to its unique accented modern form.
+
+        Used to re-supply the graphic accents that the 1911 reform introduced but the
+        deterministic digraph/geminate rules cannot derive (phosphoro->fosforo->fósforo).
+        Only unambiguous entries are kept: an unaccented key is included only if exactly
+        one accented word deaccents to it AND that bare form is not itself a valid word
+        (so 'para'/'pára', 'esta'/'está' are never touched).
+        """
+        by_bare: Dict[str, Set[str]] = {}
+        bare_words: Set[str] = set()
+        for wl in self.wordset:
+            d = deaccent(wl)
+            by_bare.setdefault(d, set()).add(wl)
+            if d == wl:
+                bare_words.add(wl)
+        out: Dict[str, str] = {}
+        for bare, forms in by_bare.items():
+            if len(bare) < 4 or bare in bare_words:
+                continue
+            accented = forms - {bare}
+            if len(accented) == 1:
+                out[bare] = next(iter(accented))
+        return out
+
+    @cached_property
+    def cp_keep_pt(self) -> Set[str]:
+        """Words whose c/p in a -ct-/-pt-/-cç-/-pç- cluster is pronounced in European
+        Portuguese and therefore kept (Base IV 'keep' plus the PT side of the duals)."""
+        return set(self.base_iv_keep) | set(self.dual_pt2br)
 
     # ----------------------------------------------------------- Base IV
     @cached_property
@@ -206,6 +270,10 @@ def _clean_ao_map(tuga, attr: str) -> Dict[str, str]:
         kl, vl = k.lower().strip(), v[0].lower().strip()
         if kl == "old_form" or vl == "new_form" or not kl:
             continue  # tugalex includes the CSV header as a bogus row
+        if kl == vl:
+            continue  # capitalisation-only change (Janeiro->janeiro); after
+            # casefolding it is a no-op that would otherwise pollute the
+            # "old form" set and mislabel modern words as pre-AO1990
         out[kl] = vl
     return out
 

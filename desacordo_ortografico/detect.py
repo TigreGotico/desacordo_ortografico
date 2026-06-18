@@ -26,7 +26,7 @@ _NASAL = "[mn][%s]" % _VOWELS
 # Etymological-only patterns. Deliberately excludes mm/nn (survive in modern PT
 # comummente/connosco) and sci (modern piscina/consciência); those archaic words are
 # still caught by the reform1911 lexicon membership check.
-_RE_ETYM = re.compile(r"ph|th|rh|(?:ll|pp|tt|bb|gg|dd)|[a-z]y")
+_RE_ETYM = re.compile(r"ph|th|rh|(?:ll|pp|tt|bb|gg|dd|ff|cc)|[a-z]y")
 _RE_NASAL_PT = re.compile("[éó](?=%s)" % _NASAL)
 _RE_NASAL_BR = re.compile("[êô](?=%s)" % _NASAL)
 

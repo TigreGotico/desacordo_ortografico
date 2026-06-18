@@ -96,6 +96,10 @@ class OrthographyConverter:
                 if msg not in result.warnings:
                     result.warnings.append(msg)
 
+        # month/season casing is a text-level (sentence-position) concern: AO1990
+        # lowercases them mid-sentence, the older norms capitalise them.
+        if steps:
+            out = rules.recase_months(out, lowercase=(dst.era == Era.AO1990))
         result.text = out
         result.alternatives = self._collect_alternatives(text, dst)
         return result
@@ -152,7 +156,10 @@ class OrthographyConverter:
         def reform_1911_fwd(w: str, _v: Optional[str]) -> str:
             if w in lex.reform1911_old2new:
                 return lex.reform1911_old2new[w]
-            return rules.reform_1911_digraphs(w)
+            w = rules.reform_1911_geminates(rules.reform_1911_digraphs(w))
+            # 1911 also introduced systematic graphic accents the rules can't derive;
+            # restore them from the word list where unambiguous (fosforo -> fósforo).
+            return rules.restore_accent(w, lex.accent_restore)
 
         def reform_1911_bwd(w: str, _v: Optional[str]) -> str:
             return lex.reform1911_new2old.get(w, w)
@@ -195,10 +202,10 @@ class OrthographyConverter:
             w = lex.differential_dropped.get(w, w)
             w = lex.hyphen_dropped.get(w, w)
             w = lex.base_iv_drop.get(w, w)
+            w = rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset)
             w = rules.ao1990_drop_trema(w)
             w = rules.ao1990_drop_accents(w)
             w = rules.ao1990_hyphen_rs(w)
-            w = rules.ao1990_lowercase_month(w)
             return w
 
         def ao_pt_bwd(w: str, _v: Optional[str]) -> str:
@@ -206,7 +213,6 @@ class OrthographyConverter:
                 return lex.ao_pt_new2old[w]
             w = lex.hyphen_dropped_reverse.get(w, w)
             w = lex.base_iv_drop_reverse.get(w, w)
-            w = rules.restore_capital_month(w)
             return w
 
         # -- pre-AO90 BR <-> AO1990 BR ---------------------------------------
@@ -218,14 +224,12 @@ class OrthographyConverter:
             w = rules.ao1990_drop_trema(w)
             w = rules.ao1990_drop_accents(w)
             w = rules.ao1990_hyphen_rs(w)
-            w = rules.ao1990_lowercase_month(w)
             return w
 
         def ao_br_bwd(w: str, _v: Optional[str]) -> str:
             if w in lex.ao_br_new2old:
                 return lex.ao_br_new2old[w]
             w = lex.hyphen_dropped_reverse.get(w, w)
-            w = rules.restore_capital_month(w)
             return w
 
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------

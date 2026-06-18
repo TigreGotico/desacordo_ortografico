@@ -116,15 +116,20 @@ class TestHyphenRS:
 
 
 class TestMonths:
-    @pytest.mark.parametrize("m", ["Janeiro", "Dezembro", "Verão"])
-    def test_lowercase(self, m):
-        assert rules.ao1990_lowercase_month(m) == m.lower()
+    def test_lowercase_midsentence(self):
+        assert rules.recase_months("Em Janeiro e em Agosto", True) == "Em janeiro e em agosto"
 
-    def test_restore_capital(self):
-        assert rules.restore_capital_month("janeiro") == "Janeiro"
+    def test_capitalise_midsentence(self):
+        assert rules.recase_months("em janeiro choveu", False) == "em Janeiro choveu"
+
+    def test_sentence_initial_kept_capital(self):
+        # a month opening the sentence stays capitalised in every norm
+        assert rules.recase_months("Janeiro foi frio.", True) == "Janeiro foi frio."
+        assert rules.recase_months("Janeiro foi frio.", False) == "Janeiro foi frio."
 
     def test_non_month_untouched(self):
-        assert rules.ao1990_lowercase_month("Lisboa") == "Lisboa"
+        assert rules.recase_months("Lisboa em Maio", True) == "Lisboa em maio"
+        assert rules.recase_months("Lisboa é bonita", True) == "Lisboa é bonita"
 
 
 class TestApplyToWords:

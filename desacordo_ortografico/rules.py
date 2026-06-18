@@ -12,6 +12,7 @@ or *one-way* (the inverse is ambiguous and must be resolved by a lexicon upstrea
 from __future__ import annotations
 
 import re
+import unicodedata
 from typing import Callable, List
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
@@ -54,6 +55,56 @@ def reform_1911_digraphs(word: str) -> str:
     word = word.replace("ph", "f").replace("th", "t").replace("rh", "r")
     word = word.replace("y", "i")
     return word
+
+
+# --------------------------------------------------- Reforma de 1911 (geminates)
+_GEMINATE_RE = re.compile(r"([bcdfgjlmnpqtvz])\1")
+
+
+def reform_1911_geminates(word: str) -> str:
+    """Reduce a doubled consonant to a single one, the way 1911 did.
+
+    Etymological geminates (anno, commando, collectiva, sufficiente) collapse, but
+    the etymological ``rr``/``ss`` survive in modern spelling (carro, passo) and are
+    deliberately excluded from the character class. Applied as a rule fallback so
+    inflections the 1911 lexicon does not list are handled too. One-way.
+    """
+    return _GEMINATE_RE.sub(r"\1", word)
+
+
+_CP_DROP = [("cç", "ç"), ("ct", "t"), ("pç", "ç"), ("pt", "t")]
+
+
+def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
+    """Drop a silent c/p from a -ct-/-pt-/-cç-/-pç- cluster (AO1990, European).
+
+    A rule fallback for inflected forms the Base IV lexicon does not list
+    (desactiva->desativa, detectou->detetou). Guarded twice so it never mangles a
+    pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT duals such
+    as facto/contacto), and the de-consonanted form must be an attested word. One-way.
+    """
+    if word in keep:
+        return word
+    for pat, rep in _CP_DROP:
+        if pat in word:
+            cand = word.replace(pat, rep)
+            if cand != word and cand in wordset:
+                return cand
+    return word
+
+
+def restore_accent(word: str, accent_map) -> str:
+    """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
+
+    Only fires on a word that currently carries no accent and whose bare form maps to
+    a unique accented modern word (see ``Lexicon.accent_restore``). Case-preserving.
+    """
+    if not accent_map:
+        return word
+    low = word.lower()
+    if any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low)):
+        return word  # already accented
+    return accent_map.get(low, word)
 
 
 # ------------------------------------------------ PT<->BR nasal-vowel alternation
@@ -124,17 +175,29 @@ _MONTHS = {
 }
 
 
-def ao1990_lowercase_month(word: str) -> str:
-    """Months and seasons become lowercase under AO1990 (Base XIX)."""
-    return word.lower() if word.lower() in _MONTHS else word
+_MONTH_RE = re.compile(r"\b(%s)\b" % "|".join(sorted(_MONTHS, key=len, reverse=True)),
+                       re.IGNORECASE)
 
 
-def restore_capital_month(word: str) -> str:
-    """Inverse: months/seasons were always capitalised before AO1990."""
-    low = word.lower()
-    if low in _MONTHS:
-        return low[:1].upper() + low[1:]
-    return word
+def recase_months(text: str, lowercase: bool) -> str:
+    """Set month/season casing at the text level (so sentence position is known).
+
+    AO1990 lowercases months mid-sentence (``lowercase=True``); the older norms
+    capitalise them. A month that opens a sentence stays capitalised in every norm.
+    This cannot be done per-word, because case is restored from the source token.
+    """
+
+    def repl(m):
+        word = m.group(0)
+        low = word.lower()
+        cap = low[:1].upper() + low[1:]
+        prefix = text[: m.start()].rstrip()
+        sentence_initial = prefix == "" or prefix[-1] in ".!?:—"
+        if sentence_initial:
+            return cap
+        return low if lowercase else cap
+
+    return _MONTH_RE.sub(repl, text)
 
 
 # --------------------------------------------------- AO1990 prefix + r/s doubling

@@ -13,6 +13,7 @@ venv/
 .coverage
 htmlcov/
 *.jsonl
+!benchmark/**/*.jsonl
 .idea/
 .vscode/
 .DS_Store

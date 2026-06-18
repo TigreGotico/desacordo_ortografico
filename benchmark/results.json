@@ -1,0 +1,425 @@
+{
+  "corpus": "gold_corpus.jsonl",
+  "n": 1341,
+  "conversion": {
+    "overall_exact": 0.836156386491957,
+    "overall_token": 0.9766459990892725,
+    "n_conversions": 9387,
+    "by_pair": {
+      "etymological->pt_1973": {
+        "exact": 1057,
+        "n": 1341,
+        "token_acc": 0.9717959644134152
+      },
+      "etymological->ao1990-pt": {
+        "exact": 1126,
+        "n": 1341,
+        "token_acc": 0.9802137397774993
+      },
+      "etymological->ao1990-br": {
+        "exact": 730,
+        "n": 1341,
+        "token_acc": 0.9328708846046669
+      },
+      "pt_1973->ao1990-pt": {
+        "exact": 1234,
+        "n": 1341,
+        "token_acc": 0.9913081160284742
+      },
+      "br_1971->ao1990-br": {
+        "exact": 1322,
+        "n": 1341,
+        "token_acc": 0.9986269075195251
+      },
+      "ao1990-pt->ao1990-br": {
+        "exact": 1188,
+        "n": 1341,
+        "token_acc": 0.9806991521197349
+      },
+      "ao1990-br->ao1990-pt": {
+        "exact": 1192,
+        "n": 1341,
+        "token_acc": 0.9810072291615924
+      }
+    },
+    "by_feature": {
+      "ch_k": 0.8175559380378657,
+      "differential": 0.8766233766233766,
+      "digraph": 0.8615611192930781,
+      "diphthong": 0.8991008991008991,
+      "divergence": 0.8457736035590707,
+      "dual": 0.7820324005891016,
+      "geminate": 0.8995535714285714,
+      "hyphen_rs": 0.6240601503759399,
+      "mn_ps": 0.8988095238095238,
+      "months": 0.8571428571428571,
+      "nasal": 0.8475826276973505,
+      "silent_ct": 0.7733480989294943,
+      "silent_pt": 0.804945054945055,
+      "trema": 0.8214285714285714
+    },
+    "by_feature_n": {
+      "ch_k": 581,
+      "differential": 616,
+      "digraph": 2037,
+      "diphthong": 1001,
+      "divergence": 2023,
+      "dual": 1358,
+      "geminate": 1792,
+      "hyphen_rs": 399,
+      "mn_ps": 336,
+      "months": 350,
+      "nasal": 3661,
+      "silent_ct": 2709,
+      "silent_pt": 364,
+      "trema": 840
+    },
+    "examples": [
+      {
+        "pair": "etymological->pt_1973",
+        "id": "s01",
+        "in": "A pharmacia do theatro vendia phosphoros.",
+        "got": "A farmácia do teatro vendia fosforos.",
+        "gold": "A farmácia do teatro vendia fósforos."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "s07",
+        "in": "A lingüiça tinha uma freqüência tranqüila.",
+        "got": "A lingüiça tinha uma freqüência tranqüila.",
+        "gold": "A linguiça tinha uma frequência tranquila."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "s12",
+        "in": "Ela falou connosco sobre a recepção.",
+        "got": "Ela falou conosco sobre a recepção.",
+        "gold": "Ela falou connosco sobre a recepção."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "s14",
+        "in": "O alumno lia o psalmo apesar da insomnia.",
+        "got": "O aluno lia o salmo apesar da insomnia.",
+        "gold": "O aluno lia o salmo apesar da insónia."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "s16",
+        "in": "O architecto egypcio fez um projecto exacto.",
+        "got": "O architecto egípcio fez um projecto exacto.",
+        "gold": "O arquitecto egípcio fez um projecto exacto."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-003",
+        "in": "A philosophia da sciencia influencia a theoria physica moderna.",
+        "got": "A filosofia da ciência influência a teoria física moderna.",
+        "gold": "A filosofia da ciência influencia a teoria física moderna."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-005",
+        "in": "O grapho da reacção chimica mostrou um pico súbito.",
+        "got": "O grafo da reacção química mostrou um pico súbito.",
+        "gold": "O gráfico da reacção química mostrou um pico súbito."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-008",
+        "in": "A morphologia das células revelou uma estructura nova.",
+        "got": "A morfologia das células revelou uma estructura nova.",
+        "gold": "A morfologia das células revelou uma estrutura nova."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-009",
+        "in": "O professor official explicou a photosynthese às alumnas.",
+        "got": "O professor oficial explicou a fotosintese às alumnas.",
+        "gold": "O professor oficial explicou a fotossíntese às alunas."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-013",
+        "in": "A technologia da photographia digital chimica avançou muito.",
+        "got": "A technologia da fotografia digital química avançou muito.",
+        "gold": "A tecnologia da fotografia digital química avançou muito."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-016",
+        "in": "O Antonio mediu o phenomeno com um spectrophotometro.",
+        "got": "O Antonio mediu o fenómeno com um spectrofotometro.",
+        "gold": "O António mediu o fenómeno com um espectrofotómetro."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-019",
+        "in": "A monarchia financiou a primeira academia de sciencias.",
+        "got": "A monarquia financiou a primeira academia de sciencias.",
+        "gold": "A monarquia financiou a primeira academia de ciências."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-020",
+        "in": "A orthographia das fórmulas physicas exige rigor.",
+        "got": "A ortografia das fórmulas fisicas exige rigor.",
+        "gold": "A ortografia das fórmulas físicas exige rigor."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-022",
+        "in": "O atmospheric pressure foi registado pelo barometro.",
+        "got": "O atmosferic pressure foi registado pelo barometro.",
+        "gold": "A pressão atmosférica foi registada pelo barómetro."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-023",
+        "in": "O technico ajustou o microscopio para ver as bacterias.",
+        "got": "O technico ajustou o microscópio para ver as bacterias.",
+        "gold": "O técnico ajustou o microscópio para ver as bactérias."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-024",
+        "in": "O electron tem uma energia cinética mensurável.",
+        "got": "O electron tem uma energia cinética mensurável.",
+        "gold": "O eletrão tem uma energia cinética mensurável."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-026",
+        "in": "A sphera de vidro continha um gás inerte.",
+        "got": "A sfera de vidro continha um gás inerte.",
+        "gold": "A esfera de vidro continha um gás inerte."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-027",
+        "in": "O prototypo do robot passou em todos os testes.",
+        "got": "O protótipo do robot passou em todos os testes.",
+        "gold": "O protótipo do robô passou em todos os testes."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-028",
+        "in": "A architectura do reactor seguia um esquema rigoroso.",
+        "got": "A architectura do reactor seguia um esquema rigoroso.",
+        "gold": "A arquitectura do reactor seguia um esquema rigoroso."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-035",
+        "in": "A bibliographia da these citava vários physicos famosos.",
+        "got": "A bibliografia da tese citava vários fisicos famosos.",
+        "gold": "A bibliografia da tese citava vários físicos famosos."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-045",
+        "in": "O phenomeno do génetico foi observado no microscopio.",
+        "got": "O fenómeno do génetico foi observado no microscópio.",
+        "gold": "O fenómeno do genético foi observado no microscópio."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-051",
+        "in": "O chronometro do laboratorio media o tempo de cada reacção.",
+        "got": "O chronometro do laboratório media o tempo de cada reacção.",
+        "gold": "O cronómetro do laboratório media o tempo de cada reacção."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-069",
+        "in": "O mytho da pedra philosophal inspirou os alchimistas.",
+        "got": "O mito da pedra filosofal inspirou os alchimistas.",
+        "gold": "O mito da pedra filosofal inspirou os alquimistas."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-071",
+        "in": "O grupo de alumnos visitou o observatório astronómico.",
+        "got": "O grupo de alumnos visitou o observatório astronómico.",
+        "gold": "O grupo de alunos visitou o observatório astronómico."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-073",
+        "in": "O analyse do sangue indicou níveis normais de glicose.",
+        "got": "O análise do sangue indicou níveis normais de glicose.",
+        "gold": "A análise do sangue indicou níveis normais de glicose."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-075",
+        "in": "O monarcha financiou a pharmacia real e a sua botica.",
+        "got": "O monarcha financiou a farmácia real e a sua botica.",
+        "gold": "O monarca financiou a farmácia real e a sua botica."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-076",
+        "in": "A esthetica do design influencia a percepção do utilizador.",
+        "got": "A estética do design influência a percepção do utilizador.",
+        "gold": "A estética do design influencia a percepção do utilizador."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-077",
+        "in": "A diaphragma da câmara controla a entrada de luz.",
+        "got": "A diafragma da câmara controla a entrada de luz.",
+        "gold": "O diafragma da câmara controla a entrada de luz."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-079",
+        "in": "O typographo compôs o texto sobre a sphera celeste.",
+        "got": "O tipógrafo compôs o texto sobre a sfera celeste.",
+        "gold": "O tipógrafo compôs o texto sobre a esfera celeste."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-083",
+        "in": "O xistophono é um instrumento usado em estudos acústicos.",
+        "got": "O xistofono é um instrumento usado em estudos acústicos.",
+        "gold": "O xilofone é um instrumento usado em estudos acústicos."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-085",
+        "in": "O atheneo de sciencias publicou a monographia anual.",
+        "got": "O ateneo de sciencias publicou a monografia anual.",
+        "gold": "O ateneu de ciências publicou a monografia anual."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-087",
+        "in": "A photographia do crystal mostrava a sua estructura regular.",
+        "got": "A fotografia do cristal mostrava a sua estructura regular.",
+        "gold": "A fotografia do cristal mostrava a sua estrutura regular."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-088",
+        "in": "O peccado de cálculo arruinou a precisão da medida.",
+        "got": "O pecado de cálculo arruinou a precisão da medida.",
+        "gold": "O erro de cálculo arruinou a precisão da medida."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-090",
+        "in": "O trophéo foi entregue à equipa vencedora da olimpíada.",
+        "got": "O troféo foi entregue à equipa vencedora da olimpíada.",
+        "gold": "O troféu foi entregue à equipa vencedora da olimpíada."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-094",
+        "in": "A spheroidal forma do planeta foi confirmada por satélite.",
+        "got": "A sferoidal forma do planeta foi confirmada por satélite.",
+        "gold": "A esferoidal forma do planeta foi confirmada por satélite."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-098",
+        "in": "A esculptura de bronze decorava o átrio da faculdade.",
+        "got": "A esculptura de bronze decorava o átrio da faculdade.",
+        "gold": "A escultura de bronze decorava o átrio da faculdade."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-100",
+        "in": "O graphico do polynomio foi traçado pelo computador.",
+        "got": "O gráfico do polinomio foi traçado pelo computador.",
+        "gold": "O gráfico do polinómio foi traçado pelo computador."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-103",
+        "in": "O technico chimico calibrou o spectrophotometro do laboratorio.",
+        "got": "O technico químico calibrou o spectrofotometro do laboratório.",
+        "gold": "O técnico químico calibrou o espectrofotómetro do laboratório."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p01-105",
+        "in": "O professor approvou a thesis sobre a photosynthese das algas.",
+        "got": "O professor aprovou a tesis sobre a fotosintese das algas.",
+        "gold": "O professor aprovou a tese sobre a fotossíntese das algas."
+      },
+      {
+        "pair": "etymological->pt_1973",
+        "id": "p02-009",
+        "in": "A colleição de plantas raras era o orgulho do jardim.",
+        "got": "A coleição de plantas raras era o orgulho do jardim.",
+        "gold": "A colecção de plantas raras era o orgulho do jardim."
+      }
+    ]
+  },
+  "detection": {
+    "compatible_acc": 0.9339299030574199,
+    "n": 6705,
+    "confusion": {
+      "etymological": {
+        "etymological": 475,
+        "pt_1973": 383,
+        "ao1990-pt": 210,
+        "br_1971": 102,
+        "ao1990": 170,
+        "not-portuguese": 1
+      },
+      "pt_1973": {
+        "ao1990": 509,
+        "pt_1973": 498,
+        "ao1990-pt": 330,
+        "br_1971": 1,
+        "not-portuguese": 1,
+        "etymological": 2
+      },
+      "ao1990-pt": {
+        "ao1990": 833,
+        "ao1990-pt": 503,
+        "pt_1973": 1,
+        "br_1971": 2,
+        "not-portuguese": 1,
+        "ao1990-br": 1
+      },
+      "br_1971": {
+        "ao1990": 555,
+        "ao1990-br": 418,
+        "br_1971": 228,
+        "pt_1973": 133,
+        "ao1990-pt": 6,
+        "not-portuguese": 1
+      },
+      "ao1990-br": {
+        "ao1990": 823,
+        "ao1990-br": 486,
+        "pt_1973": 25,
+        "br_1971": 2,
+        "ao1990-pt": 4,
+        "not-portuguese": 1
+      }
+    }
+  },
+  "guard": {
+    "acc": 0.9333333333333333,
+    "n": 15,
+    "confusion": {
+      "mwl": {
+        "mwl": 2,
+        "portuguese": 1
+      },
+      "gl": {
+        "gl": 3
+      },
+      "oki-barranquenho": {
+        "oki-barranquenho": 3
+      },
+      "pt": {
+        "portuguese": 6
+      }
+    }
+  }
+}
