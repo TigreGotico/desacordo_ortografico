@@ -1,15 +1,14 @@
 """Zero-dependency learned orthography classifier (NB + averaged perceptron).
 
-Mirrors the design used in ``bifonia``: a Naive-Bayes model and an averaged-perceptron
-model share **one JSON shape and one scoring rule** — a sparse dot product
+A Naive-Bayes model and an averaged-perceptron model share one JSON shape and one
+scoring rule — a sparse dot product
 
     score[class] = bias[class] + Σ_f feats[f] · weights[class][f]
 
 and the prediction is the argmax. For NB the weights are per-class log-likelihoods and
 the bias is the log-prior; for the perceptron they are learned. Either way inference is
-plain dict arithmetic — only ``json`` + stdlib, safe under the single-dependency
-install. The detector uses **margin-based routing**: trust the model when the top-two
-score margin clears a threshold, otherwise defer to the rule detector.
+plain dict arithmetic — only ``json`` + the standard library, so the models load and run
+with no third-party dependencies.
 """
 from __future__ import annotations
 
@@ -18,6 +17,7 @@ import math
 import os
 import random
 import re
+import unicodedata
 from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
@@ -27,7 +27,7 @@ _WORD = re.compile(r"[0-9A-Za-zÀ-ɏ]+")
 def features(text: str, lo: int = 2, hi: int = 4) -> Dict[str, int]:
     """Character n-gram features (count dict) over boundary-padded words."""
     feats: Dict[str, int] = defaultdict(int)
-    for tok in _WORD.findall(text.lower()):
+    for tok in _WORD.findall(unicodedata.normalize("NFC", text).lower()):
         s = "^" + tok + "$"
         for n in range(lo, hi + 1):
             for i in range(len(s) - n + 1):
@@ -175,8 +175,8 @@ def train_perceptron_averaged(texts, labels, lo=2, hi=4, epochs=12, seed=0) -> L
 
 
 # ---------------------------------------------------------------- shipped models
-# Two models ship (as in bifonia): Naive Bayes (the default; marginally more accurate
-# here) and the averaged perceptron. Both share the LinearModel scoring rule.
+# Two models ship: Naive Bayes (the default; marginally more accurate here) and the
+# averaged perceptron. Both share the LinearModel scoring rule.
 _DATA = os.path.join(os.path.dirname(__file__), "data")
 _PATHS = {"nb": os.path.join(_DATA, "detector_nb.json"),
           "perceptron": os.path.join(_DATA, "detector_perceptron.json")}

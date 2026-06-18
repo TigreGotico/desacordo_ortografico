@@ -1,12 +1,14 @@
 # API reference
 
-## `detect(text) -> Orthography | NotPortuguese`
+## `detect(text, method="rules") -> Orthography | NotPortuguese`
 
-Classify a text. Calls the sister-language guard first.
+Classify a text. Calls the sister-language guard first, then classifies. `method` is
+`"rules"` (default, explainable), `"nb"`, or `"perceptron"` (the shipped learned models;
+higher accuracy on sentence-length text, opt-in). Input is NFC-normalised.
 
 `Orthography` fields: `era` (`Era`), `variant` (`Variant | None`), `confidence`
-(`float`), `markers` (`list[str]`), `note` (`str`), `id` (`str`), `is_portuguese`
-(`True`).
+(`float`), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical norm id that
+round-trips into `convert`), `is_portuguese` (`True`).
 
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).
@@ -31,7 +33,7 @@ aliases (see `eras`). `variant` (`"pt"`/`"br"`) biases dual-form selection.
 
 The guard alone, without the Portuguese classifier.
 
-## `class OrthographyDetector` data — markers
+## Detection markers (`method="rules"`)
 
 Detection markers are scored, not learned. Etymological evidence (`ph`, `th`, `rh`,
 geminates, `sci`, irregular lemmas), pre-AO1990 evidence (old PT silent-consonant forms,
@@ -52,6 +54,13 @@ alternation). `markers` lists what fired.
 `reform1911_old2new`, `accent_71_73_old2new`, `sister_markers`, and the `tugalex`-backed
 `ao_pt_old2new` / `ao_br_old2new` (+ their inverses). Every map has a reverse; AO1990
 reverses come from the `tugalex` data and are authoritative where present.
+
+## `ml`
+
+`features(text)`, `train_naive_bayes(X, y)`, `train_perceptron_averaged(X, y)`, and the
+`LinearModel` they return (`predict`, `predict_with_margin`, `scores`, `save`/`load`) —
+a zero-dependency character-n-gram classifier. `get_detector_model("nb"|"perceptron")`
+loads the shipped model used by `detect(method=...)`.
 
 ## CLI
 

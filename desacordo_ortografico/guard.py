@@ -10,6 +10,7 @@ mangle them, so the detector calls this guard first and, on a hit, reports a
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from typing import List, Optional
 
@@ -55,6 +56,7 @@ def detect_sister(text: str, lexicon: Optional[Lexicon] = None) -> Optional[NotP
     (or is most consistent with) Portuguese.
     """
     lex = lexicon or get_lexicon()
+    text = unicodedata.normalize("NFC", text)
     text_low = text.lower()
     tokens = {w.lower() for w in _words(text)}
 

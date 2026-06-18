@@ -13,13 +13,14 @@ short-circuits everything else.
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 from typing import List, Optional, Union
 
 from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
-from .ml import get_detector_model
+from .ml import features, get_detector_model
 from .rules import _MONTHS
 from .rules import words as _words
 
@@ -49,13 +50,14 @@ class Orthography:
 
     @property
     def id(self) -> str:
-        if self.variant and self.variant.value:
+        # a canonical norm id that round-trips into convert()/Norm.parse(): only AO1990
+        # carries a variant suffix (pt_1973 is inherently European, br_1971 Brazilian).
+        if self.era == Era.AO1990 and self.variant and self.variant.value:
             return f"{self.era.value}-{self.variant.value}"
         return self.era.value
 
     def __str__(self) -> str:  # pragma: no cover - trivial
-        v = f"-{self.variant.value}" if self.variant and self.variant.value else ""
-        return f"Orthography({self.era.value}{v}, confidence={self.confidence:.2f})"
+        return f"Orthography({self.id}, confidence={self.confidence:.2f})"
 
 
 def detect(
@@ -73,11 +75,12 @@ def detect(
     * ``"nb"`` — the shipped zero-dependency Naive-Bayes model;
     * ``"perceptron"`` — the shipped zero-dependency averaged-perceptron model.
 
-    On sentence-length text the learned models score higher (~96% vs ~93% compatible
+    On sentence-length text the learned models score higher (~96% vs ~94% compatible
     accuracy) on held-out cross-validation — see ``benchmark/train_detector.py``. They
     are opt-in because they are less reliable on very short, marker-less inputs. Markers
     from the rule scorer are attached to a learned result for explainability.
     """
+    text = unicodedata.normalize("NFC", text)
     lex = lexicon or get_lexicon()
     sister = detect_sister(text, lex)
     if sister is not None:
@@ -87,8 +90,8 @@ def detect(
     if method == "rules":
         return rule
     model = get_detector_model("perceptron" if method == "perceptron" else "nb")
-    if model is None:
-        return rule
+    if model is None or not features(text):
+        return rule  # no model, or nothing for the model to score -> trust the rules
     col, margin = model.predict_with_margin(text)
     return _orth_from_column(col, margin, rule)
 
@@ -111,7 +114,7 @@ _COLUMN_TO_NORM = {
 
 
 def _detect_rules(text: str, lex: Lexicon) -> Orthography:
-    """Deterministic marker-based classifier (the original detector)."""
+    """Deterministic marker-based classifier."""
     etym = 0
     old_pt = 0
     old_br = 0

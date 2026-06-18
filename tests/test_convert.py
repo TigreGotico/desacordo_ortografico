@@ -154,3 +154,8 @@ class TestConvenienceApi:
 
     def test_punctuation_and_spacing_preserved(self, conv):
         assert conv.convert("Acção, óptimo!", "pt_1973", "ao1990-pt").text == "Ação, ótimo!"
+
+    def test_nfd_input_is_normalised(self, conv):
+        import unicodedata
+        nfd = unicodedata.normalize("NFD", "idéia vôo freqüência")
+        assert conv.convert(nfd, "br_1971", "ao1990-br").text == "ideia voo frequência"

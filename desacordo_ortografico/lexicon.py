@@ -112,16 +112,6 @@ class Lexicon:
         return _invert(self.ao_br_old2new)
 
     @cached_property
-    def voiced_u_words(self) -> Set[str]:
-        t = self.tuga
-        if not t:
-            return set()
-        try:
-            return {w.lower() for w in t.voiced_u_words}
-        except Exception:  # pragma: no cover
-            return set()
-
-    @cached_property
     def wordset(self) -> Set[str]:
         """All known modern Portuguese word forms (lowercase), for rule validation.
 

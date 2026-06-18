@@ -14,6 +14,7 @@ via ``lossless`` and ``warnings`` instead of silently guessing.
 """
 from __future__ import annotations
 
+import unicodedata
 from dataclasses import dataclass, field
 from typing import Callable, Dict, List, Optional
 
@@ -66,6 +67,7 @@ class OrthographyConverter:
         target: "str | Norm",
         variant: Optional[str] = None,
     ) -> ConversionResult:
+        text = unicodedata.normalize("NFC", text)
         src = Norm.parse(source)
         dst = Norm.parse(target)
         if variant is not None:

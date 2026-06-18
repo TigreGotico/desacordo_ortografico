@@ -40,8 +40,8 @@ from desacordo_ortografico import detect, convert, OrthographyConverter
 
 # --- detection -----------------------------------------------------------
 detect("a pharmacia do theatro").id          # 'etymological'
-detect("o facto é óptimo").id                 # 'pt_1973-pt' (pre-AO1990, European)
-detect("a idéia do vôo").id                   # 'br_1971-br' (pre-AO1990, Brazilian)
+detect("o facto é óptimo").id                 # 'pt_1973'   (pre-AO1990, European)
+detect("a idéia do vôo").id                   # 'br_1971'   (pre-AO1990, Brazilian)
 detect("o Antônio é econômico").id            # 'ao1990-br'
 
 # --- conversion ----------------------------------------------------------
@@ -61,9 +61,9 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 ### Detection: rules or a learned model
 
 `detect()` defaults to an explainable rule scorer. Two zero-dependency learned models
-also ship — Naive Bayes and an averaged perceptron over character n-grams (the same
-shared-scoring design as `bifonia`). They score higher on sentence-length text
-(~96% vs ~93% compatible accuracy, held-out 5-fold CV; see `benchmark/`):
+also ship — Naive Bayes and an averaged perceptron over character n-grams, sharing one
+sparse-dot-product scoring rule. They score higher on sentence-length text
+(~96% vs ~94% compatible accuracy, held-out 5-fold CV; see `benchmark/`):
 
 ```python
 detect("o Antônio era um génio econômico", method="nb")          # learned
