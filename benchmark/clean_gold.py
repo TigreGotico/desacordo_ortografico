@@ -24,10 +24,46 @@ import os
 import re
 from collections import Counter
 
+from desacordo_ortografico import rules
 from desacordo_ortografico.lexicon import deaccent, get_lexicon
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 _TOK = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'][0-9A-Za-zÀ-ɏ]+)*")
+
+
+def _reassemble(original: str, new_tokens) -> str:
+    it = iter(new_tokens)
+    return _TOK.sub(lambda m: next(it), original)
+
+
+def validate_etym(rec, lex) -> int:
+    """Replace any hallucinated etymological token with the modern form.
+
+    An etymological token is *sanctioned* only if it is a verified 1911 lexicon entry or
+    the deterministic digraph+geminate rules reduce it to the corresponding pt_1973 word.
+    Anything else (an invented cluster like ``reconstrucção``, or a stray accent on a
+    non-etymological word) is normalised to the pt_1973 token. Accent-only differences are
+    likewise normalised to pt_1973, since pre-1911 accentuation was not systematic."""
+    et = _TOK.findall(rec["cells"]["etymological"])
+    pt = _TOK.findall(rec["cells"]["pt_1973"])
+    if len(et) != len(pt):
+        return 0
+    new, n = [], 0
+    for a, b in zip(et, pt):
+        al, bl = a.lower(), b.lower()
+        if al == bl:
+            new.append(a)
+        elif deaccent(al) == deaccent(bl):
+            new.append(_capitalise(bl, a))   # accent-only slip -> use pt_1973
+            n += 1
+        elif (lex.reform1911_old2new.get(al) == bl
+              or rules.reform_1911_geminates(rules.reform_1911_digraphs(al), lex.wordset) == bl):
+            new.append(a)                    # sanctioned etymological form
+        else:
+            new.append(_capitalise(bl, a))   # hallucination -> use pt_1973
+            n += 1
+    rec["cells"]["etymological"] = _reassemble(rec["cells"]["etymological"], new)
+    return n
 
 
 def skel(tok: str) -> str:
@@ -103,6 +139,7 @@ def main():
     stats = Counter()
     for rec in corpus:
         stats["ao90_variant_fixes"] += correct_ao90(rec, lex)
+        stats["etym_hallucination_fixes"] += validate_etym(rec, lex)
         if (cells_consistent(rec, ["pt_1973", "ao1990-pt"])
                 and cells_consistent(rec, ["br_1971", "ao1990-br"])
                 and etym_ok(rec)):
