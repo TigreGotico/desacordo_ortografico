@@ -207,7 +207,7 @@ class OrthographyConverter:
         def ao_pt_fwd(w: str, _v: Optional[str]) -> str:
             if w in lex.ao_pt_old2new:
                 return lex.ao_pt_old2new[w]
-            w = lex.differential_dropped.get(w, w)
+            w = rules.drop_differential(w, lex.differential_dropped)
             w = lex.hyphen_dropped.get(w, w)
             w = lex.base_iv_drop.get(w, w)
             w = rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset)
@@ -227,7 +227,7 @@ class OrthographyConverter:
         def ao_br_fwd(w: str, _v: Optional[str]) -> str:
             if w in lex.ao_br_old2new:
                 return lex.ao_br_old2new[w]
-            w = lex.differential_dropped.get(w, w)
+            w = rules.drop_differential(w, lex.differential_dropped)
             w = lex.hyphen_dropped.get(w, w)
             w = rules.ao1990_drop_trema(w)
             w = rules.ao1990_drop_accents(w)

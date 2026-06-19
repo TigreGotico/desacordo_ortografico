@@ -146,6 +146,17 @@ def strip_subtonic_grave(word: str) -> str:
 
 
 # --------------------------------------------------------- AO1990 accent drops
+def drop_differential(word: str, dmap: dict) -> str:
+    """Drop an AO1990 differential accent, reaching inside a hyphenated compound too
+    (``busca-pólos`` -> ``busca-polos``, ``pára-choques`` -> ``para-choques``). Only the
+    accented differential forms are keys, so splitting never touches an unrelated part."""
+    if word in dmap:
+        return dmap[word]
+    if "-" in word and any(p in dmap for p in word.split("-")):
+        return "-".join(dmap.get(p, p) for p in word.split("-"))
+    return word
+
+
 def ao1990_drop_accents(word: str) -> str:
     """Drop the AO1990-abolished accents that follow a regular pattern.
 
