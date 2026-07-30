@@ -1,21 +1,21 @@
 # desacordo_ortografico
 
-**Detect and convert between Portuguese orthographies** — the pre-1911 etymological
+**Detect and convert between Portuguese orthographies**: the pre-1911 etymological
 writing, the Reforma de 1911, the Brazilian (1943 / 1971) and European (1945 / 1973)
 standards, and the *Acordo Ortográfico de 1990*, including the European and Brazilian
 sub-variants that AO1990 deliberately keeps distinct.
 
-This is a single-purpose library: it does orthography detection and conversion, and
+This is a single-purpose library. It does orthography detection and conversion, and
 nothing else.
 
 - **Convert** any text between seven orthographic norms along a graph of historical
   reforms, with AO1990 dual-form (`facto`/`fato`) handling.
-- **Detect** which orthography a text is written in — an explainable rule scorer, or two
+- **Detect** which orthography a text is written in: an explainable rule scorer, or two
   shipped zero-dependency learned classifiers (Naive Bayes / averaged perceptron).
 - **Guard** against sister varieties (Mirandese, Galician, Barranquenho) that look like
   Portuguese but are not.
-- A deterministic rule engine + curated, **sourced** exception lexicons; AO1990 word data
-  reused from [`tugalex`](https://github.com/TigreGotico/tugalex).
+- A deterministic rule engine and curated, **sourced** exception lexicons. AO1990 word
+  data is reused from [`tugalex`](https://github.com/TigreGotico/tugalex).
 - A **command-line tool** and a parallel benchmark corpus, also published on the
   [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
 
@@ -29,11 +29,13 @@ European / PALOP:  etymological → 1911 → 1945 → 1973 → AO1990 (PT)
 Brazilian:         etymological → 1911 → 1943 → 1971 → AO1990 (BR)
 ```
 
-and AO1990 still admits **divergent** European/Brazilian spellings (`facto`/`fato`,
+AO1990 still admits **divergent** European/Brazilian spellings (`facto`/`fato`,
 `António`/`Antônio`, `receção`/`recepção`). A conversion is therefore a *path* through a
-graph of norms, applied edge by edge. Some edges are clean regex rules (`ph→f`,
-trema abolition, the accent drops); others are irreducibly **lexical** (which silent
-consonant drops, which form a norm prefers) and are driven by curated, sourced data.
+graph of norms, applied edge by edge.
+
+Some edges are clean regex rules (`ph→f`, trema abolition, the accent drops). Others are
+irreducibly **lexical**: which silent consonant drops, which form a norm prefers. Those
+are driven by curated, sourced data.
 
 ## Install
 
@@ -69,7 +71,7 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 ### Detection: rules or a learned model
 
 `detect()` defaults to an explainable rule scorer. Two zero-dependency learned models
-also ship — Naive Bayes and an averaged perceptron over character n-grams, sharing one
+also ship: Naive Bayes and an averaged perceptron over character n-grams, sharing one
 sparse-dot-product scoring rule. They score higher on sentence-length text
 (~96% vs ~94% compatible accuracy, held-out 5-fold CV; see `benchmark/`):
 
@@ -79,13 +81,13 @@ detect("o Antônio era um génio econômico", method="perceptron")  # learned
 detect("o Antônio era um génio econômico")                       # rules (default)
 ```
 
-The guard runs first in every mode, and rule markers are attached to a learned result
-for explainability.
+The guard runs first in every mode. Rule markers attach to a learned result for
+explainability.
 
 ### Sister-language guard
 
 Mirandese, Galician (especially reintegrationist), and Barranquenho look like
-Portuguese but are not. `detect()` recognises and **flags** them rather than mangling
+Portuguese but are not. `detect()` recognizes and **flags** them rather than mangling
 them:
 
 ```python
@@ -121,9 +123,14 @@ See [`docs/orthographies.md`](docs/orthographies.md) for the rule sets and sourc
 ## Reversibility
 
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
-several edges, **lexical and lossy** — dropping a silent consonant or an accent discards
-information no rule can recover. `ConversionResult.lossless` / `.warnings` report this
+several edges, **lexical and lossy**. Dropping a silent consonant or an accent discards
+information no rule can recover. `ConversionResult.lossless` and `.warnings` report this
 instead of silently guessing.
+
+## Related projects
+
+- [`tugalex`](https://github.com/TigreGotico/tugalex) — the AO1990 word-map data this
+  library reuses.
 
 ## License
 

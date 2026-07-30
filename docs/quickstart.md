@@ -52,7 +52,7 @@ conv = OrthographyConverter()
 
 res = conv.convert("a ação do diretor", "ao1990-pt", "pre-ao1990-pt")
 res.text        # 'a acção do director'
-res.lossless    # False  — restoring dropped consonants is lexical
+res.lossless    # False  (restoring dropped consonants is lexical)
 res.warnings    # ['ao1990_pt (backward) is lexical/lossy: ...']
 
 res = conv.convert("o facto", "ao1990-pt", "ao1990-br")
@@ -62,12 +62,15 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 
 ## Gotchas
 
-- **Reverse conversion is lossy.** Toward newer norms it is well defined; toward older
+- **Reverse conversion is lossy.** Toward newer norms it is well defined. Toward older
   ones it relies on lexicons and is flagged via `lossless`/`warnings`.
 - **AO1990 is two targets, not one.** Use `ao1990-pt` / `ao1990-br` (or pass `variant=`)
   to pick the European or Brazilian form of a dual word.
 - **Sister languages are flagged, not converted.** See `docs/api.md`.
-- **Featureless input defaults to `ao1990`.** Text with no orthographic markers — empty,
-  clean modern Portuguese, or non-Portuguese that slips past the guard — returns
-  `ao1990` with a low confidence (~0.34). Check `confidence` if you need to distinguish
+- **Featureless input defaults to `ao1990`.** Text with no orthographic markers (empty,
+  clean modern Portuguese, or non-Portuguese that slips past the guard) returns
+  `ao1990` with a low confidence (~0.34). Check `confidence` to distinguish
   "confidently modern" from "no signal".
+
+---
+[Home](../README.md) · [API reference →](api.md)
