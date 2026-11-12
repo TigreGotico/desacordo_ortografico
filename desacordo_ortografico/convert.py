@@ -35,6 +35,8 @@ class _Edge:
     reversible_forward: bool = True
     reversible_backward: bool = True
     note: str = ""
+    # the forward transform for a proper name (a capitalised word mid-sentence)
+    forward_name: Optional[WordFn] = None
 
 
 @dataclass
@@ -87,8 +89,13 @@ class OrthographyConverter:
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
             fn = edge.forward if forward else edge.backward
+            name_fn = edge.forward_name if forward else None
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(out, lambda w, f=fn: f(w, variant))
+            out = rules.apply_to_words(
+                out,
+                lambda w, f=fn: f(w, variant),
+                None if name_fn is None else (lambda w, f=name_fn: f(w, variant)),
+            )
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -155,13 +162,22 @@ class OrthographyConverter:
         lex = self.lex
 
         # -- 1911 -----------------------------------------------------------
-        def reform_1911_fwd(w: str, _v: Optional[str]) -> str:
+        #    The rules are a fallback for words outside the 1911 word map. They leave a
+        #    loanword or a foreign name alone (rules.is_foreign_spelling).
+        def reform_1911_name_fwd(w: str, _v: Optional[str]) -> str:
             if w in lex.reform1911_old2new:
                 return lex.reform1911_old2new[w]
-            w = rules.reform_1911_geminates(rules.reform_1911_digraphs(w), lex.wordset)
+            if rules.is_foreign_spelling(w):
+                return w
+            return rules.reform_1911_geminates(rules.reform_1911_digraphs(w), lex.wordset)
+
+        def reform_1911_fwd(w: str, v: Optional[str]) -> str:
+            if w in lex.reform1911_old2new or rules.is_foreign_spelling(w):
+                return reform_1911_name_fwd(w, v)
             # 1911 also introduced systematic graphic accents the rules can't derive;
             # restore them from the word list where unambiguous (fosforo -> fósforo).
-            return rules.restore_accent(w, lex.accent_restore)
+            # A proper name skips this step: Coimbra is not coimbrã.
+            return rules.restore_accent(reform_1911_name_fwd(w, v), lex.accent_restore)
 
         def reform_1911_bwd(w: str, _v: Optional[str]) -> str:
             return lex.reform1911_new2old.get(w, w)
@@ -256,6 +272,7 @@ class OrthographyConverter:
                 reform_1911_fwd, reform_1911_bwd,
                 reversible_backward=False,
                 note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
+                forward_name=reform_1911_name_fwd,
             ),
             "pt_1911_to_1945": _Edge(pt_1945_fwd, identity, reversible_backward=False,
                                      note="the trema cannot be reintroduced by rule"),

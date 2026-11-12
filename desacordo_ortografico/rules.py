@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -21,19 +21,32 @@ _VOWELS = "aeiouáàâãéêíóôõúü"
 
 
 # ----------------------------------------------------------------- tokenising
-def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
+def apply_to_words(
+    text: str,
+    fn: Callable[[str], str],
+    name_fn: Optional[Callable[[str], str]] = None,
+) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
     capitalisation pattern (UPPER / Title / lower) is re-applied to the result.
+    When ``name_fn`` is given, a capitalised word that does not open a sentence (a
+    proper name, as far as the spelling shows) goes to ``name_fn`` instead.
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
-        out = fn(word.lower())
+        is_name = word[:1].isupper() and not opens_sentence(text, match.start())
+        out = (name_fn if name_fn is not None and is_name else fn)(word.lower())
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)
+
+
+def opens_sentence(text: str, start: int) -> bool:
+    """True when the word at ``start`` opens the text or follows . ! ? : or a dash."""
+    prefix = text[:start].rstrip()
+    return prefix == "" or prefix[-1] in ".!?:—"
 
 
 def words(text: str) -> List[str]:
@@ -55,6 +68,21 @@ def reform_1911_digraphs(word: str) -> str:
     word = word.replace("ph", "f").replace("th", "t").replace("rh", "r")
     word = word.replace("y", "i")
     return word
+
+
+# Spellings that mark a loanword or a foreign name in modern text: k and w (AO1990
+# Base I 2º keeps them for foreign names and their derivatives), zz, ck, sh, -ie, y
+# opening a word before a vowel, y between a vowel and a consonant (taylorista), y after
+# a consonant at the end of a word, and a final consonant other than l, r, s, z, m, n or
+# x. No pre-1911 Portuguese word of the gold corpus outside the 1911 word map carries one.
+_FOREIGN_RE = re.compile(
+    r"[kw]|zz|ck|sh|ie$|^y[aeiou]|[aeiou]y[^aeiouáéíóú]|[^aeiouáéíóú]y$"
+    r"|[^aeiouáàâãéêíóôõúüylrszmnx]$")
+
+
+def is_foreign_spelling(word: str) -> bool:
+    """True when ``word`` carries a letter or cluster of a loanword or foreign name."""
+    return bool(_FOREIGN_RE.search(word))
 
 
 # --------------------------------------------------- Reforma de 1911 (geminates)
@@ -210,8 +238,7 @@ def recase_months(text: str, lowercase: bool) -> str:
         word = m.group(0)
         low = word.lower()
         cap = low[:1].upper() + low[1:]
-        prefix = text[: m.start()].rstrip()
-        if prefix == "" or prefix[-1] in ".!?:—":
+        if opens_sentence(text, m.start()):
             return cap  # sentence-initial: capitalised in every norm
         if low in _SEASONS:
             return low  # seasons are always lowercase mid-sentence
