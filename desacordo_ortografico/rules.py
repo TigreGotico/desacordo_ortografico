@@ -234,7 +234,9 @@ def ao1990_hyphen_rs(word: str) -> str:
 
     'anti-religioso'->'antirreligioso', 'auto-retrato'->'autorretrato',
     'contra-senha'->'contrassenha'. Restricted to a known prefix list so genuine
-    noun+noun compounds (guarda-sol) are untouched.
+    noun+noun compounds (guarda-sol) are untouched. The hyphen goes in every case,
+    but the r/s doubles only before a vowel: Portuguese never writes rr or ss before
+    a consonant ('anti-spam'->'antispam').
     """
     if "-" not in word:
         return word
@@ -243,5 +245,6 @@ def ao1990_hyphen_rs(word: str) -> str:
         return word
     pre, base = parts
     if pre in _RS_PREFIXES and base[:1] in ("r", "s") and pre[-1:] in _VOWELS:
-        return pre + base[0] + base
+        doubled = base[0] if base[1:2] in _VOWELS else ""
+        return pre + doubled + base
     return word
