@@ -3,6 +3,9 @@ meses, estações do ano: segunda-feira; outubro; primavera."
 
 So a conversion toward AO1990 lowers a month or season name mid-sentence and never
 raises a lowercase one. A capital that opens a sentence stays.
+
+The clause sets the initial letter only. A name written in capitals throughout, as in a
+heading or a sign, keeps its capitals in every direction.
 """
 import pytest
 
@@ -25,3 +28,10 @@ def test_capital_mid_sentence_is_lowered(src, dst):
 @pytest.mark.parametrize("src, dst", PATHS)
 def test_capital_opening_a_sentence_stays(src, dst):
     assert convert("Outubro chegou.", src, dst) == "Outubro chegou."
+
+
+@pytest.mark.parametrize("src, dst", PATHS + [(dst, src) for src, dst in PATHS])
+@pytest.mark.parametrize("text", ["ABRE EM JANEIRO", "CHEGOU NA PRIMAVERA.", "JANEIRO CHEGOU.",
+                                  "Chegou em OUTUBRO."])
+def test_name_in_capitals_keeps_them(src, dst, text):
+    assert convert(text, src, dst) == text

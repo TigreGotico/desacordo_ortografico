@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.1.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.2a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.1a1...0.1.2a1)
+
+**Merged pull requests:**
+
+- fix: a month in capitals keeps its capitals [\#14](https://github.com/TigreGotico/desacordo_ortografico/pull/14) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.1a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.1a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.0a1...0.1.1a1)
+
+**Merged pull requests:**
+
+- fix: plurals of pt-PT/pt-BR duals convert like the singular [\#12](https://github.com/TigreGotico/desacordo_ortografico/pull/12) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.0a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.3a1...0.1.0a1)
