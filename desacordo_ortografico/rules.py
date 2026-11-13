@@ -28,9 +28,9 @@ Lexikon 2017, and the AO1990 text.
 - The article and the determiners agree in number with the noun, so after a singular
   determiner a bare form that is otherwise only a plural is the singular noun:
   "o pais" is "o país".
-- A capital initial marks a proper name (AO1990 Base XIX 1º a), 2º a) and b):
-  "Pedro Marques", "Lisboa"). The common-word list cannot supply a name's accent, so a
-  capitalised word inside a sentence gets no accent from the guess: Coimbra, Roma.
+- The guess has no list of names. A capitalised word takes the accent of the common
+  word with the same letters: Roma gives Romã, as Coimbra gives Coimbrã. Names whose
+  1973 spelling carries an accent come back right (Árctico, Atlântico, Sibéria).
 """
 from __future__ import annotations
 
@@ -255,8 +255,7 @@ def guess_accents(
     pronoun, the form is a verb and stays. When the word before it decides neither, a
     NOUN or ADJ tag gives the accent. It
     takes it from ``singular`` after a singular determiner (o pais -> o país). ``tags``
-    holds one tag or ``None`` per word of ``text``. A capitalised word inside a
-    sentence is a name and stays as written. Case-preserving.
+    holds one tag or ``None`` per word of ``text``. Case-preserving.
     """
     matches = list(_WORD_RE.finditer(text))
     if len(matches) != len(tags):
@@ -273,14 +272,10 @@ def guess_accents(
         prev = None if starts[i] else matches[i - 1].group(0).lower()
         before = None if starts[i] or starts[i - 1] else matches[i - 2].group(0).lower()
         accented = any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low))
-        # a capital inside a segment marks a symbol or a name (McDonald, pH); a capital
-        # initial inside a sentence marks a name (Coimbra)
-        name = not word.isupper() and (
-            any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
-            or (not starts[i] and word[0].isupper())
-        )
+        # a capital inside a segment marks a symbol or a name (McDonald, pH)
+        symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
         form = None
-        if not accented and not name:
+        if not accented and not symbol:
             form = restore.get(low)
             noun = _starts_noun_phrase(prev, before, variety)
             if form is None and (noun if noun is not None else tag in _NOMINAL_TAGS):

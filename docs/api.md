@@ -75,9 +75,10 @@ pronoun, and the next word is a verb. A tag decides only a word that this rule l
 undecided: it never removes an accent the rule gives, and never adds one after a clitic
 pronoun.
 
-A capitalised word inside a sentence is a name, and the guess leaves it as written
-(Coimbra, Roma). A name at the start of a sentence still takes the guess
-("Roma fica longe." gives "Romã fica longe.").
+The guess has no list of names. A capitalised word takes the accent of the common word
+with the same letters, anywhere in a sentence: "Fui a Roma." gives "Fui a Romã.", and
+Coimbra gives Coimbrã. Names whose 1973 spelling carries an accent come back right
+(Árctico, Atlântico, Ministério Público).
 
 ## `class OrthographyConverter`
 

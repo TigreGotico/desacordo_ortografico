@@ -8,8 +8,8 @@ pp. 323-331): in Portugal unless a word such as não comes before it, in Brazil 
 the start of a sentence or after a preposition; elsewhere it is a clitic pronoun and
 the form stays a verb. Where that rule decides neither, a NOUN or ADJ tag does. A bare form that only a plural makes a word takes its
 accented singular after a singular determiner, because a determiner agrees in number
-with its noun (cap. 9): "o pais" is "o país", "os pais" stays. A capitalised word
-inside a sentence is a name (AO1990 Base XIX 2º a) and b)) and stays as written. The
+with its noun (cap. 9): "o pais" is "o país", "os pais" stays. The guess has no list
+of names, so a capitalised word takes the accent of the common word. The
 tags are (word, UPOS) pairs built here by hand. The contractions come split
 (do -> de o), as tugatagger's Stanza engine returns them.
 """
@@ -167,12 +167,15 @@ def test_lilac_after_a_determiner():
     assert convert("O lilas floriu.", "etymological", "pt_1973") == "O lilás floriu."
 
 
-def test_capitalised_word_inside_a_sentence_is_a_name():
-    assert convert("Fui a Coimbra e a Roma.", "etymological", "pt_1973") == "Fui a Coimbra e a Roma."
+def test_capitalised_word_inside_a_sentence_takes_the_accent():
+    # Árctico, Atlântico: AO1990 Base XIX 2º b) writes accented names (Atlântida, Hespéria)
+    assert convert("Navegou no Atlantico e no Arctico.", "etymological", "pt_1973") == "Navegou no Atlântico e no Árctico."
+    assert convert("O Ministerio Publico.", "etymological", "pt_1973") == "O Ministério Público."
 
 
-def test_lowercase_word_takes_the_accent():
-    # romã, the fruit: the same letters as Roma, so only the capital tells them apart
+def test_name_with_the_letters_of_a_common_word_takes_its_accent():
+    # a known limit with no list of names: Roma has the letters of romã, the fruit
+    assert convert("Fui a Coimbra e a Roma.", "etymological", "pt_1973") == "Fui a Coimbrã e a Romã."
     assert convert("Comeu uma roma madura.", "etymological", "pt_1973") == "Comeu uma romã madura."
 
 
