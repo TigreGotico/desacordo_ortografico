@@ -298,3 +298,27 @@ def test_converter_method_takes_tags():
     text = "Estudou musica ontem."
     result = OrthographyConverter().convert(text, "etymological", "pt_1973", pos_tags=_tags(text, musica="NOUN"))
     assert result.text == "Estudou música ontem."
+
+
+# cap. 8 p. 195: "O plural dos substantivos terminados em vogal ou ditongo forma-se
+# acrescentando-se -s ao singular"; the word list holds the singular only
+@pytest.mark.parametrize("target", ["pt_1973", "br_1971"])
+@pytest.mark.parametrize("bare,accented", [("historias", "histórias"), ("paginas", "páginas"),
+                                           ("praticas", "práticas")])
+def test_plural_of_a_verb_ambiguous_noun_takes_the_accent_after_a_determiner(bare, accented, target):
+    assert convert(f"Leu as suas {bare}.", "etymological", target) == f"Leu as suas {accented}."
+
+
+@pytest.mark.parametrize("target", ["pt_1973", "br_1971"])
+def test_plural_of_an_unambiguous_word_always_takes_the_accent(target):
+    assert convert("Comprou fosforos e cafes.", "etymological", target) == "Comprou fósforos e cafés."
+
+
+def test_plural_verb_form_stays_after_a_clitic():
+    # tu as historias: historiar, second person
+    assert convert("Tu não as historias.", "etymological", "pt_1973") == "Tu não as historias."
+
+
+def test_first_person_plural_of_an_ar_verb_is_a_verb_form():
+    # Priberam falar: "nós falamos", "que nós falemos"; paramos (parar), not páramos
+    assert convert("Nos paramos aqui.", "etymological", "pt_1973") == "Nos paramos aqui."
