@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.0a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.3a1...0.1.0a1)
+
+**Merged pull requests:**
+
+- feat: features allowlist for convert [\#4](https://github.com/TigreGotico/desacordo_ortografico/pull/4) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.0.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.3a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.2a1...0.0.3a1)
+
+**Merged pull requests:**
+
+- fix: conversion toward AO1990 never capitalises a month [\#10](https://github.com/TigreGotico/desacordo_ortografico/pull/10) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.0.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.2a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.1a2...0.0.2a1)
+
+**Merged pull requests:**
+
+- fix: prefix r/s doubles only before a vowel [\#7](https://github.com/TigreGotico/desacordo_ortografico/pull/7) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.0.1a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.1a2) (2026-07-30)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/abb8f2173ff452c3bbd24ff97593ff3160105479...0.0.1a2)
