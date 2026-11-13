@@ -31,7 +31,7 @@ Lexikon 2017, and the AO1990 text.
   preposition. A pause ends the context, because these words put the clitic first only
   "quando entre ela e o verbo não há pausa" (p. 324): the word before a comma, a
   colon, a parenthesis or a dash decides nothing about the word after it. Brackets are
-  no pause: they hold words that an editor adds inside a quoted sentence ("Pontuação",
+  no pause: they hold remarks an author adds inside a transcribed text ("Pontuação",
   p. 681: "numa transcrição de texto alheio, o autor intercala observações próprias").
 - The article and the determiners agree in number with the noun, so after a singular
   determiner a bare form that is otherwise only a plural is the singular noun:
