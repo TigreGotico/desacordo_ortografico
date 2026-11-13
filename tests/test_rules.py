@@ -18,22 +18,23 @@ class TestReform1911Digraphs:
     def test_digraphs(self, old, new):
         assert rules.reform_1911_digraphs(old) == new
 
-    # 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩; the ⟨ch⟩ of [ʃ] stands only before a vowel
+    # 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩; in Greek words that ⟨ch⟩ stands before r, l, n or th
     @pytest.mark.parametrize(
         "old,new",
         [
             ("christianismo", "cristianismo"),
             ("chloro", "cloro"),
             ("technica", "tecnica"),
-            ("drachma", "dracma"),
+            ("ichthyologia", "ictiologia"),
             ("synchronizacao", "sincronizacao"),
         ],
     )
     def test_ch_before_a_consonant_is_c(self, old, new):
         assert rules.reform_1911_digraphs(old) == new
 
-    @pytest.mark.parametrize("word", ["chave", "chuva", "bach", "chimica"])
-    def test_ch_before_a_vowel_or_at_the_end_stays(self, word):
+    @pytest.mark.parametrize("word", ["chave", "chuva", "bach", "chimica", "sandwichs", "utrecht",
+                                      "richmond", "schmerz", "schreiber"])
+    def test_ch_of_other_sounds_stays(self, word):
         assert rules.reform_1911_digraphs(word) == word
 
 
