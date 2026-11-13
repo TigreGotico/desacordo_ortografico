@@ -28,9 +28,11 @@ Lexikon 2017, and the AO1990 text.
 - The article and the determiners agree in number with the noun, so after a singular
   determiner a bare form that is otherwise only a plural is the singular noun:
   "o pais" is "o país".
-- The guess has no list of names. A capitalised word takes the accent of the common
-  word with the same letters: Roma gives Romã, as Coimbra gives Coimbrã. Names whose
-  1973 spelling carries an accent come back right (Árctico, Atlântico, Sibéria).
+- A capitalised word takes the accent of the common word with the same letters, so
+  names whose 1973 spelling carries an accent come back right (Árctico, Atlântico,
+  Sibéria). A capital marks a name (AO1990 Base XIX 2º b): the city names in
+  ``_UNACCENTED_NAMES``, which share their letters with an accented common word
+  (Roma, romã), stay as written when capitalised.
 """
 from __future__ import annotations
 
@@ -193,6 +195,9 @@ _SINGULAR_DETERMINERS = frozenset({
 })
 #: The universal POS tags of a noun or an adjective.
 _NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
+# city names written without an accent whose letters spell an accented common word
+# (Coimbra, coimbrã; Roma, romã)
+_UNACCENTED_NAMES = frozenset({"coimbra", "roma"})
 _SENTENCE_END = re.compile(r"[.!?…]")
 #: How many tags past the last match a word may look for its own. A tagger can split
 #: one word into a few tokens (Stanza splits do into de o); the bound keeps a word the
@@ -274,8 +279,9 @@ def guess_accents(
         accented = any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low))
         # a capital inside a segment marks a symbol or a name (McDonald, pH)
         symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
+        name = word[:1].isupper() and low in _UNACCENTED_NAMES
         form = None
-        if not accented and not symbol:
+        if not accented and not symbol and not name:
             form = restore.get(low)
             noun = _starts_noun_phrase(prev, before, variety)
             if form is None and (noun if noun is not None else tag in _NOMINAL_TAGS):

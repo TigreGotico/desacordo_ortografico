@@ -75,10 +75,11 @@ pronoun, and the next word is a verb. A tag decides only a word that this rule l
 undecided: it never removes an accent the rule gives, and never adds one after a clitic
 pronoun.
 
-The guess has no list of names. A capitalised word takes the accent of the common word
-with the same letters, anywhere in a sentence: "Fui a Roma." gives "Fui a Romã.", and
-Coimbra gives Coimbrã. Names whose 1973 spelling carries an accent come back right
-(Árctico, Atlântico, Ministério Público).
+A capitalised word takes the accent of the common word with the same letters, anywhere
+in a sentence, so names whose 1973 spelling carries an accent come back right (Árctico,
+Atlântico, Ministério Público). The city names Coimbra and Roma share their letters with
+an accented common word (coimbrã, romã), so they stay as written when capitalised:
+"Fui a Roma." stays "Fui a Roma.", and "uma roma madura" gives "uma romã madura".
 
 ## `class OrthographyConverter`
 

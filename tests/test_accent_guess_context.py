@@ -173,9 +173,15 @@ def test_capitalised_word_inside_a_sentence_takes_the_accent():
     assert convert("O Ministerio Publico.", "etymological", "pt_1973") == "O Ministério Público."
 
 
-def test_name_with_the_letters_of_a_common_word_takes_its_accent():
-    # a known limit with no list of names: Roma has the letters of romã, the fruit
-    assert convert("Fui a Coimbra e a Roma.", "etymological", "pt_1973") == "Fui a Coimbrã e a Romã."
+def test_listed_city_names_stay_as_written_when_capitalised():
+    # Coimbra and Roma are cities; a capital marks a name (AO1990 Base XIX 2º b)
+    assert convert("Fui a Coimbra e a Roma.", "etymological", "pt_1973") == "Fui a Coimbra e a Roma."
+    assert convert("Roma fica longe.", "etymological", "pt_1973") == "Roma fica longe."
+    assert convert("COIMBRA", "etymological", "pt_1973") == "COIMBRA"
+
+
+def test_listed_city_names_in_lowercase_are_the_common_word():
+    # romã, the fruit (Dicionário Priberam)
     assert convert("Comeu uma roma madura.", "etymological", "pt_1973") == "Comeu uma romã madura."
 
 
