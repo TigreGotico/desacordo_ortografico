@@ -48,7 +48,7 @@ import re
 import unicodedata
 from typing import Callable, List, Mapping, Optional, Sequence, Tuple
 
-from .lexicon import deaccent
+from .lexicon import _ACCENTS, deaccent
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -291,7 +291,8 @@ def guess_accents(
         last = match.end()
         prev = None if starts[i] else matches[i - 1].group(0).lower()
         before = None if starts[i] or starts[i - 1] else matches[i - 2].group(0).lower()
-        accented = any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low))
+        # the tilde and the cedilla are no accents (cap. 4 p. 78-79): orgão, açucar
+        accented = not _ACCENTS.isdisjoint(unicodedata.normalize("NFD", low))
         # a capital inside a segment marks a symbol or a name (McDonald, pH)
         symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
         name = word[:1].isupper() and low in _UNACCENTED_NAMES
