@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List
+from typing import Callable, List, Mapping, Optional
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -34,6 +34,18 @@ def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)
+
+
+def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
+    """``table[word]``, or the plural of the table form when ``word`` is the regular
+    plural of a table word (aspetos from aspeto, receções from receção); else ``None``."""
+    if word in table:
+        return table[word]
+    if word.endswith("ões") and word[:-3] + "ão" in table and table[word[:-3] + "ão"].endswith("ão"):
+        return table[word[:-3] + "ão"][:-2] + "ões"
+    if word.endswith("s") and word[:-1] in table and table[word[:-1]][-1:] in "aeo":
+        return table[word[:-1]] + "s"
+    return None
 
 
 def words(text: str) -> List[str]:
