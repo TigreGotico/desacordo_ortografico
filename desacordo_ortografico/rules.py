@@ -18,6 +18,8 @@ from typing import Callable, List, Mapping, Optional
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
 _VOWELS = "aeiouáàâãéêíóôõúü"
+# the joints of a compound word: hyphen and apostrophes
+_SEGMENT_SEP = re.compile(r"[-'’]")
 
 
 # ----------------------------------------------------------------- tokenising
@@ -29,13 +31,19 @@ def apply_to_words(
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
-    capitalisation pattern (UPPER / Title / lower) is re-applied to the result. When
-    ``is_word`` is given, a word of two or more letters in capitals throughout whose
-    lowercase form is no word is an acronym, and it stays as written (IPTU, PPD).
+    capitalisation pattern (UPPER / Title / lower) is re-applied to the result, per
+    hyphen or apostrophe segment (see :func:`_match_case`). A word with a capital
+    inside a segment and not in capitals throughout (pH, kW, McDonald, TVs) is a symbol
+    or a name, not a lowercase word, and none of the three patterns can restore it: it
+    is returned as written. When ``is_word`` is given, a word of two or more letters in
+    capitals throughout whose lowercase form is no word is an acronym, and it stays as
+    written (IPTU, PPD).
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
+        if not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word)):
+            return word
         if is_word is not None and len(word) > 1 and word.isupper() and not is_word(word.lower()):
             return word
         out = fn(word.lower())
@@ -62,8 +70,21 @@ def words(text: str) -> List[str]:
 
 
 def _match_case(original: str, transformed: str) -> str:
+    """Re-apply the case of ``original`` to ``transformed``.
+
+    A compound with a capital after a hyphen or an apostrophe (Trás-os-Montes, d'Arga)
+    takes the case of each segment. When the segments join (Anti-Semitismo ->
+    antissemitismo), the result takes the case of the first segment.
+    """
     if original.isupper() and len(original) > 1:
         return transformed.upper()
+    segments = _SEGMENT_SEP.split(original)
+    if any(s[:1].isupper() for s in segments[1:]):
+        parts = re.split(r"([-'’])", transformed)
+        if len(parts[::2]) != len(segments):
+            return _match_case(segments[0], transformed)
+        parts[::2] = [_match_case(s, p) for s, p in zip(segments, parts[::2])]
+        return "".join(parts)
     if original[:1].isupper():
         return transformed[:1].upper() + transformed[1:]
     return transformed
