@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.8a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.8a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.7a1...0.1.8a1)
+
+**Merged pull requests:**
+
+- fix: restore the accent on words with a tilde or a cedilla [\#20](https://github.com/TigreGotico/desacordo_ortografico/pull/20) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.7a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.7a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.6a1...0.1.7a1)
