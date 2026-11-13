@@ -245,6 +245,6 @@ def ao1990_hyphen_rs(word: str) -> str:
         return word
     pre, base = parts
     if pre in _RS_PREFIXES and base[:1] in ("r", "s") and pre[-1:] in _VOWELS:
-        doubled = base[0] if base[1:2] in _VOWELS else ""
+        doubled = base[0] if base[1:2] and base[1] in _VOWELS else ""
         return pre + doubled + base
     return word
