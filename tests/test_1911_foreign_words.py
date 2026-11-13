@@ -108,6 +108,22 @@ def test_accent_restore_adds_no_tilde(text):
     assert convert(text, "etymological", "pt_1973") == text
 
 
+# The tilde and the cedilla are letters of the word, so a word that has them still takes
+# its graphic accent. AO1990 Base IX 2º b): "órfã (pl. órfãs), acórdão (pl. acórdãos),
+# órfão (pl. órfãos), órgão (pl. órgãos), sótão (pl. sótãos)"; Base IX 2º a): "açúcar".
+@pytest.mark.parametrize("old, new", [("O orgão", "O órgão"), ("O orgao", "O órgão"),
+                                      ("A orphã", "A órfã"), ("O sotão", "O sótão"),
+                                      ("O acordão", "O acórdão"), ("O açucar", "O açúcar")])
+def test_accent_restore_reads_through_tilde_and_cedilla(old, new):
+    assert convert(old, "etymological", "pt_1973") == new
+
+
+# bança is an Infopédia headword (pt-PT ˈbɐ̃sɐ) that the tugalex word list lacks, so the
+# accent restore leaves it alone.
+def test_unlisted_word_keeps_its_spelling():
+    assert convert("A bança", "etymological", "pt_1973") == "A bança"
+
+
 # A month that opens a quoted sentence keeps its capital toward AO1990, like any opening
 # word (Base XIX 1º b lowers months inside a sentence).
 def test_month_after_an_opening_quote_opens_the_sentence():

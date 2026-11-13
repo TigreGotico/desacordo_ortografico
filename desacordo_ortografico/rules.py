@@ -141,13 +141,16 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
 def restore_accent(word: str, accent_map) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 
-    Only fires on a word that currently carries no accent and whose bare form maps to
-    a unique accented modern word (see ``Lexicon.accent_restore``). Case-preserving.
+    Only fires on a word that currently carries no graphic accent and whose form maps
+    to a unique accented modern word (see ``Lexicon.accent_restore``). The tilde and
+    the cedilla are letters of the key, not accents: orgão -> órgão, açucar -> açúcar.
+    Case-preserving.
     """
     if not accent_map:
         return word
     low = word.lower()
-    if any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low)):
+    if any(unicodedata.combining(c) and c not in "\u0303\u0327"
+           for c in unicodedata.normalize("NFD", low)):
         return word  # already accented
     return accent_map.get(low, word)
 

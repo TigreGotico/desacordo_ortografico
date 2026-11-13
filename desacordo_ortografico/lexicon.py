@@ -20,7 +20,7 @@ import json
 import os
 import unicodedata
 from functools import cached_property
-from typing import Dict, List, Optional, Set
+from typing import Callable, Dict, List, Optional, Set
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -43,6 +43,31 @@ def _strip_1911_accents(word: str) -> str:
         if not unicodedata.combining(c) or c in "\u0327\u0303"
     )
     return unicodedata.normalize("NFC", out)
+
+
+def _unique_accented(words: Set[str], strip: Callable[[str], str]) -> Dict[str, str]:
+    """Map each ``strip`` key to its one accented form, when that key is no word itself."""
+    by_bare: Dict[str, Set[str]] = {}
+    bare_words: Set[str] = set()
+    for wl in words:
+        d = strip(wl)
+        by_bare.setdefault(d, set()).add(wl)
+        if d == wl:
+            bare_words.add(wl)
+    out: Dict[str, str] = {}
+    for bare, forms in by_bare.items():
+        if len(bare) < 4 or bare in bare_words:
+            continue
+        accented = forms - {bare}
+        if len(accented) == 1:
+            out[bare] = next(iter(accented))
+    return out
+
+
+#: Words that the tugalex word list lacks. A key that is one of them is a word itself
+#: and gives no accent-map entry. bança: Infopédia headword, pt-PT ˈbɐ̃sɐ (the pt-PT
+#: row of the unified Portuguese pronunciation lexicon that tugalex builds from).
+_UNLISTED_WORDS = frozenset({"bança"})
 
 
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
@@ -179,6 +204,10 @@ class Lexicon:
         sources = (set(self.base_iv_drop.values()) | set(self.ao_pt_old2new.values())
                    | set(self.ao_br_old2new.values()))
         for w in sources:
+            # A locution is no word, and an -ão word inflects irregularly (irmão, irmã,
+            # irmãos; ação, ações): neither takes the -o/-a pattern (no "açãa").
+            if " " in w or w.endswith("ão"):
+                continue
             if w.endswith("o"):
                 out |= {w[:-1] + "a", w + "s", w[:-1] + "as"}
             elif w.endswith("a"):
@@ -197,23 +226,14 @@ class Lexicon:
 
         The key keeps the tilde. Spelling before 1911 already wrote ã and õ (christão,
         commoção, attenção in ``reform_1911_irregular.json``), so a bare a or o in such
-        text is no lost tilde: roma stays roma, not romã.
+        text is no lost tilde: roma stays roma, not romã. An entry whose form also has a
+        graphic accent keeps a key without the tilde as well (orgao and orgão -> órgão).
         """
-        by_bare: Dict[str, Set[str]] = {}
-        bare_words: Set[str] = set()
-        for wl in self.wordset:
-            d = _strip_1911_accents(wl)
-            by_bare.setdefault(d, set()).add(wl)
-            if d == wl:
-                bare_words.add(wl)
-        out: Dict[str, str] = {}
-        for bare, forms in by_bare.items():
-            if len(bare) < 4 or bare in bare_words:
-                continue
-            accented = forms - {bare}
-            if len(accented) == 1:
-                out[bare] = next(iter(accented))
-        return out
+        words = self.wordset | _UNLISTED_WORDS
+        with_tilde = _unique_accented(words, _strip_1911_accents)
+        without_tilde = {bare: form for bare, form in _unique_accented(words, deaccent).items()
+                         if _strip_1911_accents(form) != form}
+        return {**without_tilde, **with_tilde}
 
     @cached_property
     def cp_keep_pt(self) -> Set[str]:
