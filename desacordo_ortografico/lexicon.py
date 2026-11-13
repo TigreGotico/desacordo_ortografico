@@ -35,6 +35,39 @@ def deaccent(word: str) -> str:
     return unicodedata.normalize("NFC", out)
 
 
+#: Irregular verb forms the word list lacks, which no inflection rule derives.
+#: dizer: "ele disse" (Dicionário Priberam, conjugação de dizer, pretérito perfeito).
+_IRREGULAR_FORMS = frozenset({"disse"})
+
+
+def _is_inflection(word: str, words: Set[str]) -> bool:
+    """Return True if ``word`` is a regular inflection of an entry of ``words``.
+
+    The word list holds lemmas more than inflections, so an inflected form can look
+    unattested. The inflections recognised here are the plural (filho -> filhos,
+    mar -> mares, which also covers the future subjunctive viver -> viveres), the
+    feminine plural (antigo -> antigas), the -eu/-ou/-iu preterite
+    (correr -> correu), the -ia imperfect and the -e present of -er/-ir verbs
+    (servir -> servia, correr -> corre). The -a present and the -e subjunctive of
+    -ar verbs are left out: they collide with frequent accented nouns
+    (historiar -> historia, saudar -> saude).
+    """
+    if word in _IRREGULAR_FORMS:
+        return True
+    if word.endswith("s") and word[-2:-1] in ("a", "e", "i", "o", "u") and word[:-1] in words:
+        return True
+    if word.endswith("es") and word[-3:-2] in ("r", "z", "s") and word[:-2] in words:
+        return True
+    if word.endswith("as") and word[:-2] + "o" in words:
+        return True
+    for ending, infinitive in (("eu", "er"), ("ou", "ar"), ("iu", "ir")):
+        if word.endswith(ending) and word[:-2] + infinitive in words:
+            return True
+    if word.endswith("ia") and (word[:-2] + "er" in words or word[:-2] + "ir" in words):
+        return True
+    return word.endswith("e") and (word[:-1] + "er" in words or word[:-1] + "ir" in words)
+
+
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
 AO_ROW_CLASSES = ("consonant", "diacritic", "trema", "join", "locution")
 
@@ -183,7 +216,9 @@ class Lexicon:
         deterministic digraph/geminate rules cannot derive (phosphoro->fosforo->fósforo).
         Only unambiguous entries are kept: an unaccented key is included only if exactly
         one accented word deaccents to it AND that bare form is not itself a valid word
-        (so 'para'/'pára', 'esta'/'está' are never touched).
+        (so 'para'/'pára', 'esta'/'está' are never touched). A regular inflection of a
+        valid word counts as valid (see :func:`_is_inflection`): 'correu' is the
+        preterite of 'correr', not a bare 'corréu'.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
@@ -194,7 +229,7 @@ class Lexicon:
                 bare_words.add(wl)
         out: Dict[str, str] = {}
         for bare, forms in by_bare.items():
-            if len(bare) < 4 or bare in bare_words:
+            if len(bare) < 4 or bare in bare_words or _is_inflection(bare, bare_words):
                 continue
             accented = forms - {bare}
             if len(accented) == 1:
