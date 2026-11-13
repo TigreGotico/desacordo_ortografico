@@ -25,11 +25,17 @@ def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
-    capitalisation pattern (UPPER / Title / lower) is re-applied to the result.
+    capitalisation pattern (UPPER / Title / lower) is re-applied to the result. In text
+    that is not in capitals throughout, a word of two or more letters in capitals stays as
+    written: it may be an acronym (IPTU), and AO1990 Base I 2º c) writes acronyms as
+    they are ("TWA, KLM").
     """
+    in_capitals = text.isupper()
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
+        if not in_capitals and len(word) > 1 and word.isupper():
+            return word
         out = fn(word.lower())
         return _match_case(word, out)
 
