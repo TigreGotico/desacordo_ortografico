@@ -1,5 +1,109 @@
 # Changelog
 
+## [0.1.10a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.10a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.9a1...0.1.10a1)
+
+**Merged pull requests:**
+
+- fix: leave acronyms in mixed-case text as written [\#11](https://github.com/TigreGotico/desacordo_ortografico/pull/11) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.9a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.9a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.8a1...0.1.9a1)
+
+**Merged pull requests:**
+
+- fix: 1911 writes the Greek ch of \[k\] as c before r, l, n or th [\#21](https://github.com/TigreGotico/desacordo_ortografico/pull/21) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.8a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.8a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.7a1...0.1.8a1)
+
+**Merged pull requests:**
+
+- fix: restore the accent on words with a tilde or a cedilla [\#20](https://github.com/TigreGotico/desacordo_ortografico/pull/20) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.7a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.7a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.6a1...0.1.7a1)
+
+**Merged pull requests:**
+
+- fix: restore accents on plurals the word list does not hold [\#19](https://github.com/TigreGotico/desacordo_ortografico/pull/19) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.6a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.6a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.5a1...0.1.6a1)
+
+**Merged pull requests:**
+
+- fix: cited proclisis words and contracted articles in the accent guess [\#18](https://github.com/TigreGotico/desacordo_ortografico/pull/18) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.5a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.5a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.4a1...0.1.5a1)
+
+**Merged pull requests:**
+
+- fix: the 1911 accent guess reads POS tags and the determiner [\#13](https://github.com/TigreGotico/desacordo_ortografico/pull/13) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.4a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.4a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.3a1...0.1.4a1)
+
+**Merged pull requests:**
+
+- fix: AO1990 pelo, pela and para stay as written in older norms [\#17](https://github.com/TigreGotico/desacordo_ortografico/pull/17) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.3a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.2a1...0.1.3a1)
+
+**Merged pull requests:**
+
+- fix: a word with an inner capital stays as written [\#15](https://github.com/TigreGotico/desacordo_ortografico/pull/15) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.2a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.1a1...0.1.2a1)
+
+**Merged pull requests:**
+
+- fix: a month in capitals keeps its capitals [\#14](https://github.com/TigreGotico/desacordo_ortografico/pull/14) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.1a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.1a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.0a1...0.1.1a1)
+
+**Merged pull requests:**
+
+- fix: plurals of pt-PT/pt-BR duals convert like the singular [\#12](https://github.com/TigreGotico/desacordo_ortografico/pull/12) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.1.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.0a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.3a1...0.1.0a1)
+
+**Merged pull requests:**
+
+- feat: features allowlist for convert [\#4](https://github.com/TigreGotico/desacordo_ortografico/pull/4) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.0.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.3a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.2a1...0.0.3a1)
+
+**Merged pull requests:**
+
+- fix: conversion toward AO1990 never capitalises a month [\#10](https://github.com/TigreGotico/desacordo_ortografico/pull/10) ([JarbasAl](https://github.com/JarbasAl))
+
+## [0.0.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.2a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.0.1a2...0.0.2a1)
+
+**Merged pull requests:**
+
+- fix: prefix r/s doubles only before a vowel [\#7](https://github.com/TigreGotico/desacordo_ortografico/pull/7) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.0.1a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.1a2) (2026-07-30)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/abb8f2173ff452c3bbd24ff97593ff3160105479...0.0.1a2)

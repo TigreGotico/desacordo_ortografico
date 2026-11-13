@@ -7,6 +7,9 @@ deterministic rules (:mod:`rules`) and the curated/`tugalex` lexicons
 ``tugalex``) it is applied first and the rules act only as a fallback for words the
 map does not cover.
 
+Each edge is an ordered list of named feature steps (:data:`FEATURES`). A caller can
+pass ``features=`` to run only some of them; by default every feature runs.
+
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
 several edges, *lexical and lossy*: dropping a silent consonant or an accent throws
 away information that no rule can recover. The :class:`ConversionResult` reports this
@@ -16,22 +19,70 @@ from __future__ import annotations
 
 import unicodedata
 from dataclasses import dataclass, field
-from typing import Callable, Dict, List, Optional
+from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Sequence, Tuple
 
 from . import rules
-from .eras import NORMS, Era, Norm, find_path
-from .lexicon import Lexicon, get_lexicon
+from .eras import NORMS, Era, Norm, Variant, find_path
+from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, get_lexicon
 
-# a per-edge transform: (word, variant) -> word
-WordFn = Callable[[str, Optional[str]], str]
+WordFn = Callable[[str], str]
+
+#: Every feature an edge can apply. ``convert(..., features=...)`` takes a subset.
+FEATURES: FrozenSet[str] = frozenset({
+    # Reforma de 1911
+    "1911-word-map", "1911-digraphs", "1911-geminates", "1911-accent-restore",
+    # trema (PT 1945, AO1990)
+    "trema",
+    # subtonic grave accents (PT 1973, BR 1971)
+    "subtonic-grave",
+    # BR 1943 and the AO1990 PT/BR divergence
+    "base-iv", "ptbr-divergence", "nasal-vowel",
+    # BR 1971 differential circumflex
+    "differential-1971",
+    # the tugalex AO1990 word maps, by row class
+    *(f"ao-map-{cls}" for cls in AO_ROW_CLASSES),
+    # AO1990 rules and curated lists
+    "differential", "hyphen-lexical", "silent-cp", "diphthong-accent", "hiatus-accent",
+    "prefix-rs",
+    # month casing (text level)
+    "months",
+})
+
+
+@dataclass
+class _Pass:
+    """One direction of an edge.
+
+    A word that ``table`` holds is owned by the table: it gets the table value when the
+    feature ``table_feature(word)`` is enabled, and stays as written otherwise. Every
+    other word runs through ``steps`` in order, each step only when its feature is
+    enabled. With ``plurals`` the table also owns the regular plural of each word it
+    holds.
+    """
+
+    steps: List[Tuple[str, WordFn]] = field(default_factory=list)
+    table: Optional[Mapping[str, str]] = None
+    table_feature: Optional[Callable[[str], str]] = None
+    plurals: bool = False
+
+    def apply(self, word: str, enabled: FrozenSet[str]) -> str:
+        if self.table is not None:
+            form = (rules.lookup_with_plural(word, self.table) if self.plurals
+                    else self.table.get(word))
+            if form is not None:
+                return form if self.table_feature(word) in enabled else word
+        for feature, fn in self.steps:
+            if feature in enabled:
+                word = fn(word)
+        return word
 
 
 @dataclass
 class _Edge:
-    """Forward/backward word transforms for one graph edge."""
+    """Forward/backward passes for one graph edge."""
 
-    forward: WordFn
-    backward: WordFn
+    forward: _Pass
+    backward: _Pass
     reversible_forward: bool = True
     reversible_backward: bool = True
     note: str = ""
@@ -66,7 +117,23 @@ class OrthographyConverter:
         source: "str | Norm",
         target: "str | Norm",
         variant: Optional[str] = None,
+        features: Optional[Collection[str]] = None,
+        pos_tags: Optional[Sequence[Tuple[str, str]]] = None,
     ) -> ConversionResult:
+        """Convert ``text`` from ``source`` to ``target``.
+
+        ``features`` names the :data:`FEATURES` to apply. ``None`` applies all of them.
+        An unknown name raises ``ValueError``.
+
+        ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text`` from a part-of-speech
+        tagger, as ``tugatagger.TugaTagger.tag(text)`` returns them. The 1911 accent
+        guess gives a bare form that is otherwise only a verb form its accent after a
+        determiner or a preposition (a historia -> a história), and keeps it bare after a
+        clitic pronoun. A tag decides only the words that this rule leaves undecided:
+        NOUN or ADJ gives the accent. The target's variety decides when a bare article
+        is the article and when it is the pronoun, see :func:`rules.guess_accents`.
+        """
+        enabled = _enabled(features)
         text = unicodedata.normalize("NFC", text)
         src = Norm.parse(source)
         dst = Norm.parse(target)
@@ -83,12 +150,24 @@ class OrthographyConverter:
         if not steps:
             return result
 
+        # A token in capitals marks an acronym only in mixed-case text. Text in capitals
+        # throughout converts each token like the same word in lowercase. The test reads
+        # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
+        is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
-            fn = edge.forward if forward else edge.backward
+            step_pass = edge.forward if forward else edge.backward
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(out, lambda w, f=fn: f(w, variant))
+            guess = edge_name == "reform_1911" and forward and "1911-accent-restore" in enabled
+            # the word pass rewrites letters inside each word only, so the tags aligned to
+            # the words before it still line up one to one with the words after it
+            tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
+            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled), is_word)
+            if guess:
+                variety = "br" if dst.variant == Variant.BR else "pt"
+                out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
+                                          self.lex.accent_restore_singular, tags, variety)
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -100,7 +179,7 @@ class OrthographyConverter:
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.
-        if steps:
+        if "months" in enabled:
             out = rules.recase_months(out, lowercase=(dst.era == Era.AO1990))
         result.text = out
         result.alternatives = self._collect_alternatives(text, dst)
@@ -154,138 +233,176 @@ class OrthographyConverter:
     def _build_edges(self) -> Dict[str, _Edge]:
         lex = self.lex
 
-        # -- 1911 -----------------------------------------------------------
-        def reform_1911_fwd(w: str, _v: Optional[str]) -> str:
-            if w in lex.reform1911_old2new:
-                return lex.reform1911_old2new[w]
-            w = rules.reform_1911_geminates(rules.reform_1911_digraphs(w), lex.wordset)
-            # 1911 also introduced systematic graphic accents the rules can't derive;
-            # restore them from the word list where unambiguous (fosforo -> fósforo).
-            return rules.restore_accent(w, lex.accent_restore)
+        def get(table: Mapping[str, str]) -> WordFn:
+            return lambda w: table.get(w, w)
 
-        def reform_1911_bwd(w: str, _v: Optional[str]) -> str:
-            return lex.reform1911_new2old.get(w, w)
+        def dual(table: Mapping[str, str]) -> WordFn:
+            """A dual cell (Base IV 1º c) takes the form of the target variety, in the
+            plural too."""
+            return lambda w: rules.lookup_with_plural(w, table) or w
+
+        def ao_row(classes: Mapping[str, str], to_old: Optional[Mapping[str, str]] = None):
+            if to_old is None:
+                return lambda w: f"ao-map-{classes[w]}"
+            return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
+
+        def word_map_1911(_w: str) -> str:
+            return "1911-word-map"
+
+        def ptbr_divergence(_w: str) -> str:
+            return "ptbr-divergence"
+
+        # -- 1911: the word map first; the rules are a fallback for other words. 1911
+        #    also introduced graphic accents the rules can't derive; convert() restores
+        #    them after this pass, from the word list and the context (fosforo -> fósforo).
+        reform_1911 = _Edge(
+            _Pass(
+                steps=[
+                    ("1911-digraphs", rules.reform_1911_digraphs),
+                    ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
+                ],
+                table=lex.reform1911_old2new, table_feature=word_map_1911,
+            ),
+            _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
+            reversible_backward=False,
+            note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
+        )
 
         # -- 1911 <-> 1945 (PT): the 1945 Convenção dropped the trema for Portugal
         #    (ü -> u); otherwise the PT spelling is unchanged across these eras.
-        def identity(w: str, _v: Optional[str]) -> str:
-            return w
-
-        def pt_1945_fwd(w: str, _v: Optional[str]) -> str:
-            return rules.ao1990_drop_trema(w)
+        pt_1911_to_1945 = _Edge(
+            _Pass(steps=[("trema", rules.ao1990_drop_trema)]),
+            _Pass(),
+            reversible_backward=False,
+            note="the trema cannot be reintroduced by rule",
+        )
 
         # -- 1911 <-> 1943 (BR) ----------------------------------------------
-        def br_1943_fwd(w: str, _v: Optional[str]) -> str:
-            w = lex.base_iv_drop.get(w, w)
-            w = lex.divergence_pt2br.get(w, w)   # connosco->conosco, húmido->úmido
-            return rules.nasal_vowel_to_br(w)
-
-        def br_1943_bwd(w: str, _v: Optional[str]) -> str:
-            w = lex.divergence_br2pt.get(w, w)
-            w = lex.base_iv_drop_reverse.get(w, w)
-            return rules.nasal_vowel_to_pt(w)
+        br_1911_to_1943 = _Edge(
+            _Pass(steps=[
+                ("base-iv", get(lex.base_iv_drop)),
+                ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
+                ("ptbr-divergence", dual(lex.ao_dual_pt2br)),
+                ("nasal-vowel", rules.nasal_vowel_to_br),
+            ]),
+            _Pass(steps=[
+                ("ptbr-divergence", get(lex.ptbr_br2pt)),
+                ("base-iv", get(lex.base_iv_drop_reverse)),
+                ("nasal-vowel", rules.nasal_vowel_to_pt),
+                ("ptbr-divergence", dual(lex.ao_dual_br2pt)),
+            ]),
+            reversible_backward=False,
+            note="silent-consonant restoration is lexical",
+        )
 
         # -- 1945 <-> 1973 (PT): subtonic-grave removal only. The differential
         #    circumflex (êle->ele) was already abolished for Portugal by the 1945
-        #    Convenção (Base XXII), so it must NOT be applied on this edge.
-        def accent_1973_fwd(w: str, _v: Optional[str]) -> str:
-            return rules.strip_subtonic_grave(w)
-
-        def accent_1973_bwd(w: str, _v: Optional[str]) -> str:
-            return w  # subtonic graves cannot be reintroduced by rule
+        #    Convenção (Base XXII), so it must NOT be applied on this edge. Subtonic
+        #    graves cannot be reintroduced by rule.
+        accent_1973 = _Edge(
+            _Pass(steps=[("subtonic-grave", rules.strip_subtonic_grave)]),
+            _Pass(),
+            reversible_backward=False,
+            note="subtonic grave accents cannot be reintroduced by rule",
+        )
 
         # -- 1943 <-> 1971 (BR): differential-circumflex removal (êle->ele,
         #    govêrno->governo) + subtonic-grave removal. Trema survives until AO1990.
-        def accent_1971_fwd(w: str, _v: Optional[str]) -> str:
-            w = lex.accent_71_73_old2new.get(w, w)
-            return rules.strip_subtonic_grave(w)
-
-        def accent_1971_bwd(w: str, _v: Optional[str]) -> str:
-            return lex.accent_71_73_new2old.get(w, w)
+        accent_1971 = _Edge(
+            _Pass(steps=[
+                ("differential-1971", get(lex.accent_71_73_old2new)),
+                ("subtonic-grave", rules.strip_subtonic_grave),
+            ]),
+            _Pass(steps=[("differential-1971", get(lex.accent_71_73_new2old))]),
+            reversible_backward=False,
+            note="subtonic grave accents cannot be reintroduced by rule",
+        )
 
         # -- pre-AO90 PT <-> AO1990 PT ---------------------------------------
-        def ao_pt_fwd(w: str, _v: Optional[str]) -> str:
-            if w in lex.ao_pt_old2new:
-                return lex.ao_pt_old2new[w]
-            w = rules.drop_differential(w, lex.differential_dropped)
-            w = lex.hyphen_dropped.get(w, w)
-            w = lex.base_iv_drop.get(w, w)
-            w = rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset, lex.cp_ao_form_pt)
-            w = rules.ao1990_drop_trema(w)
-            w = rules.ao1990_drop_accents(w)
-            w = rules.ao1990_hyphen_rs(w)
-            return w
-
-        def ao_pt_bwd(w: str, _v: Optional[str]) -> str:
-            if w in lex.ao_pt_new2old:
-                return lex.ao_pt_new2old[w]
-            w = lex.hyphen_dropped_reverse.get(w, w)
-            w = lex.base_iv_drop_reverse.get(w, w)
-            return w
+        ao1990_pt = _Edge(
+            _Pass(
+                steps=[
+                    ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
+                    ("hyphen-lexical", get(lex.hyphen_dropped)),
+                    ("base-iv", get(lex.base_iv_drop)),
+                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset,
+                                                                  lex.cp_ao_form_pt)),
+                    ("trema", rules.ao1990_drop_trema),
+                    ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
+                    ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
+                    ("prefix-rs", rules.ao1990_hyphen_rs),
+                ],
+                table=lex.ao_pt_old2new, table_feature=ao_row(lex.ao_pt_row_class),
+            ),
+            _Pass(
+                steps=[
+                    ("hyphen-lexical", get(lex.hyphen_dropped_reverse)),
+                    ("base-iv", get(lex.base_iv_drop_reverse)),
+                ],
+                table=lex.ao_pt_new2old,
+                table_feature=ao_row(lex.ao_pt_row_class, lex.ao_pt_new2old),
+            ),
+            reversible_backward=False,
+            note="dropped accents/consonants are restored from a lexicon, not a rule",
+        )
 
         # -- pre-AO90 BR <-> AO1990 BR ---------------------------------------
-        def ao_br_fwd(w: str, _v: Optional[str]) -> str:
-            if w in lex.ao_br_old2new:
-                return lex.ao_br_old2new[w]
-            w = rules.drop_differential(w, lex.differential_dropped)
-            w = lex.hyphen_dropped.get(w, w)
-            w = rules.ao1990_drop_trema(w)
-            w = rules.ao1990_drop_accents(w)
-            w = rules.ao1990_hyphen_rs(w)
-            return w
-
-        def ao_br_bwd(w: str, _v: Optional[str]) -> str:
-            if w in lex.ao_br_new2old:
-                return lex.ao_br_new2old[w]
-            w = lex.hyphen_dropped_reverse.get(w, w)
-            return w
+        ao1990_br = _Edge(
+            _Pass(
+                steps=[
+                    ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
+                    ("hyphen-lexical", get(lex.hyphen_dropped)),
+                    ("trema", rules.ao1990_drop_trema),
+                    ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
+                    ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
+                    ("prefix-rs", rules.ao1990_hyphen_rs),
+                ],
+                table=lex.ao_br_old2new, table_feature=ao_row(lex.ao_br_row_class),
+            ),
+            _Pass(
+                steps=[("hyphen-lexical", get(lex.hyphen_dropped_reverse))],
+                table=lex.ao_br_new2old,
+                table_feature=ao_row(lex.ao_br_row_class, lex.ao_br_new2old),
+            ),
+            reversible_backward=False,
+            note="dropped accents/trema are restored from a lexicon, not a rule",
+        )
 
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------
-        def ptbr_fwd(w: str, _v: Optional[str]) -> str:  # pt -> br
-            if w in lex.divergence_pt2br:
-                return lex.divergence_pt2br[w]
-            return rules.nasal_vowel_to_br(w)
-
-        def ptbr_bwd(w: str, _v: Optional[str]) -> str:  # br -> pt
-            if w in lex.divergence_br2pt:
-                return lex.divergence_br2pt[w]
-            return rules.nasal_vowel_to_pt(w)
+        ptbr = _Edge(
+            _Pass(steps=[("ptbr-divergence", dual(lex.ao_dual_pt2br)),
+                         ("nasal-vowel", rules.nasal_vowel_to_br)],
+                  table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True),
+            _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt),
+                         ("ptbr-divergence", dual(lex.ao_dual_br2pt))],
+                  table=lex.ptbr_br2pt, table_feature=ptbr_divergence, plurals=True),
+        )
 
         return {
-            "reform_1911": _Edge(
-                reform_1911_fwd, reform_1911_bwd,
-                reversible_backward=False,
-                note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
-            ),
-            "pt_1911_to_1945": _Edge(pt_1945_fwd, identity, reversible_backward=False,
-                                     note="the trema cannot be reintroduced by rule"),
-            "br_1911_to_1943": _Edge(
-                br_1943_fwd, br_1943_bwd,
-                reversible_backward=False,
-                note="silent-consonant restoration is lexical",
-            ),
-            "accent_1973": _Edge(
-                accent_1973_fwd, accent_1973_bwd,
-                reversible_backward=False,
-                note="subtonic grave accents cannot be reintroduced by rule",
-            ),
-            "accent_1971": _Edge(
-                accent_1971_fwd, accent_1971_bwd,
-                reversible_backward=False,
-                note="subtonic grave accents cannot be reintroduced by rule",
-            ),
-            "ao1990_pt": _Edge(
-                ao_pt_fwd, ao_pt_bwd,
-                reversible_backward=False,
-                note="dropped accents/consonants are restored from a lexicon, not a rule",
-            ),
-            "ao1990_br": _Edge(
-                ao_br_fwd, ao_br_bwd,
-                reversible_backward=False,
-                note="dropped accents/trema are restored from a lexicon, not a rule",
-            ),
-            "ptbr_divergence": _Edge(ptbr_fwd, ptbr_bwd),
+            "reform_1911": reform_1911,
+            "pt_1911_to_1945": pt_1911_to_1945,
+            "br_1911_to_1943": br_1911_to_1943,
+            "accent_1973": accent_1973,
+            "accent_1971": accent_1971,
+            "ao1990_pt": ao1990_pt,
+            "ao1990_br": ao1990_br,
+            "ptbr_divergence": ptbr,
         }
+
+
+def _enabled(features: Optional[Collection[str]]) -> FrozenSet[str]:
+    if features is None:
+        return FEATURES
+    if isinstance(features, str):
+        raise TypeError("features must be a collection of feature names, not a string")
+    enabled = frozenset(features)
+    unknown = enabled - FEATURES
+    if unknown:
+        raise ValueError(
+            f"Unknown feature(s): {', '.join(sorted(unknown))}. "
+            f"Valid features: {', '.join(sorted(FEATURES))}"
+        )
+    return enabled
 
 
 # ------------------------------------------------------------- convenience API
@@ -304,10 +421,14 @@ def convert(
     source: "str | Norm",
     target: "str | Norm",
     variant: Optional[str] = None,
+    features: Optional[Collection[str]] = None,
+    pos_tags: Optional[Sequence[Tuple[str, str]]] = None,
 ) -> str:
     """Convert ``text`` from ``source`` to ``target`` and return the string.
 
-    For the full result (warnings, dual-form alternatives) use
-    :meth:`OrthographyConverter.convert`.
+    ``features`` names the :data:`FEATURES` to apply; ``None`` applies all of them.
+    ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text``; see
+    :meth:`OrthographyConverter.convert`. For the full result (warnings, dual-form
+    alternatives) use :meth:`OrthographyConverter.convert`.
     """
-    return _converter().convert(text, source, target, variant).text
+    return _converter().convert(text, source, target, variant, features, pos_tags).text

@@ -83,6 +83,9 @@ lexical part. It defines three sets:
 - **drop** (mute everywhere): `acção→ação, óptimo→ótimo, director→diretor`.
 - **dual** (pronounced in one norm only, one spelling per norm):
   `facto`(PT)/`fato`(BR), `receção`(PT)/`recepção`(BR), `aspeto`(PT)/`aspecto`(BR).
+- **optional** (two valid spellings in one norm, Base IV 1º c): `sector`/`setor`,
+  `carácter`/`caráter`. Where the tugalex AO1990 map lists both forms, the converter
+  writes the form with the consonant for pt-PT and the form without it for pt-BR.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`
