@@ -166,5 +166,14 @@ def test_pre_1911_contracto_reads_as_the_noun(dst):
     assert convert("o contracto e os contractos", "etymological", dst) == "o contrato e os contratos"
 
 
+# The pre-1911 spelling of the noun is contracto, so a modern contrato goes back to it.
+# The 14 Project Gutenberg books of the real-text check write contracto 14 times and
+# contrato never; they write retrato 77 times and retracto never, so retrato stays.
+@pytest.mark.parametrize("src", ["ao1990-pt", "ao1990-br", "pt_1973"])
+def test_modern_contrato_goes_back_to_the_pre_1911_noun(src):
+    assert convert("o contrato e os contratos", src, "etymological") == "o contracto e os contractos"
+    assert convert("o retrato e os retratos", src, "etymological") == "o retrato e os retratos"
+
+
 def test_pt_1973_contracto_is_the_adjective():
     assert convert("contracto", "pt_1973", "ao1990-pt") == "contracto"
