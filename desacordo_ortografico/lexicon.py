@@ -16,8 +16,8 @@ deterministic rule engine still works on its own.
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
-conjugation tables: falar for the -ar present (fala, falas, falam), the -ar
-subjunctive (fale, fales, falem) and the conditional (falaria); ler for the
+conjugation tables: falar for the -ar present (fala, falas, falamos, falam), the
+-ar subjunctive (fale, fales, falemos, falem) and the conditional (falaria); ler for the
 conditional of -er verbs (leria); correr for the -eu preterite and the -e present
 (correu, corre); servir for the -ia imperfect (servia); dizer for disse. The nominal
 forms follow Cunha & Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed.,
@@ -57,8 +57,8 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
     The word list holds lemmas more than inflections, so an inflected form can look
     unattested. ``"verb"``: an irregular form, the -eu/-ou/-iu preterite (correr ->
     correu), the -ia imperfect and the -e present of -er/-ir verbs (servir -> servia,
-    correr -> corre), the -a/-as/-am present and the -e/-es/-em subjunctive of -ar
-    verbs (historiar -> historia), and the conditional, a stem + -ar/-er/-ir + ia
+    correr -> corre), the -a/-as/-amos/-am present and the -e/-es/-emos/-em subjunctive of
+    -ar verbs (historiar -> historia, parar -> paramos), and the conditional, a stem + -ar/-er/-ir + ia
     (ler -> leria; the noun ar does not count, so aria is no verb form).
     ``"plural"``: a vowel + s plural (pai -> pais). ``"nominal"``: the -es plural
     after r, z or s (mar -> mares), the feminine plural (antigo -> antigas) and the
@@ -74,7 +74,7 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
         kinds.add("verb")
     if word.endswith("e") and (word[:-1] + "er" in words or word[:-1] + "ir" in words):
         kinds.add("verb")
-    for ending in ("a", "as", "am", "e", "es", "em"):
+    for ending in ("a", "as", "amos", "am", "e", "es", "emos", "em"):
         if word.endswith(ending) and word[:-len(ending)] + "ar" in words:
             kinds.add("verb")
     if word.endswith(("aria", "eria", "iria")) and len(word) > 4 and word[:-2] in words:
@@ -88,6 +88,10 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
     if word.endswith("a") and word[:-1] + "o" in words:
         kinds.add("nominal")
     return frozenset(kinds)
+
+
+#: The vowels after which the plural adds -s (cap. 8, see the module docstring).
+_PLURAL_VOWELS = frozenset("aeiou")
 
 
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
@@ -246,7 +250,9 @@ class Lexicon:
         (see :func:`_inflection_kinds`) that also make the bare form a word.
 
         A bare form of under four letters, a bare form that is itself on the word list,
-        and a bare form that deaccents from two accented words are left out.
+        and a bare form that deaccents from two accented words are left out. The plural
+        in -s of each vowel-final candidate except -ão is added, unless its letters spell
+        a word or deaccent from one, and it keeps the verb kind of its singular.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
@@ -262,6 +268,14 @@ class Lexicon:
             accented = forms - {bare}
             if len(accented) == 1:
                 out[bare] = (next(iter(accented)), _inflection_kinds(bare, bare_words))
+        # the word list holds singulars; a vowel-final singular makes its plural in -s.
+        # -ão follows its own rules (alemão, alemães), so it is left out. The -s form of
+        # a present, imperfect or conditional verb form is the second person of the same
+        # tense (corre, corres; servia, servias), so the plural keeps the verb reading.
+        for bare, (form, kinds) in list(out.items()):
+            plural = bare + "s"
+            if bare[-1] in _PLURAL_VOWELS and not form.endswith("ão") and plural not in by_bare:
+                out[plural] = (form + "s", _inflection_kinds(plural, bare_words) | (kinds & {"verb"}))
         return out
 
     @cached_property
