@@ -18,7 +18,6 @@ CASES = {
     "1911-word-map": (P, "pharmacia", "farmácia"),
     "1911-digraphs": (P, "theatro", "teatro"),
     "1911-geminates": (P, "commissão", "comissão"),
-    "1911-accent-restore": (P, "fosforo", "fósforo"),
     # Convenção de 1945 for Portugal, AO1990 Base XIV 1º for Brazil: no trema
     "trema": (P, "lingüiça", "linguiça"),
     # Decreto-Lei 32/73: no subtonic grave accent

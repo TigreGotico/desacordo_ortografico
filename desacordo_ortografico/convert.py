@@ -30,7 +30,7 @@ WordFn = Callable[[str], str]
 #: Every feature an edge can apply. ``convert(..., features=...)`` takes a subset.
 FEATURES: FrozenSet[str] = frozenset({
     # Reforma de 1911
-    "1911-word-map", "1911-digraphs", "1911-geminates", "1911-accent-restore",
+    "1911-word-map", "1911-digraphs", "1911-geminates",
     # trema (PT 1945, AO1990)
     "trema",
     # subtonic grave accents (PT 1973, BR 1971)
@@ -226,15 +226,14 @@ class OrthographyConverter:
         def ptbr_divergence(_w: str) -> str:
             return "ptbr-divergence"
 
-        # -- 1911: the word map first; the rules are a fallback for other words. 1911
-        #    also introduced graphic accents the rules can't derive; they are restored
-        #    from the word list where unambiguous (fosforo -> fósforo).
+        # -- 1911: the word map first; the rules are a fallback for other words. The
+        #    rules cannot tell where 1911 added a graphic accent, so only the word map
+        #    adds one (pharmacia -> farmácia).
         reform_1911 = _Edge(
             _Pass(
                 steps=[
                     ("1911-digraphs", rules.reform_1911_digraphs),
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
-                    ("1911-accent-restore", lambda w: rules.restore_accent(w, lex.accent_restore)),
                 ],
                 table=lex.reform1911_old2new, table_feature=word_map_1911,
             ),

@@ -28,7 +28,6 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `1911-word-map` | the curated 1911 word pairs (pharmacia -> farmácia) | reform_1911 |
 | `1911-digraphs` | ph, th, rh -> f, t, r; y -> i | reform_1911 |
 | `1911-geminates` | doubled consonants, except rr and ss | reform_1911 |
-| `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo) | reform_1911 |
 | `trema` | ü -> u | pt_1911_to_1945, ao1990_pt, ao1990_br |
 | `subtonic-grave` | sòmente -> somente | accent_1973, accent_1971 |
 | `base-iv` | the curated Base IV drop list | br_1911_to_1943, ao1990_pt |

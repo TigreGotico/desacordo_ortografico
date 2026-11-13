@@ -12,7 +12,6 @@ or *one-way* (the inverse is ambiguous and must be resolved by a lexicon upstrea
 from __future__ import annotations
 
 import re
-import unicodedata
 from typing import Callable, List, Mapping, Optional
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
@@ -128,20 +127,6 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
             if cand != word and cand in wordset:
                 return cand
     return word
-
-
-def restore_accent(word: str, accent_map) -> str:
-    """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
-
-    Only fires on a word that currently carries no accent and whose bare form maps to
-    a unique accented modern word (see ``Lexicon.accent_restore``). Case-preserving.
-    """
-    if not accent_map:
-        return word
-    low = word.lower()
-    if any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low)):
-        return word  # already accented
-    return accent_map.get(low, word)
 
 
 # ------------------------------------------------ PT<->BR nasal-vowel alternation

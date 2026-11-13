@@ -176,32 +176,6 @@ class Lexicon:
         return out
 
     @cached_property
-    def accent_restore(self) -> Dict[str, str]:
-        """Map an unaccented word to its unique accented modern form.
-
-        Used to re-supply the graphic accents that the 1911 reform introduced but the
-        deterministic digraph/geminate rules cannot derive (phosphoro->fosforo->fósforo).
-        Only unambiguous entries are kept: an unaccented key is included only if exactly
-        one accented word deaccents to it AND that bare form is not itself a valid word
-        (so 'para'/'pára', 'esta'/'está' are never touched).
-        """
-        by_bare: Dict[str, Set[str]] = {}
-        bare_words: Set[str] = set()
-        for wl in self.wordset:
-            d = deaccent(wl)
-            by_bare.setdefault(d, set()).add(wl)
-            if d == wl:
-                bare_words.add(wl)
-        out: Dict[str, str] = {}
-        for bare, forms in by_bare.items():
-            if len(bare) < 4 or bare in bare_words:
-                continue
-            accented = forms - {bare}
-            if len(accented) == 1:
-                out[bare] = next(iter(accented))
-        return out
-
-    @cached_property
     def cp_keep_pt(self) -> Set[str]:
         """Words whose c/p in a -ct-/-pt-/-cç-/-pç- cluster is pronounced in European
         Portuguese and therefore kept (Base IV 'keep' plus the PT side of the duals)."""
