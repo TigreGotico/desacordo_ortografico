@@ -9,8 +9,8 @@ description = "Detect and convert between Portuguese orthographies (pre/post AO1
 readme = "README.md"
 license = { text = "Apache-2.0" }
 authors = [{ name = "JarbasAi", email = "jarbasai@mailfence.com" }]
-requires-python = ">=3.9"
-dependencies = ["tugalex>=0.0.3a2"]
+requires-python = ">=3.11"
+dependencies = ["tugalex>=2.4.3a1"]
 keywords = [
     "portuguese", "orthography", "spelling", "ao1990", "acordo-ortografico",
     "reforma-1911", "nlp", "language-detection", "transliteration",

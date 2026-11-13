@@ -8,12 +8,47 @@ Each function takes and returns a **lowercase** word; case restoration is handle
 :func:`apply_to_words`, which also tokenises the text. Functions are grouped by the
 reform that introduced them and are documented as *reversible* (a clean inverse exists)
 or *one-way* (the inverse is ambiguous and must be resolved by a lexicon upstream).
+
+The 1911 accent guess (:func:`guess_accents`) reads the word before each bare form.
+The sources are Cunha & Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed.,
+Lexikon 2017, and the AO1990 text.
+
+- A determiner or a preposition introduces a noun phrase: the article and the
+  determiners agree with the noun (cap. 9 "Artigo", p. 219; cap. 11 "Pronomes",
+  p. 289), and a preposition relates a term to its consequent (cap. 15 "Preposição",
+  pp. 569-570). The contractions with the indefinite article (num, duma; cap. 9,
+  pp. 223-224) and the classical polo, pola (p. 223) count as determiners. After one
+  of them, a bare form that is otherwise only a verb form is
+  the noun: "a sua historia" is "a sua história".
+- The bare articles o, a, os and as are also the clitic pronouns. In Portugal the
+  clitic follows the verb unless a word such as não, que, já or quando comes before
+  it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327): a negative word
+  (não, nunca, jamais, ninguém, nada), an interrogative, one of the adverbs bem, mal,
+  ainda, já, sempre, só, talvez, or the subject alguém. So a bare article
+  counts unless such a word stands right before it. In Brazil the clitic comes before the verb
+  in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
+  pp. 330-331), so a bare article counts only at the start of a sentence or clause or after a
+  preposition. A pause ends the context, because these words put the clitic first only
+  "quando entre ela e o verbo não há pausa" (p. 324): the word before a comma, a
+  colon, a parenthesis or a dash decides nothing about the word after it. Brackets are
+  no pause: they hold remarks an author adds inside a transcribed text ("Pontuação",
+  p. 681: "numa transcrição de texto alheio, o autor intercala observações próprias").
+- The article and the determiners agree in number with the noun, so after a singular
+  determiner a bare form that is otherwise only a plural is the singular noun:
+  "o pais" is "o país".
+- A capitalised word takes the accent of the common word with the same letters, so
+  names whose 1973 spelling carries an accent come back right (Árctico, Atlântico,
+  Sibéria). A capital marks a name (AO1990 Base XIX 2º b): the city names in
+  ``_UNACCENTED_NAMES``, which share their letters with an accented common word
+  (Roma, romã), stay as written when capitalised.
 """
 from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List, Mapping, Optional
+from typing import Callable, List, Mapping, Optional, Sequence, Tuple
+
+from .lexicon import _ACCENTS, deaccent
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -91,8 +126,20 @@ def _match_case(original: str, transformed: str) -> str:
 
 
 # ----------------------------------------------------- Reforma de 1911 (digraphs)
+#: ⟨ch⟩ of [k] in words of Greek origin. 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩
+#: or ⟨qu⟩ (Reforma Ortográfica de 1911, the digraphs of Greek origin). In these words
+#: ⟨ch⟩ before ⟨r⟩, ⟨l⟩, ⟨n⟩ or ⟨th⟩ is [k] and becomes ⟨c⟩: christianismo, chloro,
+#: technica, ichthyologia. ⟨ch⟩ before other consonants and after ⟨s⟩ is left alone,
+#: because loanwords and names use it for other sounds (sandwichs, Utrecht, Richmond,
+#: Schmidt). Before a vowel the word map decides. Names that match still change, as
+#: they do under ph, th and y: Christina gives Cristina.
+_CH_K_RE = re.compile(r"(?<!s)ch(?=[rln]|th)")
+
+
 def reform_1911_digraphs(word: str) -> str:
-    """ph->f, th->t, rh->r, y->i. Reversible? No — the inverse is ambiguous."""
+    """ch->c before r, l, n or th, then ph->f, th->t, rh->r, y->i. Reversible? No — the
+    inverse is ambiguous."""
+    word = _CH_K_RE.sub("c", word)
     word = word.replace("ph", "f").replace("th", "t").replace("rh", "r")
     word = word.replace("y", "i")
     return word
@@ -138,18 +185,148 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
     return word
 
 
-def restore_accent(word: str, accent_map) -> str:
+#: The determiners other than the bare articles: the contractions of a preposition and
+#: an article, and the demonstratives, possessives and indefinites. See the module
+#: docstring.
+_DETERMINERS = frozenset({
+    "do", "da", "dos", "das", "no", "na", "nas", "ao", "aos", "à", "às",
+    "pelo", "pela", "pelos", "pelas", "um", "uma", "uns", "umas",
+    "este", "esta", "estes", "estas", "esse", "essa", "esses", "essas",
+    "aquele", "aquela", "aqueles", "aquelas", "deste", "desta", "destes", "destas",
+    "desse", "dessa", "daquele", "daquela", "neste", "nesta", "nesse", "nessa",
+    "naquele", "naquela", "meu", "minha", "teu", "tua", "seu", "sua", "nosso", "nossa",
+    "vosso", "vossa", "meus", "minhas", "teus", "tuas", "seus", "suas", "nossos", "nossas",
+    "vossos", "vossas", "cada", "nenhum", "nenhuma", "algum", "alguma",
+    "outro", "outra", "todo", "toda",
+    "num", "numa", "nuns", "numas", "dum", "duma", "duns", "dumas",
+    "polo", "pola", "polos", "polas",
+})
+#: The bare articles, which are also the clitic pronouns.
+_ARTICLES = frozenset({"o", "a", "os", "as"})
+#: Words that put a clitic pronoun before the verb in European Portuguese, unaccented.
+#: ambos, todo, tudo, outro and qualquer (cap. 11 p. 327) are left out: p. 327 needs them in
+#: the subject, and right before an article they are mostly determiners or objects
+#: (todas as casas, ambos os lados, reduzia tudo a fórmulas).
+_PROCLISIS_TRIGGERS = frozenset({
+    "que", "nao", "se", "ja", "nunca", "sempre", "tambem", "so", "quem", "ainda", "bem",
+    "mal", "talvez", "onde", "quando", "como", "porque", "embora",
+    "jamais", "ninguem", "nada", "alguem",
+})
+#: The simple prepositions of cap. 15, unaccented, except a, which is also the article.
+_PREPOSITIONS = frozenset({
+    "ante", "apos", "ate", "com", "contra", "de", "desde", "em", "entre", "para", "perante",
+    "por", "sem", "sob", "sobre", "tras",
+})
+#: The determiners that mark a singular noun, see the module docstring. Bare "a" is
+#: left out because it is also the preposition ("deu presentes a pais").
+_SINGULAR_DETERMINERS = frozenset({
+    "o", "um", "uma", "do", "da", "no", "na", "ao", "à", "pelo", "pela",
+    "num", "numa", "dum", "duma", "polo", "pola",
+    "este", "esta", "esse", "essa", "aquele", "aquela", "deste", "desta",
+    "neste", "nesta", "naquele", "naquela", "nenhum", "nenhuma", "algum", "alguma",
+    "meu", "minha", "teu", "tua", "seu", "sua", "nosso", "nossa", "vosso", "vossa",
+    "cada",
+})
+#: The universal POS tags of a noun or an adjective.
+_NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
+# city names written without an accent whose letters spell an accented common word
+# (Coimbra, coimbrã; Roma, romã)
+_UNACCENTED_NAMES = frozenset({"coimbra", "roma"})
+# a sentence end or a clause pause; the word before it does not introduce the next word
+_PAUSE = re.compile(r"[.!?…,;:()—–]|\s-\s")
+#: How many tags past the last match a word may look for its own. A tagger can split
+#: one word into a few tokens (Stanza splits do into de o); the bound keeps a word the
+#: tagger did not return from taking the tag of the same spelling far ahead.
+_TAG_LOOKAHEAD = 8
+
+
+def align_tags(words: List[str], pos_tags: Sequence[Tuple[str, str]]) -> List[Optional[str]]:
+    """Give each word the tag of the next ``(word, tag)`` pair with the same spelling.
+
+    Words and pairs are matched in order, ignoring case. A word with no matching pair,
+    such as "do" when Stanza split it into "de" and "o", gets ``None``.
+    """
+    tags: List[Optional[str]] = []
+    j = 0
+    for word in words:
+        low = word.lower()
+        tag = None
+        for k in range(j, min(j + _TAG_LOOKAHEAD, len(pos_tags))):
+            if pos_tags[k][0].lower() == low:
+                tag, j = pos_tags[k][1], k + 1
+                break
+        tags.append(tag)
+    return tags
+
+
+def _starts_noun_phrase(prev: Optional[str], before: Optional[str], variety: str) -> Optional[bool]:
+    """Tell whether the word ``prev``, after the word ``before``, introduces a noun phrase.
+
+    ``True``: a determiner, a preposition, or a bare article that counts as the article.
+    ``False``: a bare article that is a clitic pronoun, so the next word is a verb.
+    ``None``: any other word, or no word; the context does not decide. ``prev`` and
+    ``before`` are lowercase and ``None`` past the start of the sentence or clause. ``variety`` is
+    "pt" or "br"; see the module docstring.
+    """
+    if prev is None:
+        return None
+    if prev in _DETERMINERS or deaccent(prev) in _PREPOSITIONS:
+        return True
+    if prev not in _ARTICLES:
+        return None
+    if variety == "br":
+        return before is None or deaccent(before) in _PREPOSITIONS
+    return before is None or deaccent(before) not in _PROCLISIS_TRIGGERS
+
+
+def guess_accents(
+    text: str,
+    restore: Mapping[str, str],
+    nominal: Mapping[str, str],
+    singular: Mapping[str, str],
+    tags: Sequence[Optional[str]],
+    variety: str = "pt",
+) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 
-    Only fires on a word that currently carries no accent and whose bare form maps to
-    a unique accented modern word (see ``Lexicon.accent_restore``). Case-preserving.
+    A word that carries no accent takes the accented form from ``restore``. It takes it
+    from ``nominal`` when the word before it introduces a noun phrase in ``variety``
+    ("pt" or "br"): a sua historia -> a sua história. When the word before it is a clitic
+    pronoun, the form is a verb and stays. When the word before it decides neither, a
+    NOUN or ADJ tag gives the accent. It
+    takes it from ``singular`` after a singular determiner (o pais -> o país). ``tags``
+    holds one tag or ``None`` per word of ``text``. Case-preserving.
     """
-    if not accent_map:
-        return word
-    low = word.lower()
-    if any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low)):
-        return word  # already accented
-    return accent_map.get(low, word)
+    matches = list(_WORD_RE.finditer(text))
+    if len(matches) != len(tags):
+        raise ValueError(f"{len(tags)} tags for {len(matches)} words")
+    starts = [i == 0 or bool(_PAUSE.search(text, matches[i - 1].end(), m.start()))
+              for i, m in enumerate(matches)]
+    out: List[str] = []
+    last = 0
+    for i, (match, tag) in enumerate(zip(matches, tags)):
+        word = match.group(0)
+        low = word.lower()
+        out.append(text[last:match.start()])
+        last = match.end()
+        prev = None if starts[i] else matches[i - 1].group(0).lower()
+        before = None if starts[i] or starts[i - 1] else matches[i - 2].group(0).lower()
+        # the tilde and the cedilla are no accents (cap. 4 p. 78-79): orgão, açucar
+        accented = not _ACCENTS.isdisjoint(unicodedata.normalize("NFD", low))
+        # a capital inside a segment marks a symbol or a name (McDonald, pH)
+        symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
+        name = word[:1].isupper() and low in _UNACCENTED_NAMES
+        form = None
+        if not accented and not symbol and not name:
+            form = restore.get(low)
+            noun = _starts_noun_phrase(prev, before, variety)
+            if form is None and (noun if noun is not None else tag in _NOMINAL_TAGS):
+                form = nominal.get(low)
+            if form is None and prev in _SINGULAR_DETERMINERS:
+                form = singular.get(low)
+        out.append(word if form is None else _match_case(word, form))
+    out.append(text[last:])
+    return "".join(out)
 
 
 # ------------------------------------------------ PT<->BR nasal-vowel alternation

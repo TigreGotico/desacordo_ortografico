@@ -19,11 +19,11 @@ from __future__ import annotations
 
 import unicodedata
 from dataclasses import dataclass, field
-from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Tuple
+from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Sequence, Tuple
 
 from . import rules
-from .eras import NORMS, Era, Norm, find_path
-from .lexicon import AO_ROW_CLASSES, Lexicon, get_lexicon
+from .eras import NORMS, Era, Norm, Variant, find_path
+from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, get_lexicon
 
 WordFn = Callable[[str], str]
 
@@ -118,11 +118,20 @@ class OrthographyConverter:
         target: "str | Norm",
         variant: Optional[str] = None,
         features: Optional[Collection[str]] = None,
+        pos_tags: Optional[Sequence[Tuple[str, str]]] = None,
     ) -> ConversionResult:
         """Convert ``text`` from ``source`` to ``target``.
 
         ``features`` names the :data:`FEATURES` to apply. ``None`` applies all of them.
         An unknown name raises ``ValueError``.
+
+        ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text`` from a part-of-speech
+        tagger, as ``tugatagger.TugaTagger.tag(text)`` returns them. The 1911 accent
+        guess gives a bare form that is otherwise only a verb form its accent after a
+        determiner or a preposition (a historia -> a história), and keeps it bare after a
+        clitic pronoun. A tag decides only the words that this rule leaves undecided:
+        NOUN or ADJ gives the accent. The target's variety decides when a bare article
+        is the article and when it is the pronoun, see :func:`rules.guess_accents`.
         """
         enabled = _enabled(features)
         text = unicodedata.normalize("NFC", text)
@@ -149,7 +158,15 @@ class OrthographyConverter:
             edge = self._edges[edge_name]
             step_pass = edge.forward if forward else edge.backward
             reversible = edge.reversible_forward if forward else edge.reversible_backward
+            guess = edge_name == "reform_1911" and forward and "1911-accent-restore" in enabled
+            # the word pass rewrites letters inside each word only, so the tags aligned to
+            # the words before it still line up one to one with the words after it
+            tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
             out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled), is_word)
+            if guess:
+                variety = "br" if dst.variant == Variant.BR else "pt"
+                out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
+                                          self.lex.accent_restore_singular, tags, variety)
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -221,7 +238,7 @@ class OrthographyConverter:
         def ao_row(classes: Mapping[str, str], to_old: Optional[Mapping[str, str]] = None):
             if to_old is None:
                 return lambda w: f"ao-map-{classes[w]}"
-            return lambda w: f"ao-map-{classes[to_old[w]]}"
+            return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
 
         def word_map_1911(_w: str) -> str:
             return "1911-word-map"
@@ -230,14 +247,13 @@ class OrthographyConverter:
             return "ptbr-divergence"
 
         # -- 1911: the word map first; the rules are a fallback for other words. 1911
-        #    also introduced graphic accents the rules can't derive; they are restored
-        #    from the word list where unambiguous (fosforo -> fósforo).
+        #    also introduced graphic accents the rules can't derive; convert() restores
+        #    them after this pass, from the word list and the context (fosforo -> fósforo).
         reform_1911 = _Edge(
             _Pass(
                 steps=[
                     ("1911-digraphs", rules.reform_1911_digraphs),
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
-                    ("1911-accent-restore", lambda w: rules.restore_accent(w, lex.accent_restore)),
                 ],
                 table=lex.reform1911_old2new, table_feature=word_map_1911,
             ),
@@ -395,11 +411,13 @@ def convert(
     target: "str | Norm",
     variant: Optional[str] = None,
     features: Optional[Collection[str]] = None,
+    pos_tags: Optional[Sequence[Tuple[str, str]]] = None,
 ) -> str:
     """Convert ``text`` from ``source`` to ``target`` and return the string.
 
     ``features`` names the :data:`FEATURES` to apply; ``None`` applies all of them.
-    For the full result (warnings, dual-form alternatives) use
-    :meth:`OrthographyConverter.convert`.
+    ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text``; see
+    :meth:`OrthographyConverter.convert`. For the full result (warnings, dual-form
+    alternatives) use :meth:`OrthographyConverter.convert`.
     """
-    return _converter().convert(text, source, target, variant, features).text
+    return _converter().convert(text, source, target, variant, features, pos_tags).text
