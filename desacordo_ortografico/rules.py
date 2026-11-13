@@ -225,12 +225,15 @@ def recase_months(text: str, lowercase: bool) -> str:
     capitalise them. Seasons stay lowercase in every norm. Toward the older norms a month
     or season opening a sentence is capitalised. Toward AO1990 it keeps the case it was
     written in: Base XIX 1º b writes months and seasons in lowercase, so the conversion
-    never raises one. This cannot be done per-word, because case is restored from the
-    source token.
+    never raises one. A name written in capitals throughout keeps them: Base XIX sets the
+    initial letter, and such a word has no lowercase letter to set it against. This cannot
+    be done per-word, because case is restored from the source token.
     """
 
     def repl(m):
         word = m.group(0)
+        if word.isupper():
+            return word
         low = word.lower()
         cap = low[:1].upper() + low[1:]
         prefix = text[: m.start()].rstrip()
