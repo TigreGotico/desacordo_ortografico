@@ -58,7 +58,8 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
     unattested. ``"verb"``: an irregular form, the -eu/-ou/-iu preterite (correr ->
     correu), the -ia imperfect and the -e present of -er/-ir verbs (servir -> servia,
     correr -> corre), the -a/-as/-am present and the -e/-es/-em subjunctive of -ar
-    verbs (historiar -> historia), and the conditional, infinitive + ia (ler -> leria).
+    verbs (historiar -> historia), and the conditional, a stem + -ar/-er/-ir + ia
+    (ler -> leria; the noun ar does not count, so aria is no verb form).
     ``"plural"``: a vowel + s plural (pai -> pais). ``"nominal"``: the -es plural
     after r, z or s (mar -> mares), the feminine plural (antigo -> antigas) and the
     feminine singular (tanto -> tanta). The sources are in the module docstring.
@@ -76,7 +77,7 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
     for ending in ("a", "as", "am", "e", "es", "em"):
         if word.endswith(ending) and word[:-len(ending)] + "ar" in words:
             kinds.add("verb")
-    if word.endswith(("aria", "eria", "iria")) and word[:-2] in words:
+    if word.endswith(("aria", "eria", "iria")) and len(word) > 4 and word[:-2] in words:
         kinds.add("verb")
     if word.endswith("s") and word[-2:-1] in ("a", "e", "i", "o", "u") and word[:-1] in words:
         kinds.add("plural")

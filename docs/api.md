@@ -63,12 +63,21 @@ does a regular inflection of a word, unless the context settles it:
 | Bare form | Example | Takes the accent |
 | --- | --- | --- |
 | not a word and no inflection | fosforo -> fósforo | always |
-| only a verb form | historia (historiar), continua (continuar) | when tagged NOUN or ADJ |
+| only a verb form | historia (historiar), continua (continuar) | after a determiner or a preposition (a sua história, de música); else when tagged NOUN or ADJ |
 | only a plural in -s | pais (pai) | after a singular determiner: o país, os pais |
 | a nominal form | antigas (antigo), tanta (tanto) | never |
 
+A bare article (o, a, os, as) is also a clitic pronoun, so it counts as a determiner by
+the variety of the target norm. For a European target it counts unless a word such as
+não, que, já or quando comes before it. For a Brazilian target it counts only at the
+start of a sentence or after a preposition. Elsewhere the bare article is the clitic
+pronoun, and the next word is a verb. A tag decides only a word that this rule leaves
+undecided: it never removes an accent the rule gives, and never adds one after a clitic
+pronoun.
+
 A capitalised word inside a sentence is a name, and the guess leaves it as written
-(Coimbra, Roma).
+(Coimbra, Roma). A name at the start of a sentence still takes the guess
+("Roma fica longe." gives "Romã fica longe.").
 
 ## `class OrthographyConverter`
 

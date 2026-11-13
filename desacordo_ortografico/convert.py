@@ -22,7 +22,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Sequence, Tuple
 
 from . import rules
-from .eras import NORMS, Era, Norm, find_path
+from .eras import NORMS, Era, Norm, Variant, find_path
 from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, get_lexicon
 
 WordFn = Callable[[str], str]
@@ -127,8 +127,11 @@ class OrthographyConverter:
 
         ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text`` from a part-of-speech
         tagger, as ``tugatagger.TugaTagger.tag(text)`` returns them. The 1911 accent
-        guess uses them: a bare form that is otherwise only a verb form takes its accent
-        when tagged NOUN or ADJ (historia -> história). Without tags it stays as written.
+        guess gives a bare form that is otherwise only a verb form its accent after a
+        determiner or a preposition (a historia -> a história), and keeps it bare after a
+        clitic pronoun. A tag decides only the words that this rule leaves undecided:
+        NOUN or ADJ gives the accent. The target's variety decides when a bare article
+        is the article and when it is the pronoun, see :func:`rules.guess_accents`.
         """
         enabled = _enabled(features)
         text = unicodedata.normalize("NFC", text)
@@ -158,8 +161,9 @@ class OrthographyConverter:
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
             out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled))
             if guess:
+                variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
-                                          self.lex.accent_restore_singular, tags)
+                                          self.lex.accent_restore_singular, tags, variety)
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"

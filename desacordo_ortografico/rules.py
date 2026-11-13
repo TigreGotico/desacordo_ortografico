@@ -9,20 +9,36 @@ Each function takes and returns a **lowercase** word; case restoration is handle
 reform that introduced them and are documented as *reversible* (a clean inverse exists)
 or *one-way* (the inverse is ambiguous and must be resolved by a lexicon upstream).
 
-The 1911 accent guess (:func:`guess_accents`) reads context. A determiner agrees in
-number with its noun (Cunha & Cintra, *Nova Gramática do Português Contemporâneo*,
-7.ª ed., Lexikon 2017, cap. 9 "Artigo", from p. 219, and cap. 11 "Pronomes" for the
-demonstratives, possessives and indefinites), so after a singular determiner a bare
-form that is otherwise only a plural is the singular noun: "o pais" is "o país". A
-proper name takes a capital initial and an ordinary word does not (AO1990 Base XIX 1º
-a), 2º a) and b): "Pedro Marques", "Lisboa"), so a capitalised word inside a sentence
-is a name and gets no accent from the guess: Coimbra, Roma.
+The 1911 accent guess (:func:`guess_accents`) reads the word before each bare form.
+The sources are Cunha & Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed.,
+Lexikon 2017, and the AO1990 text.
+
+- A determiner or a preposition introduces a noun phrase: the article and the
+  determiners agree with the noun (cap. 9 "Artigo", p. 219; cap. 11 "Pronomes",
+  p. 289), and a preposition relates a term to its consequent (cap. 15 "Preposição",
+  pp. 569-570). After one of them, a bare form that is otherwise only a verb form is
+  the noun: "a sua historia" is "a sua história".
+- The bare articles o, a, os and as are also the clitic pronouns. In Portugal the
+  clitic follows the verb unless a word such as não, que, já or quando comes before
+  it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327), so a bare article
+  counts unless such a word precedes it. In Brazil the clitic comes before the verb
+  in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
+  pp. 330-331), so a bare article counts only at the start of a sentence or after a
+  preposition.
+- The article and the determiners agree in number with the noun, so after a singular
+  determiner a bare form that is otherwise only a plural is the singular noun:
+  "o pais" is "o país".
+- A capital initial marks a proper name (AO1990 Base XIX 1º a), 2º a) and b):
+  "Pedro Marques", "Lisboa"). The common-word list cannot supply a name's accent, so a
+  capitalised word inside a sentence gets no accent from the guess: Coimbra, Roma.
 """
 from __future__ import annotations
 
 import re
 import unicodedata
 from typing import Callable, List, Mapping, Optional, Sequence, Tuple
+
+from .lexicon import deaccent
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -139,9 +155,37 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
     return word
 
 
-#: The determiners that mark a singular noun, see the module docstring.
+#: The determiners other than the bare articles: the contractions of a preposition and
+#: an article, and the demonstratives, possessives and indefinites. See the module
+#: docstring.
+_DETERMINERS = frozenset({
+    "do", "da", "dos", "das", "no", "na", "nas", "ao", "aos", "à", "às",
+    "pelo", "pela", "pelos", "pelas", "um", "uma", "uns", "umas",
+    "este", "esta", "estes", "estas", "esse", "essa", "esses", "essas",
+    "aquele", "aquela", "aqueles", "aquelas", "deste", "desta", "destes", "destas",
+    "desse", "dessa", "daquele", "daquela", "neste", "nesta", "nesse", "nessa",
+    "naquele", "naquela", "meu", "minha", "teu", "tua", "seu", "sua", "nosso", "nossa",
+    "vosso", "vossa", "meus", "minhas", "teus", "tuas", "seus", "suas", "nossos", "nossas",
+    "vossos", "vossas", "cada", "nenhum", "nenhuma", "algum", "alguma",
+    "outro", "outra", "todo", "toda",
+})
+#: The bare articles, which are also the clitic pronouns.
+_ARTICLES = frozenset({"o", "a", "os", "as"})
+#: Words that put a clitic pronoun before the verb in European Portuguese, unaccented.
+_PROCLISIS_TRIGGERS = frozenset({
+    "que", "nao", "se", "ja", "nunca", "sempre", "tambem", "so", "quem", "ainda", "bem",
+    "mal", "talvez", "onde", "quando", "como", "porque", "embora",
+})
+#: The simple prepositions of cap. 15, unaccented, except a, which is also the article,
+#: and ante, para, por and trás.
+_PREPOSITIONS = frozenset({
+    "de", "em", "com", "sem", "sobre", "entre", "contra", "ate", "desde", "sob", "apos",
+    "perante",
+})
+#: The determiners that mark a singular noun, see the module docstring. Bare "a" is
+#: left out because it is also the preposition ("deu presentes a pais").
 _SINGULAR_DETERMINERS = frozenset({
-    "o", "a", "um", "uma", "do", "da", "no", "na", "ao", "à", "pelo", "pela",
+    "o", "um", "uma", "do", "da", "no", "na", "ao", "à", "pelo", "pela",
     "este", "esta", "esse", "essa", "aquele", "aquela", "deste", "desta",
     "neste", "nesta", "naquele", "naquela", "nenhum", "nenhuma", "algum", "alguma",
     "meu", "minha", "teu", "tua", "seu", "sua", "nosso", "nossa", "vosso", "vossa",
@@ -151,8 +195,8 @@ _SINGULAR_DETERMINERS = frozenset({
 _NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
 _SENTENCE_END = re.compile(r"[.!?…]")
 #: How many tags past the last match a word may look for its own. A tagger can split
-#: one word into a few tokens (do -> de o); the bound keeps a missing word from
-#: scanning the whole text.
+#: one word into a few tokens (Stanza splits do into de o); the bound keeps a word the
+#: tagger did not return from taking the tag of the same spelling far ahead.
 _TAG_LOOKAHEAD = 8
 
 
@@ -160,7 +204,7 @@ def align_tags(words: List[str], pos_tags: Sequence[Tuple[str, str]]) -> List[Op
     """Give each word the tag of the next ``(word, tag)`` pair with the same spelling.
 
     Words and pairs are matched in order, ignoring case. A word with no matching pair,
-    such as "do" when the tagger split it into "de" and "o", gets ``None``.
+    such as "do" when Stanza split it into "de" and "o", gets ``None``.
     """
     tags: List[Optional[str]] = []
     j = 0
@@ -175,24 +219,50 @@ def align_tags(words: List[str], pos_tags: Sequence[Tuple[str, str]]) -> List[Op
     return tags
 
 
+def _starts_noun_phrase(prev: Optional[str], before: Optional[str], variety: str) -> Optional[bool]:
+    """Tell whether the word ``prev``, after the word ``before``, introduces a noun phrase.
+
+    ``True``: a determiner, a preposition, or a bare article that counts as the article.
+    ``False``: a bare article that is a clitic pronoun, so the next word is a verb.
+    ``None``: any other word, or no word; the context does not decide. ``prev`` and
+    ``before`` are lowercase and ``None`` past the start of the sentence. ``variety`` is
+    "pt" or "br"; see the module docstring.
+    """
+    if prev is None:
+        return None
+    if prev in _DETERMINERS or deaccent(prev) in _PREPOSITIONS:
+        return True
+    if prev not in _ARTICLES:
+        return None
+    if variety == "br":
+        return before is None or deaccent(before) in _PREPOSITIONS
+    return before is None or deaccent(before) not in _PROCLISIS_TRIGGERS
+
+
 def guess_accents(
     text: str,
     restore: Mapping[str, str],
     nominal: Mapping[str, str],
     singular: Mapping[str, str],
     tags: Sequence[Optional[str]],
+    variety: str = "pt",
 ) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 
-    A word that carries no accent takes the accented form from ``restore``; from
-    ``nominal`` when its tag is NOUN or ADJ (historia -> história); from ``singular``
-    after a singular determiner (o pais -> o país). ``tags`` holds one tag or ``None``
-    per word of ``text``. A capitalised word inside a sentence is a name and stays as
-    written. Case-preserving.
+    A word that carries no accent takes the accented form from ``restore``. It takes it
+    from ``nominal`` when the word before it introduces a noun phrase in ``variety``
+    ("pt" or "br"): a sua historia -> a sua história. When the word before it is a clitic
+    pronoun, the form is a verb and stays. When the word before it decides neither, a
+    NOUN or ADJ tag gives the accent. It
+    takes it from ``singular`` after a singular determiner (o pais -> o país). ``tags``
+    holds one tag or ``None`` per word of ``text``. A capitalised word inside a
+    sentence is a name and stays as written. Case-preserving.
     """
     matches = list(_WORD_RE.finditer(text))
     if len(matches) != len(tags):
         raise ValueError(f"{len(tags)} tags for {len(matches)} words")
+    starts = [i == 0 or bool(_SENTENCE_END.search(text, matches[i - 1].end(), m.start()))
+              for i, m in enumerate(matches)]
     out: List[str] = []
     last = 0
     for i, (match, tag) in enumerate(zip(matches, tags)):
@@ -200,21 +270,22 @@ def guess_accents(
         low = word.lower()
         out.append(text[last:match.start()])
         last = match.end()
-        prev = matches[i - 1] if i else None
-        sentence_start = prev is None or _SENTENCE_END.search(text, prev.end(), match.start())
+        prev = None if starts[i] else matches[i - 1].group(0).lower()
+        before = None if starts[i] or starts[i - 1] else matches[i - 2].group(0).lower()
         accented = any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low))
         # a capital inside a segment marks a symbol or a name (McDonald, pH); a capital
         # initial inside a sentence marks a name (Coimbra)
         name = not word.isupper() and (
             any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
-            or (not sentence_start and word[0].isupper())
+            or (not starts[i] and word[0].isupper())
         )
         form = None
         if not accented and not name:
             form = restore.get(low)
-            if form is None and tag in _NOMINAL_TAGS:
+            noun = _starts_noun_phrase(prev, before, variety)
+            if form is None and (noun if noun is not None else tag in _NOMINAL_TAGS):
                 form = nominal.get(low)
-            if form is None and not sentence_start and prev.group(0).lower() in _SINGULAR_DETERMINERS:
+            if form is None and prev in _SINGULAR_DETERMINERS:
                 form = singular.get(low)
         out.append(word if form is None else _match_case(word, form))
     out.append(text[last:])
