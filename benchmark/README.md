@@ -122,8 +122,12 @@ default for explainability and robustness on short inputs.
 
 - **Graphic-accent restoration (etymological edge).** The 1911 reform *introduced*
   systematic accents, so the deterministic `ph→f`/`y→i` rules cannot supply them. The
-  library restores accents from the word list where unambiguous (`fosforo→fósforo`), but
-  a pre-1911 word absent from the list keeps a bare vowel.
+  library guesses the accent from the word list (`fosforo→fósforo`). A bare form that is
+  itself a word, or a regular inflection of one, stays as written unless the caller's
+  part-of-speech tags or a singular determiner settle it (see `docs/api.md`). A pre-1911
+  word absent from the list keeps a bare vowel. This benchmark cannot score the guess:
+  `clean_gold.py` writes the pt_1973 accents into the etymological cells, so the gold
+  holds almost no bare pre-1911 word that needs an accent.
 - **Inflected silent consonants.** Dropping the silent c/p of `-ct-/-pt-` is lexical;
   the rule fallback only fires when the modernised form is an attested word, so
   inflections missing from the word list (`desactiva→desativa`) are left unchanged. A

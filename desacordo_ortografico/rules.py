@@ -8,12 +8,21 @@ Each function takes and returns a **lowercase** word; case restoration is handle
 :func:`apply_to_words`, which also tokenises the text. Functions are grouped by the
 reform that introduced them and are documented as *reversible* (a clean inverse exists)
 or *one-way* (the inverse is ambiguous and must be resolved by a lexicon upstream).
+
+The 1911 accent guess (:func:`guess_accents`) reads context. A determiner agrees in
+number with its noun (Cunha & Cintra, *Nova Gramática do Português Contemporâneo*,
+7.ª ed., Lexikon 2017, cap. 9 "Artigo", from p. 219, and cap. 11 "Pronomes" for the
+demonstratives, possessives and indefinites), so after a singular determiner a bare
+form that is otherwise only a plural is the singular noun: "o pais" is "o país". A
+proper name takes a capital initial and an ordinary word does not (AO1990 Base XIX 1º
+a), 2º a) and b): "Pedro Marques", "Lisboa"), so a capitalised word inside a sentence
+is a name and gets no accent from the guess: Coimbra, Roma.
 """
 from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List, Mapping, Optional
+from typing import Callable, List, Mapping, Optional, Sequence, Tuple
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -130,18 +139,86 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
     return word
 
 
-def restore_accent(word: str, accent_map) -> str:
+#: The determiners that mark a singular noun, see the module docstring.
+_SINGULAR_DETERMINERS = frozenset({
+    "o", "a", "um", "uma", "do", "da", "no", "na", "ao", "à", "pelo", "pela",
+    "este", "esta", "esse", "essa", "aquele", "aquela", "deste", "desta",
+    "neste", "nesta", "naquele", "naquela", "nenhum", "nenhuma", "algum", "alguma",
+    "meu", "minha", "teu", "tua", "seu", "sua", "nosso", "nossa", "vosso", "vossa",
+    "cada",
+})
+#: The universal POS tags of a noun or an adjective.
+_NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
+_SENTENCE_END = re.compile(r"[.!?…]")
+#: How many tags past the last match a word may look for its own. A tagger can split
+#: one word into a few tokens (do -> de o); the bound keeps a missing word from
+#: scanning the whole text.
+_TAG_LOOKAHEAD = 8
+
+
+def align_tags(words: List[str], pos_tags: Sequence[Tuple[str, str]]) -> List[Optional[str]]:
+    """Give each word the tag of the next ``(word, tag)`` pair with the same spelling.
+
+    Words and pairs are matched in order, ignoring case. A word with no matching pair,
+    such as "do" when the tagger split it into "de" and "o", gets ``None``.
+    """
+    tags: List[Optional[str]] = []
+    j = 0
+    for word in words:
+        low = word.lower()
+        tag = None
+        for k in range(j, min(j + _TAG_LOOKAHEAD, len(pos_tags))):
+            if pos_tags[k][0].lower() == low:
+                tag, j = pos_tags[k][1], k + 1
+                break
+        tags.append(tag)
+    return tags
+
+
+def guess_accents(
+    text: str,
+    restore: Mapping[str, str],
+    nominal: Mapping[str, str],
+    singular: Mapping[str, str],
+    tags: Sequence[Optional[str]],
+) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 
-    Only fires on a word that currently carries no accent and whose bare form maps to
-    a unique accented modern word (see ``Lexicon.accent_restore``). Case-preserving.
+    A word that carries no accent takes the accented form from ``restore``; from
+    ``nominal`` when its tag is NOUN or ADJ (historia -> história); from ``singular``
+    after a singular determiner (o pais -> o país). ``tags`` holds one tag or ``None``
+    per word of ``text``. A capitalised word inside a sentence is a name and stays as
+    written. Case-preserving.
     """
-    if not accent_map:
-        return word
-    low = word.lower()
-    if any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low)):
-        return word  # already accented
-    return accent_map.get(low, word)
+    matches = list(_WORD_RE.finditer(text))
+    if len(matches) != len(tags):
+        raise ValueError(f"{len(tags)} tags for {len(matches)} words")
+    out: List[str] = []
+    last = 0
+    for i, (match, tag) in enumerate(zip(matches, tags)):
+        word = match.group(0)
+        low = word.lower()
+        out.append(text[last:match.start()])
+        last = match.end()
+        prev = matches[i - 1] if i else None
+        sentence_start = prev is None or _SENTENCE_END.search(text, prev.end(), match.start())
+        accented = any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low))
+        # a capital inside a segment marks a symbol or a name (McDonald, pH); a capital
+        # initial inside a sentence marks a name (Coimbra)
+        name = not word.isupper() and (
+            any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
+            or (not sentence_start and word[0].isupper())
+        )
+        form = None
+        if not accented and not name:
+            form = restore.get(low)
+            if form is None and tag in _NOMINAL_TAGS:
+                form = nominal.get(low)
+            if form is None and not sentence_start and prev.group(0).lower() in _SINGULAR_DETERMINERS:
+                form = singular.get(low)
+        out.append(word if form is None else _match_case(word, form))
+    out.append(text[last:])
+    return "".join(out)
 
 
 # ------------------------------------------------ PT<->BR nasal-vowel alternation

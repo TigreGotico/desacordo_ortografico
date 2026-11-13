@@ -13,13 +13,18 @@ round-trips into `convert`), `is_portuguese` (`True`).
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).
 
-## `convert(text, source, target, variant=None, features=None) -> str`
+## `convert(text, source, target, variant=None, features=None, pos_tags=None) -> str`
 
 Convenience wrapper returning the converted string. `source`/`target` are norm ids or
 aliases (see `eras`). `variant` (`"pt"`/`"br"`) biases dual-form selection.
 
 `features` is a collection of names from `FEATURES`. Only those features apply. `None`
 applies all of them. An unknown name raises `ValueError`.
+
+`pos_tags` is a list of `(word, UPOS)` pairs for `text`, in the shape that
+`tugatagger.TugaTagger(...).tag(text)` returns. desacordo does not tag text itself. The
+pairs feed the 1911 accent guess only. They are matched to the words of `text` in order,
+ignoring case, and a word with no matching pair is untagged.
 
 Each edge of the norm graph is an ordered list of feature steps:
 
@@ -28,7 +33,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `1911-word-map` | the curated 1911 word pairs (pharmacia -> farmácia) | reform_1911 |
 | `1911-digraphs` | ph, th, rh -> f, t, r; y -> i | reform_1911 |
 | `1911-geminates` | doubled consonants, except rr and ss | reform_1911 |
-| `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo) | reform_1911 |
+| `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo), see below | reform_1911 |
 | `trema` | ü -> u | pt_1911_to_1945, ao1990_pt, ao1990_br |
 | `subtonic-grave` | sòmente -> somente | accent_1973, accent_1971 |
 | `base-iv` | the curated Base IV drop list | br_1911_to_1943, ao1990_pt |
@@ -51,9 +56,23 @@ Each edge of the norm graph is an ordered list of feature steps:
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
 word stays as written, and the rules of that edge do not change it either.
 
+The 1911 accent guess gives a bare word the accent of the one accented word that has
+the same letters. A bare form that is itself a word stays as written (para, pára). So
+does a regular inflection of a word, unless the context settles it:
+
+| Bare form | Example | Takes the accent |
+| --- | --- | --- |
+| not a word and no inflection | fosforo -> fósforo | always |
+| only a verb form | historia (historiar), continua (continuar) | when tagged NOUN or ADJ |
+| only a plural in -s | pais (pai) | after a singular determiner: o país, os pais |
+| a nominal form | antigas (antigo), tanta (tanto) | never |
+
+A capitalised word inside a sentence is a name, and the guess leaves it as written
+(Coimbra, Roma).
+
 ## `class OrthographyConverter`
 
-- `convert(text, source, target, variant=None, features=None) -> ConversionResult`
+- `convert(text, source, target, variant=None, features=None, pos_tags=None) -> ConversionResult`
 - `permitted_spellings(word, norm) -> list[str]`: all officially valid spellings of a
   word in `norm` (two for AO1990 dual/divergence words, one otherwise).
 

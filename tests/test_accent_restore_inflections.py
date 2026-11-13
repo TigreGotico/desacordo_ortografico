@@ -3,8 +3,9 @@
 The accent map gives an unaccented word its accented modern form. A word that is
 itself a valid word stays as written, and so does a regular inflection of a valid
 word: correu is a preterite of correr, not a bare corréu. The verb forms come from
-the Dicionário Priberam conjugation tables of correr, servir and dizer. A bare form
-whose frequent reading is the accented word keeps it: apos is após, not apo + s.
+the Dicionário Priberam conjugation tables of correr, servir, dizer, falar and ler.
+The nominal forms follow Cunha & Cintra, Nova Gramática do Português Contemporâneo,
+cap. 8. Context can settle some of these forms; see test_accent_guess_context.py.
 """
 import json
 from pathlib import Path
@@ -15,23 +16,12 @@ from desacordo_ortografico import convert
 
 # Bare spelling before 1911 -> modern spelling, with the AO1990 clause that accents it
 ACCENTED = [
-    ("historia", "história"),      # Base XI 1º b), apparent proparoxytone in -ia (glória)
-    ("agua", "água"),              # Base XI 1º b), apparent proparoxytone in -ua (língua)
-    ("familia", "família"),        # Base XI 1º b), apparent proparoxytone in -ia
-    ("musica", "música"),          # Base XI 1º a), proparoxytone (músico)
     ("agradavel", "agradável"),    # Base IX 2º a), paroxytone in -l (amável)
     ("cafe", "café"),              # Base VIII 1º a), oxytone in open -e (até, pontapé)
     ("tambem", "também"),          # Base VIII 1º c), oxytone in -em (também)
     ("liquido", "líquido"),        # Base XI 1º a), example of the clause
     ("caustico", "cáustico"),      # Base XI 1º a), example of the clause
     ("hidraulico", "hidráulico"),  # Base XI 1º a), example of the clause
-    ("republica", "república"),    # Base XI 1º a), proparoxytone (público)
-    ("pagina", "página"),          # Base XI 1º a), proparoxytone
-    ("pratica", "prática"),        # Base XI 1º a), proparoxytone (plástico)
-    ("avos", "avós"),              # Base VIII 1º a), lists avó(s)
-    ("apos", "após"),              # Base VIII 1º a), oxytone in open -o + s (só(s))
-    ("atras", "atrás"),            # Base VIII 1º a), oxytone in open -a + s (estás)
-    ("viveres", "víveres"),        # Base XI 1º a), proparoxytone (Priberam: víveres)
 ]
 
 INFLECTED = [
@@ -42,6 +32,12 @@ INFLECTED = [
     "Os filhos chegaram.",         # plural of filho
     "Subiu aos montes.",           # plural of monte
     "As casas antigas ficaram.",   # feminine plural of antigo
+    "Comeu tanta fruta.",          # feminine singular of tanto
+    "A febre continua alta.",      # continuar, presente: ele continua (as falar: fala)
+    "O clima influencia a colheita.",  # influenciar, presente: ele influencia
+    "Talvez ele cante amanhã.",    # cantar, conjuntivo: que ele cante (as falar: fale)
+    "Ele leria o livro.",          # ler, condicional: ele leria
+    "Assim funcionaria melhor.",   # funcionar, condicional: ele funcionaria (as falar: falaria)
 ]
 
 
