@@ -97,6 +97,26 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
     return word
 
 
+# AO1990 Base XI: every proparoxytone, real (fósforo) or apparent (série), carries a
+# graphic accent, so an unaccented old spelling of one is no modern word. Real: one
+# vowel, consonants, one vowel after the stressed vowel. Apparent: -ie after consonants
+# (Base XI 1º b: "barbárie, série"). The other apparent endings (-ia, -io, -ua, -oa) also
+# end verb forms (influencia, anuncio, continua, povoa), so they are left out.
+_STRESSED = "áéíóúâêô"
+_REAL_PROPAROXYTONE_TAIL = re.compile(r"[^aeiouãõ]*[aeiouãõ][^aeiouãõ]+[aeiouãõ][^aeiouãõ]*")
+_APPARENT_PROPAROXYTONE_TAIL = re.compile(r"[^aeiouãõ]+ie")
+
+
+def is_proparoxytone(word: str) -> bool:
+    """True when the graphic accent of ``word`` marks a proparoxytone (Base XI)."""
+    pos = next((i for i, ch in enumerate(word) if ch in _STRESSED), None)
+    if pos is None:
+        return False
+    tail = word[pos + 1:]
+    return bool(_REAL_PROPAROXYTONE_TAIL.fullmatch(tail)
+                or _APPARENT_PROPAROXYTONE_TAIL.fullmatch(tail))
+
+
 def restore_accent(word: str, accent_map) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 

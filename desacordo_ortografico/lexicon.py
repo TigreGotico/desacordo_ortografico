@@ -22,6 +22,8 @@ import unicodedata
 from functools import cached_property
 from typing import Dict, List, Optional, Set
 
+from desacordo_ortografico import rules
+
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
@@ -152,6 +154,15 @@ class Lexicon:
         Only unambiguous entries are kept: an unaccented key is included only if exactly
         one accented word deaccents to it AND that bare form is not itself a valid word
         (so 'para'/'pára', 'esta'/'está' are never touched).
+
+        The word list has few inflected forms, so a missing bare form is no proof that
+        the bare form is not a word (disse, continua, antigas). So the accented form
+        must be a proparoxytone (``rules.is_proparoxytone``): AO1990 Base XI accents
+        every one, while an unaccented paroxytone or oxytone is a valid modern spelling
+        (Base X 2º: "Aboim, Coimbra, ruim"). The bare form of a real proparoxytone must
+        also not be the present form of an attested -ar verb (integra, integrar; celebre,
+        celebrar). An -ie noun keeps its accent over the rarer -iar subjunctive (série
+        over serie, from seriar).
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
@@ -166,8 +177,17 @@ class Lexicon:
                 continue
             accented = forms - {bare}
             if len(accented) == 1:
-                out[bare] = next(iter(accented))
+                form = next(iter(accented))
+                if rules.is_proparoxytone(form) and (
+                        bare.endswith("ie") or not self._ar_verb_form(bare)):
+                    out[bare] = form
         return out
+
+    def _ar_verb_form(self, bare: str) -> bool:
+        """True when ``bare`` is a present form of an attested -ar verb."""
+        stem = bare[:-1] if bare.endswith("s") else bare
+        return (stem.endswith("a") and stem + "r" in self.wordset
+                or stem.endswith("e") and stem[:-1] + "ar" in self.wordset)
 
     @cached_property
     def cp_keep_pt(self) -> Set[str]:
