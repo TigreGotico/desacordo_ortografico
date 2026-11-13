@@ -201,9 +201,11 @@ def recase_months(text: str, lowercase: bool) -> str:
     """Set month/season casing at the text level (so sentence position is known).
 
     AO1990 lowercases months mid-sentence (``lowercase=True``); the older norms
-    capitalise them. Seasons stay lowercase in every norm. A month or season opening a
-    sentence stays capitalised. This cannot be done per-word, because case is restored
-    from the source token.
+    capitalise them. Seasons stay lowercase in every norm. Toward the older norms a month
+    or season opening a sentence is capitalised. Toward AO1990 it keeps the case it was
+    written in: Base XIX 1º b writes months and seasons in lowercase, so the conversion
+    never raises one. This cannot be done per-word, because case is restored from the
+    source token.
     """
 
     def repl(m):
@@ -212,7 +214,7 @@ def recase_months(text: str, lowercase: bool) -> str:
         cap = low[:1].upper() + low[1:]
         prefix = text[: m.start()].rstrip()
         if prefix == "" or prefix[-1] in ".!?:—":
-            return cap  # sentence-initial: capitalised in every norm
+            return word if lowercase else cap
         if low in _SEASONS:
             return low  # seasons are always lowercase mid-sentence
         return low if lowercase else cap
