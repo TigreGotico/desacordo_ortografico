@@ -54,6 +54,36 @@ def test_one_capital_letter_still_converts():
     assert convert("A pharmacia", "etymological", "pt_1973") == "A farmácia"
 
 
+def test_a_letter_symbol_stays():
+    # AO1990 Base I 2º c): "As letras k, w e y usam-se [...] Em siglas, símbolos"
+    assert convert("Mediu o eixo Y.", "etymological", "pt_1973") == "Mediu o eixo Y."
+    assert convert("MEDIU O EIXO Y.", "etymological", "pt_1973") == "MEDIU O EIXO I."
+
+
+def test_an_accent_guess_form_converts_like_the_lowercase_word():
+    # The word list lacks anatomicas, but the accent guess writes it, so the capitals
+    # are no acronym. AO1990 Base XI 3º: "anatómico/anatômico"
+    assert convert("Vi as ANATOMICAS hoje.", "etymological", "br_1971") == "Vi as ANATÔMICAS hoje."
+    assert convert("Vi as anatomicas hoje.", "etymological", "br_1971") == "Vi as anatômicas hoje."
+
+
+def test_an_inflection_of_a_known_word_is_no_acronym():
+    # The word list holds base forms; a feminine or a plural of one converts like the
+    # lowercase word. AO1990 Base XI 3º: "académico/acadêmico". Base IV 1º b): the mute
+    # c is eliminated in "coletivo"
+    assert convert("A sessão ACADÉMICA abriu.", "ao1990-pt", "ao1990-br") == "A sessão ACADÊMICA abriu."
+    assert convert("As obras COLECTIVAS saíram.", "pt_1973", "ao1990-pt") == "As obras COLETIVAS saíram."
+
+
+@pytest.mark.parametrize("text, src, dst, want", [
+    ("ART. 2.º — A COLLECÇÃO DO THEATRO", "etymological", "pt_1973", "ART. 2.º — A COLECÇÃO DO TEATRO"),
+    ("1.ª SÉRIE: ACÇÃO COLECTIVA", "pt_1973", "ao1990-pt", "1.ª SÉRIE: AÇÃO COLETIVA"),
+])
+def test_ordinal_signs_do_not_make_text_mixed_case(text, src, dst, want):
+    # º and ª are lowercase letters to Python; the text is still in capitals throughout
+    assert convert(text, src, dst) == want
+
+
 def _gold_corpus(row_id):
     path = Path(__file__).parent.parent / "benchmark" / "gold_corpus.jsonl"
     for line in path.open(encoding="utf-8"):

@@ -151,8 +151,9 @@ class OrthographyConverter:
             return result
 
         # A token in capitals marks an acronym only in mixed-case text. Text in capitals
-        # throughout converts each token like the same word in lowercase.
-        is_word = None if text.isupper() else self.lex.is_known
+        # throughout converts each token like the same word in lowercase. The test reads
+        # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
+        is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
