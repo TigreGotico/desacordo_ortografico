@@ -137,11 +137,21 @@ class Lexicon:
 
     @cached_property
     def ao_pt_new2old(self) -> Dict[str, str]:
-        return _invert(self.ao_pt_old2new)
+        return self._ao_new2old(self.ao_pt_old2new)
 
     @cached_property
     def ao_br_new2old(self) -> Dict[str, str]:
-        return _invert(self.ao_br_old2new)
+        return self._ao_new2old(self.ao_br_old2new)
+
+    def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
+        """Invert an AO1990 word map. The bare form of a dropped differential accent
+        is also a proclitic (para, pelo: Base IX 9.o), so only the forms in
+        ``differential_restore`` get their accent back."""
+        out = _invert(old2new)
+        for bare in self.differential_dropped.values():
+            out.pop(bare, None)
+        out.update(self.differential_restore)
+        return out
 
     @cached_property
     def wordset(self) -> Set[str]:
@@ -236,6 +246,10 @@ class Lexicon:
     @cached_property
     def differential_dropped(self) -> Dict[str, str]:
         return {k.lower(): v.lower() for k, v in self._differential.get("dropped", {}).items()}
+
+    @cached_property
+    def differential_restore(self) -> Dict[str, str]:
+        return {k.lower(): v.lower() for k, v in self._differential.get("restore", {}).items()}
 
     @cached_property
     def differential_kept(self) -> Set[str]:
