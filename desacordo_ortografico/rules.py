@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List, Optional
+from typing import Callable, List
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -21,25 +21,16 @@ _VOWELS = "aeiouáàâãéêíóôõúü"
 
 
 # ----------------------------------------------------------------- tokenising
-def apply_to_words(
-    text: str,
-    fn: Callable[[str], str],
-    name_fn: Optional[Callable[[str], str]] = None,
-) -> str:
+def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
     capitalisation pattern (UPPER / Title / lower) is re-applied to the result.
-    When ``name_fn`` is given, a word with a capital initial and lowercase after it that
-    does not open a sentence (a proper name, as far as the spelling shows) goes to
-    ``name_fn`` instead. A word in capitals throughout shows no name.
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
-        is_name = (word[:1].isupper() and not word.isupper()
-                   and not opens_sentence(text, match.start()))
-        out = (name_fn if name_fn is not None and is_name else fn)(word.lower())
+        out = fn(word.lower())
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)
@@ -56,7 +47,6 @@ def opens_sentence(text: str, start: int) -> bool:
     """
     prefix = text[:start].rstrip().rstrip(_OPENERS).rstrip()
     return prefix == "" or prefix[-1] in ".!?:—"
-
 
 
 def words(text: str) -> List[str]:

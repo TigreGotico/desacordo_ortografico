@@ -35,6 +35,16 @@ def deaccent(word: str) -> str:
     return unicodedata.normalize("NFC", out)
 
 
+def _strip_1911_accents(word: str) -> str:
+    """Strip the graphic accents but keep ç and the tilde: 'fósforo' -> 'fosforo',
+    'romã' -> 'romã'."""
+    out = "".join(
+        c for c in unicodedata.normalize("NFD", word)
+        if not unicodedata.combining(c) or c in "\u0327\u0303"
+    )
+    return unicodedata.normalize("NFC", out)
+
+
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
 AO_ROW_CLASSES = ("consonant", "diacritic", "trema", "join", "locution")
 
@@ -184,11 +194,15 @@ class Lexicon:
         Only unambiguous entries are kept: an unaccented key is included only if exactly
         one accented word deaccents to it AND that bare form is not itself a valid word
         (so 'para'/'pára', 'esta'/'está' are never touched).
+
+        The key keeps the tilde. Spelling before 1911 already wrote ã and õ (christão,
+        commoção, attenção in ``reform_1911_irregular.json``), so a bare a or o in such
+        text is no lost tilde: roma stays roma, not romã.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
         for wl in self.wordset:
-            d = deaccent(wl)
+            d = _strip_1911_accents(wl)
             by_bare.setdefault(d, set()).add(wl)
             if d == wl:
                 bare_words.add(wl)

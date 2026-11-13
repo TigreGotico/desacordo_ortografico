@@ -69,14 +69,47 @@ def test_iar_subjunctive_still_converts(old, new, target):
     assert convert(f"que ele {old}", "etymological", target) == f"que ele {new}"
 
 
-# fósforo takes the accent since 1911 (gold_parallel.jsonl row s01: fósforos). An opening
-# quote is no sign of a proper name.
+# fósforo takes the accent since 1911 (gold_parallel.jsonl row s01: fósforos).
 def test_word_after_an_opening_quote_still_restores_the_accent():
     text = "«Fosforo», gritou ele."
     assert convert(text, "etymological", "pt_1973") == "«Fósforo», gritou ele."
 
 
-# Text in capitals shows no proper names, so fósforo still takes its accent.
 def test_text_in_capitals_still_restores_the_accent():
     text = "A PHARMACIA DO FOSFORO"
     assert convert(text, "etymological", "pt_1973") == "A FARMÁCIA DO FÓSFORO"
+
+
+# Portuguese names take the accent like any word (AO1990 Base XI 3º: "Amazónia/Amazônia,
+# António/Antônio"). Proparoxytones, Base XI 1º: Lúcia, Bárbara, Glória, África, Pacífico,
+# Atlântico. A paroxytone in -r, Base IX 2º a): César. An oxytone in -a, Base VIII 1º a):
+# Panamá. Base IX 2º Obs.: "Fénix e Fênix".
+NAMES = [("Lucia", "Lúcia"), ("Barbara", "Bárbara"), ("Cesar", "César"),
+         ("Gloria", "Glória"), ("Africa", "África"), ("Pacifico", "Pacífico"),
+         ("Atlantico", "Atlântico"), ("Panama", "Panamá"), ("Phenix", "Fénix")]
+
+
+@pytest.mark.parametrize("old, new", NAMES)
+def test_name_mid_sentence_takes_its_accent(old, new):
+    assert convert(f"Vimos o {old} ontem.", "etymological", "pt_1973") == f"Vimos o {new} ontem."
+
+
+@pytest.mark.parametrize("old, new", NAMES)
+def test_name_after_a_line_break_takes_its_accent(old, new):
+    assert convert(f"Capitulo I\n{old} ontem", "etymological", "pt_1973") == f"Capítulo I\n{new} ontem"
+
+
+# Spelling before 1911 already wrote the tilde (christão, commoção, attenção in
+# reform_1911_irregular.json), so the accent restore never adds one: Coimbra (gold_full.jsonl
+# row d00069), Roma and Castela keep their spelling.
+@pytest.mark.parametrize("text", ["Vive em Coimbra. Coimbra é linda.", "COIMBRA",
+                                  "Partiu de Roma para Castela.", "Roma caiu."])
+def test_accent_restore_adds_no_tilde(text):
+    assert convert(text, "etymological", "pt_1973") == text
+
+
+# A month that opens a quoted sentence keeps its capital toward AO1990, like any opening
+# word (Base XIX 1º b lowers months inside a sentence).
+def test_month_after_an_opening_quote_opens_the_sentence():
+    text = "«Janeiro chegou», disse ele."
+    assert convert(text, "pre-ao1990-pt", "ao1990-pt") == text

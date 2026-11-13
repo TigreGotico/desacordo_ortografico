@@ -84,8 +84,6 @@ class _Edge:
     reversible_forward: bool = True
     reversible_backward: bool = True
     note: str = ""
-    # the forward pass for a proper name (a capitalised word mid-sentence)
-    forward_name: Optional[_Pass] = None
 
 
 @dataclass
@@ -145,13 +143,8 @@ class OrthographyConverter:
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
             step_pass = edge.forward if forward else edge.backward
-            name_pass = edge.forward_name if forward else None
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(
-                out,
-                lambda w, p=step_pass: p.apply(w, enabled),
-                None if name_pass is None else (lambda w, p=name_pass: p.apply(w, enabled)),
-            )
+            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled))
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -235,13 +228,11 @@ class OrthographyConverter:
         #    leave a loanword or a foreign name alone (rules.is_foreign_spelling). 1911
         #    also introduced graphic accents the rules can't derive; they are restored
         #    from the word list where unambiguous (fosforo -> fósforo).
-        steps_1911 = [
-            ("1911-digraphs", rules.reform_1911_digraphs),
-            ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
-        ]
         reform_1911 = _Edge(
             _Pass(
-                steps=steps_1911 + [
+                steps=[
+                    ("1911-digraphs", rules.reform_1911_digraphs),
+                    ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
                     ("1911-accent-restore", lambda w: rules.restore_accent(w, lex.accent_restore)),
                 ],
                 table=lex.reform1911_old2new, table_feature=word_map_1911,
@@ -250,11 +241,6 @@ class OrthographyConverter:
             _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
             reversible_backward=False,
             note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
-            forward_name=_Pass(
-                steps=steps_1911,
-                table=lex.reform1911_old2new, table_feature=word_map_1911,
-                skip=rules.is_foreign_spelling,
-            ),
         )
 
         # -- 1911 <-> 1945 (PT): the 1945 Convenção dropped the trema for Portugal
