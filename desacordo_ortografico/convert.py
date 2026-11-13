@@ -23,7 +23,7 @@ from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optiona
 
 from . import rules
 from .eras import NORMS, Era, Norm, find_path
-from .lexicon import AO_ROW_CLASSES, Lexicon, get_lexicon
+from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, get_lexicon
 
 WordFn = Callable[[str], str]
 
@@ -218,7 +218,7 @@ class OrthographyConverter:
         def ao_row(classes: Mapping[str, str], to_old: Optional[Mapping[str, str]] = None):
             if to_old is None:
                 return lambda w: f"ao-map-{classes[w]}"
-            return lambda w: f"ao-map-{classes[to_old[w]]}"
+            return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
 
         def word_map_1911(_w: str) -> str:
             return "1911-word-map"
