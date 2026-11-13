@@ -335,3 +335,8 @@ def test_second_person_of_a_verb_form_stays(text):
 def test_a_plural_that_spells_a_word_stays():
     # manes is a word of its own, not the plural of a bare mane
     assert convert("Os manes antigos.", "etymological", "pt_1973") == "Os manes antigos."
+
+
+def test_ao_words_get_no_s_plural():
+    # cap. 8: most -ão nouns make the plural in -ões or -ães (alemão, alemães)
+    assert convert("Os alemaos chegaram.", "etymological", "pt_1973") == "Os alemaos chegaram."

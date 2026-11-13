@@ -270,8 +270,8 @@ class Lexicon:
                 out[bare] = (next(iter(accented)), _inflection_kinds(bare, bare_words))
         # the word list holds singulars; a vowel-final singular makes its plural in -s.
         # -ão follows its own rules (alemão, alemães), so it is left out. The -s form of
-        # a verb form is the second person of the same tense (corre, corres), so the
-        # plural keeps the singular's verb reading.
+        # a present, imperfect or conditional verb form is the second person of the same
+        # tense (corre, corres; servia, servias), so the plural keeps the verb reading.
         for bare, (form, kinds) in list(out.items()):
             plural = bare + "s"
             if bare[-1] in _PLURAL_VOWELS and not form.endswith("ão") and plural not in by_bare:
