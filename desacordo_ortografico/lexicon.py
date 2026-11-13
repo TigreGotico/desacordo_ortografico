@@ -13,10 +13,11 @@ reversible transforms. Everything that is *irreducibly lexical* lives here:
 ``tugalex`` is a hard dependency: a missing package or a failed read raises, so the
 output never depends on what happens to be installed.
 
-A dual cell of an AO1990 word map (Base IV 1º c, two valid forms such as sector and
-setor) gives pt-PT the form with the consonant and pt-BR the form without it, by owner
-ruling. Base IV 1º c makes both forms valid; the choice of one per variety keeps the
-output of a text in one form.
+Where both forms of a word are valid in the target variety (a dual cell of that
+variety's AO1990 word map, Base IV 1º c: sector and setor), the converter writes the
+form with the consonant, by owner ruling. A word with one valid form in the target
+variety takes that form, so a pt-BR target takes a dual of the pt-PT map only from the
+pt-BR map row, from ``base_iv.json``, or as written.
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
@@ -213,11 +214,11 @@ class Lexicon:
 
     @cached_property
     def ao_pt_old2new(self) -> Dict[str, str]:
-        return _old2new(self.ao_pt_forms, keep_consonant=True)
+        return _old2new(self.ao_pt_forms)
 
     @cached_property
     def ao_br_old2new(self) -> Dict[str, str]:
-        return _old2new(self.ao_br_forms, keep_consonant=False)
+        return _old2new(self.ao_br_forms)
 
     @cached_property
     def _pt_duals(self) -> Dict[str, Tuple[str, str]]:
@@ -309,7 +310,7 @@ class Lexicon:
             return None  # stems speak only for forms the word list lacks (inflections)
         # the feminine or plural of a word follows that word (aptas: apto; estupefactos:
         # estupefacto, attested and kept)
-        singular = word[:-1] if word.endswith("s") else word
+        singular = word.removesuffix("s")
         bases = [singular, singular[:-1] + "o"] if singular.endswith("a") else [singular]
         for base in bases:
             if base == word:
@@ -346,12 +347,12 @@ class Lexicon:
 
     @cached_property
     def ao_br_new2old(self) -> Dict[str, str]:
-        """Invert the pt-BR map. The form without the consonant of a dual that is itself
-        a pre-AO1990 spelling stays (liquefato)."""
+        """Invert the pt-BR map. The form with the consonant of a dual that is itself a
+        pre-AO1990 spelling stays (liquefacto)."""
         out = self._ao_new2old(self.ao_br_old2new)
-        for old, (_full, bare) in self._br_duals.items():
-            if bare == old:
-                out.pop(bare, None)
+        for old, (full, _bare) in self._br_duals.items():
+            if full == old:
+                out.pop(full, None)
         return out
 
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
@@ -560,18 +561,6 @@ class Lexicon:
                 if br not in self._pt_dual_full_forms}
 
     @cached_property
-    def ao_dual_pt2br(self) -> Dict[str, str]:
-        """The dual cells of both AO1990 maps, form with the consonant -> form without it,
-        for a pt-BR target (sector -> setor, liquefacto -> liquefato). A curated pt-BR
-        form and its feminine stay (espectador, espectadora)."""
-        out: Dict[str, str] = {}
-        for full, bare in list(self._pt_duals.values()) + list(self._br_duals.values()):
-            masculine = full[:-1] if full.endswith("a") else full
-            if masculine not in self.divergence_br2pt:
-                out.setdefault(full, bare)
-        return out
-
-    @cached_property
     def ao_dual_br2pt(self) -> Dict[str, str]:
         """The dual cells, form without the consonant -> form with it, for a pt-PT target
         (setor -> sector). A pt-BR dual goes only where the pt-PT map has no row of its
@@ -633,14 +622,14 @@ def _invert(mapping: Dict[str, str]) -> Dict[str, str]:
     return out
 
 
-def _old2new(forms: Dict[str, List[str]], keep_consonant: bool) -> Dict[str, str]:
+def _old2new(forms: Dict[str, List[str]]) -> Dict[str, str]:
     """One AO1990 form per old form. A dual cell gives the form with the consonant
-    (the longer one) when ``keep_consonant`` and the form without it otherwise. Rows
+    (the longer one). Rows
     whose form equals the old form (a pt-PT dual, a capital-only change such as Janeiro)
     are left out: they would mark modern words as pre-AO1990."""
     out: Dict[str, str] = {}
     for old, new in forms.items():
-        form = max(new, key=len) if keep_consonant else min(new, key=len)
+        form = max(new, key=len)
         if form != old:
             out[old] = form
     return out

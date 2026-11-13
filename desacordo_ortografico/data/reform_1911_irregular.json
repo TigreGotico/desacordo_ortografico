@@ -209,6 +209,11 @@
     "hombro": "ombro",
     "hervas": "ervas"
   },
+  "frequent_reading": {
+    "_comment": "Pre-1911 forms of two words that later spellings tell apart: contracto is the noun 'contract' (contrato from 1911) and the adjective 'contracted' (contracto, a dual in AO1990). The noun is far more frequent, so the frequent reading is the default.",
+    "contracto": "contrato",
+    "contractos": "contratos"
+  },
   "k_w": {
     "_comment": "Loanword k/w regularised to qu/v (or u). The bare foreignisms (whisky, sandwich) are NOT listed, as those spellings remain acceptable today.",
     "kilo": "quilo",
