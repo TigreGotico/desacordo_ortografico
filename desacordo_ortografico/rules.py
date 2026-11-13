@@ -23,8 +23,9 @@ Lexikon 2017, and the AO1990 text.
   it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327), so a bare article
   counts unless such a word stands right before it. In Brazil the clitic comes before the verb
   in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
-  pp. 330-331), so a bare article counts only at the start of a sentence or after a
-  preposition.
+  pp. 330-331), so a bare article counts only at the start of a sentence or clause or after a
+  preposition. Punctuation ends the context: the word before a comma, a colon or a
+  bracket decides nothing about the word after it.
 - The article and the determiners agree in number with the noun, so after a singular
   determiner a bare form that is otherwise only a plural is the singular noun:
   "o pais" is "o país".
@@ -197,7 +198,8 @@ _NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
 # city names written without an accent whose letters spell an accented common word
 # (Coimbra, coimbrã; Roma, romã)
 _UNACCENTED_NAMES = frozenset({"coimbra", "roma"})
-_SENTENCE_END = re.compile(r"[.!?…]")
+# a sentence end or a clause pause; the word before it does not introduce the next word
+_PAUSE = re.compile(r"[.!?…,;:()\[\]—–]")
 #: How many tags past the last match a word may look for its own. A tagger can split
 #: one word into a few tokens (Stanza splits do into de o); the bound keeps a word the
 #: tagger did not return from taking the tag of the same spelling far ahead.
@@ -229,7 +231,7 @@ def _starts_noun_phrase(prev: Optional[str], before: Optional[str], variety: str
     ``True``: a determiner, a preposition, or a bare article that counts as the article.
     ``False``: a bare article that is a clitic pronoun, so the next word is a verb.
     ``None``: any other word, or no word; the context does not decide. ``prev`` and
-    ``before`` are lowercase and ``None`` past the start of the sentence. ``variety`` is
+    ``before`` are lowercase and ``None`` past the start of the sentence or clause. ``variety`` is
     "pt" or "br"; see the module docstring.
     """
     if prev is None:
@@ -264,7 +266,7 @@ def guess_accents(
     matches = list(_WORD_RE.finditer(text))
     if len(matches) != len(tags):
         raise ValueError(f"{len(tags)} tags for {len(matches)} words")
-    starts = [i == 0 or bool(_SENTENCE_END.search(text, matches[i - 1].end(), m.start()))
+    starts = [i == 0 or bool(_PAUSE.search(text, matches[i - 1].end(), m.start()))
               for i, m in enumerate(matches)]
     out: List[str] = []
     last = 0

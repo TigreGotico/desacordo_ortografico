@@ -65,10 +65,27 @@ def test_brazilian_article_counts_at_sentence_start_or_after_a_preposition():
     assert convert("Ele estudou a historia.", "etymological", "br_1971") == "Ele estudou a historia."
 
 
-@pytest.mark.parametrize("prep", ["para", "por", "ante"])
+@pytest.mark.parametrize("prep", ["para", "ante"])
 def test_brazilian_article_counts_after_every_simple_preposition(prep):
-    # cap. 15 p. 570 lists para, por and ante among the simple prepositions
+    # cap. 15 p. 570 lists para and ante among the simple prepositions
     assert convert(f"Foi {prep} a historia.", "etymological", "br_1971") == f"Foi {prep} a história."
+
+
+def test_por_introduces_a_noun_phrase():
+    # por + a contracts to pela, so por stands before a bare noun
+    assert convert("Foi por agua abaixo.", "etymological", "pt_1973") == "Foi por água abaixo."
+
+
+@pytest.mark.parametrize("text", ["O comboio para, critica o chefe e sai.", "Ele nunca para; duvida de tudo.",
+                                  "Sempre que para, critica.", "Para, pratica!"])
+@pytest.mark.parametrize("target", ["pt_1973", "br_1971"])
+def test_punctuation_ends_the_context_of_the_word_before(text, target):
+    # the verb para (parar) before a pause does not introduce the next word
+    assert convert(text, "etymological", target) == text
+
+
+def test_brazilian_article_counts_after_a_pause():
+    assert convert("Chegou cedo, a musica tocou.", "etymological", "br_1971") == "Chegou cedo, a música tocou."
 
 
 @pytest.mark.parametrize("bare,accented", NOMINAL)
