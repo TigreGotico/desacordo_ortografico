@@ -141,13 +141,15 @@ class OrthographyConverter:
         if not steps:
             return result
 
+        # A token in capitals marks an acronym only in mixed-case text. Text in capitals
+        # throughout converts each token like the same word in lowercase.
+        is_word = None if text.isupper() else self.lex.is_known
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
             step_pass = edge.forward if forward else edge.backward
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled),
-                                       self.lex.is_known)
+            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled), is_word)
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
