@@ -16,7 +16,7 @@ tags are (word, UPOS) pairs built here by hand. The contractions come split
 import pytest
 
 from desacordo_ortografico import OrthographyConverter, convert
-from desacordo_ortografico.lexicon import _inflection_kinds
+from desacordo_ortografico.lexicon import Lexicon, _inflection_kinds, get_lexicon
 from desacordo_ortografico.rules import align_tags
 
 
@@ -340,3 +340,38 @@ def test_a_plural_that_spells_a_word_stays():
 def test_ao_words_get_no_s_plural():
     # cap. 8: most -ão nouns make the plural in -ões or -ães (alemão, alemães)
     assert convert("Os alemaos chegaram.", "etymological", "pt_1973") == "Os alemaos chegaram."
+
+
+
+@pytest.mark.parametrize("text,expected", [
+    ("Viu o orgão.", "Viu o órgão."), ("Subiu ao sotão.", "Subiu ao sótão."),
+    ("Viu o orfão.", "Viu o órfão."), ("Pediu a benção.", "Pediu a bênção."),
+    ("Viu os orgãos.", "Viu os órgãos."), ("Subiu aos sotãos.", "Subiu aos sótãos."),
+    ("Viu os orfãos.", "Viu os órfãos."), ("Viu os orgaos.", "Viu os órgãos."),
+])
+def test_paroxytone_ao_gets_its_accent(text, expected):
+    # cap. 4 p. 86: "Se é átona a sílaba onde figura o til, acentua-se graficamente a
+    # predominante"; cap. 8 p. 196, 1. c): "todos os paroxítonos acrescentam simplesmente um -s"
+    assert convert(text, "etymological", "pt_1973") == expected
+
+
+def test_accent_in_an_earlier_compound_element_keeps_the_ao_skip():
+    # pré- carries the accent; ocupação is an oxytone, so its plural is ocupações
+    candidates = get_lexicon()._accent_candidates
+    assert candidates["pre-ocupação"][0] == "pré-ocupação"
+    assert "pre-ocupaçãos" not in candidates
+
+
+def test_a_cedilla_is_no_accent():
+    # cap. 4 p. 78: the accents are the acute, the grave and the circumflex
+    assert convert("Comprou açucar.", "etymological", "pt_1973") == "Comprou açúcar."
+
+
+def test_a_listed_word_with_a_tilde_is_no_bare_form():
+    # acordão, augmentative of acordo, is a word of its own (Dicio)
+    lex = Lexicon()
+    lex.__dict__["wordset"] = {"acórdão"}
+    assert lex._accent_candidates["acordão"][0] == "acórdão"
+    lex = Lexicon()
+    lex.__dict__["wordset"] = {"acórdão", "acordão"}
+    assert "acordão" not in lex._accent_candidates

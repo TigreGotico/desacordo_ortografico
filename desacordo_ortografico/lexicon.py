@@ -92,6 +92,10 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
 
 #: The vowels after which the plural adds -s (cap. 8, see the module docstring).
 _PLURAL_VOWELS = frozenset("aeiou")
+#: The grave, the acute and the circumflex, the three accents of cap. 4 p. 78. An
+#: accent before a final -ão marks a paroxytone: "Se é átona a sílaba onde figura o
+#: til, acentua-se graficamente a predominante: acórdão, bênção, órfã" (p. 86).
+_ACCENTS = frozenset("\u0300\u0301\u0302")
 
 
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
@@ -249,17 +253,26 @@ class Lexicon:
         """Map an unaccented form to its unique accented word and the inflection kinds
         (see :func:`_inflection_kinds`) that also make the bare form a word.
 
-        A bare form of under four letters, a bare form that is itself on the word list,
-        and a bare form that deaccents from two accented words are left out. The plural
-        in -s of each vowel-final candidate except -ão is added, unless its letters spell
-        a word or deaccent from one, and it keeps the verb kind of its singular.
+        A word with a tilde has two bare forms: one without the accents and the tilde
+        (orgao, bençao) and one that keeps the tilde (orgão, benção). A bare form of under four letters, a bare form
+        that is itself on the word list, and a bare form that deaccents from two
+        accented words are left out. The plural
+        in -s of each vowel-final candidate except an oxytone in -ão is added, unless
+        its letters spell a word or deaccent from one, and it keeps the verb kind of
+        its singular.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
         for wl in self.wordset:
             d = deaccent(wl)
             by_bare.setdefault(d, set()).add(wl)
-            if d == wl:
+            # the tilde marks nasality and is no accent (cap. 4 p. 78-79), so the
+            # form without the accents alone is a key too: orgão -> órgão
+            nasal = unicodedata.normalize("NFC", "".join(
+                c for c in unicodedata.normalize("NFD", wl) if c not in _ACCENTS))
+            if nasal != d:
+                by_bare.setdefault(nasal, set()).add(wl)
+            if nasal == wl:
                 bare_words.add(wl)
         out: Dict[str, Tuple[str, FrozenSet[str]]] = {}
         for bare, forms in by_bare.items():
@@ -269,12 +282,16 @@ class Lexicon:
             if len(accented) == 1:
                 out[bare] = (next(iter(accented)), _inflection_kinds(bare, bare_words))
         # the word list holds singulars; a vowel-final singular makes its plural in -s.
-        # -ão follows its own rules (alemão, alemães), so it is left out. The -s form of
+        # An oxytone in -ão follows its own rules (alemão, alemães) and is left out; a
+        # paroxytone, which carries a written accent before -ão, adds -s. The -s form of
         # a present, imperfect or conditional verb form is the second person of the same
         # tense (corre, corres; servia, servias), so the plural keeps the verb reading.
         for bare, (form, kinds) in list(out.items()):
             plural = bare + "s"
-            if bare[-1] in _PLURAL_VOWELS and not form.endswith("ão") and plural not in by_bare:
+            last_element = form.replace(" ", "-").rsplit("-", 1)[-1]
+            stem_marks = _ACCENTS.intersection(unicodedata.normalize("NFD", last_element))
+            oxytone_ao = form.endswith("ão") and not stem_marks
+            if bare[-1] in _PLURAL_VOWELS and not oxytone_ao and plural not in by_bare:
                 out[plural] = (form + "s", _inflection_kinds(plural, bare_words) | (kinds & {"verb"}))
         return out
 
