@@ -5,6 +5,10 @@ ou finais ou o todo em maiúsculas: FAO, NATO, ONU; H2O, Sr., V. Ex.ª", and Bas
 lists the symbol kW. The converter re-applies one of three case patterns to a word:
 lowercase, initial capital, or capitals throughout. A word with a capital after its
 first letter fits none of them, so the converter leaves it as written.
+
+A compound takes the case of each hyphen or apostrophe segment. When the segments join,
+the result takes the case of the first segment: AO1990 Base XVI 2º a) and b) join
+"antirreligioso, antissemita, contrarregra" and "autoestrada".
 """
 import pytest
 
@@ -20,7 +24,6 @@ WORDS = [
     "iPhone",        # trade name, medial capital
     "PhD",           # abbreviation, initial and final capitals
     "TVs",           # plural of an acronym
-    "Guiné-Bissau",  # place name, a capital after the hyphen
 ]
 
 
@@ -28,6 +31,27 @@ WORDS = [
 @pytest.mark.parametrize("word", WORDS)
 def test_word_with_an_inner_capital_stays_as_written(src, dst, word):
     assert convert(f"Viu o {word} ontem.", src, dst) == f"Viu o {word} ontem."
+
+
+@pytest.mark.parametrize("text, src, dst, expected", [
+    ("Anti-Semitismo", "pre-ao1990-pt", "ao1990-pt", "Antissemitismo"),  # Base XVI 2º b)
+    ("Auto-Estrada", "pre-ao1990-pt", "ao1990-pt", "Autoestrada"),       # Base XVI 2º a)
+    ("Contra-Regra", "pre-ao1990-pt", "ao1990-pt", "Contrarregra"),      # Base XVI 2º b)
+    ("Ultra-Som", "pre-ao1990-br", "ao1990-br", "Ultrassom"),            # Base XVI 2º b)
+])
+def test_joined_compound_takes_the_case_of_its_first_segment(text, src, dst, expected):
+    assert convert(text, src, dst) == expected
+
+
+@pytest.mark.parametrize("text, src, dst, expected", [
+    ("Vive em Trás-os-Montes.", "pre-ao1990-pt", "ao1990-pt", "Vive em Trás-os-Montes."),
+    ("Vive na Guiné-Bissau.", "pre-ao1990-pt", "ao1990-pt", "Vive na Guiné-Bissau."),
+    ("Nasceu em Castello-Branco.", "etymological", "pt_1973", "Nasceu em Castelo-Branco."),
+    ("A romaria de São João d'Arga.", "pre-ao1990-pt", "ao1990-pt",
+     "A romaria de São João d'Arga."),
+])
+def test_compound_keeps_the_case_of_each_segment(text, src, dst, expected):
+    assert convert(text, src, dst) == expected
 
 
 @pytest.mark.parametrize("text, expected", [("A Pharmacia.", "A Farmácia."),
