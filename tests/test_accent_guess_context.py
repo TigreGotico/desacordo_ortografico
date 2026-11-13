@@ -375,3 +375,7 @@ def test_a_listed_word_with_a_tilde_is_no_bare_form():
     lex = Lexicon()
     lex.__dict__["wordset"] = {"acórdão", "acordão"}
     assert "acordão" not in lex._accent_candidates
+
+
+def test_christianismo_converts_in_a_sentence():
+    assert convert("O Christianismo cresceu.", "etymological", "pt_1973") == "O Cristianismo cresceu."

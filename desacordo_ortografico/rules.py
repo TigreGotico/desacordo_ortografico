@@ -118,9 +118,18 @@ def _match_case(original: str, transformed: str) -> str:
 
 
 # ----------------------------------------------------- Reforma de 1911 (digraphs)
+#: ⟨ch⟩ before a consonant letter. 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩ or
+#: ⟨qu⟩ (Reforma Ortográfica de 1911, the digraphs of Greek origin). The ⟨ch⟩ of [ʃ]
+#: always stands before a vowel, so before a consonant it is [k] and becomes ⟨c⟩:
+#: christianismo, chlorophylla, technica, drachma. Before a vowel the word map decides.
+_CH_K_RE = re.compile(r"ch(?=[bcdfgjklmnpqrstvwxz])")
+
+
 def reform_1911_digraphs(word: str) -> str:
-    """ph->f, th->t, rh->r, y->i. Reversible? No — the inverse is ambiguous."""
+    """ph->f, th->t, rh->r, y->i, and ch->c before a consonant. Reversible? No — the
+    inverse is ambiguous."""
     word = word.replace("ph", "f").replace("th", "t").replace("rh", "r")
+    word = _CH_K_RE.sub("c", word)
     word = word.replace("y", "i")
     return word
 
