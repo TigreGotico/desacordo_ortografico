@@ -74,10 +74,11 @@ def reform_1911_digraphs(word: str) -> str:
 # Base I 2º keeps them for foreign names and their derivatives), zz, ck, sh, -ie, y
 # opening a word before a vowel, y between a vowel and a consonant (taylorista), y after
 # a consonant at the end of a word, and a final consonant other than l, r, s, z, m, n or
-# x. No pre-1911 Portuguese word of the gold corpus outside the 1911 word map carries one.
+# x, and ü that follows neither g, q nor a vowel (mülleriano, AO1990 Base I 3º). No
+# pre-1911 Portuguese word of the gold corpus outside the 1911 word map carries one.
 _FOREIGN_RE = re.compile(
     r"[kw]|zz|ck|sh|ie$|^y[aeiou]|[aeiou]y[^aeiouáéíóú]|[^aeiouáéíóú]y$"
-    r"|[^aeiouáàâãéêíóôõúüylrszmnx]$")
+    r"|[^aeiouáàâãéêíóôõúüylrszmnx]$|(?<![gqaeiouáàâãéêíóôõú])ü")
 
 
 def is_foreign_spelling(word: str) -> bool:
@@ -205,9 +206,15 @@ def ao1990_drop_accents(word: str) -> str:
 
 
 # ----------------------------------------------------------- AO1990 trema
+# Portuguese writes the trema only after g or q (frequência, linguiça) and on a hiatus
+# (saüdade). AO1990 Base XIV 1º drops it there; its Obs. keeps it in derivatives of
+# foreign names (hübneriano, mülleriano), where ü follows another consonant.
+_TREMA_RE = re.compile(r"(?<=[gqaeiouáàâãéêíóôõú])ü")
+
+
 def ao1990_drop_trema(word: str) -> str:
-    """ü -> u (frequência, linguiça). Brazil-only effect; reversible via lexicon only."""
-    return word.replace("ü", "u")
+    """ü -> u after g, q or a vowel; reversible via lexicon only."""
+    return _TREMA_RE.sub("u", word)
 
 
 # --------------------------------------------------------- AO1990 months/seasons
