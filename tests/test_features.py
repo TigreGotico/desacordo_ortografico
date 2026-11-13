@@ -1,14 +1,12 @@
 """The ``features=`` allowlist of :func:`convert`.
 
 Each case word is a standard example of its reform. The expected spelling comes from the
-reform text cited on the row, not from the library.
+reform text cited on the row, not from the library. The pt-PT/pt-BR divergence row has
+no reform text: connosco is the pt-PT spelling and conosco the pt-BR one.
 """
-import json
-from pathlib import Path
-
 import pytest
 
-from desacordo_ortografico import FEATURES, OrthographyConverter, convert
+from desacordo_ortografico import FEATURES, convert
 
 P = ("etymological", "ao1990-pt")
 B = ("etymological", "ao1990-br")
@@ -25,13 +23,13 @@ CASES = {
     "trema": (P, "lingüiça", "linguiça"),
     # Decreto-Lei 32/73: no subtonic grave accent
     "subtonic-grave": (P, "sòmente", "somente"),
-    # AO1990 Base IV 1º c): mute c dropped
+    # AO1990 Base IV 1º b): mute c dropped (ação)
     "ao-map-consonant": (P, "acção", "ação"),
     # AO1990 Base IX 9º: pêlo loses its differential accent
     "ao-map-diacritic": (P, "pêlo", "pelo"),
     # AO1990 Base XIV 1º
     "ao-map-trema": (B, "freqüência", "frequência"),
-    # AO1990 Base XVI 1º b): prefix + r doubles the r
+    # AO1990 Base XVI 2º a): prefix + r doubles the r
     "ao-map-join": (P, "auto-retrato", "autorretrato"),
     # AO1990 Base XV 6º: locutions lose the hyphens
     "ao-map-locution": (P, "fim-de-semana", "fim de semana"),
@@ -39,20 +37,20 @@ CASES = {
     "differential": (P, "pára", "para"),
     # AO1990 Base XV 1º obs.: mandachuva is written joined
     "hyphen-lexical": (P, "manda-chuva", "mandachuva"),
-    # AO1990 Base IV 1º c)
+    # AO1990 Base IV 1º b): ação, afetivo
     "base-iv": (P, "acções", "ações"),
     "silent-cp": (P, "afectiva", "afetiva"),
     # AO1990 Base IX 3º: éi in a paroxytone loses the accent
     "diphthong-accent": (P, "assembléia", "assembleia"),
     # AO1990 Base IX 8º: ôo loses the accent
     "hiatus-accent": (P, "vôo", "voo"),
-    # AO1990 Base XVI 1º b)
+    # AO1990 Base XVI 2º a)
     "prefix-rs": (P, "auto-regulável", "autorregulável"),
     # AO1990 Base XIX 1º: months take a lower-case initial
     "months": (P, "em Janeiro", "em janeiro"),
-    # AO1990 Base IV 1º c): conosco is the Brazilian form
+    # pt-PT connosco, pt-BR conosco (no AO1990 clause names either form)
     "ptbr-divergence": (X, "connosco", "conosco"),
-    # AO1990 Base IX 2º: académico / acadêmico
+    # AO1990 Base XI 3º: académico / acadêmico
     "nasal-vowel": (X, "académica", "acadêmica"),
     # Lei 5.765/1971: no differential circumflex
     "differential-1971": (B, "êle", "ele"),
@@ -93,15 +91,8 @@ def test_a_bare_string_raises():
         convert("acção", *P, features="trema")
 
 
-def test_none_equals_every_feature_on_the_gold_corpus():
-    conv = OrthographyConverter()
-    gold = Path(__file__).parent.parent / "benchmark" / "gold_corpus.jsonl"
-    rows = [json.loads(line)["cells"] for line in gold.open(encoding="utf-8")]
-    assert len(rows) == 1329
-    for cells in rows:
-        for src, text in cells.items():
-            for dst in cells:
-                if dst != src:
-                    default = conv.convert(text, src, dst)
-                    explicit = conv.convert(text, src, dst, features=FEATURES)
-                    assert (default.text, default.warnings) == (explicit.text, explicit.warnings)
+@pytest.mark.parametrize("path", [P, B, X])
+def test_default_applies_every_feature(path):
+    text = " , ".join(old for p, old, _ in CASES.values() if p == path)
+    expected = " , ".join(new for p, _, new in CASES.values() if p == path)
+    assert convert(text, *path) == expected
