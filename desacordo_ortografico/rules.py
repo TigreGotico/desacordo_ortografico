@@ -56,6 +56,19 @@ def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
     return None
 
 
+# opening quotes and brackets that may stand before the first word of a sentence
+_OPENERS = "«“‘\"'(["
+
+
+def opens_sentence(text: str, start: int) -> bool:
+    """True when the word at ``start`` opens the text or follows . ! ? : or a dash.
+
+    Opening quotes and brackets in between do not count («Fósforos!», disse).
+    """
+    prefix = text[:start].rstrip().rstrip(_OPENERS).rstrip()
+    return prefix == "" or prefix[-1] in ".!?:—"
+
+
 def words(text: str) -> List[str]:
     """Return the list of word tokens in ``text`` (original case)."""
     return _WORD_RE.findall(text)
@@ -88,6 +101,22 @@ def reform_1911_digraphs(word: str) -> str:
     word = word.replace("ph", "f").replace("th", "t").replace("rh", "r")
     word = word.replace("y", "i")
     return word
+
+
+# Spellings that mark a loanword or a foreign name in modern text: k and w (AO1990
+# Base I 2º keeps them for foreign names and their derivatives), zz, ck, sh, y opening a
+# word before a vowel, y between a vowel and a consonant (taylorista), y after a
+# consonant at the end of a word, and a final consonant other than l, r, s, z, m, n or x.
+# Final -ie is not one: Portuguese writes it (espécie, série, and the -iar subjunctive
+# anuncie).
+_FOREIGN_RE = re.compile(
+    r"[kw]|zz|ck|sh|^y[aeiou]|[aeiou]y[^aeiouáéíóú]|[^aeiouáéíóú]y$"
+    r"|[^aeiouáàâãéêíóôõúüylrszmnx]$")
+
+
+def is_foreign_spelling(word: str) -> bool:
+    """True when ``word`` carries a letter or cluster of a loanword or foreign name."""
+    return bool(_FOREIGN_RE.search(word))
 
 
 # --------------------------------------------------- Reforma de 1911 (geminates)
@@ -133,13 +162,16 @@ def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
 def restore_accent(word: str, accent_map) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 
-    Only fires on a word that currently carries no accent and whose bare form maps to
-    a unique accented modern word (see ``Lexicon.accent_restore``). Case-preserving.
+    Only fires on a word that currently carries no graphic accent and whose form maps
+    to a unique accented modern word (see ``Lexicon.accent_restore``). The tilde and
+    the cedilla are letters of the key, not accents: orgão -> órgão, açucar -> açúcar.
+    Case-preserving.
     """
     if not accent_map:
         return word
     low = word.lower()
-    if any(unicodedata.combining(c) for c in unicodedata.normalize("NFD", low)):
+    if any(unicodedata.combining(c) and c not in "\u0303\u0327"
+           for c in unicodedata.normalize("NFD", low)):
         return word  # already accented
     return accent_map.get(low, word)
 
@@ -257,8 +289,7 @@ def recase_months(text: str, lowercase: bool) -> str:
             return word
         low = word.lower()
         cap = low[:1].upper() + low[1:]
-        prefix = text[: m.start()].rstrip()
-        if prefix == "" or prefix[-1] in ".!?:—":
+        if opens_sentence(text, m.start()):
             return word if lowercase else cap
         if low in _SEASONS:
             return low  # seasons are always lowercase mid-sentence
