@@ -25,11 +25,16 @@ def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
-    capitalisation pattern (UPPER / Title / lower) is re-applied to the result.
+    capitalisation pattern (UPPER / Title / lower) is re-applied to the result. A word
+    with a capital after its first letter and not in capitals throughout (pH, kW,
+    McDonald, Guiné-Bissau) is a symbol or a name, not a lowercase word, and none of
+    the three patterns can restore it: it is returned as written.
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
+        if word[1:] != word[1:].lower() and not word.isupper():
+            return word
         out = fn(word.lower())
         return _match_case(word, out)
 
