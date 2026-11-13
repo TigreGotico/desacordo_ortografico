@@ -13,6 +13,17 @@ reversible transforms. Everything that is *irreducibly lexical* lives here:
 ``tugalex`` is a hard dependency, but every access to it is defensive: if it (or its
 data) is unavailable the lexical AO1990 maps simply fall back to empty and the
 deterministic rule engine still works on its own.
+
+The 1911 accent restore keeps a bare form as written when a regular inflection makes
+it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
+conjugation tables: falar for the -ar present (fala, falas, falam), the -ar
+subjunctive (fale, fales, falem) and the conditional (falaria); ler for the
+conditional of -er verbs (leria); correr for the -eu preterite and the -e present
+(correu, corre); servir for the -ia imperfect (servia); dizer for disse. The nominal
+forms follow Cunha & Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed.,
+Lexikon 2017, cap. 8 "Substantivo" (pp. 191-218) and cap. 10 "Adjetivo": the plural
+adds -s after a vowel (pai, pais) and -es after r, z and s (mar, mares), and a word
+in -o makes its feminine in -a (tanto, tanta; antigo, antigas).
 """
 from __future__ import annotations
 
@@ -20,7 +31,7 @@ import json
 import os
 import unicodedata
 from functools import cached_property
-from typing import Dict, List, Optional, Set
+from typing import Dict, FrozenSet, List, Optional, Set, Tuple
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -33,6 +44,50 @@ def deaccent(word: str) -> str:
         if not unicodedata.combining(c) or c == "\u0327"
     )
     return unicodedata.normalize("NFC", out)
+
+
+#: Irregular verb forms the word list lacks, which no inflection rule derives.
+#: dizer: "ele disse" (Dicionário Priberam, conjugação de dizer, pretérito perfeito).
+_IRREGULAR_FORMS = frozenset({"disse"})
+
+
+def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
+    """Return the kinds of regular inflection that make ``word`` a form of ``words``.
+
+    The word list holds lemmas more than inflections, so an inflected form can look
+    unattested. ``"verb"``: an irregular form, the -eu/-ou/-iu preterite (correr ->
+    correu), the -ia imperfect and the -e present of -er/-ir verbs (servir -> servia,
+    correr -> corre), the -a/-as/-am present and the -e/-es/-em subjunctive of -ar
+    verbs (historiar -> historia), and the conditional, a stem + -ar/-er/-ir + ia
+    (ler -> leria; the noun ar does not count, so aria is no verb form).
+    ``"plural"``: a vowel + s plural (pai -> pais). ``"nominal"``: the -es plural
+    after r, z or s (mar -> mares), the feminine plural (antigo -> antigas) and the
+    feminine singular (tanto -> tanta). The sources are in the module docstring.
+    """
+    kinds = set()
+    if word in _IRREGULAR_FORMS:
+        kinds.add("verb")
+    for ending, infinitive in (("eu", "er"), ("ou", "ar"), ("iu", "ir")):
+        if word.endswith(ending) and word[:-2] + infinitive in words:
+            kinds.add("verb")
+    if word.endswith("ia") and (word[:-2] + "er" in words or word[:-2] + "ir" in words):
+        kinds.add("verb")
+    if word.endswith("e") and (word[:-1] + "er" in words or word[:-1] + "ir" in words):
+        kinds.add("verb")
+    for ending in ("a", "as", "am", "e", "es", "em"):
+        if word.endswith(ending) and word[:-len(ending)] + "ar" in words:
+            kinds.add("verb")
+    if word.endswith(("aria", "eria", "iria")) and len(word) > 4 and word[:-2] in words:
+        kinds.add("verb")
+    if word.endswith("s") and word[-2:-1] in ("a", "e", "i", "o", "u") and word[:-1] in words:
+        kinds.add("plural")
+    if word.endswith("es") and word[-3:-2] in ("r", "z", "s") and word[:-2] in words:
+        kinds.add("nominal")
+    if word.endswith("as") and word[:-2] + "o" in words:
+        kinds.add("nominal")
+    if word.endswith("a") and word[:-1] + "o" in words:
+        kinds.add("nominal")
+    return frozenset(kinds)
 
 
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
@@ -186,14 +241,12 @@ class Lexicon:
         return out
 
     @cached_property
-    def accent_restore(self) -> Dict[str, str]:
-        """Map an unaccented word to its unique accented modern form.
+    def _accent_candidates(self) -> Dict[str, Tuple[str, FrozenSet[str]]]:
+        """Map an unaccented form to its unique accented word and the inflection kinds
+        (see :func:`_inflection_kinds`) that also make the bare form a word.
 
-        Used to re-supply the graphic accents that the 1911 reform introduced but the
-        deterministic digraph/geminate rules cannot derive (phosphoro->fosforo->fósforo).
-        Only unambiguous entries are kept: an unaccented key is included only if exactly
-        one accented word deaccents to it AND that bare form is not itself a valid word
-        (so 'para'/'pára', 'esta'/'está' are never touched).
+        A bare form of under four letters, a bare form that is itself on the word list,
+        and a bare form that deaccents from two accented words are left out.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
@@ -202,14 +255,39 @@ class Lexicon:
             by_bare.setdefault(d, set()).add(wl)
             if d == wl:
                 bare_words.add(wl)
-        out: Dict[str, str] = {}
+        out: Dict[str, Tuple[str, FrozenSet[str]]] = {}
         for bare, forms in by_bare.items():
             if len(bare) < 4 or bare in bare_words:
                 continue
             accented = forms - {bare}
             if len(accented) == 1:
-                out[bare] = next(iter(accented))
+                out[bare] = (next(iter(accented)), _inflection_kinds(bare, bare_words))
         return out
+
+    @cached_property
+    def accent_restore(self) -> Dict[str, str]:
+        """Map an unaccented word to its unique accented modern form.
+
+        Used to re-supply the graphic accents that the 1911 reform introduced but the
+        deterministic digraph/geminate rules cannot derive (phosphoro->fosforo->fósforo).
+        A bare form that is itself a word stays as written ('para'/'pára',
+        'esta'/'está'), and so does a regular inflection of a word: 'correu' is the
+        preterite of 'correr', not a bare 'corréu'.
+        """
+        return {b: f for b, (f, kinds) in self._accent_candidates.items() if not kinds}
+
+    @cached_property
+    def accent_restore_nominal(self) -> Dict[str, str]:
+        """The bare forms that only a verb inflection makes a word ('historia' of
+        'historiar'). The accented form is right when the word is a noun or an adjective
+        ('história')."""
+        return {b: f for b, (f, kinds) in self._accent_candidates.items() if kinds == {"verb"}}
+
+    @cached_property
+    def accent_restore_singular(self) -> Dict[str, str]:
+        """The bare forms that only a vowel + s plural makes a word ('pais' of 'pai').
+        The accented form is right after a singular determiner ('o país')."""
+        return {b: f for b, (f, kinds) in self._accent_candidates.items() if kinds == {"plural"}}
 
     @cached_property
     def cp_keep_pt(self) -> Set[str]:
