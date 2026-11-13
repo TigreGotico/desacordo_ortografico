@@ -16,7 +16,7 @@ tags are (word, UPOS) pairs built here by hand. The contractions come split
 import pytest
 
 from desacordo_ortografico import OrthographyConverter, convert
-from desacordo_ortografico.lexicon import _inflection_kinds, get_lexicon
+from desacordo_ortografico.lexicon import Lexicon, _inflection_kinds, get_lexicon
 from desacordo_ortografico.rules import align_tags
 
 
@@ -365,3 +365,13 @@ def test_accent_in_an_earlier_compound_element_keeps_the_ao_skip():
 def test_a_cedilla_is_no_accent():
     # cap. 4 p. 78: the accents are the acute, the grave and the circumflex
     assert convert("Comprou açucar.", "etymological", "pt_1973") == "Comprou açúcar."
+
+
+def test_a_listed_word_with_a_tilde_is_no_bare_form():
+    # acordão, augmentative of acordo, is a word of its own (Dicionário Priberam)
+    lex = Lexicon()
+    lex.__dict__["wordset"] = {"acórdão"}
+    assert lex._accent_candidates["acordão"][0] == "acórdão"
+    lex = Lexicon()
+    lex.__dict__["wordset"] = {"acórdão", "acordão"}
+    assert "acordão" not in lex._accent_candidates
