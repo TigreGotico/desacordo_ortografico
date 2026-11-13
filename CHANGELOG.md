@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.9a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.9a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.8a1...0.1.9a1)
+
+**Merged pull requests:**
+
+- fix: 1911 writes the Greek ch of \[k\] as c before r, l, n or th [\#21](https://github.com/TigreGotico/desacordo_ortografico/pull/21) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.8a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.8a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.7a1...0.1.8a1)
