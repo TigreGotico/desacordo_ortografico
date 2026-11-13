@@ -16,8 +16,8 @@ output never depends on what happens to be installed.
 Where both forms of a word are valid in the target variety (a dual cell of that
 variety's AO1990 word map, Base IV 1º c: sector and setor), the converter writes the
 form with the consonant, by owner ruling. A word with one valid form in the target
-variety takes that form, so a pt-BR target takes a dual of the pt-PT map only from the
-pt-BR map row, from ``base_iv.json``, or as written.
+variety takes that form. A dual of the pt-PT map only takes Brazil's form of the pair
+toward pt-BR (:attr:`Lexicon.ao_dual_pt2br`).
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
@@ -375,8 +375,8 @@ class Lexicon:
         """
         words: Set[str] = set(self._ao_new_forms)
         words.update(self.reform1911_old2new.values())
-        for region in ("lbx", "rjx"):
-            words.update(w.lower() for w in self.tuga.get_wordlist(region))
+        words.update(w.lower() for w in self.tuga.get_wordlist("lbx"))
+        words.update(self._br_words)
         out = {w.lower() for w in words if w and " " not in w}
         # enrich with regular gender/number variants of the modern (consonant-dropped)
         # forms, so the silent-c/p rule generalises to inflections the source list omits
@@ -388,6 +388,11 @@ class Lexicon:
             elif w.endswith("a"):
                 out |= {w[:-1] + "o", w + "s", w[:-1] + "os"}
         return out
+
+    @cached_property
+    def _br_words(self) -> Set[str]:
+        """The tugalex Brazilian (Rio de Janeiro) word list, lowercase."""
+        return {w.lower() for w in self.tuga.get_wordlist("rjx")}
 
     @cached_property
     def _known_letters(self) -> Set[str]:
@@ -559,6 +564,42 @@ class Lexicon:
         dual rule (espectador, caracteres)."""
         return {br: pt for br, pt in self.divergence_br2pt.items()
                 if br not in self._pt_dual_full_forms}
+
+    @cached_property
+    def ao_dual_pt2br(self) -> Dict[str, str]:
+        """Both forms of each dual cell of the pt-PT map -> the form Brazil writes, for a
+        pt-BR target (sector, setor -> setor; espectro, espetro -> espectro). Brazil's form
+        is the pt-BR map row of the word (a pt-BR dual gives its consonant form), else
+        the ``base_iv.json`` pt-BR form, else the form of the pair the Brazilian word
+        list holds alone, else the form the pt-PT cell lists first. A word of its own is never a key (contrato)."""
+        out: Dict[str, str] = {}
+        for old, (full, bare) in self._pt_duals.items():
+            br = self._br_form(old, full, bare)
+            for form in (full, bare):
+                if form != br and form not in _DUAL_HOMOGRAPHS:
+                    out.setdefault(form, br)
+        return out
+
+    def _br_form(self, old: str, full: str, bare: str) -> str:
+        for key in (old, full, bare):
+            if key in self.ao_br_forms:
+                return self.ao_br_old2new.get(key, key)
+        in_map = [f for f in (full, bare) if f in self._ao_br_values]
+        if len(in_map) == 1:
+            return in_map[0]
+        if in_map:
+            return full
+        for form in (full, bare):
+            if form in self.dual_pt2br:
+                return self.dual_pt2br[form]
+            if form in self.dual_br2pt:
+                return form
+        listed = [f for f in (full, bare) if f in self._br_words]
+        return listed[0] if len(listed) == 1 else self.ao_pt_forms[old][0]
+
+    @cached_property
+    def _ao_br_values(self) -> Set[str]:
+        return {f for forms in self.ao_br_forms.values() for f in forms}
 
     @cached_property
     def ao_dual_br2pt(self) -> Dict[str, str]:

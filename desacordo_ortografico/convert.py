@@ -282,6 +282,7 @@ class OrthographyConverter:
             _Pass(steps=[
                 ("base-iv", get(lex.base_iv_drop)),
                 ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
+                ("ptbr-divergence", dual(lex.ao_dual_pt2br)),
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
             _Pass(steps=[
@@ -369,7 +370,8 @@ class OrthographyConverter:
 
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------
         ptbr = _Edge(
-            _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_br)],
+            _Pass(steps=[("ptbr-divergence", dual(lex.ao_dual_pt2br)),
+                         ("nasal-vowel", rules.nasal_vowel_to_br)],
                   table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True),
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt),
                          ("ptbr-divergence", dual(lex.ao_dual_br2pt))],

@@ -10,8 +10,10 @@ omnímodo, omnipotente, omnisciente, etc.".
 
 The choice of the form with the consonant is an owner ruling. A dual cell of the
 tugalex map of the target variety lists the two valid forms. A word with one valid form
-in the target variety takes that form: toward pt-BR, a dual of the pt-PT map takes the
-pt-BR map row, the data/base_iv.json pt-BR form, or the word as written.
+in the target variety takes that form. Toward pt-BR, a dual of the pt-PT map takes
+Brazil's form of the pair: the tugalex pt-BR map row, else the data/base_iv.json pt-BR
+form, else the one form of the pair the tugalex Brazilian word list (rjx) holds, else
+the form the pt-PT cell lists first.
 """
 import pytest
 
@@ -86,13 +88,27 @@ def test_pt_br_dual_gains_the_consonant_toward_pt_pt():
     assert convert("liquefato", "ao1990-br", "ao1990-pt") == "liquefacto"
 
 
-# Dual cells of the pt-PT map only. Toward pt-BR they take Brazil's own form: no pt-BR
-# map row and no data/base_iv.json entry, so the word as written.
-@pytest.mark.parametrize("word", ["espectro", "expectativa", "característica", "conector",
-                                  "infecto", "preceptor", "séptico", "interruptor",
-                                  "setor", "setores"])
-def test_pt_pt_dual_toward_pt_br_takes_brazils_form(word):
-    assert convert(word, "ao1990-pt", "ao1990-br") == word
+# Dual cells of the pt-PT map only, toward pt-BR. Brazil's form comes from Brazilian data.
+# tugalex word list rjx holds one form of the pair: setor (not sector), espectro (not
+# espetro), expectativa (not expetativa), conector (not conetor).
+@pytest.mark.parametrize("pt_form, br", [("sector", "setor"), ("setor", "setor"),
+                                         ("espectro", "espectro"), ("espetro", "espectro"),
+                                         ("expetativa", "expectativa"), ("conetor", "conector")])
+def test_pt_pt_dual_toward_pt_br_takes_the_brazilian_word_list_form(pt_form, br):
+    assert convert(pt_form, "ao1990-pt", "ao1990-br") == br
+
+
+# rjx holds both forms of carácter/caráter, característica/caraterística and
+# acupunctura/acupuntura, so the form the tugalex pt-PT cell lists first decides.
+@pytest.mark.parametrize("pt_form, br", [("carácter", "caráter"), ("acupunctura", "acupuntura"),
+                                         ("caraterística", "característica")])
+def test_pt_pt_dual_toward_pt_br_with_both_forms_listed(pt_form, br):
+    assert convert(pt_form, "ao1990-pt", "ao1990-br") == br
+
+
+def test_pt_pt_dual_toward_pt_br_takes_the_pt_br_map_row():
+    # tugalex pt-BR map: perfeccionista -> perfecionista
+    assert convert("perfeccionista", "ao1990-pt", "ao1990-br") == "perfecionista"
 
 
 def test_pt_pt_dual_toward_pt_br_takes_base_iv_form():
@@ -100,10 +116,16 @@ def test_pt_pt_dual_toward_pt_br_takes_base_iv_form():
     assert convert("o espetador e os espetadores", "ao1990-pt", "ao1990-br") == "o espectador e os espectadores"
 
 
-@pytest.mark.parametrize("word", ["espectro", "característica", "infecto", "preceptor"])
-def test_pt_pt_dual_toward_pt_br_from_older_sources(word):
-    assert convert(word, "pt_1973", "ao1990-br") == word
-    assert convert(word, "etymological", "ao1990-br") == word
+@pytest.mark.parametrize("src", ["pt_1973", "etymological"])
+def test_pt_pt_dual_toward_pt_br_from_older_sources(src):
+    assert convert("o sector e os sectores", src, "ao1990-br") == "o setor e os setores"
+    assert convert("o carácter e a acupunctura", src, "ao1990-br") == "o caráter e a acupuntura"
+    assert convert("o espectro e a expectativa", src, "ao1990-br") == "o espectro e a expectativa"
+    assert convert("a característica", src, "ao1990-br") == "a característica"
+
+
+def test_pt_pt_dual_toward_br_1971():
+    assert convert("o sector", "pt_1973", "br_1971") == "o setor"
 
 
 def test_brazilian_accent_applies_to_a_pt_pt_dual():
