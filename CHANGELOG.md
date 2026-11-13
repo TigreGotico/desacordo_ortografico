@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.3a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.2a1...0.1.3a1)
+
+**Merged pull requests:**
+
+- fix: a word with an inner capital stays as written [\#15](https://github.com/TigreGotico/desacordo_ortografico/pull/15) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.2a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.1a1...0.1.2a1)
