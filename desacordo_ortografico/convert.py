@@ -56,17 +56,22 @@ class _Pass:
     A word that ``table`` holds is owned by the table: it gets the table value when the
     feature ``table_feature(word)`` is enabled, and stays as written otherwise. Every
     other word runs through ``steps`` in order, each step only when its feature is
-    enabled. A word for which ``skip`` is true runs no step.
+    enabled. With ``plurals`` the table also owns the regular plural of each word it
+    holds. A word for which ``skip`` is true runs no step.
     """
 
     steps: List[Tuple[str, WordFn]] = field(default_factory=list)
     table: Optional[Mapping[str, str]] = None
     table_feature: Optional[Callable[[str], str]] = None
+    plurals: bool = False
     skip: Optional[Callable[[str], bool]] = None
 
     def apply(self, word: str, enabled: FrozenSet[str]) -> str:
-        if self.table is not None and word in self.table:
-            return self.table[word] if self.table_feature(word) in enabled else word
+        if self.table is not None:
+            form = (rules.lookup_with_plural(word, self.table) if self.plurals
+                    else self.table.get(word))
+            if form is not None:
+                return form if self.table_feature(word) in enabled else word
         if self.skip is not None and self.skip(word):
             return word
         for feature, fn in self.steps:
@@ -343,9 +348,9 @@ class OrthographyConverter:
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------
         ptbr = _Edge(
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_br)],
-                  table=lex.divergence_pt2br, table_feature=ptbr_divergence),
+                  table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True),
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt)],
-                  table=lex.divergence_br2pt, table_feature=ptbr_divergence),
+                  table=lex.divergence_br2pt, table_feature=ptbr_divergence, plurals=True),
         )
 
         return {
