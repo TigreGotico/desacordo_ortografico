@@ -71,7 +71,7 @@ A bare article (o, a, os, as) is also a clitic pronoun, so it counts as a determ
 the variety of the target norm. For a European target it counts unless a word such as
 não, que, já or quando stands right before it. For a Brazilian target it counts only at the
 start of a sentence or clause or after a preposition. Elsewhere the bare article is the clitic
-pronoun, and the next word is a verb. Punctuation ends the context: the word before a comma, a colon or a bracket decides nothing about the word after it. A tag decides only a word that this rule leaves
+pronoun, and the next word is a verb. A pause ends the context: the word before a comma, a colon, a parenthesis or a dash decides nothing about the word after it. Editorial brackets are no pause. A tag decides only a word that this rule leaves
 undecided: it never removes an accent the rule gives, and never adds one after a clitic
 pronoun.
 
