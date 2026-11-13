@@ -30,23 +30,33 @@ def apply_to_words(
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
     capitalisation pattern (UPPER / Title / lower) is re-applied to the result.
-    When ``name_fn`` is given, a capitalised word that does not open a sentence (a
-    proper name, as far as the spelling shows) goes to ``name_fn`` instead.
+    When ``name_fn`` is given, a word with a capital initial and lowercase after it that
+    does not open a sentence (a proper name, as far as the spelling shows) goes to
+    ``name_fn`` instead. A word in capitals throughout shows no name.
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
-        is_name = word[:1].isupper() and not opens_sentence(text, match.start())
+        is_name = (word[:1].isupper() and not word.isupper()
+                   and not opens_sentence(text, match.start()))
         out = (name_fn if name_fn is not None and is_name else fn)(word.lower())
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)
 
 
+# opening quotes and brackets that may stand before the first word of a sentence
+_OPENERS = "«“‘\"'(["
+
+
 def opens_sentence(text: str, start: int) -> bool:
-    """True when the word at ``start`` opens the text or follows . ! ? : or a dash."""
-    prefix = text[:start].rstrip()
+    """True when the word at ``start`` opens the text or follows . ! ? : or a dash.
+
+    Opening quotes and brackets in between do not count («Fósforos!», disse).
+    """
+    prefix = text[:start].rstrip().rstrip(_OPENERS).rstrip()
     return prefix == "" or prefix[-1] in ".!?:—"
+
 
 
 def words(text: str) -> List[str]:
@@ -71,12 +81,13 @@ def reform_1911_digraphs(word: str) -> str:
 
 
 # Spellings that mark a loanword or a foreign name in modern text: k and w (AO1990
-# Base I 2º keeps them for foreign names and their derivatives), zz, ck, sh, -ie, y
-# opening a word before a vowel, y between a vowel and a consonant (taylorista), y after
-# a consonant at the end of a word, and a final consonant other than l, r, s, z, m, n or
-# x. No pre-1911 Portuguese word of the gold corpus outside the 1911 word map carries one.
+# Base I 2º keeps them for foreign names and their derivatives), zz, ck, sh, y opening a
+# word before a vowel, y between a vowel and a consonant (taylorista), y after a
+# consonant at the end of a word, and a final consonant other than l, r, s, z, m, n or x.
+# Final -ie is not one: Portuguese writes it (espécie, série, and the -iar subjunctive
+# anuncie).
 _FOREIGN_RE = re.compile(
-    r"[kw]|zz|ck|sh|ie$|^y[aeiou]|[aeiou]y[^aeiouáéíóú]|[^aeiouáéíóú]y$"
+    r"[kw]|zz|ck|sh|^y[aeiou]|[aeiou]y[^aeiouáéíóú]|[^aeiouáéíóú]y$"
     r"|[^aeiouáàâãéêíóôõúüylrszmnx]$")
 
 

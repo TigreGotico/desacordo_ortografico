@@ -46,3 +46,37 @@ def _gold_parallel(row_id):
 def test_etymological_words_still_convert(row_id, target):
     cells = _gold_parallel(row_id)
     assert convert(cells["etymological"], "etymological", target) == cells[target]
+
+
+# AO1990 Base XI 1º b): proparoxytones in -ie take the accent ("barbárie, série").
+# espécie and superfície are the modern cells of gold_full.jsonl, and efígie follows the
+# same clause after the 1911 reduction of ff.
+IE_NOUNS = [("especie", "espécie"), ("serie", "série"), ("superficie", "superfície"),
+            ("effigie", "efígie")]
+
+
+@pytest.mark.parametrize("old, new", IE_NOUNS)
+@pytest.mark.parametrize("target", TARGETS)
+def test_portuguese_noun_in_ie_still_converts(old, new, target):
+    assert convert(f"a {old}", "etymological", target) == f"a {new}"
+
+
+# The present subjunctive of anunciar and apreciar (both in the tugalex word list) ends
+# in -ie; the 1911 reform reduces nn and pp.
+@pytest.mark.parametrize("old, new", [("annuncie", "anuncie"), ("apprecie", "aprecie")])
+@pytest.mark.parametrize("target", TARGETS)
+def test_iar_subjunctive_still_converts(old, new, target):
+    assert convert(f"que ele {old}", "etymological", target) == f"que ele {new}"
+
+
+# fósforo takes the accent since 1911 (gold_parallel.jsonl row s01: fósforos). An opening
+# quote is no sign of a proper name.
+def test_word_after_an_opening_quote_still_restores_the_accent():
+    text = "«Fosforo», gritou ele."
+    assert convert(text, "etymological", "pt_1973") == "«Fósforo», gritou ele."
+
+
+# Text in capitals shows no proper names, so fósforo still takes its accent.
+def test_text_in_capitals_still_restores_the_accent():
+    text = "A PHARMACIA DO FOSFORO"
+    assert convert(text, "etymological", "pt_1973") == "A FARMÁCIA DO FÓSFORO"
