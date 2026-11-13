@@ -242,14 +242,12 @@ class OrthographyConverter:
 
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------
         def ptbr_fwd(w: str, _v: Optional[str]) -> str:  # pt -> br
-            if w in lex.divergence_pt2br:
-                return lex.divergence_pt2br[w]
-            return rules.nasal_vowel_to_br(w)
+            form = rules.lookup_with_plural(w, lex.divergence_pt2br)
+            return form if form is not None else rules.nasal_vowel_to_br(w)
 
         def ptbr_bwd(w: str, _v: Optional[str]) -> str:  # br -> pt
-            if w in lex.divergence_br2pt:
-                return lex.divergence_br2pt[w]
-            return rules.nasal_vowel_to_pt(w)
+            form = rules.lookup_with_plural(w, lex.divergence_br2pt)
+            return form if form is not None else rules.nasal_vowel_to_pt(w)
 
         return {
             "reform_1911": _Edge(
