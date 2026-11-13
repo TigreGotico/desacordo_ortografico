@@ -39,19 +39,33 @@ def deaccent(word: str) -> str:
 #: dizer: "ele disse" (Dicionário Priberam, conjugação de dizer, pretérito perfeito).
 _IRREGULAR_FORMS = frozenset({"disse"})
 
+#: Bare forms that read as an inflection of a rare word but mean the frequent accented
+#: word. They keep their accent-map entry.
+_ACCENTED_READINGS = frozenset({
+    "avos",     # avós, AO1990 Base VIII 1º a) lists "avó(s)"; avo (fraction) + s is rare
+    "apos",     # após, preposition (Dicionário Priberam); apo + s is rare
+    "atras",    # atrás, adverb (Dicionário Priberam); atra (of atro) + s is rare
+    "lilas",    # lilás, colour and shrub (Dicionário Priberam); lila + s is rare
+    "viveres",  # víveres, provisions (Dicionário Priberam); viver + es is the rare reading
+    "paria",    # pária, outcast (Dicionário Priberam); imperfect of parir is rare
+    "increu",   # incréu, unbeliever (Dicionário Priberam); increr is rare
+})
+
 
 def _is_inflection(word: str, words: Set[str]) -> bool:
     """Return True if ``word`` is a regular inflection of an entry of ``words``.
 
     The word list holds lemmas more than inflections, so an inflected form can look
     unattested. The inflections recognised here are the plural (filho -> filhos,
-    mar -> mares, which also covers the future subjunctive viver -> viveres), the
-    feminine plural (antigo -> antigas), the -eu/-ou/-iu preterite
+    mar -> mares), the feminine plural (antigo -> antigas), the -eu/-ou/-iu preterite
     (correr -> correu), the -ia imperfect and the -e present of -er/-ir verbs
     (servir -> servia, correr -> corre). The -a present and the -e subjunctive of
     -ar verbs are left out: they collide with frequent accented nouns
-    (historiar -> historia, saudar -> saude).
+    (historiar -> historia, saudar -> saude). A bare form in ``_ACCENTED_READINGS``
+    is no inflection: its frequent reading is the accented word (apos -> após).
     """
+    if word in _ACCENTED_READINGS:
+        return False
     if word in _IRREGULAR_FORMS:
         return True
     if word.endswith("s") and word[-2:-1] in ("a", "e", "i", "o", "u") and word[:-1] in words:

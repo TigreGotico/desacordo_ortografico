@@ -3,7 +3,8 @@
 The accent map gives an unaccented word its accented modern form. A word that is
 itself a valid word stays as written, and so does a regular inflection of a valid
 word: correu is a preterite of correr, not a bare corréu. The verb forms come from
-the Dicionário Priberam conjugation tables of correr, servir, viver and dizer.
+the Dicionário Priberam conjugation tables of correr, servir and dizer. A bare form
+whose frequent reading is the accented word keeps it: apos is após, not apo + s.
 """
 import json
 from pathlib import Path
@@ -27,6 +28,10 @@ ACCENTED = [
     ("republica", "república"),    # Base XI 1º a), proparoxytone (público)
     ("pagina", "página"),          # Base XI 1º a), proparoxytone
     ("pratica", "prática"),        # Base XI 1º a), proparoxytone (plástico)
+    ("avos", "avós"),              # Base VIII 1º a), lists avó(s)
+    ("apos", "após"),              # Base VIII 1º a), oxytone in open -o + s (só(s))
+    ("atras", "atrás"),            # Base VIII 1º a), oxytone in open -a + s (estás)
+    ("viveres", "víveres"),        # Base XI 1º a), proparoxytone (Priberam: víveres)
 ]
 
 INFLECTED = [
@@ -34,7 +39,6 @@ INFLECTED = [
     "O cão correu muito.",         # correr, pretérito perfeito: ele correu
     "O rio corre ao mar.",         # correr, presente: ele corre
     "Ele servia o jantar.",        # servir, pretérito imperfeito: ele servia
-    "Se tu viveres lá, fico.",     # viver, conjuntivo futuro: se tu viveres
     "Os filhos chegaram.",         # plural of filho
     "Subiu aos montes.",           # plural of monte
     "As casas antigas ficaram.",   # feminine plural of antigo
