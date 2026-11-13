@@ -24,20 +24,21 @@ _VOWELS = "aeiouáàâãéêíóôõúü"
 def apply_to_words(
     text: str,
     fn: Callable[[str], str],
-    capitals_fn: Optional[Callable[[str], str]] = None,
+    is_word: Optional[Callable[[str], bool]] = None,
 ) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
     capitalisation pattern (UPPER / Title / lower) is re-applied to the result. When
-    ``capitals_fn`` is given, a word of two or more letters in capitals throughout goes
-    to ``capitals_fn`` instead: it may be an acronym (IPTU) and not a word.
+    ``is_word`` is given, a word of two or more letters in capitals throughout whose
+    lowercase form is no word is an acronym, and it stays as written (IPTU, PPD).
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
-        upper = len(word) > 1 and word.isupper()
-        out = (capitals_fn if capitals_fn is not None and upper else fn)(word.lower())
+        if is_word is not None and len(word) > 1 and word.isupper() and not is_word(word.lower()):
+            return word
+        out = fn(word.lower())
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)

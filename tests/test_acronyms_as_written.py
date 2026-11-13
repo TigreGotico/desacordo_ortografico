@@ -1,12 +1,12 @@
-"""A word in capitals throughout keeps its word-map lookups and skips the rule fallbacks.
+"""A word in capitals converts like the same word in lowercase; an acronym stays.
 
 AO1990 Base XIX 2º h) writes acronyms in capitals: "A letra maiúscula inicial é usada:
 ... h) Em siglas, símbolos ou abreviaturas internacionais ou nacionalmente reguladas com
 maiúsculas, iniciais ou mediais ou finais ou o todo em maiúsculas: FAO, NATO, ONU; H2O,
 Sr., V. Ex.ª." No clause exempts an acronym from the spelling rules. The rule here is
-the converter's own: a word in capitals may be an acronym, which is a string of letters
-and not a word, so a rule fallback must not rewrite it. A word that a word map holds is
-a word, and converts.
+the converter's own: a token in capitals is an acronym only when its lowercase form,
+diacritics aside, is no word that the converter knows (the word list or its own word
+maps). An acronym is a string of letters and stays as written in every context.
 """
 import pytest
 
@@ -19,24 +19,27 @@ from desacordo_ortografico import convert
     ("Pagou o IPTU.", "pre-ao1990-pt", "ao1990-pt"),
     ("Pagou o IPTU.", "pt_1973", "ao1990-br"),
     ("Votou no PPD.", "etymological", "pt_1973"),
+    ("PAGOU O IPTU.", "pre-ao1990-pt", "ao1990-pt"),
 ])
 def test_acronym_stays(text, src, dst):
     assert convert(text, src, dst) == text
 
 
-def test_acronym_in_text_in_capitals_stays():
-    assert convert("PAGOU O IPTU.", "pre-ao1990-pt", "ao1990-pt") == "PAGOU O IPTU."
-
-
 @pytest.mark.parametrize("text, src, dst, expected", [
-    # AO1990 Base XI 3º: António / Antônio
-    ("O ANTÓNIO e o Pedro", "ao1990-pt", "ao1990-br", "O ANTÔNIO e o Pedro"),
+    # AO1990 Base XI 3º: "académico/acadêmico, anatómico/anatômico"
+    ("O ESTUDO ANATÓMICO", "ao1990-pt", "ao1990-br", "O ESTUDO ANATÔMICO"),
+    # AO1990 Base XIV 1º: "aguentar"
+    ("VAMOS AGÜENTAR", "pre-ao1990-br", "ao1990-br", "VAMOS AGUENTAR"),
+    # AO1990 Base IX 3º: "assembleia, boleia, ideia"
+    ("A IDÉIA", "pre-ao1990-br", "ao1990-br", "A IDEIA"),
     # AO1990 Base IV 1º b): ação
     ("A ACÇÃO foi boa.", "pt_1973", "ao1990-pt", "A AÇÃO foi boa."),
+    # AO1990 Base XI 3º: António / Antônio
+    ("O ANTÓNIO e o Pedro", "ao1990-pt", "ao1990-br", "O ANTÔNIO e o Pedro"),
     # Reforma de 1911: pharmacia -> farmácia
     ("O Dr. SILVA da PHARMACIA", "etymological", "pt_1973", "O Dr. SILVA da FARMÁCIA"),
 ])
-def test_word_in_capitals_keeps_its_word_map(text, src, dst, expected):
+def test_word_in_capitals_converts(text, src, dst, expected):
     assert convert(text, src, dst) == expected
 
 

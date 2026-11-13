@@ -48,12 +48,6 @@ FEATURES: FrozenSet[str] = frozenset({
     "months",
 })
 
-# The features whose step looks a word up in a word map. The other steps are rules.
-MAP_FEATURES: FrozenSet[str] = frozenset({
-    "1911-accent-restore", "base-iv", "ptbr-divergence", "differential-1971",
-    "differential", "hyphen-lexical",
-})
-
 
 @dataclass
 class _Pass:
@@ -71,16 +65,14 @@ class _Pass:
     table_feature: Optional[Callable[[str], str]] = None
     plurals: bool = False
 
-    def apply(self, word: str, enabled: FrozenSet[str], maps_only: bool = False) -> str:
-        """``maps_only`` runs the table and the word-map steps (:data:`MAP_FEATURES`)
-        and skips the rules."""
+    def apply(self, word: str, enabled: FrozenSet[str]) -> str:
         if self.table is not None:
             form = (rules.lookup_with_plural(word, self.table) if self.plurals
                     else self.table.get(word))
             if form is not None:
                 return form if self.table_feature(word) in enabled else word
         for feature, fn in self.steps:
-            if feature in enabled and (not maps_only or feature in MAP_FEATURES):
+            if feature in enabled:
                 word = fn(word)
         return word
 
@@ -154,11 +146,8 @@ class OrthographyConverter:
             edge = self._edges[edge_name]
             step_pass = edge.forward if forward else edge.backward
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(
-                out,
-                lambda w, p=step_pass: p.apply(w, enabled),
-                lambda w, p=step_pass: p.apply(w, enabled, maps_only=True),
-            )
+            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled),
+                                       self.lex.is_known)
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
