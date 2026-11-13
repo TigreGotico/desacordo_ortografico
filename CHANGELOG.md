@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.4a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.4a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.3a1...0.1.4a1)
+
+**Merged pull requests:**
+
+- fix: AO1990 pelo, pela and para stay as written in older norms [\#17](https://github.com/TigreGotico/desacordo_ortografico/pull/17) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.3a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.2a1...0.1.3a1)
