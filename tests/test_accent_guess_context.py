@@ -58,6 +58,36 @@ def test_european_article_counts_unless_a_proclisis_word_comes_first():
     assert convert("Ele não a pratica.", "etymological", "pt_1973") == "Ele não a pratica."
 
 
+@pytest.mark.parametrize("word", ["Ninguém", "Jamais", "Nada", "Alguém"])
+def test_negative_words_and_indefinite_subjects_put_the_clitic_first(word):
+    # cap. 11 p. 324 2.a): não, nunca, jamais, ninguém, nada;
+    # p. 327 5.c): a subject with alguém
+    assert convert(f"{word} a critica.", "etymological", "pt_1973") == f"{word} a critica."
+
+
+def test_tudo_before_a_crase_is_not_a_trigger():
+    # p. 327 5.c) needs tudo in the subject; as an object it comes before a crase
+    assert convert("Ligou tudo a luminaria.", "etymological", "pt_1973") == "Ligou tudo a luminária."
+
+
+def test_a_determiner_before_the_article_is_not_a_trigger():
+    # todo is a determiner before the article (toda a história), not a proclisis word
+    assert convert("Contou toda a historia.", "etymological", "pt_1973") == "Contou toda a história."
+
+
+@pytest.mark.parametrize("target", ["pt_1973", "br_1971"])
+@pytest.mark.parametrize("det", ["numa", "duma", "pola"])
+def test_contracted_article_restores_the_noun(det, target):
+    # cap. 9 pp. 223-224: em and de contract with the indefinite article (num, duma);
+    # polo, pola are the classical forms that pelo, pela replaced (p. 223, item 5)
+    assert convert(f"Leu {det} historia.", "etymological", target) == f"Leu {det} história."
+
+
+@pytest.mark.parametrize("det", ["num", "dum", "polo"])
+def test_contracted_singular_article_takes_the_singular(det):
+    assert convert(f"Viu {det} pais.", "etymological", "pt_1973") == f"Viu {det} país."
+
+
 def test_brazilian_article_counts_at_sentence_start_or_after_a_preposition():
     # cap. 11 pp. 330-331: in Brazil the clitic comes before the verb in main clauses
     assert convert("A historia acabou.", "etymological", "br_1971") == "A história acabou."
@@ -77,11 +107,23 @@ def test_por_introduces_a_noun_phrase():
 
 
 @pytest.mark.parametrize("text", ["O comboio para, critica o chefe e sai.", "Ele nunca para; duvida de tudo.",
-                                  "Sempre que para, critica.", "Para, pratica!"])
+                                  "Sempre que para, critica.", "Para, pratica!", "O comboio para: critica o chefe.",
+                                  "O comboio para (critica o chefe).", "O comboio para — critica o chefe.",
+                                  "O comboio para - critica o chefe."])
 @pytest.mark.parametrize("target", ["pt_1973", "br_1971"])
 def test_punctuation_ends_the_context_of_the_word_before(text, target):
     # the verb para (parar) before a pause does not introduce the next word
     assert convert(text, "etymological", target) == text
+
+
+def test_european_trigger_before_a_pause_does_not_reach_the_article():
+    # cap. 11 p. 324 2.a): the negative word puts the clitic first only "quando entre ela
+    # e o verbo não há pausa"
+    assert convert("Não, a pratica não chega.", "etymological", "pt_1973") == "Não, a prática não chega."
+
+
+def test_editorial_brackets_keep_the_context():
+    assert convert("Contou a [sua] historia.", "etymological", "pt_1973") == "Contou a [sua] história."
 
 
 def test_brazilian_article_counts_after_a_pause():

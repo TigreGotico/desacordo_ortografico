@@ -16,16 +16,23 @@ Lexikon 2017, and the AO1990 text.
 - A determiner or a preposition introduces a noun phrase: the article and the
   determiners agree with the noun (cap. 9 "Artigo", p. 219; cap. 11 "Pronomes",
   p. 289), and a preposition relates a term to its consequent (cap. 15 "Preposição",
-  pp. 569-570). After one of them, a bare form that is otherwise only a verb form is
+  pp. 569-570). The contractions with the indefinite article (num, duma; cap. 9,
+  pp. 223-224) and the classical polo, pola (p. 223) count as determiners. After one
+  of them, a bare form that is otherwise only a verb form is
   the noun: "a sua historia" is "a sua história".
 - The bare articles o, a, os and as are also the clitic pronouns. In Portugal the
   clitic follows the verb unless a word such as não, que, já or quando comes before
-  it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327), so a bare article
+  it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327): a negative word
+  (não, nunca, jamais, ninguém, nada), an interrogative, one of the adverbs bem, mal,
+  ainda, já, sempre, só, talvez, or the subject alguém. So a bare article
   counts unless such a word stands right before it. In Brazil the clitic comes before the verb
   in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
   pp. 330-331), so a bare article counts only at the start of a sentence or clause or after a
-  preposition. Punctuation ends the context: the word before a comma, a colon or a
-  bracket decides nothing about the word after it.
+  preposition. A pause ends the context, because these words put the clitic first only
+  "quando entre ela e o verbo não há pausa" (p. 324): the word before a comma, a
+  colon, a parenthesis or a dash decides nothing about the word after it. Brackets are
+  no pause: they hold remarks an author adds inside a transcribed text ("Pontuação",
+  p. 681: "numa transcrição de texto alheio, o autor intercala observações próprias").
 - The article and the determiners agree in number with the noun, so after a singular
   determiner a bare form that is otherwise only a plural is the singular noun:
   "o pais" is "o país".
@@ -171,13 +178,19 @@ _DETERMINERS = frozenset({
     "vosso", "vossa", "meus", "minhas", "teus", "tuas", "seus", "suas", "nossos", "nossas",
     "vossos", "vossas", "cada", "nenhum", "nenhuma", "algum", "alguma",
     "outro", "outra", "todo", "toda",
+    "num", "numa", "nuns", "numas", "dum", "duma", "duns", "dumas",
+    "polo", "pola", "polos", "polas",
 })
 #: The bare articles, which are also the clitic pronouns.
 _ARTICLES = frozenset({"o", "a", "os", "as"})
 #: Words that put a clitic pronoun before the verb in European Portuguese, unaccented.
+#: ambos, todo, tudo, outro and qualquer (cap. 11 p. 327) are left out: p. 327 needs them in
+#: the subject, and right before an article they are mostly determiners or objects
+#: (todas as casas, ambos os lados, reduzia tudo a fórmulas).
 _PROCLISIS_TRIGGERS = frozenset({
     "que", "nao", "se", "ja", "nunca", "sempre", "tambem", "so", "quem", "ainda", "bem",
     "mal", "talvez", "onde", "quando", "como", "porque", "embora",
+    "jamais", "ninguem", "nada", "alguem",
 })
 #: The simple prepositions of cap. 15, unaccented, except a, which is also the article.
 _PREPOSITIONS = frozenset({
@@ -188,6 +201,7 @@ _PREPOSITIONS = frozenset({
 #: left out because it is also the preposition ("deu presentes a pais").
 _SINGULAR_DETERMINERS = frozenset({
     "o", "um", "uma", "do", "da", "no", "na", "ao", "à", "pelo", "pela",
+    "num", "numa", "dum", "duma", "polo", "pola",
     "este", "esta", "esse", "essa", "aquele", "aquela", "deste", "desta",
     "neste", "nesta", "naquele", "naquela", "nenhum", "nenhuma", "algum", "alguma",
     "meu", "minha", "teu", "tua", "seu", "sua", "nosso", "nossa", "vosso", "vossa",
@@ -199,7 +213,7 @@ _NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
 # (Coimbra, coimbrã; Roma, romã)
 _UNACCENTED_NAMES = frozenset({"coimbra", "roma"})
 # a sentence end or a clause pause; the word before it does not introduce the next word
-_PAUSE = re.compile(r"[.!?…,;:()\[\]—–]")
+_PAUSE = re.compile(r"[.!?…,;:()—–]|\s-\s")
 #: How many tags past the last match a word may look for its own. A tagger can split
 #: one word into a few tokens (Stanza splits do into de o); the bound keeps a word the
 #: tagger did not return from taking the tag of the same spelling far ahead.
