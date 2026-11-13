@@ -18,7 +18,7 @@ class TestReform1911Digraphs:
     def test_digraphs(self, old, new):
         assert rules.reform_1911_digraphs(old) == new
 
-    # 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩; in Greek words that ⟨ch⟩ stands before r, l, n or th
+    # 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩; this rule takes ⟨ch⟩ before r, l, n or th
     @pytest.mark.parametrize(
         "old,new",
         [
