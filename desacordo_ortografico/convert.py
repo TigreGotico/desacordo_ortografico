@@ -210,7 +210,7 @@ class OrthographyConverter:
             w = rules.drop_differential(w, lex.differential_dropped)
             w = lex.hyphen_dropped.get(w, w)
             w = lex.base_iv_drop.get(w, w)
-            w = rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset, lex.pronunciation_pt)
+            w = rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset, lex.cp_ao_form_pt)
             w = rules.ao1990_drop_trema(w)
             w = rules.ao1990_drop_accents(w)
             w = rules.ao1990_hyphen_rs(w)

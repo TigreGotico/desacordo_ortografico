@@ -10,17 +10,21 @@ reversible transforms. Everything that is *irreducibly lexical* lives here:
 * the bulk AO1990 word maps, reused from ``tugalex`` (Portal da Lingua Portuguesa
   data) instead of being duplicated here.
 
-``tugalex`` is a hard dependency, but every access to it is defensive: if it (or its
-data) is unavailable the lexical AO1990 maps simply fall back to empty and the
-deterministic rule engine still works on its own.
+``tugalex`` is a hard dependency: a missing package or a failed read raises, so the
+output never depends on what happens to be installed.
 """
 from __future__ import annotations
 
 import json
 import os
 import unicodedata
+from collections import defaultdict
 from functools import cached_property
 from typing import Dict, List, Optional, Set
+
+from tugalex import TugaLexicon
+
+from desacordo_ortografico import rules
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -45,12 +49,13 @@ def _strip_meta(d: dict) -> dict:
     return {k: v for k, v in d.items() if not k.startswith("_")}
 
 
+# Prefixes and leading elements after which a base keeps its own AO1990 spelling
+# (autoinfecção -> autoinfeção, codialecto -> codialeto).
+_CP_PREFIXES = rules.RS_PREFIXES | {"co", "des", "hiper", "inter", "pós", "pré", "sub", "super"}
+
+
 class Lexicon:
     """Loads the curated data files and exposes ready-to-use lookup maps."""
-
-    def __init__(self) -> None:
-        self._tuga = None
-        self._tuga_tried = False
 
     # ------------------------------------------------------- raw data files
     @cached_property
@@ -82,34 +87,108 @@ class Lexicon:
         return _load("sister_markers.json").get("languages", {})
 
     # ------------------------------------------------------------ tugalex
-    @property
-    def tuga(self):
-        """The shared :class:`tugalex.TugaLexicon`, or ``None`` if unavailable."""
-        if not self._tuga_tried:
-            self._tuga_tried = True
-            try:
-                from tugalex import TugaLexicon
+    @cached_property
+    def tuga(self) -> TugaLexicon:
+        """The shared :class:`tugalex.TugaLexicon`."""
+        return TugaLexicon()
 
-                self._tuga = TugaLexicon()
-            except Exception:  # pragma: no cover - optional at runtime
-                self._tuga = None
-        return self._tuga
+    @cached_property
+    def ao_pt_forms(self) -> Dict[str, List[str]]:
+        """The tugalex pt-PT AO1990 map: old form -> its AO1990 forms (two for a dual)."""
+        return _ao_forms(self.tuga.ao_pt)
+
+    @cached_property
+    def ao_br_forms(self) -> Dict[str, List[str]]:
+        return _ao_forms(self.tuga.ao_br)
 
     @cached_property
     def ao_pt_old2new(self) -> Dict[str, str]:
-        return _clean_ao_map(self.tuga, "ao_pt")
+        return self._old2new(self.ao_pt_forms, "pt-PT")
 
     @cached_property
     def ao_br_old2new(self) -> Dict[str, str]:
-        return _clean_ao_map(self.tuga, "ao_br")
+        return self._old2new(self.ao_br_forms, "pt-BR")
+
+    def _old2new(self, forms: Dict[str, List[str]], lang: str) -> Dict[str, str]:
+        """One AO1990 form per old form. A dual takes the form tugalex prefers for
+        ``lang`` (``TugaLexicon.modern_spelling``). Rows whose form equals the old form
+        (a kept dual, a capital-only change such as Janeiro) are left out."""
+        out: Dict[str, str] = {}
+        for old, new in forms.items():
+            form = new[0] if len(new) == 1 else self.tuga.modern_spelling(old, lang).lower()
+            if form != old:
+                out[old] = form
+        return out
+
+    def _cp_outcome_pt(self, key: str) -> Optional[str]:
+        """'drop' when the pt-PT AO1990 form of map word ``key`` loses the c/p of its
+        first cluster, 'keep' when the form keeps it, ``None`` for any other change."""
+        match = rules.CP_CLUSTER_RE.search(key)
+        if not match:
+            return None
+        form = self.tuga.modern_spelling(key, "pt-PT").lower()
+        if form == key:
+            return "keep"
+        if form == key[:match.start()] + key[match.start() + 1:]:
+            return "drop"
+        return None
+
+    @cached_property
+    def _cp_stems_pt(self) -> Dict[str, Set[str]]:
+        """Stems -> the outcomes of the words that share them. A stem ends one letter
+        past the c/p cluster (acto, detecta) or at the cluster (apt, tect). The words are
+        the map words and the Base IV keep list (apto, pacto)."""
+        stems: Dict[str, Set[str]] = defaultdict(set)
+        words = [(key, self._cp_outcome_pt(key)) for key in self.ao_pt_forms]
+        words += [(word, "keep") for word in self.cp_keep_pt]
+        for word, outcome in words:
+            match = rules.CP_CLUSTER_RE.search(word)
+            if match and outcome:
+                for end in (match.start() + 3, match.start() + 2):
+                    if len(word) >= end:
+                        stems[word[:end]].add(outcome)
+        return stems
+
+    def cp_ao_form_pt(self, word: str) -> Optional[str]:
+        """The pt-PT AO1990 form of ``word`` that the tugalex map gives its base, or
+        ``None`` with no map evidence.
+
+        The base is the word itself, the word after a prefix (autoinfecção, codialecto),
+        or, for a word the word list lacks, the words that share its stem (actores and
+        actor, efectuado and efectuar, apta and apto). The stem one letter past the
+        cluster decides first; stem words that disagree give no evidence. The shorter
+        stem that ends at the cluster only keeps a consonant, never drops one.
+        """
+        match = rules.CP_CLUSTER_RE.search(word)
+        if not match:
+            return None
+        cut = match.start()
+        drop = word[:cut] + word[cut + 1:]
+        starts = [0] + [len(p) for p in _CP_PREFIXES
+                        if word.startswith(p) and len(p) <= cut and len(word) - len(p) >= 5]
+        for start in sorted(starts):
+            base = word[start:]
+            if base in self.ao_pt_forms:
+                outcome = self._cp_outcome_pt(base)
+                if outcome is not None and rules.CP_CLUSTER_RE.search(base).start() == cut - start:
+                    return drop if outcome == "drop" else word
+        if word in self.wordset:
+            return None  # stems speak only for forms the word list lacks (inflections)
+        outcomes = self._cp_stems_pt.get(word[:cut + 3], set())
+        if len(word) >= cut + 3 and len(outcomes) == 1:
+            return drop if outcomes == {"drop"} else word
+        # a stem that ends at the cluster is too short to drop on (tect: tecto, tectónico)
+        if self._cp_stems_pt.get(word[:cut + 2]) == {"keep"}:
+            return word
+        return None
 
     @cached_property
     def ao_pt_new2old(self) -> Dict[str, str]:
-        return _invert(self.ao_pt_old2new)
+        return _invert_forms(self.ao_pt_forms)
 
     @cached_property
     def ao_br_new2old(self) -> Dict[str, str]:
-        return _invert(self.ao_br_old2new)
+        return _invert_forms(self.ao_br_forms)
 
     @cached_property
     def wordset(self) -> Set[str]:
@@ -123,13 +202,8 @@ class Lexicon:
         words.update(self.ao_pt_old2new.values())
         words.update(self.ao_br_old2new.values())
         words.update(self.reform1911_old2new.values())
-        t = self.tuga
-        if t:
-            for region in ("lbx", "rjx"):
-                try:
-                    words.update(w.lower() for w in t.get_wordlist(region))
-                except Exception:  # pragma: no cover - optional/heavy
-                    pass
+        for region in ("lbx", "rjx"):
+            words.update(w.lower() for w in self.tuga.get_wordlist(region))
         out = {w.lower() for w in words if w and " " not in w}
         # enrich with regular gender/number variants of the modern (consonant-dropped)
         # forms, so the silent-c/p rule generalises to inflections the source list omits
@@ -168,18 +242,6 @@ class Lexicon:
             if len(accented) == 1:
                 out[bare] = next(iter(accented))
         return out
-
-    @cached_property
-    def pronunciation_pt(self) -> Dict[str, str]:
-        """European Portuguese IPA by word (tugalex, Portal da Língua Portuguesa, Lisbon),
-        for the silent c/p rule. Empty when tugalex is unavailable."""
-        t = self.tuga
-        if not t:
-            return {}
-        try:
-            return t.get_ipa_map(region="lbx")
-        except Exception:  # pragma: no cover - optional/heavy
-            return {}
 
     @cached_property
     def cp_keep_pt(self) -> Set[str]:
@@ -271,23 +333,14 @@ class Lexicon:
         return _invert(self.accent_71_73_old2new)
 
 
-def _clean_ao_map(tuga, attr: str) -> Dict[str, str]:
+def _ao_forms(raw: Dict[str, List[str]]) -> Dict[str, List[str]]:
     """Lowercase a tugalex AO map and drop its stray CSV-header entry."""
-    if not tuga:
-        return {}
-    raw = getattr(tuga, attr, {}) or {}
-    out: Dict[str, str] = {}
-    for k, v in raw.items():
-        if not v:
-            continue
-        kl, vl = k.lower().strip(), v[0].lower().strip()
-        if kl == "old_form" or vl == "new_form" or not kl:
-            continue  # tugalex includes the CSV header as a bogus row
-        if kl == vl:
-            continue  # capitalisation-only change (Janeiro->janeiro); after
-            # casefolding it is a no-op that would otherwise pollute the
-            # "old form" set and mislabel modern words as pre-AO1990
-        out[kl] = vl
+    out: Dict[str, List[str]] = {}
+    for old, new in raw.items():
+        old = old.lower().strip()
+        forms = [f.lower().strip() for f in new if f.strip()]
+        if old and forms and old != "old_form" and forms[0] != "new_form":
+            out[old] = forms
     return out
 
 
@@ -296,6 +349,17 @@ def _invert(mapping: Dict[str, str]) -> Dict[str, str]:
     out: Dict[str, str] = {}
     for k, v in mapping.items():
         out.setdefault(v, k)
+    return out
+
+
+def _invert_forms(forms: Dict[str, List[str]]) -> Dict[str, str]:
+    """First-listed AO1990 form -> old form, kept duals included (setor -> sector). A
+    second-listed form is often a word of its own (contracto: contracto, contrato), so it
+    does not go back. On collision the first row wins."""
+    out: Dict[str, str] = {}
+    for old, new in forms.items():
+        if new[0] != old:
+            out.setdefault(new[0], old)
     return out
 
 

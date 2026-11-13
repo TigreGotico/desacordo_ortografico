@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List, Mapping, Optional
+from typing import Callable, List, Optional
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -77,33 +77,42 @@ def reform_1911_geminates(word: str, wordset=None) -> str:
 
 
 _CP_DROP = [("cç", "ç"), ("ct", "t"), ("pç", "ç"), ("pt", "t")]
+# the c or p of a -cç-/-ct-/-pç-/-pt- cluster
+CP_CLUSTER_RE = re.compile(r"[cp](?=[tç])")
 
 
 def drop_silent_cp(
-    word: str, keep: set, wordset: set, pronunciation: Optional[Mapping[str, str]] = None,
+    word: str,
+    keep: set,
+    wordset: set,
+    ao_form: Optional[Callable[[str], Optional[str]]] = None,
 ) -> str:
     """Drop a silent c/p from a -ct-/-pt-/-cç-/-pç- cluster (AO1990, European).
 
-    A rule fallback for words the Base IV lexicon does not list (contracto->contrato,
-    afectiva->afetiva, adoptada->adotada). AO1990 Base IV 1º drops the consonant only
-    where it is mute (b) and keeps it where it is pronounced (a, c). So the rule never
-    mangles a pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT
-    duals such as facto/contacto), and the de-consonanted form must be an attested
-    word. An attested word changes only when ``pronunciation`` (European IPA by word)
-    gives both forms the same sound: contracto and contrato do, aptitude and atitude
-    do not. One-way.
+    A rule fallback for words the AO1990 word map does not list. AO1990 Base IV 1º
+    drops the consonant where it is mute (b: ação, afetivo, adotar) and lets a
+    pronounced one stay (a: pacto, apto; c: sector or setor). Order of evidence:
+
+    1. ``keep`` (Base IV keep + PT duals such as facto/contacto) keeps the word.
+    2. ``ao_form`` gives the AO1990 form that the word map gives the word's base
+       (autoinfecção from infecção, actores from actor), or ``None`` with no evidence.
+    3. Without map evidence, an attested word is valid as written (aptitude, copta,
+       secção), and an unattested one loses the consonant only when the result is an
+       attested word (afectiva -> afetiva). One-way.
     """
     if word in keep:
         return word
-    said = pronunciation or {}
+    if ao_form is not None:
+        form = ao_form(word)
+        if form is not None:
+            return form
+    if word in wordset:
+        return word
     for pat, rep in _CP_DROP:
         if pat in word:
             cand = word.replace(pat, rep)
-            if cand == word or cand not in wordset:
-                continue
-            if word in wordset and (word not in said or said[word] != said.get(cand)):
-                return word
-            return cand
+            if cand != word and cand in wordset:
+                return cand
     return word
 
 
@@ -231,7 +240,7 @@ def recase_months(text: str, lowercase: bool) -> str:
 
 
 # --------------------------------------------------- AO1990 prefix + r/s doubling
-_RS_PREFIXES = {
+RS_PREFIXES = {
     "ante", "anti", "arqui", "auto", "contra", "eletro", "electro", "extra",
     "hidro", "infra", "intra", "macro", "micro", "mini", "multi", "neo",
     "pluri", "proto", "pseudo", "retro", "semi", "sobre", "supra", "ultra",
@@ -252,6 +261,6 @@ def ao1990_hyphen_rs(word: str) -> str:
     if len(parts) != 2:
         return word
     pre, base = parts
-    if pre in _RS_PREFIXES and base[:1] in ("r", "s") and pre[-1:] in _VOWELS:
+    if pre in RS_PREFIXES and base[:1] in ("r", "s") and pre[-1:] in _VOWELS:
         return pre + base[0] + base
     return word
