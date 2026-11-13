@@ -58,11 +58,16 @@ def test_european_article_counts_unless_a_proclisis_word_comes_first():
     assert convert("Ele não a pratica.", "etymological", "pt_1973") == "Ele não a pratica."
 
 
-@pytest.mark.parametrize("word", ["Ninguém", "Jamais", "Nada", "Alguém", "Tudo"])
+@pytest.mark.parametrize("word", ["Ninguém", "Jamais", "Nada", "Alguém"])
 def test_negative_words_and_indefinite_subjects_put_the_clitic_first(word):
     # cap. 11 p. 324 2.a): não, nunca, jamais, ninguém, nada;
-    # p. 327 5.c): a subject with tudo, alguém
+    # p. 327 5.c): a subject with alguém
     assert convert(f"{word} a critica.", "etymological", "pt_1973") == f"{word} a critica."
+
+
+def test_tudo_before_a_crase_is_not_a_trigger():
+    # p. 327 5.c) needs tudo in the subject; as an object it comes before a crase
+    assert convert("Ligou tudo a luminaria.", "etymological", "pt_1973") == "Ligou tudo a luminária."
 
 
 def test_a_determiner_before_the_article_is_not_a_trigger():
@@ -74,7 +79,7 @@ def test_a_determiner_before_the_article_is_not_a_trigger():
 @pytest.mark.parametrize("det", ["numa", "duma", "pola"])
 def test_contracted_article_restores_the_noun(det, target):
     # cap. 9 pp. 223-224: em and de contract with the indefinite article (num, duma);
-    # polo, pola are the classical contractions of per with the article
+    # polo, pola are the classical forms that pelo, pela replaced (p. 223, item 5)
     assert convert(f"Leu {det} historia.", "etymological", target) == f"Leu {det} história."
 
 

@@ -24,14 +24,15 @@ Lexikon 2017, and the AO1990 text.
   clitic follows the verb unless a word such as não, que, já or quando comes before
   it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327): a negative word
   (não, nunca, jamais, ninguém, nada), an interrogative, one of the adverbs bem, mal,
-  ainda, já, sempre, só, talvez, or a subject with tudo or alguém. So a bare article
+  ainda, já, sempre, só, talvez, or the subject alguém. So a bare article
   counts unless such a word stands right before it. In Brazil the clitic comes before the verb
   in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
   pp. 330-331), so a bare article counts only at the start of a sentence or clause or after a
   preposition. A pause ends the context, because these words put the clitic first only
   "quando entre ela e o verbo não há pausa" (p. 324): the word before a comma, a
-  colon, a parenthesis or a dash decides nothing about the word after it. Editorial
-  brackets are no pause.
+  colon, a parenthesis or a dash decides nothing about the word after it. Brackets are
+  no pause: they hold words that an editor adds inside a quoted sentence ("Pontuação",
+  p. 681: "numa transcrição de texto alheio, o autor intercala observações próprias").
 - The article and the determiners agree in number with the noun, so after a singular
   determiner a bare form that is otherwise only a plural is the singular noun:
   "o pais" is "o país".
@@ -183,12 +184,13 @@ _DETERMINERS = frozenset({
 #: The bare articles, which are also the clitic pronouns.
 _ARTICLES = frozenset({"o", "a", "os", "as"})
 #: Words that put a clitic pronoun before the verb in European Portuguese, unaccented.
-#: ambos, todo, outro and qualquer (cap. 11 p. 327) are left out: right before an article
-#: they are determiners (todas as casas, ambos os lados).
+#: ambos, todo, tudo, outro and qualquer (cap. 11 p. 327) are left out: p. 327 needs them in
+#: the subject, and right before an article they are mostly determiners or objects
+#: (todas as casas, ambos os lados, reduzia tudo a fórmulas).
 _PROCLISIS_TRIGGERS = frozenset({
     "que", "nao", "se", "ja", "nunca", "sempre", "tambem", "so", "quem", "ainda", "bem",
     "mal", "talvez", "onde", "quando", "como", "porque", "embora",
-    "jamais", "ninguem", "nada", "alguem", "tudo",
+    "jamais", "ninguem", "nada", "alguem",
 })
 #: The simple prepositions of cap. 15, unaccented, except a, which is also the article.
 _PREPOSITIONS = frozenset({
