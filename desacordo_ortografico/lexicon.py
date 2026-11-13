@@ -170,6 +170,18 @@ class Lexicon:
         return out
 
     @cached_property
+    def pronunciation_pt(self) -> Dict[str, str]:
+        """European Portuguese IPA by word (tugalex, Portal da Língua Portuguesa, Lisbon),
+        for the silent c/p rule. Empty when tugalex is unavailable."""
+        t = self.tuga
+        if not t:
+            return {}
+        try:
+            return t.get_ipa_map(region="lbx")
+        except Exception:  # pragma: no cover - optional/heavy
+            return {}
+
+    @cached_property
     def cp_keep_pt(self) -> Set[str]:
         """Words whose c/p in a -ct-/-pt-/-cç-/-pç- cluster is pronounced in European
         Portuguese and therefore kept (Base IV 'keep' plus the PT side of the duals)."""

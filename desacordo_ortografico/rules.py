@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List
+from typing import Callable, List, Mapping, Optional
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -79,21 +79,31 @@ def reform_1911_geminates(word: str, wordset=None) -> str:
 _CP_DROP = [("cç", "ç"), ("ct", "t"), ("pç", "ç"), ("pt", "t")]
 
 
-def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
+def drop_silent_cp(
+    word: str, keep: set, wordset: set, pronunciation: Optional[Mapping[str, str]] = None,
+) -> str:
     """Drop a silent c/p from a -ct-/-pt-/-cç-/-pç- cluster (AO1990, European).
 
-    A rule fallback for inflected forms the Base IV lexicon does not list
-    (desactiva->desativa, detectou->detetou). Guarded twice so it never mangles a
-    pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT duals such
-    as facto/contacto), and the de-consonanted form must be an attested word. One-way.
+    A rule fallback for words the Base IV lexicon does not list (contracto->contrato,
+    afectiva->afetiva, adoptada->adotada). AO1990 Base IV 1º drops the consonant only
+    where it is mute (b) and keeps it where it is pronounced (a, c). So the rule never
+    mangles a pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT
+    duals such as facto/contacto), and the de-consonanted form must be an attested
+    word. An attested word changes only when ``pronunciation`` (European IPA by word)
+    gives both forms the same sound: contracto and contrato do, aptitude and atitude
+    do not. One-way.
     """
     if word in keep:
         return word
+    said = pronunciation or {}
     for pat, rep in _CP_DROP:
         if pat in word:
             cand = word.replace(pat, rep)
-            if cand != word and cand in wordset:
-                return cand
+            if cand == word or cand not in wordset:
+                continue
+            if word in wordset and (word not in said or said[word] != said.get(cand)):
+                return word
+            return cand
     return word
 
 
