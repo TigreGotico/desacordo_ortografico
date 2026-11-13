@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.6a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.6a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.5a1...0.1.6a1)
+
+**Merged pull requests:**
+
+- fix: cited proclisis words and contracted articles in the accent guess [\#18](https://github.com/TigreGotico/desacordo_ortografico/pull/18) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.5a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.5a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.4a1...0.1.5a1)
