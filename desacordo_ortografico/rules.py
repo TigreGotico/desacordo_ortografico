@@ -168,12 +168,21 @@ def ao1990_drop_accents(word: str) -> str:
 
     Reversible? No — eia/oi/oo also occur in words that never had an accent (meia).
     """
-    follows_vowel = "(?=[^%s]*[%s])" % (_VOWELS, _VOWELS)
-    word = re.sub("éi%s" % follows_vowel, "ei", word)  # éi -> ei (paroxytone only)
-    word = re.sub("ói%s" % follows_vowel, "oi", word)  # ói -> oi (paroxytone only)
-    word = word.replace("ôo", "oo")  # ôo -> oo
-    word = word.replace("êem", "eem")  # êem -> eem
-    return word
+    return ao1990_drop_hiatus_accent(ao1990_drop_diphthong_accent(word))
+
+
+_FOLLOWS_VOWEL = "(?=[^%s]*[%s])" % (_VOWELS, _VOWELS)
+
+
+def ao1990_drop_diphthong_accent(word: str) -> str:
+    """éi/ói -> ei/oi in paroxytones (idéia->ideia); oxytones keep it (herói)."""
+    word = re.sub("éi%s" % _FOLLOWS_VOWEL, "ei", word)
+    return re.sub("ói%s" % _FOLLOWS_VOWEL, "oi", word)
+
+
+def ao1990_drop_hiatus_accent(word: str) -> str:
+    """ôo -> oo (vôo->voo) and 3rd-person-plural êem -> eem (lêem->leem)."""
+    return word.replace("ôo", "oo").replace("êem", "eem")
 
 
 # ----------------------------------------------------------- AO1990 trema
