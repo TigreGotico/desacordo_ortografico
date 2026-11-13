@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.7a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.7a1) (2026-11-13)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.6a1...0.1.7a1)
+
+**Merged pull requests:**
+
+- fix: restore accents on plurals the word list does not hold [\#19](https://github.com/TigreGotico/desacordo_ortografico/pull/19) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.6a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.6a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.5a1...0.1.6a1)
