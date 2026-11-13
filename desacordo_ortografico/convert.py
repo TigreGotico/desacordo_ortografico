@@ -150,6 +150,10 @@ class OrthographyConverter:
         if not steps:
             return result
 
+        # A token in capitals marks an acronym only in mixed-case text. Text in capitals
+        # throughout converts each token like the same word in lowercase. The test reads
+        # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
+        is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
@@ -159,7 +163,7 @@ class OrthographyConverter:
             # the word pass rewrites letters inside each word only, so the tags aligned to
             # the words before it still line up one to one with the words after it
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
-            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled))
+            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled), is_word)
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,

@@ -46,6 +46,11 @@ def deaccent(word: str) -> str:
     return unicodedata.normalize("NFC", out)
 
 
+def _letters(word: str) -> str:
+    """Drop every diacritic: 'agüentar' -> 'aguentar', 'ação' -> 'acao'."""
+    return "".join(c for c in unicodedata.normalize("NFD", word) if not unicodedata.combining(c))
+
+
 #: Irregular verb forms the word list lacks, which no inflection rule derives.
 #: dizer: "ele disse" (Dicionário Priberam, conjugação de dizer, pretérito perfeito).
 _IRREGULAR_FORMS = frozenset({"disse"})
@@ -247,6 +252,30 @@ class Lexicon:
             elif w.endswith("a"):
                 out |= {w[:-1] + "o", w + "s", w[:-1] + "os"}
         return out
+
+    @cached_property
+    def _known_letters(self) -> Set[str]:
+        """The letters, without diacritics, of every word form the converter knows: the
+        word set plus both sides of its word maps and exception lists."""
+        words = set(self.wordset) | self.base_iv_keep | self.differential_kept
+        for table in (self.ao_pt_old2new, self.ao_br_old2new, self.reform1911_old2new,
+                      self.base_iv_drop, self.dual_pt2br, self.dual_br2pt,
+                      self.differential_dropped, self.hyphen_dropped,
+                      self.divergence_pt2br, self.divergence_br2pt, self.accent_71_73_old2new):
+            words |= set(table) | set(table.values())
+        return {_letters(w.lower()) for w in words}
+
+    def is_known(self, word: str) -> bool:
+        """True when ``word``, diacritics aside, is a word form the converter knows.
+
+        Diacritics aside, because the rules add or drop them (agüentar -> aguentar). The
+        word list holds base forms, so a regular plural or feminine of a known word counts
+        too (económica, insectos). Verb forms do not: they would take acronyms (BES). A
+        word in capitals that is not known is an acronym (IPTU).
+        """
+        letters = _letters(word)
+        known = self._known_letters
+        return letters in known or bool({"nominal", "plural"} & _inflection_kinds(letters, known))
 
     @cached_property
     def _accent_candidates(self) -> Dict[str, Tuple[str, FrozenSet[str]]]:

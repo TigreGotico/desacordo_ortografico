@@ -58,7 +58,11 @@ _SEGMENT_SEP = re.compile(r"[-'’]")
 
 
 # ----------------------------------------------------------------- tokenising
-def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
+def apply_to_words(
+    text: str,
+    fn: Callable[[str], str],
+    is_word: Optional[Callable[[str], bool]] = None,
+) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
@@ -66,12 +70,16 @@ def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
     hyphen or apostrophe segment (see :func:`_match_case`). A word with a capital
     inside a segment and not in capitals throughout (pH, kW, McDonald, TVs) is a symbol
     or a name, not a lowercase word, and none of the three patterns can restore it: it
-    is returned as written.
+    is returned as written. When ``is_word`` is given, a word in capitals throughout
+    whose lowercase form is no word is an acronym or a symbol, and it stays as written
+    (IPTU, PPD, the axis Y; AO1990 Base I 2º c)).
     """
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
         if not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word)):
+            return word
+        if is_word is not None and word.isupper() and not is_word(word.lower()):
             return word
         out = fn(word.lower())
         return _match_case(word, out)
