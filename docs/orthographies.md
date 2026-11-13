@@ -86,7 +86,10 @@ lexical part. It defines three sets:
 - **optional** (two valid spellings in one norm, Base IV 1º c): `sector`/`setor`,
   `carácter`/`caráter`. Where both forms are valid in the target variety (a dual cell of
   that variety's tugalex AO1990 map), the converter writes the form with the consonant.
-  A word with one valid form in the target variety takes that form.
+  A word with one valid form in the target variety takes that form. A European source
+  reaches a pt-BR norm through AO1990 pt-PT; on that route the pt-PT step takes the
+  first form of a pt-PT dual and the plain c/p rule, so the pt-PT choice does not reach
+  Brazil.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`

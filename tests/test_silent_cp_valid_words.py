@@ -7,9 +7,10 @@ Eliminam-se nos casos em que são invariavelmente mudos nas pronúncias cultas d
 ação, acionar, afetivo, aflição, aflito, ato, coleção, coletivo, direção, diretor, exato,
 objeção; adoção, adotar, batizar, Egito, ótimo".
 
-A word outside the map follows the map entry of its base: the word after a prefix
-(autoinfecção, codialecto), or the map words that share its stem (actores and actor). An
-attested word with no such entry stays as written.
+A word outside the map follows the map entry of its base: its masculine singular, the
+word after a prefix (autoinfecção, codialecto), or the map words that share its stem
+(actores and actor). A word of the tugalex word list with no such entry stays as written,
+unless it is the old form of an AO1990 map row.
 """
 import pytest
 from tugalex import TugaLexicon
@@ -92,10 +93,47 @@ def test_short_stem_does_not_drop():
     assert pt("as placas tectónicas") == "as placas tectónicas"
 
 
-# liquefacto is attested and has no pt-PT map row, so the map words of its stem
-# (liquefactor -> liquefator) do not decide it. The ao1990-pt gold cells write liquefacto.
-def test_attested_word_ignores_its_stem_words():
-    assert pt("um gás liquefacto") == "um gás liquefacto"
+# liquefacto is not in the tugalex word list and has no pt-PT map row, so the map words
+# of its stem decide it: liquefactor -> liquefator, liquefacção -> liquefação.
+def test_unattested_word_follows_its_stem_words():
+    assert pt("um gás liquefacto") == "um gás liquefato"
+
+
+# A dual cell speaks only for itself: contractura (contratura, contractura) does not keep
+# the c of contractual. Priberam: contratual "Grafia em Portugal: contratual".
+@pytest.mark.parametrize("src", ["pre-ao1990-pt", "etymological"])
+def test_dual_is_no_evidence_for_another_word(src):
+    text = "O vínculo contractual foi revisto contractualmente."
+    assert convert(text, src, "ao1990-pt") == "O vínculo contratual foi revisto contratualmente."
+
+
+# The word's own masculine singular row decides before a prefix base: pt-PT map row
+# anticonceptivo -> anticoncetivo, while the base conceptiva is a dual cell.
+@pytest.mark.parametrize("old, new", [("anticonceptiva", "anticoncetiva"),
+                                      ("anticonceptivas", "anticoncetivas")])
+def test_masculine_row_decides_before_a_prefix_base(old, new):
+    assert pt(old) == new
+
+
+# A dual base gives no evidence to a prefixed word: contracto (contracted) is a dual cell,
+# subcontrato is the noun "subcontract".
+def test_dual_base_is_no_evidence_for_a_prefixed_word():
+    assert pt("o subcontracto") == "o subcontrato"
+
+
+# codialecto follows its base dialecto -> dialeto, and its feminine and plurals follow it:
+# a form the word set only generates (codialecta) is not attested as written.
+@pytest.mark.parametrize("old, new", [("codialecta", "codialeta"), ("codialectas", "codialetas"),
+                                      ("codialectos", "codialetos")])
+def test_inflection_follows_its_prefixed_masculine(old, new):
+    assert pt(old) == new
+
+
+# The word list holds microelectrônica, the Brazilian accent on the pre-AO1990 letters of
+# the pt-PT map row microelectrónica -> microeletrónica, so it is not valid as written and
+# follows the map words of its stem.
+def test_old_form_with_another_accent_is_not_attested():
+    assert pt("microelectrônica") == "microeletrônica"
 
 
 def _fail(*_args, **_kwargs):
@@ -112,3 +150,16 @@ def test_failed_map_read_raises(monkeypatch):
     monkeypatch.setattr(TugaLexicon, "__init__", _fail)
     with pytest.raises(RuntimeError, match="tugalex read failed"):
         _ = Lexicon().ao_pt_old2new
+
+
+# eletro-óptica is a form of the pt-BR dual cell electroóptica, not a word of the tugalex
+# word list, so pt-PT does not keep it as written: pt-PT map row óptica -> ótica.
+def test_pt_br_map_form_is_not_attested_for_pt_pt():
+    assert pt("eletro-óptica") == "eletro-ótica"
+
+
+# The plural in -es follows its singular (Cunha & Cintra cap. 8: -es after r), so the
+# plural of the pt-PT dual espectador keeps the c by the dual rule, while the map words
+# of its stem drop theirs (espectáculo -> espetáculo).
+def test_plural_in_es_follows_its_dual_singular():
+    assert pt("os espectadores do espectaculo") == "os espectadores do espetaculo"

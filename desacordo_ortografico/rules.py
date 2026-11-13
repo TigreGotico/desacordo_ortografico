@@ -46,7 +46,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List, Mapping, Optional, Sequence, Tuple
+from typing import Callable, Collection, List, Mapping, Optional, Sequence, Tuple
 
 from .lexicon import _ACCENTS, _RS_PREFIXES, deaccent
 
@@ -179,19 +179,19 @@ def drop_silent_cp(
     keep: set,
     wordset: set,
     ao_form: Optional[Callable[[str], Optional[str]]] = None,
+    attested: Collection[str] = (),
 ) -> str:
     """Drop a silent c/p from a -ct-/-pt-/-cç-/-pç- cluster (AO1990, European).
 
-    A rule fallback for words the AO1990 word map does not list. AO1990 Base IV 1º
-    drops the consonant where it is mute (b: ação, afetivo, adotar) and keeps a
-    pronounced one (a: pacto, apto). Order of evidence:
+    A rule fallback for inflected forms the Base IV lexicon does not list
+    (desactiva->desativa, detectou->detetou). Guarded twice so it never mangles a
+    pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT duals such
+    as facto/contacto), and the de-consonanted form must be an attested word. One-way.
 
-    1. ``keep`` (Base IV keep + PT duals such as facto/contacto) keeps the word.
-    2. ``ao_form`` gives the AO1990 form that the word map gives the word's base
-       (autoinfecção from infecção, actores from actor), or ``None`` with no evidence.
-    3. Without map evidence, an attested word is valid as written (aptitude, copta,
-       secção), and an unattested one loses the consonant only when the result is an
-       attested word (afectiva -> afetiva). One-way.
+    ``ao_form`` gives the AO1990 form that the word map gives the word's base, or
+    ``None`` with no evidence. AO1990 Base IV 1º drops the consonant where it is mute
+    (b: ação, afetivo, adotar) and keeps a pronounced one (a: pacto, apto). With no map
+    evidence, a word in ``attested`` is valid as written (aptitude, copta, secção).
     """
     if word in keep:
         return word
@@ -199,8 +199,8 @@ def drop_silent_cp(
         form = ao_form(word)
         if form is not None:
             return form
-    if word in wordset:
-        return word
+        if word in attested:
+            return word
     for pat, rep in _CP_DROP:
         if pat in word:
             cand = word.replace(pat, rep)

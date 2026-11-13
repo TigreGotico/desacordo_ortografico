@@ -1,4 +1,4 @@
-"""Curated exception lexicons + a thin, defensive wrapper over :mod:`tugalex`.
+"""Curated exception lexicons and the :mod:`tugalex` word maps.
 
 The deterministic rules in :mod:`desacordo_ortografico.rules` cover the regular,
 reversible transforms. Everything that is *irreducibly lexical* lives here:
@@ -16,8 +16,10 @@ output never depends on what happens to be installed.
 Where both forms of a word are valid in the target variety (a dual cell of that
 variety's AO1990 word map, Base IV 1º c: sector and setor), the converter writes the
 form with the consonant, by owner ruling. A word with one valid form in the target
-variety takes that form. A dual of the pt-PT map only takes Brazil's form of the pair
-toward pt-BR (:attr:`Lexicon.ao_dual_pt2br`).
+variety takes that form. A European source reaches a pt-BR norm through AO1990 pt-PT;
+on that route the pt-PT step keeps the first form of a dual cell and the plain c/p rule
+(:attr:`Lexicon.ao_pt_first_old2new`), so a pt-PT dual reaches Brazil unchanged by the
+dual rule.
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
@@ -217,6 +219,11 @@ class Lexicon:
         return _old2new(self.ao_pt_forms)
 
     @cached_property
+    def ao_pt_first_old2new(self) -> Dict[str, str]:
+        """The pt-PT map with the first form of each dual cell, for a route to pt-BR."""
+        return _old2new(self.ao_pt_forms, first=True)
+
+    @cached_property
     def ao_br_old2new(self) -> Dict[str, str]:
         return _old2new(self.ao_br_forms)
 
@@ -234,10 +241,23 @@ class Lexicon:
                 for old, forms in self.ao_br_forms.items() if len(forms) > 1}
 
     @cached_property
-    def _ao_new_forms(self) -> Set[str]:
-        """Every AO1990 form of both maps that differs from its old form."""
-        return {form for table in (self.ao_pt_forms, self.ao_br_forms)
-                for old, forms in table.items() for form in forms if form != old}
+    def ao_br_dual_full(self) -> Dict[str, str]:
+        """The form without the consonant of each pt-BR dual cell -> the form with it."""
+        return {bare: full for full, bare in self._br_duals.values()}
+
+    @cached_property
+    def _word_list(self) -> Set[str]:
+        """The tugalex word list (Portal da Língua Portuguesa), lowercase."""
+        return {w.lower() for region in ("lbx", "rjx") for w in self.tuga.get_wordlist(region)}
+
+    @cached_property
+    def attested(self) -> Set[str]:
+        """The words of the word list that are valid as written: the list holds pre-AO1990
+        forms too, so the old form of a c/p row of either AO1990 map is left out, compared
+        without diacritics (microelectrônica beside microelectrónica)."""
+        old = {deaccent(o) for table in (self.ao_pt_forms, self.ao_br_forms)
+               for o, forms in table.items() if o not in forms and _CP_CLUSTER_RE.search(o)}
+        return {w for w in self._word_list if deaccent(w) not in old}
 
     def _cp_outcome_pt(self, key: str) -> Optional[str]:
         """'drop' when the pt-PT AO1990 form of map word ``key`` loses the c/p of its
@@ -256,9 +276,11 @@ class Lexicon:
     def _cp_stems_pt(self) -> Dict[str, Set[str]]:
         """Stems -> the outcomes of the words that share them. A stem ends one letter
         past the c/p cluster (acto, detecta). The words are the map words and the Base IV
-        keep list (apto, pacto); a map row overrides the keep list (ruptura -> rutura)."""
+        keep list (apto, pacto); a map row overrides the keep list (ruptura -> rutura). A
+        dual cell speaks only for itself, so contractura does not keep contractual."""
         stems: Dict[str, Set[str]] = defaultdict(set)
-        words = [(key, self._cp_outcome_pt(key)) for key in self.ao_pt_forms]
+        words = [(key, self._cp_outcome_pt(key)) for key in self.ao_pt_forms
+                 if key not in self._pt_duals]
         words += [(word, "keep") for word in self.cp_keep_pt if word not in self.ao_pt_forms]
         for word, outcome in words:
             match = _CP_CLUSTER_RE.search(word)
@@ -287,38 +309,42 @@ class Lexicon:
         """The pt-PT AO1990 form of ``word`` that the tugalex map gives its base, or
         ``None`` with no map evidence.
 
-        The base is the word itself, the word after a prefix (autoinfecção, codialecto),
-        or, for a word the word list lacks, the words that share its stem (actores and
-        actor, efectuado and efectuar). A feminine or plural follows its masculine
-        singular first (aptas and apto). Then the stem one letter past the cluster
-        decides; stem words that disagree give no evidence.
+        The evidence, in order: the map row of the word or of its masculine singular
+        (anticonceptiva and anticonceptivo, espectadores and espectador); the row of its base after a prefix
+        (autoinfecção, codialecto), unless that base is a dual cell; for a word the word
+        list does not attest, the evidence of its masculine singular (aptas and apto);
+        then the map words that share its stem one letter past the cluster (actores and
+        actor). Stem words that disagree give no evidence.
         """
         match = _CP_CLUSTER_RE.search(word)
         if not match:
             return None
         cut = match.start()
         drop = word[:cut] + word[cut + 1:]
-        starts = [0] + [len(p) for p in _CP_PREFIXES
-                        if word.startswith(p) and len(p) <= cut and len(word) - len(p) >= 5]
-        for start in sorted(starts):
-            base = word[start:]
-            if base in self.ao_pt_forms:
-                outcome = self._cp_outcome_pt(base)
-                if outcome is not None and _CP_CLUSTER_RE.search(base).start() == cut - start:
-                    return drop if outcome == "drop" else word
-        if word in self.wordset:
-            return None  # stems speak only for forms the word list lacks (inflections)
-        # the feminine or plural of a word follows that word (aptas: apto; estupefactos:
-        # estupefacto, attested and kept)
         singular = word.removesuffix("s")
         bases = [singular, singular[:-1] + "o"] if singular.endswith("a") else [singular]
+        if word.endswith("es") and word[-3:-2] in ("r", "z"):
+            bases.append(word[:-2])  # Cunha & Cintra cap. 8: -es after r and z
+        for base in dict.fromkeys([word] + bases):
+            outcome = self._cp_outcome_pt(base) if base in self.ao_pt_forms else None
+            if outcome is not None and _CP_CLUSTER_RE.search(base).start() == cut:
+                return drop if outcome == "drop" else word
+        for p in _CP_PREFIXES:
+            base = word[len(p):]
+            if (word.startswith(p) and len(p) <= cut and len(base) >= 5
+                    and base in self.ao_pt_forms and base not in self._pt_duals):
+                outcome = self._cp_outcome_pt(base)
+                if outcome is not None and _CP_CLUSTER_RE.search(base).start() == cut - len(p):
+                    return drop if outcome == "drop" else word
+        if word in self.attested:
+            return None
         for base in bases:
             if base == word:
                 continue
             form = self.cp_ao_form_pt(base)
             if form is not None:
                 return word if form == base else drop
-            if base in self.cp_keep_pt or base in self.wordset:
+            if base in self.cp_keep_pt or base in self.attested:
                 return word
         outcomes = self._cp_stems_pt.get(word[:cut + 3], set())
         if len(word) >= cut + 3 and len(outcomes) == 1:
@@ -327,8 +353,10 @@ class Lexicon:
 
     @cached_property
     def ao_pt_row_class(self) -> Dict[str, str]:
-        """The :func:`ao_row_class` of each ``ao_pt_old2new`` row, keyed by old form."""
-        return {old: ao_row_class(old, new) for old, new in self.ao_pt_old2new.items()}
+        """The :func:`ao_row_class` of each row of both pt-PT maps, keyed by old form."""
+        return {old: ao_row_class(old, new)
+                for table in (self.ao_pt_first_old2new, self.ao_pt_old2new)
+                for old, new in table.items()}
 
     @cached_property
     def ao_br_row_class(self) -> Dict[str, str]:
@@ -370,29 +398,22 @@ class Lexicon:
         """All known modern Portuguese word forms (lowercase), for rule validation.
 
         Sourced from the tugalex word list (Portal da Língua Portuguesa) plus the AO and
-        1911 map values, both forms of a dual included. Used to keep deterministic rules
-        honest: a rule only fires if its output is an attested word.
+        1911 map values. Used to keep deterministic rules honest: a rule only fires if
+        its output is an attested word.
         """
-        words: Set[str] = set(self._ao_new_forms)
-        words.update(self.reform1911_old2new.values())
-        words.update(w.lower() for w in self.tuga.get_wordlist("lbx"))
-        words.update(self._br_words)
+        firsts = {forms[0] for table in (self.ao_pt_forms, self.ao_br_forms)
+                  for old, forms in table.items() if forms[0] != old}
+        words = firsts | set(self.reform1911_old2new.values()) | self._word_list
         out = {w.lower() for w in words if w and " " not in w}
         # enrich with regular gender/number variants of the modern (consonant-dropped)
         # forms, so the silent-c/p rule generalises to inflections the source list omits
         # (coletivo -> coletiva/coletivos/coletivas, hence colectiva -> coletiva).
-        sources = set(self.base_iv_drop.values()) | self._ao_new_forms
-        for w in sources:
+        for w in set(self.base_iv_drop.values()) | firsts:
             if w.endswith("o"):
                 out |= {w[:-1] + "a", w + "s", w[:-1] + "as"}
             elif w.endswith("a"):
                 out |= {w[:-1] + "o", w + "s", w[:-1] + "os"}
         return out
-
-    @cached_property
-    def _br_words(self) -> Set[str]:
-        """The tugalex Brazilian (Rio de Janeiro) word list, lowercase."""
-        return {w.lower() for w in self.tuga.get_wordlist("rjx")}
 
     @cached_property
     def _known_letters(self) -> Set[str]:
@@ -566,42 +587,6 @@ class Lexicon:
                 if br not in self._pt_dual_full_forms}
 
     @cached_property
-    def ao_dual_pt2br(self) -> Dict[str, str]:
-        """Both forms of each dual cell of the pt-PT map -> the form Brazil writes, for a
-        pt-BR target (sector, setor -> setor; espectro, espetro -> espectro). Brazil's form
-        is the pt-BR map row of the word (a pt-BR dual gives its consonant form), else
-        the ``base_iv.json`` pt-BR form, else the form of the pair the Brazilian word
-        list holds alone, else the form the pt-PT cell lists first. A word of its own is never a key (contrato)."""
-        out: Dict[str, str] = {}
-        for old, (full, bare) in self._pt_duals.items():
-            br = self._br_form(old, full, bare)
-            for form in (full, bare):
-                if form != br and form not in _DUAL_HOMOGRAPHS:
-                    out.setdefault(form, br)
-        return out
-
-    def _br_form(self, old: str, full: str, bare: str) -> str:
-        for key in (old, full, bare):
-            if key in self.ao_br_forms:
-                return self.ao_br_old2new.get(key, key)
-        in_map = [f for f in (full, bare) if f in self._ao_br_values]
-        if len(in_map) == 1:
-            return in_map[0]
-        if in_map:
-            return full
-        for form in (full, bare):
-            if form in self.dual_pt2br:
-                return self.dual_pt2br[form]
-            if form in self.dual_br2pt:
-                return form
-        listed = [f for f in (full, bare) if f in self._br_words]
-        return listed[0] if len(listed) == 1 else self.ao_pt_forms[old][0]
-
-    @cached_property
-    def _ao_br_values(self) -> Set[str]:
-        return {f for forms in self.ao_br_forms.values() for f in forms}
-
-    @cached_property
     def ao_dual_br2pt(self) -> Dict[str, str]:
         """The dual cells, form without the consonant -> form with it, for a pt-PT target
         (setor -> sector). A pt-BR dual goes only where the pt-PT map has no row of its
@@ -663,14 +648,14 @@ def _invert(mapping: Dict[str, str]) -> Dict[str, str]:
     return out
 
 
-def _old2new(forms: Dict[str, List[str]]) -> Dict[str, str]:
+def _old2new(forms: Dict[str, List[str]], first: bool = False) -> Dict[str, str]:
     """One AO1990 form per old form. A dual cell gives the form with the consonant
-    (the longer one). Rows
+    (the longer one), or with ``first`` the form the map lists first. Rows
     whose form equals the old form (a pt-PT dual, a capital-only change such as Janeiro)
     are left out: they would mark modern words as pre-AO1990."""
     out: Dict[str, str] = {}
     for old, new in forms.items():
-        form = max(new, key=len)
+        form = new[0] if first else max(new, key=len)
         if form != old:
             out[old] = form
     return out

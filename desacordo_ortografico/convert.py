@@ -86,6 +86,8 @@ class _Edge:
     reversible_forward: bool = True
     reversible_backward: bool = True
     note: str = ""
+    #: the forward pass on a route to a pt-BR norm, when it differs from ``forward``
+    forward_br: Optional[_Pass] = None
 
 
 @dataclass
@@ -158,6 +160,8 @@ class OrthographyConverter:
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
             step_pass = edge.forward if forward else edge.backward
+            if forward and edge.forward_br is not None and dst.variant == Variant.BR:
+                step_pass = edge.forward_br
             reversible = edge.reversible_forward if forward else edge.reversible_backward
             guess = edge_name == "reform_1911" and forward and "1911-accent-restore" in enabled
             # the word pass rewrites letters inside each word only, so the tags aligned to
@@ -282,7 +286,6 @@ class OrthographyConverter:
             _Pass(steps=[
                 ("base-iv", get(lex.base_iv_drop)),
                 ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
-                ("ptbr-divergence", dual(lex.ao_dual_pt2br)),
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
             _Pass(steps=[
@@ -319,21 +322,27 @@ class OrthographyConverter:
         )
 
         # -- pre-AO90 PT <-> AO1990 PT ---------------------------------------
-        ao1990_pt = _Edge(
-            _Pass(
+        def ao1990_pt_forward(table: Mapping[str, str], silent_cp: WordFn) -> _Pass:
+            return _Pass(
                 steps=[
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
                     ("hyphen-lexical", get(lex.hyphen_dropped)),
                     ("base-iv", get(lex.base_iv_drop)),
-                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset,
-                                                                  lex.cp_ao_form_pt)),
+                    ("silent-cp", silent_cp),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
                     ("prefix-rs", rules.ao1990_hyphen_rs),
                 ],
-                table=lex.ao_pt_old2new, table_feature=ao_row(lex.ao_pt_row_class),
-            ),
+                table=table, table_feature=ao_row(lex.ao_pt_row_class),
+            )
+
+        # A route to a pt-BR norm takes the first form of a pt-PT dual and the plain c/p
+        # rule: the pt-PT dual choice and the map evidence of pt-PT inflections do not
+        # speak for Brazil (detectado keeps its c there).
+        ao1990_pt = _Edge(
+            ao1990_pt_forward(lex.ao_pt_old2new, lambda w: rules.drop_silent_cp(
+                w, lex.cp_keep_pt, lex.wordset, lex.cp_ao_form_pt, lex.attested)),
             _Pass(
                 steps=[
                     ("hyphen-lexical", get(lex.hyphen_dropped_reverse)),
@@ -344,6 +353,8 @@ class OrthographyConverter:
             ),
             reversible_backward=False,
             note="dropped accents/consonants are restored from a lexicon, not a rule",
+            forward_br=ao1990_pt_forward(lex.ao_pt_first_old2new, lambda w: rules.drop_silent_cp(
+                w, lex.cp_keep_pt, lex.wordset)),
         )
 
         # -- pre-AO90 BR <-> AO1990 BR ---------------------------------------
@@ -370,7 +381,7 @@ class OrthographyConverter:
 
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------
         ptbr = _Edge(
-            _Pass(steps=[("ptbr-divergence", dual(lex.ao_dual_pt2br)),
+            _Pass(steps=[("ptbr-divergence", get(lex.ao_br_dual_full)),
                          ("nasal-vowel", rules.nasal_vowel_to_br)],
                   table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True),
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt),

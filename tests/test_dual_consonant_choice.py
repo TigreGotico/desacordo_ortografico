@@ -10,12 +10,13 @@ omnímodo, omnipotente, omnisciente, etc.".
 
 The choice of the form with the consonant is an owner ruling. A dual cell of the
 tugalex map of the target variety lists the two valid forms. A word with one valid form
-in the target variety takes that form. Toward pt-BR, a dual of the pt-PT map takes
-Brazil's form of the pair: the tugalex pt-BR map row, else the data/base_iv.json pt-BR
-form, else the one form of the pair the tugalex Brazilian word list (rjx) holds, else
-the form the pt-PT cell lists first.
+in the target variety takes that form. Toward pt-BR, a dual of the pt-PT map only
+converts as on origin/dev.
 """
+from pathlib import Path
+
 import pytest
+from tugalex import TugaLexicon
 
 from desacordo_ortografico import convert
 
@@ -74,9 +75,8 @@ def test_pt_br_dual_keeps_the_consonant(old, full):
 
 
 @pytest.mark.parametrize("word", ["liquefacto", "liquefato"])
-def test_pt_br_dual_as_written_from_ao1990_pt(word):
-    # both forms are valid AO1990 pt-BR, so a pt-PT text keeps the form it has
-    assert convert(word, "ao1990-pt", "ao1990-br") == word
+def test_pt_br_dual_takes_the_consonant_from_ao1990_pt(word):
+    assert convert(word, "ao1990-pt", "ao1990-br") == "liquefacto"
 
 
 def test_pt_br_dual_that_is_a_pre_ao1990_spelling_goes_back_as_written():
@@ -88,27 +88,50 @@ def test_pt_br_dual_gains_the_consonant_toward_pt_pt():
     assert convert("liquefato", "ao1990-br", "ao1990-pt") == "liquefacto"
 
 
-# Dual cells of the pt-PT map only, toward pt-BR. Brazil's form comes from Brazilian data.
-# tugalex word list rjx holds one form of the pair: setor (not sector), espectro (not
-# espetro), expectativa (not expetativa), conector (not conetor).
-@pytest.mark.parametrize("pt_form, br", [("sector", "setor"), ("setor", "setor"),
-                                         ("espectro", "espectro"), ("espetro", "espectro"),
-                                         ("expetativa", "expectativa"), ("conetor", "conector")])
-def test_pt_pt_dual_toward_pt_br_takes_the_brazilian_word_list_form(pt_form, br):
-    assert convert(pt_form, "ao1990-pt", "ao1990-br") == br
+# Toward pt-BR, a dual of the pt-PT map only converts as on origin/dev (a3ef145): the
+# pt-PT dual choice does not speak for Brazil. tests/data/ptbr_dual_dev_outputs.tsv holds
+# the origin/dev output of every form of every pt-PT dual cell, from each European source
+# to each pt-BR norm. The forms of a pt-BR dual cell take its consonant form instead, and
+# pre-1911 contracto reads as the noun (below).
+_FIXTURE = Path(__file__).parent / "data" / "ptbr_dual_dev_outputs.tsv"
+_BR_DUAL_FORMS = {f for old, forms in TugaLexicon().ao_br.items() if len(set(forms)) > 1
+                  for f in (old.lower(), *(f.lower() for f in forms))}
 
 
-# rjx holds both forms of carácter/caráter, característica/caraterística and
-# acupunctura/acupuntura, so the form the tugalex pt-PT cell lists first decides.
-@pytest.mark.parametrize("pt_form, br", [("carácter", "caráter"), ("acupunctura", "acupuntura"),
-                                         ("caraterística", "característica")])
-def test_pt_pt_dual_toward_pt_br_with_both_forms_listed(pt_form, br):
-    assert convert(pt_form, "ao1990-pt", "ao1990-br") == br
+def _dev_rows():
+    with open(_FIXTURE, encoding="utf-8") as f:
+        next(f)
+        for line in f:
+            word, src, dst, out = line.rstrip("\n").split("\t")
+            if word not in _BR_DUAL_FORMS and not (src == "etymological" and word == "contracto"):
+                yield word, src, dst, out
 
 
-def test_pt_pt_dual_toward_pt_br_takes_the_pt_br_map_row():
-    # tugalex pt-BR map: perfeccionista -> perfecionista
-    assert convert("perfeccionista", "ao1990-pt", "ao1990-br") == "perfecionista"
+def test_pt_pt_dual_toward_pt_br_converts_as_on_dev():
+    rows = list(_dev_rows())
+    assert len(rows) == 3022
+    wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows if convert(w, s, d) != out]
+    assert wrong == []
+
+
+# On the route to pt-BR, the pt-PT step takes the first form of a pt-PT dual cell
+# (sector -> setor, sector) and the plain c/p rule, so the pt-PT map evidence of an
+# inflection does not drop a consonant Brazil pronounces (detectado: the pt-PT map gives
+# detectar -> detetar).
+def test_route_to_pt_br_takes_the_first_form():
+    assert convert("o sector e o carácter", "pt_1973", "ao1990-br") == "o setor e o caráter"
+    assert convert("a acupunctura", "pt_1973", "br_1971") == "a acupuntura"
+
+
+def test_route_to_pt_br_keeps_brazilian_consonants():
+    assert convert("detectado e perceptíveis", "pt_1973", "ao1990-br") == "detectado e perceptíveis"
+    assert convert("detectado e perceptíveis", "pt_1973", "ao1990-pt") == "detetado e percetíveis"
+
+
+@pytest.mark.parametrize("word", ["espectro", "expectativa", "característica", "conector",
+                                  "telespectador"])
+def test_pt_pt_dual_from_ao1990_pt_stays_toward_pt_br(word):
+    assert convert(word, "ao1990-pt", "ao1990-br") == word
 
 
 def test_pt_pt_dual_toward_pt_br_takes_base_iv_form():
@@ -116,16 +139,10 @@ def test_pt_pt_dual_toward_pt_br_takes_base_iv_form():
     assert convert("o espetador e os espetadores", "ao1990-pt", "ao1990-br") == "o espectador e os espectadores"
 
 
-@pytest.mark.parametrize("src", ["pt_1973", "etymological"])
-def test_pt_pt_dual_toward_pt_br_from_older_sources(src):
-    assert convert("o sector e os sectores", src, "ao1990-br") == "o setor e os setores"
-    assert convert("o carácter e a acupunctura", src, "ao1990-br") == "o caráter e a acupuntura"
-    assert convert("o espectro e a expectativa", src, "ao1990-br") == "o espectro e a expectativa"
-    assert convert("a característica", src, "ao1990-br") == "a característica"
-
-
-def test_pt_pt_dual_toward_br_1971():
-    assert convert("o sector", "pt_1973", "br_1971") == "o setor"
+def test_pt_br_form_of_a_pt_pt_dual_stays_toward_pt_pt():
+    # ptbr_br2pt leaves out espectador -> espetador: pt-PT keeps the consonant of the dual
+    # cell espectador -> espectador, espetador
+    assert convert("o espectador", "ao1990-br", "ao1990-pt") == "o espectador"
 
 
 def test_brazilian_accent_applies_to_a_pt_pt_dual():
