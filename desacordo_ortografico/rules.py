@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -21,22 +21,23 @@ _VOWELS = "aeiouáàâãéêíóôõúü"
 
 
 # ----------------------------------------------------------------- tokenising
-def apply_to_words(text: str, fn: Callable[[str], str]) -> str:
+def apply_to_words(
+    text: str,
+    fn: Callable[[str], str],
+    capitals_fn: Optional[Callable[[str], str]] = None,
+) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
     ``fn`` receives a lowercase word and returns a lowercase word; the original
-    capitalisation pattern (UPPER / Title / lower) is re-applied to the result. In text
-    that is not in capitals throughout, a word of two or more letters in capitals stays as
-    written: it may be an acronym (IPTU), and AO1990 Base I 2º c) writes acronyms as
-    they are ("TWA, KLM").
+    capitalisation pattern (UPPER / Title / lower) is re-applied to the result. When
+    ``capitals_fn`` is given, a word of two or more letters in capitals throughout goes
+    to ``capitals_fn`` instead: it may be an acronym (IPTU) and not a word.
     """
-    in_capitals = text.isupper()
 
     def repl(match: "re.Match[str]") -> str:
         word = match.group(0)
-        if not in_capitals and len(word) > 1 and word.isupper():
-            return word
-        out = fn(word.lower())
+        upper = len(word) > 1 and word.isupper()
+        out = (capitals_fn if capitals_fn is not None and upper else fn)(word.lower())
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)
