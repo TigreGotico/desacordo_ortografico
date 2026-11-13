@@ -21,7 +21,7 @@ Lexikon 2017, and the AO1990 text.
 - The bare articles o, a, os and as are also the clitic pronouns. In Portugal the
   clitic follows the verb unless a word such as não, que, já or quando comes before
   it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327), so a bare article
-  counts unless such a word precedes it. In Brazil the clitic comes before the verb
+  counts unless such a word stands right before it. In Brazil the clitic comes before the verb
   in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
   pp. 330-331), so a bare article counts only at the start of a sentence or after a
   preposition.
@@ -178,11 +178,10 @@ _PROCLISIS_TRIGGERS = frozenset({
     "que", "nao", "se", "ja", "nunca", "sempre", "tambem", "so", "quem", "ainda", "bem",
     "mal", "talvez", "onde", "quando", "como", "porque", "embora",
 })
-#: The simple prepositions of cap. 15, unaccented, except a, which is also the article,
-#: and ante, para, por and trás.
+#: The simple prepositions of cap. 15, unaccented, except a, which is also the article.
 _PREPOSITIONS = frozenset({
-    "de", "em", "com", "sem", "sobre", "entre", "contra", "ate", "desde", "sob", "apos",
-    "perante",
+    "ante", "apos", "ate", "com", "contra", "de", "desde", "em", "entre", "para", "perante",
+    "por", "sem", "sob", "sobre", "tras",
 })
 #: The determiners that mark a singular noun, see the module docstring. Bare "a" is
 #: left out because it is also the preposition ("deu presentes a pais").

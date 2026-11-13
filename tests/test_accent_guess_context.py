@@ -65,6 +65,12 @@ def test_brazilian_article_counts_at_sentence_start_or_after_a_preposition():
     assert convert("Ele estudou a historia.", "etymological", "br_1971") == "Ele estudou a historia."
 
 
+@pytest.mark.parametrize("prep", ["para", "por", "ante"])
+def test_brazilian_article_counts_after_every_simple_preposition(prep):
+    # cap. 15 p. 570 lists para, por and ante among the simple prepositions
+    assert convert(f"Foi {prep} a historia.", "etymological", "br_1971") == f"Foi {prep} a história."
+
+
 @pytest.mark.parametrize("bare,accented", NOMINAL)
 def test_noun_tag_restores_the_accent(bare, accented):
     text = f"Estudou {bare} ontem."
