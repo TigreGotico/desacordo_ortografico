@@ -253,8 +253,8 @@ class Lexicon:
         """Map an unaccented form to its unique accented word and the inflection kinds
         (see :func:`_inflection_kinds`) that also make the bare form a word.
 
-        A word with a tilde has two bare forms: one without any mark (orgao) and one
-        that keeps the tilde (orgão). A bare form of under four letters, a bare form
+        A word with a tilde has two bare forms: one without the accents and the tilde
+        (orgao, bençao) and one that keeps the tilde (orgão, benção). A bare form of under four letters, a bare form
         that is itself on the word list, and a bare form that deaccents from two
         accented words are left out. The plural
         in -s of each vowel-final candidate except an oxytone in -ão is added, unless

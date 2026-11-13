@@ -368,7 +368,7 @@ def test_a_cedilla_is_no_accent():
 
 
 def test_a_listed_word_with_a_tilde_is_no_bare_form():
-    # acordão, augmentative of acordo, is a word of its own (Dicionário Priberam)
+    # acordão, augmentative of acordo, is a word of its own (Dicio)
     lex = Lexicon()
     lex.__dict__["wordset"] = {"acórdão"}
     assert lex._accent_candidates["acordão"][0] == "acórdão"
