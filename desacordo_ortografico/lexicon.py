@@ -35,6 +35,28 @@ def deaccent(word: str) -> str:
     return unicodedata.normalize("NFC", out)
 
 
+#: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
+AO_ROW_CLASSES = ("consonant", "diacritic", "trema", "join", "locution")
+
+
+def ao_row_class(old: str, new: str) -> str:
+    """Classify an AO1990 old -> new row by what it changes.
+
+    ``locution``: the new form has a space (Base XV, acha-de-armas -> acha de armas);
+    ``join``: a hyphen goes and the parts fuse (auto-retrato -> autorretrato);
+    ``trema``: only diacritics change and the ü goes (lingüiça -> linguiça);
+    ``diacritic``: only other diacritics change (idéia -> ideia, pêlo -> pelo);
+    ``consonant``: the letters change (acção -> ação).
+    """
+    if " " in new:
+        return "locution"
+    if old.count("-") != new.count("-"):
+        return "join"
+    if deaccent(old) == deaccent(new):
+        return "trema" if "ü" in old and "ü" not in new else "diacritic"
+    return "consonant"
+
+
 def _load(name: str) -> dict:
     with open(os.path.join(_DATA_DIR, name), "r", encoding="utf-8") as f:
         return json.load(f)
@@ -102,6 +124,16 @@ class Lexicon:
     @cached_property
     def ao_br_old2new(self) -> Dict[str, str]:
         return _clean_ao_map(self.tuga, "ao_br")
+
+    @cached_property
+    def ao_pt_row_class(self) -> Dict[str, str]:
+        """The :func:`ao_row_class` of each ``ao_pt_old2new`` row, keyed by old form."""
+        return {old: ao_row_class(old, new) for old, new in self.ao_pt_old2new.items()}
+
+    @cached_property
+    def ao_br_row_class(self) -> Dict[str, str]:
+        """The :func:`ao_row_class` of each ``ao_br_old2new`` row, keyed by old form."""
+        return {old: ao_row_class(old, new) for old, new in self.ao_br_old2new.items()}
 
     @cached_property
     def ao_pt_new2old(self) -> Dict[str, str]:

@@ -174,12 +174,21 @@ def ao1990_drop_accents(word: str) -> str:
 
     Reversible? No — eia/oi/oo also occur in words that never had an accent (meia).
     """
-    follows_vowel = "(?=[^%s]*[%s])" % (_VOWELS, _VOWELS)
-    word = re.sub("éi%s" % follows_vowel, "ei", word)  # éi -> ei (paroxytone only)
-    word = re.sub("ói%s" % follows_vowel, "oi", word)  # ói -> oi (paroxytone only)
-    word = word.replace("ôo", "oo")  # ôo -> oo
-    word = word.replace("êem", "eem")  # êem -> eem
-    return word
+    return ao1990_drop_hiatus_accent(ao1990_drop_diphthong_accent(word))
+
+
+_FOLLOWS_VOWEL = "(?=[^%s]*[%s])" % (_VOWELS, _VOWELS)
+
+
+def ao1990_drop_diphthong_accent(word: str) -> str:
+    """éi/ói -> ei/oi in paroxytones (idéia->ideia); oxytones keep it (herói)."""
+    word = re.sub("éi%s" % _FOLLOWS_VOWEL, "ei", word)
+    return re.sub("ói%s" % _FOLLOWS_VOWEL, "oi", word)
+
+
+def ao1990_drop_hiatus_accent(word: str) -> str:
+    """ôo -> oo (vôo->voo) and 3rd-person-plural êem -> eem (lêem->leem)."""
+    return word.replace("ôo", "oo").replace("êem", "eem")
 
 
 # ----------------------------------------------------------- AO1990 trema
@@ -207,9 +216,11 @@ def recase_months(text: str, lowercase: bool) -> str:
     """Set month/season casing at the text level (so sentence position is known).
 
     AO1990 lowercases months mid-sentence (``lowercase=True``); the older norms
-    capitalise them. Seasons stay lowercase in every norm. A month or season opening a
-    sentence stays capitalised. This cannot be done per-word, because case is restored
-    from the source token.
+    capitalise them. Seasons stay lowercase in every norm. Toward the older norms a month
+    or season opening a sentence is capitalised. Toward AO1990 it keeps the case it was
+    written in: Base XIX 1º b writes months and seasons in lowercase, so the conversion
+    never raises one. This cannot be done per-word, because case is restored from the
+    source token.
     """
 
     def repl(m):
@@ -218,7 +229,7 @@ def recase_months(text: str, lowercase: bool) -> str:
         cap = low[:1].upper() + low[1:]
         prefix = text[: m.start()].rstrip()
         if prefix == "" or prefix[-1] in ".!?:—":
-            return cap  # sentence-initial: capitalised in every norm
+            return word if lowercase else cap
         if low in _SEASONS:
             return low  # seasons are always lowercase mid-sentence
         return low if lowercase else cap
@@ -240,7 +251,9 @@ def ao1990_hyphen_rs(word: str) -> str:
 
     'anti-religioso'->'antirreligioso', 'auto-retrato'->'autorretrato',
     'contra-senha'->'contrassenha'. Restricted to a known prefix list so genuine
-    noun+noun compounds (guarda-sol) are untouched.
+    noun+noun compounds (guarda-sol) are untouched. The hyphen goes in every case,
+    but the r/s doubles only before a vowel: Portuguese never writes rr or ss before
+    a consonant ('anti-spam'->'antispam').
     """
     if "-" not in word:
         return word
@@ -249,5 +262,6 @@ def ao1990_hyphen_rs(word: str) -> str:
         return word
     pre, base = parts
     if pre in _RS_PREFIXES and base[:1] in ("r", "s") and pre[-1:] in _VOWELS:
-        return pre + base[0] + base
+        doubled = base[0] if base[1:2] and base[1] in _VOWELS else ""
+        return pre + doubled + base
     return word
