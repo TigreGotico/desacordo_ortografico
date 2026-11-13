@@ -322,3 +322,16 @@ def test_plural_verb_form_stays_after_a_clitic():
 def test_first_person_plural_of_an_ar_verb_is_a_verb_form():
     # Priberam falar: "nós falamos", "que nós falemos"; paramos (parar), not páramos
     assert convert("Nos paramos aqui.", "etymological", "pt_1973") == "Nos paramos aqui."
+
+
+@pytest.mark.parametrize("text", ["Tu corres muito depressa.", "Tu sofres.", "Tu servias a sopa.",
+                                  "Tu vestias o casaco.", "Tu funcionarias bem."])
+def test_second_person_of_a_verb_form_stays(text):
+    # Priberam correr, servir: "ele corre", "tu corres"; "ele servia", "tu servias";
+    # the -s plural of a verb form is the second person of the same tense
+    assert convert(text, "etymological", "pt_1973") == text
+
+
+def test_a_plural_that_spells_a_word_stays():
+    # manes is a word of its own, not the plural of a bare mane
+    assert convert("Os manes antigos.", "etymological", "pt_1973") == "Os manes antigos."

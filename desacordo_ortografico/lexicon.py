@@ -251,8 +251,8 @@ class Lexicon:
 
         A bare form of under four letters, a bare form that is itself on the word list,
         and a bare form that deaccents from two accented words are left out. The plural
-        in -s of each vowel-final candidate is added, unless its letters spell a word
-        or deaccent from one.
+        in -s of each vowel-final candidate except -ão is added, unless its letters spell
+        a word or deaccent from one, and it keeps the verb kind of its singular.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
@@ -268,11 +268,14 @@ class Lexicon:
             accented = forms - {bare}
             if len(accented) == 1:
                 out[bare] = (next(iter(accented)), _inflection_kinds(bare, bare_words))
-        # the word list holds singulars; a vowel-final singular makes its plural in -s
-        for bare, (form, _) in list(out.items()):
+        # the word list holds singulars; a vowel-final singular makes its plural in -s.
+        # -ão follows its own rules (alemão, alemães), so it is left out. The -s form of
+        # a verb form is the second person of the same tense (corre, corres), so the
+        # plural keeps the singular's verb reading.
+        for bare, (form, kinds) in list(out.items()):
             plural = bare + "s"
-            if bare[-1] in _PLURAL_VOWELS and plural not in by_bare:
-                out[plural] = (form + "s", _inflection_kinds(plural, bare_words))
+            if bare[-1] in _PLURAL_VOWELS and not form.endswith("ão") and plural not in by_bare:
+                out[plural] = (form + "s", _inflection_kinds(plural, bare_words) | (kinds & {"verb"}))
         return out
 
     @cached_property
