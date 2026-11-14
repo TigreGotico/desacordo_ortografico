@@ -195,9 +195,11 @@ def test_a_place_name_stays_and_the_common_word_changes():
 
 def test_apply_keeps_the_tram_and_writes_the_c_p_adjective():
     """VOLP: elétrico adj. s.m. | eléctrico adj. lists eléctrico only as an adjective, so
-    the noun (a tram) in d05064 stays elétrico."""
+    the noun (a tram) in d05064 and the plural noun in d05139 stay."""
     tram = _apply("Apanhou o elétrico.", "Apanhou o eléctrico.", "d05064")
     assert tram["ao1990-br"] == "Apanhou o elétrico."
+    trams = _apply("Ciclistas e elétricos.", "Ciclistas e eléctricos.", "d05139")
+    assert trams["ao1990-br"] == "Ciclistas e elétricos."
     adjective = _apply("O carro elétrico.", "O carro eléctrico.", "d01067")
     assert adjective["ao1990-br"] == "O carro eléctrico."
 
