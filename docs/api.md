@@ -98,15 +98,12 @@ The guard alone, without the Portuguese classifier.
 
 ## Detection markers (`method="rules"`)
 
-Detection markers are scored, not learned. They cover etymological evidence (`ph`,
-`th`, `rh`, geminates, `sci`, irregular lemmas), pre-AO1990 evidence (old PT
-silent-consonant forms, old BR accent/trema forms), AO1990 evidence, and PT/BR lean
-(dual forms, the nasal-vowel alternation). `markers` lists what fired.
-
-A `ph`, `th`, `rh`, `y` or geminate counts only when the 1911 rules turn it into a
-word the lexicon knows (theatro gives teatro, d'ella gives d'ela). A foreign word or name
-whose 1911 form is no known word (Taylor, Joseph, university) is no evidence. A foreign
-word whose 1911 form is a word still counts (the gives te).
+Detection markers are scored, not learned. They cover etymological evidence (the
+listed pre-1911 forms of the 1911 word map and of the tugalex archaisms list: pharmacia,
+theatro, collecção), pre-AO1990 evidence (old PT silent-consonant forms, old BR
+accent/trema forms), AO1990 evidence, and PT/BR lean (dual forms, the nasal-vowel
+alternation). `markers` lists what fired. A word that no list holds is no pre-1911
+evidence, whatever its letters (the, Taylor).
 
 ## `eras`
 
