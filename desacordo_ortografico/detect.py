@@ -163,10 +163,10 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if w in lex.reform1911_old2new:
             etym += 2
             markers.append(f"etym:{w}")
+        # a capital part inside a sentence is a name (AO1990 Base XXI) and no evidence
         elif any(seg.lower() in archaic
                  and not (cased and mid_sentence and (raw[:1].isupper() or seg[:1].isupper()))
                  for seg in _SEGMENT_SEP.split(raw)):
-            # a capital part inside a sentence is a name (AO1990 Base XXI)
             etym += 1
             markers.append(f"etym-pattern:{w}")
 

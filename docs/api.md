@@ -103,7 +103,10 @@ listed pre-1911 forms of the 1911 word map and of the tugalex archaisms list: ph
 theatro, collecção), pre-AO1990 evidence (old PT silent-consonant forms, old BR
 accent/trema forms), AO1990 evidence, and PT/BR lean (dual forms, the nasal-vowel
 alternation). `markers` lists what fired. A word that no list holds is no pre-1911
-evidence, whatever its letters (the, Taylor).
+evidence, whatever its letters (the, Taylor). A listed archaism inside a sentence whose
+word or part starts with a capital is read as a name and is no evidence ("A Moraci
+Sant'Anna chegou." is AO1990), except in the first word of a sentence or in a text with
+no lowercase word.
 
 ## `eras`
 

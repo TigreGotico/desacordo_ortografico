@@ -182,7 +182,7 @@ class TestNamesAreNoEvidence:
         [
             "Os anjos da Victoria desfilaram.",  # mmf-test-01366, Victoria's Secret
             "A Moraci Sant'Anna chegou.",  # mmf-271456
-            "O preparador Sant'anna falou.",  # mmf-175165: Sant'anna, part anna
+            "O preparador Sant'anna falou.",  # the word has the capital, the part anna not
             "A Hermínia d'Oliveira Paes saiu.",  # mmf-351075
             "Don't Be a Lemming Polka",  # mmf-010843
             "O retrato d'Anna Maria ficou na sala.",  # the part Anna has the capital
@@ -222,11 +222,20 @@ class TestNamesAreNoEvidence:
         assert r.era == Era.ETYMOLOGICAL
         assert "etym-pattern:commigo" in r.markers
 
+    def test_first_word_of_the_text_still_counts(self):
+        r = _orth("Commigo ninguém falava.")
+        assert r.era == Era.ETYMOLOGICAL
+        assert "etym-pattern:commigo" in r.markers
+
     def test_capital_after_a_comma_is_inside_the_sentence(self):
         r = _orth("Ficou calado, Commigo ninguém falava.")
         assert r.era == Era.AO1990
 
-    def test_text_in_capitals_throughout_has_no_case_signal(self):
-        r = _orth("OS ANJOS DA VICTORIA DESFILARAM.")
+    @pytest.mark.parametrize(
+        "text", ["OS ANJOS DA VICTORIA DESFILARAM.", "Os Anjos Da Victoria Desfilaram"])
+    def test_text_with_no_lowercase_word_has_no_case_signal(self, text):
+        """In capitals throughout or in title case, every word has the same case, so the
+        capital of Victoria says nothing about a name."""
+        r = _orth(text)
         assert r.era == Era.ETYMOLOGICAL
         assert "etym-pattern:victoria" in r.markers
