@@ -4,15 +4,16 @@ br_1971 is the pre-1990 Brazilian norm. Its sources, in order: the ABL Formulár
 Ortográfico of 1943 (with Lei 5.765/1971), whose rule 18 registers both forms of the
 words it lists and whose rule 16 fixes one form ("diretor ... ótimo ... e não ...
 director ... optimo"); then the Brazilian headword of the Dicionário Priberam page in the
-view before the AO1990. Rule 15.ª, OBSERVAÇÃO, writes the preterite ending -amos without
-the accent.
+view before the AO1990, when the page shows a spelling change. Rule 43, 15.ª, OBSERVAÇÃO,
+writes the preterite ending -amos without the accent.
 
 ao1990-br follows the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP), then the
-Priberam Brazilian view after the AO1990, then Michaelis. Where the VOLP lists both forms
+Priberam Brazilian view after the AO1990. Where the VOLP lists both forms
 of one word with the same part of speech, the cell writes the c/p form.
 
 Where a source registers both forms, the cell writes the c/p form (owner ruling on dual
-spellings). Each test names the entry it pins.
+spellings). A personal or place name stays as written unless a source names it. Each test
+names the entry it pins.
 """
 import importlib.util
 import json
@@ -48,10 +49,16 @@ def _tokens(row, cell):
     # Formulário 1943, 18: "contacto e contato"; VOLP: contato s.m. | contacto s.m.
     ("p02-015", "br_1971", "contacto"),
     ("p02-015", "ao1990-br", "contacto"),
-    # Formulário 1943, 18: "secção e seção"; the VOLP splits them with "cf.", and
-    # Michaelis seção 6 is a section of a shop
+    # Formulário 1943, 18: "secção e seção"; VOLP: seção s.f. "corte", etc.; cf. secção |
+    # secção s.f. "parcela"; cf. seção. A section of a shop is the "corte, etc." entry.
     ("p09-056", "br_1971", "secção"),
     ("p09-056", "ao1990-br", "seção"),
+    # Priberam facto (Brazil before the AO1990: fato); VOLP: fato s.m. | facto s.m. "O fato
+    # de" means a fact; the Brazilian cells reword the sentence, so no token aligns with facto.
+    ("p05-046", "br_1971", "fato"),
+    ("p05-046", "ao1990-br", "facto"),
+    ("p05-082", "br_1971", "fato"),
+    ("p05-082", "ao1990-br", "facto"),
     # Priberam facto (Brazil before the AO1990: fato); VOLP: fato s.m. | facto s.m.
     ("p02-018", "br_1971", "fato"),
     ("p02-018", "ao1990-br", "facto"),
@@ -113,9 +120,12 @@ def _c_p_pairs(row, cell):
 def test_every_bare_form_against_a_european_c_p_form_is_decided():
     """A Brazilian token that drops the c/p of its pt_1973 word either changes by a table
     line or stays by a line of variety_keeps.tsv that names its source for that cell."""
-    keeps = {(c, t, e) for c, t, e, _reason in _tsv("variety_keeps.tsv")}
+    keeps = {}
+    for c, t, e, rows_named, _reason in _tsv("variety_keeps.tsv"):
+        keeps.setdefault((c, t, e), set()).update(rows_named.split(","))
     gaps = sorted({(row_id, cell, t, e) for row_id, row in _rows().items() for cell in BRAZILIAN
-                   for t, e in _c_p_pairs(row, cell) if (cell, t, e) not in keeps})
+                   for t, e in _c_p_pairs(row, cell)
+                   if not keeps.get((cell, t, e), set()) & {row_id, "*"}})
     assert gaps == []
 
 
@@ -141,11 +151,55 @@ def test_every_line_names_its_source():
             assert source.startswith("Formulário 1943, ") or (
                 source.startswith("Priberam ") and "before the AO1990" in source), source
         else:
-            assert source.startswith(("VOLP: ", "Priberam ", "Michaelis: ")), source
-    for cell, _token, _european, reason in _tsv("variety_keeps.tsv"):
+            assert source.startswith(("VOLP: ", "Priberam ")), source
+    for cell, _token, _european, _rows_named, reason in _tsv("variety_keeps.tsv"):
         allowed = ("Formulário 1943, ", "Priberam ", "no source: ") if cell == "br_1971" else \
-            ("VOLP: ", "Priberam ", "Michaelis: ", "no source: ")
+            ("VOLP: ", "Priberam ", "no source: ")
         assert reason.startswith(allowed), reason
+
+
+PRIBERAM_VIEWS = re.compile(r"Priberam [^()]+ \(Brazil before the AO1990: ([^,]+), after: ([^;]+); "
+                            r"Portugal before: ([^,]+), after: ([^)]+)\)")
+
+
+def test_a_br_1971_priberam_citation_shows_a_spelling_change():
+    """A Priberam page decides br_1971 only when its spelling changes with the AO1990 in
+    Brazil or in Portugal, or when Brazil and Portugal wrote two spellings before it.
+    Priberam produto shows produto in all four views, so it decides nothing."""
+    cited = [(token, source) for cell, token, _e, _y, _r, source in _tsv("variety_fixes.tsv")
+             if cell == "br_1971" and source.startswith("Priberam ")]
+    cited += [(token, reason) for cell, token, _e, _r, reason in _tsv("variety_keeps.tsv")
+              if cell == "br_1971" and reason.startswith("Priberam ")]
+    assert len(cited) > 1000
+    for token, source in cited:
+        m = PRIBERAM_VIEWS.match(source)
+        assert m, source
+        brazil_before, brazil_after, portugal_before, portugal_after = m.groups()
+        assert len({brazil_before, brazil_after, portugal_before, portugal_after}) > 1, (token, source)
+
+
+def test_a_personal_name_stays_as_written():
+    """Formulário 1943, 39 puts names under the rules for common words, and rule 16 writes
+    Otávia; no ao1990-br source names Otávia, so the token stays."""
+    cells = _apply("Ontem a Otávia chegou.", "Ontem a Octávia chegou.", "d07020")
+    assert (cells["br_1971"], cells["ao1990-br"]) == ("Ontem a Otávia chegou.", "Ontem a Otávia chegou.")
+    for cell, token, *_rest in _tsv("variety_fixes.tsv"):
+        assert token != "otávia", cell
+
+
+def test_a_place_name_stays_and_the_common_word_changes():
+    """VOLP: ártico adj. | árctico adj. covers the adjective, not the Arctic."""
+    assert _apply("Viajou para o Ártico.", "Viajou para o Árctico.")["ao1990-br"] == "Viajou para o Ártico."
+    assert _apply("O gelo ártico.", "O gelo árctico.")["ao1990-br"] == "O gelo árctico."
+
+
+def test_apply_keeps_the_tram_and_writes_the_c_p_adjective():
+    """VOLP: elétrico adj. s.m. | eléctrico adj. lists eléctrico only as an adjective, so
+    the noun (a tram) in d05064 stays elétrico."""
+    tram = _apply("Apanhou o elétrico.", "Apanhou o eléctrico.", "d05064")
+    assert tram["ao1990-br"] == "Apanhou o elétrico."
+    adjective = _apply("O carro elétrico.", "O carro eléctrico.", "d01067")
+    assert adjective["ao1990-br"] == "O carro eléctrico."
 
 
 def _one_c_p_apart(bare, cp):

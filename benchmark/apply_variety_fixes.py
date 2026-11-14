@@ -6,8 +6,11 @@ for (``*`` for any), the Brazilian form, the rows it applies to (``*`` for all) 
 source. The pt_1973 token names the word: the line for fato/facto changes "fato" only
 where the European cell writes "facto", so the noun fato (a suit) stays. A line that
 names rows decides a token whose part of speech changes its spelling, such as the noun
-reta and the adjective reta. ``variety_drops.tsv`` lists tokens whose Brazilian form the
-sources cannot decide; the script drops a row that holds one in that cell.
+reta and the adjective reta, or reaches a row whose Brazilian and pt_1973 cells differ in
+token count. A capitalised token that does not start a sentence is a proper name (A
+Otávia, o Ártico); the common-word entries do not cover it, so it stays as written.
+``variety_drops.tsv`` lists tokens whose Brazilian form the sources cannot decide; the
+script drops a row that holds one in that cell.
 
 The br_1971 cell is the pre-1990 Brazilian norm. Its sources, in order of authority:
 
@@ -15,10 +18,13 @@ The br_1971 cell is the pre-1990 Brazilian norm. Its sources, in order of author
   registers both forms of the words it lists ("contacto e contato", "secção e seção",
   "tecto e teto"), and the cell writes the c/p form of those (owner ruling on dual
   spellings). Rules 16 and 17 fix one form ("diretor ... ótimo ... e não ... director
-  ... optimo"). Rule 15.ª, OBSERVAÇÃO, writes the preterite ending -amos without the
-  accent.
+  ... optimo"). Rule 43, 15.ª, OBSERVAÇÃO, writes the preterite ending -amos without
+  the accent.
 - Dicionário Priberam da Língua Portuguesa, the Brazilian headword in the view before
-  the AO1990, for words the Formulário does not name.
+  the AO1990, for words the Formulário does not name. A page decides only when it shows
+  a spelling change: before and after the AO1990 in Brazil or in Portugal, or between
+  Brazil and Portugal before it. A page with one spelling in all four views decides
+  nothing.
 - If neither decides, the token stays as written.
 
 The post-1990 VOLP never decides a br_1971 cell. The ao1990-br cell, in order:
@@ -29,7 +35,8 @@ The post-1990 VOLP never decides a br_1971 cell. The ao1990-br cell, in order:
   form. Two entries linked by "cf." with different glosses are two words. The cell
   keeps -ámos, which the AO1990, Base IX, 4 allows.
 - Dicionário Priberam, the Brazilian headword in the view after the AO1990.
-- Michaelis Moderno Dicionário da Língua Portuguesa.
+- If neither decides, the token stays as written. A check list of Michaelis Moderno
+  Dicionário headwords decides no further token.
 
 Apart from the lines that name rows, the tables are word-level, so the script also
 fixes rows that a later derivation adds.
@@ -76,6 +83,11 @@ def _recase(form: str, like: str) -> str:
     return form[:1].upper() + form[1:] if like[:1].isupper() else form
 
 
+def _is_name(text: str, m: re.Match) -> bool:
+    before = text[:m.start()].rstrip(" \t\"'«“‘(—–-")
+    return m.group(0)[:1].isupper() and bool(before) and before[-1] not in ".!?:…"
+
+
 def fix_row(rec, table, counts) -> bool:
     changed = False
     european = [t.lower() for t in _TOK.findall(rec["cells"].get("pt_1973", ""))]
@@ -87,8 +99,10 @@ def fix_row(rec, table, counts) -> bool:
         for k, m in enumerate(words):
             word = m.group(0)
             token = word.lower()
-            fix = ((fixes.get((token, european[k], rec.get("id"))) or fixes.get((token, european[k], "*")))
-                   if aligned else None) or fixes.get((token, "*", "*"))
+            row = rec.get("id")
+            fix = None if _is_name(rec["cells"][cell], m) else (
+                ((fixes.get((token, european[k], row)) or fixes.get((token, european[k], "*"))) if aligned else None)
+                or fixes.get((token, "*", row)) or fixes.get((token, "*", "*")))
             if fix:
                 counts[cell] += 1
             if cell == "br_1971" and (fix or token).endswith("ámos"):
