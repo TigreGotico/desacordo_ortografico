@@ -3,13 +3,15 @@
   "_sources": [
     "Acordo Ortografico da Lingua Portuguesa de 1990, Base IV",
     "https://www.flip.pt/Acordo-Ortografico/Texto/Base-IV-Das-sequencias-consonanticas/",
-    "https://vocabulario.acad-ciencias.pt/index.php/ortografia/nota-explicativa-do-ao90"
+    "https://vocabulario.acad-ciencias.pt/index.php/ortografia/nota-explicativa-do-ao90",
+    "Priberam, liquefacto: 'liquefacto |áct|' (the c is pronounced in pt-PT), https://dicionario.priberam.org/liquefacto"
   ],
   "keep": [
     "compacto", "convicção", "convicto", "ficção", "friccionar", "fricção",
     "pacto", "pictural", "adepto", "apto", "díptico", "erupção", "eucalipto",
     "inepto", "núpcias", "rapto", "captura", "captar", "captador", "ruptura",
-    "interrupção", "corrupção", "egípcio", "réptil", "abrupto", "opção"
+    "interrupção", "corrupção", "egípcio", "réptil", "abrupto", "opção",
+    "liquefacto"
   ],
   "drop": {
     "acção": "ação",

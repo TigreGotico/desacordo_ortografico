@@ -93,10 +93,20 @@ def test_short_stem_does_not_drop():
     assert pt("as placas tectónicas") == "as placas tectónicas"
 
 
-# liquefacto is not in the tugalex word list and has no pt-PT map row, so the map words
-# of its stem decide it: liquefactor -> liquefator, liquefacção -> liquefação.
-def test_unattested_word_follows_its_stem_words():
-    assert pt("um gás liquefacto") == "um gás liquefato"
+# Priberam gives "liquefacto |áct|": pt-PT pronounces the c (data/base_iv.json keep list).
+# The ao1990-pt gold cells write liquefacto. Its feminine and plurals follow it.
+@pytest.mark.parametrize("word", ["liquefacto", "liquefacta", "liquefactos", "liquefactas"])
+def test_pronounced_c_of_liquefacto_is_kept(word):
+    assert pt(word) == word
+
+
+# The forms the pt-PT map gives are valid pt-PT as written: map rows actinóide ->
+# actinoide, cactóide -> cactoide, flictenóide -> flictenoide, and the dual cell
+# electropunctura -> eletropuntura, eletropunctura.
+@pytest.mark.parametrize("old", ["actinóide", "cactóide", "flictenóide", "electropunctura"])
+def test_pt_pt_map_form_stays_as_written(old):
+    form = max(TugaLexicon().ao_pt[old], key=len)
+    assert pt(form) == form
 
 
 # A dual cell speaks only for itself: contractura (contratura, contractura) does not keep

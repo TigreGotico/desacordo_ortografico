@@ -265,7 +265,7 @@ class OrthographyConverter:
                     ("1911-digraphs", rules.reform_1911_digraphs),
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
                 ],
-                table=lex.reform1911_old2new, table_feature=word_map_1911,
+                table=lex.reform1911_forward, table_feature=word_map_1911,
             ),
             _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
             reversible_backward=False,
@@ -385,6 +385,7 @@ class OrthographyConverter:
                          ("nasal-vowel", rules.nasal_vowel_to_br)],
                   table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True),
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt),
+                         ("ptbr-divergence", dual(lex.ao_br_full2pt)),
                          ("ptbr-divergence", dual(lex.ao_dual_br2pt))],
                   table=lex.ptbr_br2pt, table_feature=ptbr_divergence, plurals=True),
         )

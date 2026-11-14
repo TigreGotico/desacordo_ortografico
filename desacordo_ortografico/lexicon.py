@@ -252,12 +252,14 @@ class Lexicon:
 
     @cached_property
     def attested(self) -> Set[str]:
-        """The words of the word list that are valid as written: the list holds pre-AO1990
-        forms too, so the old form of a c/p row of either AO1990 map is left out, compared
-        without diacritics (microelectrônica beside microelectrónica)."""
+        """The words valid as written in pt-PT: the forms the pt-PT AO1990 map gives, and
+        the words of the word list. The list holds pre-AO1990 forms too, so the old form
+        of a c/p row of either AO1990 map is left out, compared without diacritics
+        (microelectrônica beside microelectrónica)."""
         old = {deaccent(o) for table in (self.ao_pt_forms, self.ao_br_forms)
                for o, forms in table.items() if o not in forms and _CP_CLUSTER_RE.search(o)}
-        return {w for w in self._word_list if deaccent(w) not in old}
+        listed = {w for w in self._word_list if deaccent(w) not in old}
+        return listed | {f for forms in self.ao_pt_forms.values() for f in forms}
 
     def _cp_outcome_pt(self, key: str) -> Optional[str]:
         """'drop' when the pt-PT AO1990 form of map word ``key`` loses the c/p of its
@@ -344,7 +346,7 @@ class Lexicon:
             form = self.cp_ao_form_pt(base)
             if form is not None:
                 return word if form == base else drop
-            if base in self.cp_keep_pt or base in self.attested:
+            if base in self.attested:
                 return word
         outcomes = self._cp_stems_pt.get(word[:cut + 3], set())
         if len(word) >= cut + 3 and len(outcomes) == 1:
@@ -376,11 +378,16 @@ class Lexicon:
     @cached_property
     def ao_br_new2old(self) -> Dict[str, str]:
         """Invert the pt-BR map. The form with the consonant of a dual that is itself a
-        pre-AO1990 spelling stays (liquefacto)."""
+        pre-AO1990 spelling stays (liquefacto). The form without it goes back as the
+        first form of the map row (codialeto -> co-dialecto, liquefação -> liquefacção)."""
         out = self._ao_new2old(self.ao_br_old2new)
         for old, (full, _bare) in self._br_duals.items():
             if full == old:
                 out.pop(full, None)
+        first = self._ao_new2old(_old2new(self.ao_br_forms, first=True))
+        for _full, bare in set(self._br_duals.values()):
+            if bare in first:
+                out.setdefault(bare, first[bare])
         return out
 
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
@@ -602,18 +609,34 @@ class Lexicon:
                 out.setdefault(bare, full)
         return out
 
+    @cached_property
+    def ao_br_full2pt(self) -> Dict[str, str]:
+        """The form with the consonant of a pt-BR dual cell -> the one form the pt-PT
+        map gives it, for an AO1990 pt-PT target (liquefacção -> liquefação)."""
+        return {full: self.ao_pt_old2new[full] for full, _bare in self._br_duals.values()
+                if full in self.ao_pt_old2new}
+
     # ------------------------------------------------------- 1911 irregulars
     @cached_property
     def reform1911_old2new(self) -> Dict[str, str]:
         out: Dict[str, str] = {}
         for group, entries in self._reform1911.items():
-            if group.startswith("_") or not isinstance(entries, dict):
+            if group.startswith("_") or group == "frequent_reading" or not isinstance(entries, dict):
                 continue
             for k, v in entries.items():
                 if k.startswith("_") or not isinstance(v, str):
                     continue
                 out[k.lower()] = v.lower()
         return out
+
+    @cached_property
+    def reform1911_forward(self) -> Dict[str, str]:
+        """``reform1911_old2new`` plus the pre-1911 forms that read as their more frequent
+        word (contracto -> contrato). These go forward only: pre-1911 text writes the noun
+        both ways, so a modern contrato stays."""
+        group = self._reform1911["frequent_reading"]
+        return {**self.reform1911_old2new,
+                **{k.lower(): v.lower() for k, v in group.items() if not k.startswith("_")}}
 
     @cached_property
     def reform1911_new2old(self) -> Dict[str, str]:

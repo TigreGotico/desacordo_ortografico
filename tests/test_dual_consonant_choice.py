@@ -88,6 +88,43 @@ def test_pt_br_dual_gains_the_consonant_toward_pt_pt():
     assert convert("liquefato", "ao1990-br", "ao1990-pt") == "liquefacto"
 
 
+# The pt-PT map gives one form without the consonant to the consonant form of these
+# pt-BR dual cells (co-factor -> cofator, liquefacção -> liquefação).
+_PT_ONE_FORM = sorted((full, forms[0]) for full, forms in TugaLexicon().ao_pt.items()
+                      if full in ("cofactor", "liquefactor", "liquefacção") and len(forms) == 1)
+
+
+@pytest.mark.parametrize("full, pt", _PT_ONE_FORM)
+def test_pt_br_consonant_form_takes_the_pt_pt_map_form(full, pt):
+    assert len(_PT_ONE_FORM) == 3
+    assert convert(full, "ao1990-br", "ao1990-pt") == pt
+
+
+# Cunha & Cintra cap. 8: -es after r, and -ão makes -ões
+@pytest.mark.parametrize("full, pt", [("cofactores", "cofatores"), ("liquefactores", "liquefatores"),
+                                      ("liquefacções", "liquefações")])
+def test_pt_br_consonant_plural_takes_the_pt_pt_map_form(full, pt):
+    assert convert(full, "ao1990-br", "ao1990-pt") == pt
+
+
+def test_pt_br_consonant_form_stays_toward_etymological():
+    # gold c00253: ao1990-br and etymological liquefactor; the pt-PT AO1990 form does
+    # not apply to the pre-AO1990 norms
+    assert convert("liquefactor", "ao1990-br", "etymological") == "liquefactor"
+
+
+# gold d20885 and d21649: ao1990-br codialeto and liquefação, etymological co-dialecto and
+# liquefacção
+@pytest.mark.parametrize("bare, old", [("codialeto", "co-dialecto"), ("liquefação", "liquefacção")])
+def test_pt_br_form_without_consonant_goes_back_to_etymological(bare, old):
+    assert convert(bare, "ao1990-br", "etymological") == old
+
+
+def test_pt_br_dual_from_br_1971_takes_the_pt_pt_map_form():
+    # gold d21629: br_1971 liquefator, ao1990-pt liquefator
+    assert convert("O liquefator transformava o gás em líqüido.", "br_1971", "ao1990-pt") \
+        == "O liquefator transformava o gás em líquido."
+
 # Toward pt-BR, a dual of the pt-PT map only converts as on origin/dev (a3ef145): the
 # pt-PT dual choice does not speak for Brazil. tests/data/ptbr_dual_dev_outputs.tsv holds
 # the origin/dev output of every form of every pt-PT dual cell, from each European source
@@ -166,13 +203,19 @@ def test_pre_1911_contracto_reads_as_the_noun(dst):
     assert convert("o contracto e os contractos", "etymological", dst) == "o contrato e os contratos"
 
 
-# The pre-1911 spelling of the noun is contracto, so a modern contrato goes back to it.
-# The 14 Project Gutenberg books of the real-text check write contracto 14 times and
-# contrato never; they write retrato 77 times and retracto never, so retrato stays.
+# Pre-1911 text writes the noun both ways, so a modern contrato stays contrato: Dias
+# Ferreira, Codigo civil portuguez annotado (1870), writes contrato 53, contratos 41 and
+# contracto 3, while it keeps acção, acto and facto; Cândido de Figueiredo, Novo
+# diccionario (1913), in pre-1911 letters, has the headword "Contrato".
 @pytest.mark.parametrize("src", ["ao1990-pt", "ao1990-br", "pt_1973"])
-def test_modern_contrato_goes_back_to_the_pre_1911_noun(src):
-    assert convert("o contrato e os contratos", src, "etymological") == "o contracto e os contractos"
+def test_modern_contrato_stays_toward_etymological(src):
+    assert convert("o contrato e os contratos", src, "etymological") == "o contrato e os contratos"
     assert convert("o retrato e os retratos", src, "etymological") == "o retrato e os retratos"
+
+
+def test_pre_1911_noun_reading_stays_off_the_route_to_pt_br():
+    # origin/dev output: the plain c/p rule on the route to pt-BR keeps contractos
+    assert convert("os contractos", "pt_1973", "ao1990-br") == "os contractos"
 
 
 def test_pt_1973_contracto_is_the_adjective():

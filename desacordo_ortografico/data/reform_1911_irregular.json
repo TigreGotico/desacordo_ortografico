@@ -210,7 +210,7 @@
     "hervas": "ervas"
   },
   "frequent_reading": {
-    "_comment": "Pre-1911 forms of two words that later spellings tell apart: contracto is the noun 'contract' (contrato from 1911) and the adjective 'contracted' (contracto, a dual in AO1990). The noun is far more frequent, so the frequent reading is the default.",
+    "_comment": "Forward only. Pre-1911 forms of two words that later spellings tell apart: contracto is the noun 'contract' (contrato from 1911) and the adjective 'contracted' (contracto, a dual in AO1990). The noun is far more frequent, so the frequent reading is the default. Pre-1911 text also writes the noun contrato (Dias Ferreira, Codigo civil portuguez annotado, 1870: contrato 53, contratos 41, contracto 3; Candido de Figueiredo, Novo diccionario, 1913: headword Contrato), so a modern contrato stays contrato.",
     "contracto": "contrato",
     "contractos": "contratos"
   },
