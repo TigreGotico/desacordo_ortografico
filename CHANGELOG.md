@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.12a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.12a1) (2026-11-14)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.11a2...0.1.12a1)
+
+**Merged pull requests:**
+
+- fix: drop a silent c/p only for words the AO1990 map lists [\#23](https://github.com/TigreGotico/desacordo_ortografico/pull/23) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.11a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.11a2) (2026-11-14)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.11a1...0.1.11a2)
