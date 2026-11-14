@@ -78,11 +78,16 @@ force from 2006 (2nd Protocol), and became mandatory in Brazil in 2016 and Portu
 in 2015.
 
 **Base IV, consonant sequences `cc, cç, ct, pc, pç, pt`**, is the hardest, irreducibly
-lexical part. It defines three sets:
+lexical part. It defines four sets:
 - **keep** (pronounced everywhere): `pacto, ficção, apto, egípcio, rapto`.
 - **drop** (mute everywhere): `acção→ação, óptimo→ótimo, director→diretor`.
 - **dual** (pronounced in one norm only, one spelling per norm):
   `facto`(PT)/`fato`(BR), `receção`(PT)/`recepção`(BR), `aspeto`(PT)/`aspecto`(BR).
+- **optional** (two valid spellings in one norm, Base IV 1º c): `sector`/`setor`,
+  `carácter`/`caráter`. Where both forms are valid in the target variety (a dual cell of
+  that variety's tugalex AO1990 map), an AO1990 target writes the form with the
+  consonant, in the plural too. A word with one valid form takes that form. contrato
+  and retrato stay: each is a word of its own beside contracto and retracto.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`

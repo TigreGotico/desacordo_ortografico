@@ -177,6 +177,14 @@ class OrthographyConverter:
                 if msg not in result.warnings:
                     result.warnings.append(msg)
 
+        # Base IV 1º c: where both forms of a dual cell are valid in the target variety,
+        # an AO1990 target writes the form with the consonant (sector, liquefacto).
+        if "silent-cp" in enabled and dst.era == Era.AO1990:
+            duals = self.lex.ao_br_dual_full if dst.variant == Variant.BR else self.lex.ao_pt_dual_full
+            # each element of a compound too (setor-chave), unless the compound is a cell
+            out = rules.apply_to_words(
+                out, lambda w: duals.get(w) or "-".join(duals.get(p, p) for p in w.split("-")), is_word)
+
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.
         if "months" in enabled:

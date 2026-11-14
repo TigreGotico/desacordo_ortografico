@@ -51,6 +51,12 @@ def _letters(word: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFD", word) if not unicodedata.combining(c))
 
 
+#: The form without the consonant of these pt-PT dual cells is also a word of its own,
+#: so it never gains the consonant: contrato (a contract) beside contracto (contracted),
+#: retrato (a portrait) beside retracto (a retraction).
+_DUAL_HOMOGRAPHS = frozenset({"contrato", "retrato"})
+
+
 #: Irregular verb forms the word list lacks, which no inflection rule derives.
 #: dizer: "ele disse" (Dicionário Priberam, conjugação de dizer, pretérito perfeito).
 _IRREGULAR_FORMS = frozenset({"disse"})
@@ -210,6 +216,17 @@ class Lexicon:
     @cached_property
     def ao_br_new2old(self) -> Dict[str, str]:
         return self._ao_new2old(self.ao_br_old2new)
+
+    @cached_property
+    def ao_pt_dual_full(self) -> Dict[str, str]:
+        """The dual cells of the pt-PT AO1990 map (Base IV 1º c): the form without the
+        consonant -> the form with it, and the same for their plurals."""
+        return _dual_full(self.tuga, "ao_pt", _DUAL_HOMOGRAPHS)
+
+    @cached_property
+    def ao_br_dual_full(self) -> Dict[str, str]:
+        """The dual cells of the pt-BR AO1990 map, as :attr:`ao_pt_dual_full`."""
+        return _dual_full(self.tuga, "ao_br")
 
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent
@@ -461,6 +478,49 @@ def _clean_ao_map(tuga, attr: str) -> Dict[str, str]:
             # "old form" set and mislabel modern words as pre-AO1990
         out[kl] = vl
     return out
+
+
+def _dual_full(tuga, attr: str, homographs: FrozenSet[str] = frozenset()) -> Dict[str, str]:
+    """The form without the consonant -> the form with it, for each dual cell (a row
+    with two AO1990 forms) of a tugalex AO map, and for the regular plurals of both."""
+    out: Dict[str, str] = {}
+    for forms in (getattr(tuga, attr, None) or {}).values():
+        cell = {f.lower().strip() for f in forms if f and f.strip()}
+        if len(cell) != 2:
+            continue
+        bare, full = sorted(cell, key=len)
+        if bare in homographs:
+            continue
+        out[bare] = full
+        plurals = _plural(bare), _plural(full)
+        if None not in plurals:
+            out[plurals[0]] = plurals[1]
+    return out
+
+
+def _plural(word: str) -> Optional[str]:
+    """The plural of a dual cell form, for the endings the cells of the tugalex AO1990
+    maps have: a word in -a, -e or -o takes -s, and -or and -z take -es; carácter and
+    caráter make caracteres and carateres (Base IV 1º c names that pair), and the
+    adjectives dactilar and datilar take -es (Aulete, datilar: "adj. || dactilar"); -ção makes
+    -ções; -al makes -ais; -vel and the unstressed -il of táctil make -eis (Priberam,
+    táctil: "Plural: táteis. Plural: tácteis"). ``None`` for any other form: the
+    verbs and the adverbs in -mente."""
+    if word in ("carácter", "caráter"):
+        return deaccent(word) + "es"
+    if word in ("dactilar", "datilar"):
+        return word + "es"
+    if word.endswith("ção"):
+        return word[:-3] + "ções"
+    if word.endswith(("a", "e", "o")) and not word.endswith(("ão", "mente")):
+        return word + "s"
+    if word.endswith(("or", "z")):
+        return word + "es"
+    if word.endswith("al"):
+        return word[:-2] + "ais"
+    if word.endswith(("vel", "til")):
+        return word[:-2] + "eis"
+    return None
 
 
 def _invert(mapping: Dict[str, str]) -> Dict[str, str]:
