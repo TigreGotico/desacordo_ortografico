@@ -162,3 +162,71 @@ class TestArchaicEvidence:
         expresso por f", "teatro"): pharmacia, theatro. Base VII writes "ela" with one l:
         ella, collecção."""
         assert _orth(text).era == Era.ETYMOLOGICAL
+
+
+class TestNamesAreNoEvidence:
+    """A listed archaic form that spells a name gives no pre-1911 evidence. Base XXI of
+    the Acordo Ortográfico of 1990 (Portal da Língua Portuguesa text), "Das assinaturas e
+    firmas": "Para ressalva de direitos, cada qual poderá manter a escrita que, por
+    costume ou registo legal, adote na assinatura do seu nome. Com o mesmo fim, pode
+    manter-se a grafia original de quaisquer firmas comerciais, nomes de sociedades,
+    marcas e títulos que estejam inscritos em registo público."
+
+    A word or a part of a word that starts with a capital inside a sentence is read as a
+    name. The first word of a sentence and a text in capitals throughout give no case
+    signal, so their listed forms still count.
+    """
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Os anjos da Victoria desfilaram.",  # mmf-test-01366, Victoria's Secret
+            "A Moraci Sant'Anna chegou.",  # mmf-271456
+            "O preparador Sant'anna falou.",  # mmf-175165: Sant'anna, part anna
+            "A Hermínia d'Oliveira Paes saiu.",  # mmf-351075
+            "Don't Be a Lemming Polka",  # mmf-010843
+            "O retrato d'Anna Maria ficou na sala.",  # the part Anna has the capital
+        ],
+    )
+    def test_names_inside_a_sentence_are_no_evidence(self, text):
+        """Victoria, Anna, Paes and Polka are in the tugalex archaisms list. Here each one
+        is a name or a title inside a sentence, and the sentence has no other marker, so
+        it is AO1990."""
+        r = _orth(text)
+        assert r.era == Era.AO1990
+        assert not [m for m in r.markers if m.startswith("etym")]
+
+    @pytest.mark.parametrize(
+        "text, archaism",
+        [
+            ("E d'ahi, que mal lhe faziam os padres e as irmãsinhas lá em casa?",
+             "d'ahi"),  # mmf-294727
+            ("O sol que morre tem clarões d'auroras, Águia que bate as azas pelos ceus!",
+             "azas"),  # mmf-244985
+            ("Entre os milhões d'astros o luar sem veo", "veo"),  # mmf-197966
+            ("Quem vio tamanho enleio, Que houvesse ahi'sperança sem receio?",
+             "ahi'sperança"),  # mmf-299798
+        ],
+    )
+    def test_lowercase_archaisms_still_count(self, text, archaism):
+        """Pre-1911 verse and prose: a lowercase listed form is no name."""
+        r = _orth(text)
+        assert r.era == Era.ETYMOLOGICAL
+        assert f"etym-pattern:{archaism}" in r.markers
+
+    @pytest.mark.parametrize("end", [". ", "! ", "? ", "… ", "\n"])
+    def test_first_word_of_a_sentence_still_counts(self, end):
+        """Commigo (comigo, base VII of 1911) opens the second sentence. Its capital comes
+        from the sentence start, not from a name."""
+        r = _orth(f"Ficou calado{end}Commigo ninguém falava.")
+        assert r.era == Era.ETYMOLOGICAL
+        assert "etym-pattern:commigo" in r.markers
+
+    def test_capital_after_a_comma_is_inside_the_sentence(self):
+        r = _orth("Ficou calado, Commigo ninguém falava.")
+        assert r.era == Era.AO1990
+
+    def test_text_in_capitals_throughout_has_no_case_signal(self):
+        r = _orth("OS ANJOS DA VICTORIA DESFILARAM.")
+        assert r.era == Era.ETYMOLOGICAL
+        assert "etym-pattern:victoria" in r.markers
