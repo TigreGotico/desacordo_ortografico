@@ -46,9 +46,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, Collection, List, Mapping, Optional, Sequence, Tuple
+from typing import Callable, List, Mapping, Optional, Sequence, Tuple
 
-from .lexicon import _ACCENTS, _RS_PREFIXES, deaccent
+from .lexicon import _ACCENTS, deaccent
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
@@ -89,16 +89,9 @@ def apply_to_words(
 
 def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
     """``table[word]``, or the plural of the table form when ``word`` is the regular
-    plural of a table word (aspetos from aspeto, receções from receção, sectores from
-    sector, sectoriais from sectorial); else ``None``. Cunha & Cintra cap. 8,
-    "Substantivos terminados em consoante": -s after a vowel, -es after r and z, and
-    -al becomes -ais."""
+    plural of a table word (aspetos from aspeto, receções from receção); else ``None``."""
     if word in table:
         return table[word]
-    if word.endswith("es") and word[:-2] in table and table[word[:-2]][-1:] in "rz":
-        return table[word[:-2]] + "es"
-    if word.endswith("ais") and word[:-3] + "al" in table and table[word[:-3] + "al"].endswith("al"):
-        return table[word[:-3] + "al"][:-2] + "ais"
     if word.endswith("ões") and word[:-3] + "ão" in table and table[word[:-3] + "ão"].endswith("ão"):
         return table[word[:-3] + "ão"][:-2] + "ões"
     if word.endswith("s") and word[:-1] in table and table[word[:-1]][-1:] in "aeo":
@@ -174,33 +167,16 @@ def reform_1911_geminates(word: str, wordset=None) -> str:
 _CP_DROP = [("cç", "ç"), ("ct", "t"), ("pç", "ç"), ("pt", "t")]
 
 
-def drop_silent_cp(
-    word: str,
-    keep: set,
-    wordset: set,
-    ao_form: Optional[Callable[[str], Optional[str]]] = None,
-    attested: Collection[str] = (),
-) -> str:
+def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
     """Drop a silent c/p from a -ct-/-pt-/-cç-/-pç- cluster (AO1990, European).
 
     A rule fallback for inflected forms the Base IV lexicon does not list
     (desactiva->desativa, detectou->detetou). Guarded twice so it never mangles a
     pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT duals such
     as facto/contacto), and the de-consonanted form must be an attested word. One-way.
-
-    ``ao_form`` gives the AO1990 form that the word map gives the word's base, or
-    ``None`` with no evidence. AO1990 Base IV 1º drops the consonant where it is mute
-    (b: ação, afetivo, adotar) and keeps a pronounced one (a: pacto, apto). With no map
-    evidence, a word in ``attested`` is valid as written (aptitude, copta, secção).
     """
     if word in keep:
         return word
-    if ao_form is not None:
-        form = ao_form(word)
-        if form is not None:
-            return form
-        if word in attested:
-            return word
     for pat, rep in _CP_DROP:
         if pat in word:
             cand = word.replace(pat, rep)
@@ -477,6 +453,12 @@ def recase_months(text: str, lowercase: bool) -> str:
 
 
 # --------------------------------------------------- AO1990 prefix + r/s doubling
+_RS_PREFIXES = {
+    "ante", "anti", "arqui", "auto", "contra", "eletro", "electro", "extra",
+    "hidro", "infra", "intra", "macro", "micro", "mini", "multi", "neo",
+    "pluri", "proto", "pseudo", "retro", "semi", "sobre", "supra", "ultra",
+    "geo", "tele", "agro", "aero", "euro", "foto", "psico", "socio",
+}
 
 
 def ao1990_hyphen_rs(word: str) -> str:
