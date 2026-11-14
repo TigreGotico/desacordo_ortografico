@@ -115,9 +115,10 @@ def test_adjective_datilar_plural_takes_the_consonant():
 # to -ais, -vel and the unstressed -il of táctil to -eis (Priberam, táctil: "Plural:
 # tácteis"), the pair caracteres, carateres (Base IV 1º c), and the adjective
 # datilar, dactilar (Aulete, datilar: "adj. || dactilar") with -es. Verbs and adverbs in
-# -mente have no plural. A form in -s is itself a plural or a feminine plural (sectoriais,
-# insectívoras, subsectores): the plural ending is -s (Cunha & Cintra cap. 8), so it has
-# no plural of its own, and the table holds no second plural of it.
+# -mente have no plural. Every dual cell in -s of the tugalex map is a plural or a feminine
+# plural in -as, -os, -es or -ais (sectoriais, insectívoras, subsectores), and the map lists
+# that plural as a cell of its own, so a cell in -s takes no plural here. A singular in -s
+# has a plural (país, países) or none (lápis), so a cell in any other -s ending fails.
 _PLURAL_ENDINGS = [("ção", "ções"), ("al", "ais"), ("vel", "veis"), ("til", "teis"),
                    ("or", "ores"), ("z", "zes"), ("a", "as"), ("e", "es"), ("o", "os")]
 _SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres",
@@ -127,7 +128,10 @@ _SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres",
 def _expected_plural(word):
     if word in _SPECIAL_PLURALS:
         return _SPECIAL_PLURALS[word]
-    if word.endswith(("ar", "er", "ir", "mente", "s")):
+    if word.endswith(("ar", "er", "ir", "mente")):
+        return None
+    if word.endswith("s"):
+        assert word.endswith(("as", "os", "es", "ais")), f"no plural class for {word}"
         return None
     assert not word.endswith("ão") or word.endswith("ção"), word
     for singular, plural in _PLURAL_ENDINGS:

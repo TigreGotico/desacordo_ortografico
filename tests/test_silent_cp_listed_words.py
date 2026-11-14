@@ -60,17 +60,19 @@ def test_a_pt_pt_dual_keeps_its_consonant_toward_pt_pt():
     assert convert("eletropunctura", "pt_1973", "ao1990-pt") == "eletropunctura"
 
 
+# Priberam, "Grafia alterada pelo Acordo Ortográfico de 1990": recto -> reto, colecta ->
+# coleta, corrector -> corretor, reactivar -> reativar, inexactidão -> inexatidão, rectidão
+# -> retidão, electrão -> eletrão (papers/linguistics/pt/priberam-cp-sweep/). The map lists
+# the singular of each and not the plural, so the plural rule converts it.
 @pytest.mark.parametrize("target", AO)
 @pytest.mark.parametrize("old, new", [
-    # Base IV 1º b: ato, coletivo, ótimo, coleção, direção, objeção; the map rows acto,
-    # colectivo, óptimo, colecção, direcção, objecção
-    ("actos", "atos"), ("colectivos", "coletivos"), ("óptimos", "ótimos"),
-    ("colecções", "coleções"), ("direcções", "direções"), ("objecções", "objeções"),
-    ("Actos", "Atos"), ("COLECTIVOS", "COLETIVOS"), ("Direcções", "Direções"),
-    # Base IV 1º b: acionar; the cc of the map row accionista
-    ("accionistas", "acionistas"),
+    ("rectos", "retos"), ("colectas", "coletas"), ("correctoras", "corretoras"),
+    ("reactivados", "reativados"), ("inexactidões", "inexatidões"), ("rectidões", "retidões"),
+    ("electrões", "eletrões"), ("RECTOS", "RETOS"), ("Colectas", "Coletas"),
+    ("Inexactidões", "Inexatidões"),
 ])
 def test_the_plural_of_a_map_word_drops_the_consonant(old, new, target):
+    assert old.lower() not in get_lexicon().ao_pt_old2new
     assert convert(old, "pt_1973", target) == new
 
 
@@ -92,11 +94,13 @@ def test_a_pt_pt_dual_form_stays_as_written_toward_pt_br(word, target):
 
 def test_the_step_drops_only_a_consonant():
     # the plural of a map row that joins a compound (agro-químico -> agroquímico) is no
-    # c/p drop, so the silent-cp feature leaves it as written; exactidões is the plural of
-    # the map row exactidão (Base IV 1º b: exato), and the map does not list it
+    # c/p drop, so the silent-cp feature leaves it as written; exactidões and rectas are
+    # plurals of the map rows exactidão (Base IV 1º b: exato) and recta (Priberam, recta:
+    # "Grafia alterada pelo Acordo Ortográfico de 1990: reta"), and the map lists neither
     assert convert("agro-químicos", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "agro-químicos"
-    assert "exactidões" not in get_lexicon().ao_pt_old2new
-    assert convert("exactidões", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "exatidões"
+    for old, new in (("exactidões", "exatidões"), ("rectas", "retas")):
+        assert old not in get_lexicon().ao_pt_old2new
+        assert convert(old, "pt_1973", "ao1990-pt", features={"silent-cp"}) == new
 
 
 # Priberam, post-AO1990 view: "Grafia no Brasil: infecção", "Grafia no Brasil: facção";
