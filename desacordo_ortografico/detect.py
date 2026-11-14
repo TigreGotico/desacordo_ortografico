@@ -21,8 +21,9 @@ and nn where they are pronounced ("êle, ela, ... aparecer, ... atitude"), and b
 drops a silent consonant that does not change the vowel before it ("autor, restrito,
 produto"). The tugalex list also rests on the Priberam dictionary for the modern forms
 and on the IRN list of admitted given names. A spelling pattern alone is no evidence.
-Base I applies to "palavras portuguesas, ou aportuguesadas" and keeps k, w and y in
-derivatives of foreign names (kantismo, darwinismo, byroniano), so a foreign word or
+Base I applies to "palavras portuguesas, ou aportuguesadas", and its exception 1.ª
+allows k, w and y in derivatives of foreign names ("Poderão usar-se essas letras";
+kantismo, darwinismo, byroniano), so a foreign word or
 name (the, Taylor, Mary) in a modern sentence is no pre-1911 spelling.
 """
 from __future__ import annotations
