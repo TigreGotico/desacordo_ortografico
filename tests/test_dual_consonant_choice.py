@@ -118,7 +118,10 @@ def test_adjective_datilar_plural_takes_the_consonant():
 # -mente have no plural. Every dual cell in -s of the tugalex map is a plural or a feminine
 # plural in -as, -os, -es or -ais (sectoriais, insectívoras, subsectores), and the map lists
 # that plural as a cell of its own, so a cell in -s takes no plural here. A singular in -s
-# has a plural (país, países) or none (lápis), so a cell in any other -s ending fails.
+# has a plural of its own (país, países) or an invariable one (o lápis, os lápis). The test
+# raises for a cell in -s outside those four endings; it cannot tell a singular such as
+# atlas or cais from a plural, which is safe only while every such cell has its singular
+# in the same CSV.
 _PLURAL_ENDINGS = [("ção", "ções"), ("al", "ais"), ("vel", "veis"), ("til", "teis"),
                    ("or", "ores"), ("z", "zes"), ("a", "as"), ("e", "es"), ("o", "os")]
 _SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres",
