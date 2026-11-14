@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.11a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.11a1) (2026-11-14)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.10a1...0.1.11a1)
+
+**Merged pull requests:**
+
+- fix: write the c/p form of a dual cell toward its AO1990 variety [\#5](https://github.com/TigreGotico/desacordo_ortografico/pull/5) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.10a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.10a1) (2026-11-13)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.9a1...0.1.10a1)
