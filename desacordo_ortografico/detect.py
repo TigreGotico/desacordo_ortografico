@@ -21,7 +21,7 @@ from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
 from .ml import features, get_detector_model
-from .rules import _MONTHS
+from .rules import _MONTHS, _SEGMENT_SEP, reform_1911_digraphs, reform_1911_geminates
 from .rules import words as _words
 
 _VOWELS = "aeiouáàâãéêíóôõúü"
@@ -130,7 +130,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if w in lex.reform1911_old2new:
             etym += 2
             markers.append(f"etym:{w}")
-        elif _RE_ETYM.search(w):
+        elif _is_etym_spelling(w, lex):
             etym += 1
             markers.append(f"etym-pattern:{w}")
 
@@ -207,6 +207,20 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         confidence=round(min(0.99, max(0.0, conf)), 2),
         markers=markers,
         note=note,
+    )
+
+
+def _is_etym_spelling(w: str, lex: Lexicon) -> bool:
+    """True when the lowercase token ``w`` shows a pre-1911 spelling of a known word.
+
+    A part of the token (split at hyphens and apostrophes) that carries an etymological
+    pattern (ph, th, rh, y, a geminate) must give a word the lexicon knows under the
+    1911 rules the converter applies: theatro gives teatro, d'ella gives d'ela. A token
+    whose 1911 form is no known word (Taylor, Joseph, university) is no evidence.
+    """
+    parts = [p for p in _SEGMENT_SEP.split(w) if _RE_ETYM.search(p)]
+    return bool(parts) and all(
+        lex.is_known(reform_1911_geminates(reform_1911_digraphs(p), lex.wordset)) for p in parts
     )
 
 

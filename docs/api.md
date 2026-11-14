@@ -103,6 +103,11 @@ Detection markers are scored, not learned. They cover etymological evidence (`ph
 silent-consonant forms, old BR accent/trema forms), AO1990 evidence, and PT/BR lean
 (dual forms, the nasal-vowel alternation). `markers` lists what fired.
 
+A `ph`, `th`, `rh`, `y` or geminate counts only when the 1911 rules turn it into a
+word the lexicon knows (theatro gives teatro, d'ella gives d'ela). A foreign word or name
+whose 1911 form is no known word (Taylor, Joseph, university) is no evidence. A foreign
+word whose 1911 form is a word still counts (the gives te).
+
 ## `eras`
 
 - `Era`: `ETYMOLOGICAL, REFORMA_1911, BR_1943, PT_1945, BR_1971, PT_1973, AO1990`.

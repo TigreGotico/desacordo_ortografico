@@ -100,3 +100,48 @@ class TestConfidence:
 
     def test_markers_are_reported(self):
         assert _orth("pharmacia").markers
+
+
+
+class TestForeignTokens:
+    """Modern rows of the meio milhão de frases corpus and pre-1911 sentences of Project
+    Gutenberg books (source in each comment)."""
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # mmf-454536: Taylor gives tailor under the 1911 rules, no Portuguese word
+            "Chama-se He's a Bully, Charlie Brown e foi originalmente idealizado por Charles "
+            "Schulz e contava, entre os dubladores, com o ator Taylor Lautner, então criança.",
+            # mmf-019520: city and within give citi and witin
+            "“It’s a concept, a city within a city”, diz-nos o José Correal durante uma tour "
+            "pelo centro da cidade.",
+            # mmf-033066: University gives universiti
+            "Formação Graduado em comércio pela Queen's University em Kingston, Canadá.",
+            # mmf-013512: photo gives foto, but mickey gives mickei
+            "Mac Tonight também faz aparição em Five nights with Mac Tonight (mais conhecido "
+            "por FNWMT) criado por Photo-Negative-Mickey, um fan-game de FNAF (Five Nights at "
+            "Freddy's) criado por Scott Cawthon.",
+        ],
+    )
+    def test_foreign_tokens_are_no_etymological_evidence(self, text):
+        assert _orth(text).era == Era.AO1990
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "Livre-me d'ella, se póde!",  # mmf-314974: the part ella gives ela
+            "Rapazes a entrarem na vida são lá capazes d'um cynismo d'esses!",  # mmf-193977
+            "Hum natural desejo tinha acceso D'algum ditoso e doce pensamento, "
+            "Que m'illustrasse a insana mocidade.",  # mmf-test-03169
+            # Eça de Queirós, A Cidade e as Serras (Gutenberg 18220): a name mid-sentence
+            "E Jacintho, aturdido e deslumbrado, reconheceu o snr.",
+            "Amarrotára com colera a carta começada--eu escapei, respirando, para a "
+            "Bibliotheca.",
+            # Teófilo Braga, Viriatho (Gutenberg 26850): the first word of a second sentence
+            "Nenhum dos cachôpos dava com o sentido da adivinha. Viriatho ao passar pelo "
+            "rancho sorriu-se, dizendo para os Maioraes que o acompanhavam:",
+        ],
+    )
+    def test_pre_1911_spellings_still_count(self, text):
+        assert _orth(text).era == Era.ETYMOLOGICAL
