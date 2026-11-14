@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish the parallel gold corpus as a Hugging Face dataset.
+"""Publish the parallel silver corpus as a Hugging Face dataset.
 
 Flattens the nested cells into one column per norm (viewer-friendly), writes a dataset
 card, and uploads to ``TigreGotico/desacordo_ortografico``.
@@ -90,25 +90,27 @@ The European line (`etymological`, `pt_1973`, `ao1990_pt`) and the Brazilian lin
 
 ## Construction
 
+All rows are silver data. Language models wrote the sentences or classified the words
+they are built from, and no person checked them.
+
 The `source` field marks how each row was built:
 
-- `authored` — written from linguistic knowledge against an explicit per-norm rule card
-  (a hand-written core plus a fan-out of language models over distinct topic domains),
-  independently of any converter, then audited sentence-by-sentence by a language-model
-  panel and tightened to reference quality.
-- `derived` — a natural modern-European sentence whose other four norms are produced by a
-  **verified derivation**: each word is transformed only via a per-word form confirmed
-  against a curated lexicon (the silent-consonant, trema, nasal-vowel, dual and
-  differential vocabularies were classified word-by-word by a language-model panel); any
-  sentence containing a word whose variation is not verified is dropped, so a derived row
-  is correct by construction. Spelling correctness was confirmed by independent sampling.
+- `authored` — language models wrote the sentence in all five norms against a per-norm
+  rule card. A language-model QA pass then corrected or dropped rows. A consistency step
+  replaced some dual and divergence words with the variants of the converter's word maps,
+  and some etymological words with their `pt_1973` forms.
+- `derived` — a modern European sentence that a language model wrote. Per-word table
+  lookup and deterministic rules (nasal vowel, trema, month casing) produce the other
+  four norms. The tables come from the `authored` rows, the AO1990 and 1911 word maps of
+  the converter's lexicon, and a word list that a language-model panel classified one by
+  one. A sentence that holds a word no table covers is dropped. An error in a table goes
+  into every row that uses the word.
+- `coverage` — a short carrier sentence (one quoted term), derived the same way, so that
+  **every** AO1990-changed word in the reference lexicon appears at least once.
 
 Within each line (European: `etymological`/`pt_1973`/`ao1990_pt`; Brazilian:
 `br_1971`/`ao1990_br`) the cells differ only by the documented era transforms; the two
 national lines may also differ lexically in the `authored` rows.
-
-A third tag, `coverage`, marks short carrier sentences (one quoted term) added so that
-**every** AO1990-changed word in the reference lexicon appears at least once.
 
 ## Word coverage
 
@@ -138,8 +140,8 @@ def main():
     ap.add_argument("--private", action="store_true")
     args = ap.parse_args()
 
-    parallel = flatten_parallel(_load("gold_full.jsonl"))
-    sisters = _load("gold_sisters.jsonl")
+    parallel = flatten_parallel(_load("silver_full.jsonl"))
+    sisters = _load("silver_sisters.jsonl")
 
     with tempfile.TemporaryDirectory() as d:
         with open(os.path.join(d, "parallel.jsonl"), "w", encoding="utf-8") as f:

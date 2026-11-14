@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Benchmark desacordo_ortografico against the parallel gold corpus.
+"""Benchmark desacordo_ortografico against the parallel silver corpus.
 
 Measures conversion (directed norm pairs, overall + per feature family), detection
 (compatible accuracy + a nominal confusion matrix), and the sister-language guard.
 Writes ``results.md`` and ``results.json`` (the latter feeds ``plot_results.py``).
 
-    python benchmark/run_benchmark.py [--corpus gold_corpus.jsonl]
+    python benchmark/run_benchmark.py [--corpus silver_corpus.jsonl]
 """
 from __future__ import annotations
 
@@ -77,16 +77,16 @@ def _bucket(text):
     return {eid}, eid, r
 
 
-def _tok_acc(pred, gold):
-    p, g = pred.split(), gold.split()
+def _tok_acc(pred, silver):
+    p, g = pred.split(), silver.split()
     if not g:
         return 1.0
     return sum(a == b for a, b in zip(p, g)) / max(len(g), len(p))
 
 
-def run(corpus="gold_corpus.jsonl"):
+def run(corpus="silver_corpus.jsonl"):
     parallel = _load(corpus)
-    sisters = _load("gold_sisters.jsonl")
+    sisters = _load("silver_sisters.jsonl")
     conv = OrthographyConverter()
     res = {"corpus": corpus, "n": len(parallel)}
 
@@ -112,7 +112,7 @@ def run(corpus="gold_corpus.jsonl"):
                 feat_hit[ft] += ok
             if not ok and len(examples) < 40:
                 examples.append({"pair": f"{src}->{dst}", "id": s["id"],
-                                 "in": g_src, "got": pred, "gold": g_dst})
+                                 "in": g_src, "got": pred, "silver": g_dst})
         pair_stats[f"{src}->{dst}"] = {"exact": exact, "n": n, "token_acc": tacc / n}
         tot_exact += exact
         tot_n += n
@@ -202,7 +202,7 @@ def write_md(res):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--corpus", default="gold_corpus.jsonl")
+    ap.add_argument("--corpus", default="silver_corpus.jsonl")
     args = ap.parse_args()
     res = run(args.corpus)
     with open(os.path.join(HERE, "results.json"), "w", encoding="utf-8") as f:

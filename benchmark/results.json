@@ -1,5 +1,5 @@
 {
-  "corpus": "gold_corpus.jsonl",
+  "corpus": "silver_corpus.jsonl",
   "n": 1329,
   "conversion": {
     "overall_exact": 0.9142212189616253,
@@ -80,280 +80,280 @@
         "id": "s21",
         "in": "A philosophia do author reflectia sobre a sciência.",
         "got": "A filosofia do autor reflectia sobre a sciência.",
-        "gold": "A filosofia do autor reflectia sobre a ciência."
+        "silver": "A filosofia do autor reflectia sobre a ciência."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p01-003",
         "in": "A philosophia da sciencia influencia a theoria physica moderna.",
         "got": "A filosofia da ciência influência a teoria física moderna.",
-        "gold": "A filosofia da ciência influencia a teoria física moderna."
+        "silver": "A filosofia da ciência influencia a teoria física moderna."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p01-076",
         "in": "A estética do design influencia a percepção do utilizador.",
         "got": "A estética do design influência a percepção do utilizador.",
-        "gold": "A estética do design influencia a percepção do utilizador."
+        "silver": "A estética do design influencia a percepção do utilizador."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p02-036",
         "in": "O aspecto do céu anunciava tempestade sobre os montes.",
         "got": "O aspecto do céu anunciava tempestade sobre os montês.",
-        "gold": "O aspecto do céu anunciava tempestade sobre os montes."
+        "silver": "O aspecto do céu anunciava tempestade sobre os montes."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p02-105",
         "in": "O cordeiro pára e bale à procura da ovelha perdida.",
         "got": "O cordeiro pára e balé à procura da ovelha perdida.",
-        "gold": "O cordeiro pára e bale à procura da ovelha perdida."
+        "silver": "O cordeiro pára e bale à procura da ovelha perdida."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p04-018",
         "in": "O psychólogo e o pharmacêutico discutiram o tratamento do doente.",
         "got": "O psichólogo e o farmacêutico discutiram o tratamento do doente.",
-        "gold": "O psicólogo e o farmacêutico discutiram o tratamento do doente."
+        "silver": "O psicólogo e o farmacêutico discutiram o tratamento do doente."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p04-078",
         "in": "O lymphócito combateu a infecção de modo óptimo no doente.",
         "got": "O limfócito combateu a infecção de modo óptimo no doente.",
-        "gold": "O linfócito combateu a infecção de modo óptimo no doente."
+        "silver": "O linfócito combateu a infecção de modo óptimo no doente."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p04-094",
         "in": "O biochímico e o pharmacêutico isolaram a molécula contra a infecção.",
         "got": "O biochímico e o farmacêutico isolaram a molécula contra a infecção.",
-        "gold": "O bioquímico e o farmacêutico isolaram a molécula contra a infecção."
+        "silver": "O bioquímico e o farmacêutico isolaram a molécula contra a infecção."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p04-105",
         "in": "O lymphoma exigiu um tratamento óptimo e prolongado no doente.",
         "got": "O limfoma exigiu um tratamento óptimo e prolongado no doente.",
-        "gold": "O linfoma exigiu um tratamento óptimo e prolongado no doente."
+        "silver": "O linfoma exigiu um tratamento óptimo e prolongado no doente."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p05-034",
         "in": "O cão correu atrás do gato pelo corredor até à cozinha.",
         "got": "O cão corréu atrás do gato pelo corredor até à cozinha.",
-        "gold": "O cão correu atrás do gato pelo corredor até à cozinha."
+        "silver": "O cão correu atrás do gato pelo corredor até à cozinha."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p05-039",
         "in": "A poltrona velha continua a ser a mais cómoda de toda a sala.",
         "got": "A poltrona velha contínua a ser a mais cómoda de toda a sala.",
-        "gold": "A poltrona velha continua a ser a mais cómoda de toda a sala."
+        "silver": "A poltrona velha continua a ser a mais cómoda de toda a sala."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p05-078",
         "in": "A geleia ferveu com tanta frequência que a panela quase transbordou.",
         "got": "A geleia ferveu com tantã frequência que a panela quase transbordou.",
-        "gold": "A geleia ferveu com tanta frequência que a panela quase transbordou."
+        "silver": "A geleia ferveu com tanta frequência que a panela quase transbordou."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p05-079",
         "in": "Connosco o quotidiano corre devagar entre o jardim e a varanda.",
         "got": "Connosco o quotidiano corré devagar entre o jardim e a varanda.",
-        "gold": "Connosco o quotidiano corre devagar entre o jardim e a varanda."
+        "silver": "Connosco o quotidiano corre devagar entre o jardim e a varanda."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p06-045",
         "in": "Junto ao pólo, o sol não se punha durante longas semanas de Verão.",
         "got": "Junto ao pólo, o sol não se punha durante longas semanas de verão.",
-        "gold": "Junto ao pólo, o sol não se punha durante longas semanas de Verão."
+        "silver": "Junto ao pólo, o sol não se punha durante longas semanas de Verão."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p06-049",
         "in": "Em Abril daquelle ano, o facto correu de aldeia em aldeia.",
         "got": "Em Abril daquele ano, o facto corréu de aldeia em aldeia.",
-        "gold": "Em Abril daquele ano, o facto correu de aldeia em aldeia."
+        "silver": "Em Abril daquele ano, o facto correu de aldeia em aldeia."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p06-075",
         "in": "Para nós, o facto continua a ser uma porta aberta sobre o passado.",
         "got": "Para nós, o facto contínua a ser uma porta aberta sobre o passado.",
-        "gold": "Para nós, o facto continua a ser uma porta aberta sobre o passado."
+        "silver": "Para nós, o facto continua a ser uma porta aberta sobre o passado."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p06-083",
         "in": "A monarchia perdera força, mas o povo guardava a memória dos antigos reis.",
         "got": "A monarquia perdera força, mas o povo guardava a memória dos antigos réis.",
-        "gold": "A monarquia perdera força, mas o povo guardava a memória dos antigos reis."
+        "silver": "A monarquia perdera força, mas o povo guardava a memória dos antigos reis."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p07-109",
         "in": "A estreia da exposição reuniu artistas e coleccionadores.",
         "got": "A estreia da exposição reuniu artistas e colecionadores.",
-        "gold": "A estreia da exposição reuniu artistas e coleccionadores."
+        "silver": "A estreia da exposição reuniu artistas e coleccionadores."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p09-009",
         "in": "O cozinheiro disse que o molho era tranquilo de fazer.",
         "got": "O cozinheiro dissê que o molho era tranquilo de fazer.",
-        "gold": "O cozinheiro disse que o molho era tranquilo de fazer."
+        "silver": "O cozinheiro disse que o molho era tranquilo de fazer."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p09-024",
         "in": "Elle disse que o facto não estragava a sobremesa.",
         "got": "Ele dissê que o facto não estragava a sobremesa.",
-        "gold": "Ele disse que o facto não estragava a sobremesa."
+        "silver": "Ele disse que o facto não estragava a sobremesa."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p11-009",
         "in": "O peccado original é central na doutrina christã.",
         "got": "O pecado original é central na doutrina christã.",
-        "gold": "O pecado original é central na doutrina cristã."
+        "silver": "O pecado original é central na doutrina cristã."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p11-011",
         "in": "A ética christã e a esthética grega dialogam há séculos.",
         "got": "A ética christã e a estética grega dialogam há séculos.",
-        "gold": "A ética cristã e a estética grega dialogam há séculos."
+        "silver": "A ética cristã e a estética grega dialogam há séculos."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p11-026",
         "in": "O christianismo e a gnose competiram pela alma do mundo antigo.",
         "got": "O christianismo e a gnose competiram pela alma do mundo antigo.",
-        "gold": "O cristianismo e a gnose competiram pela alma do mundo antigo."
+        "silver": "O cristianismo e a gnose competiram pela alma do mundo antigo."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p11-042",
         "in": "A escatologia christã promete um cosmos renovado no fim dos tempos.",
         "got": "A escatologia christã promete um cosmos renovado no fim dos tempos.",
-        "gold": "A escatologia cristã promete um cosmos renovado no fim dos tempos."
+        "silver": "A escatologia cristã promete um cosmos renovado no fim dos tempos."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p11-067",
         "in": "A patrologia estuda os theólogos christãos dos primeiros séculos.",
         "got": "A patrologia estuda os teólogos christãos dos primeiros séculos.",
-        "gold": "A patrologia estuda os teólogos cristãos dos primeiros séculos."
+        "silver": "A patrologia estuda os teólogos cristãos dos primeiros séculos."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p11-070",
         "in": "A apologética christã respondia às objecções dos pagãos.",
         "got": "A apologética christã respondia às objecções dos pagãos.",
-        "gold": "A apologética cristã respondia às objecções dos pagãos."
+        "silver": "A apologética cristã respondia às objecções dos pagãos."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p12-026",
         "in": "A actividade comercial recuperou no Verão.",
         "got": "A actividade comercial recuperou no verão.",
-        "gold": "A actividade comercial recuperou no Verão."
+        "silver": "A actividade comercial recuperou no Verão."
       },
       {
         "pair": "etymological->pt_1973",
         "id": "p12-049",
         "in": "O retábulo de lucros impressionou os accionistas.",
         "got": "O retábulo de lucros impressionou os acionistas.",
-        "gold": "O retábulo de lucros impressionou os accionistas."
+        "silver": "O retábulo de lucros impressionou os accionistas."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "s21",
         "in": "A philosophia do author reflectia sobre a sciência.",
         "got": "A filosofia do autor reflectia sobre a sciência.",
-        "gold": "A filosofia do autor refletia sobre a ciência."
+        "silver": "A filosofia do autor refletia sobre a ciência."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p01-003",
         "in": "A philosophia da sciencia influencia a theoria physica moderna.",
         "got": "A filosofia da ciência influência a teoria física moderna.",
-        "gold": "A filosofia da ciência influencia a teoria física moderna."
+        "silver": "A filosofia da ciência influencia a teoria física moderna."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p01-076",
         "in": "A estética do design influencia a percepção do utilizador.",
         "got": "A estética do design influência a perceção do utilizador.",
-        "gold": "A estética do design influencia a perceção do utilizador."
+        "silver": "A estética do design influencia a perceção do utilizador."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p02-036",
         "in": "O aspecto do céu anunciava tempestade sobre os montes.",
         "got": "O aspeto do céu anunciava tempestade sobre os montês.",
-        "gold": "O aspeto do céu anunciava tempestade sobre os montes."
+        "silver": "O aspeto do céu anunciava tempestade sobre os montes."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p02-105",
         "in": "O cordeiro pára e bale à procura da ovelha perdida.",
         "got": "O cordeiro para e balé à procura da ovelha perdida.",
-        "gold": "O cordeiro para e bale à procura da ovelha perdida."
+        "silver": "O cordeiro para e bale à procura da ovelha perdida."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p03-003",
         "in": "A colecção de leis reflecte a acção do legislador sobre o género humano.",
         "got": "A coleção de leis reflecte a ação do legislador sobre o género humano.",
-        "gold": "A coleção de leis reflete a ação do legislador sobre o género humano."
+        "silver": "A coleção de leis reflete a ação do legislador sobre o género humano."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p03-020",
         "in": "A inspecção do estabelecimento detectou irregularidades graves.",
         "got": "A inspeção do estabelecimento detectou irregularidades graves.",
-        "gold": "A inspeção do estabelecimento detetou irregularidades graves."
+        "silver": "A inspeção do estabelecimento detetou irregularidades graves."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p03-030",
         "in": "O género das infracções foi catalogado pelo gabinete de estatística.",
         "got": "O género das infracções foi catalogado pelo gabinete de estatística.",
-        "gold": "O género das infrações foi catalogado pelo gabinete de estatística."
+        "silver": "O género das infrações foi catalogado pelo gabinete de estatística."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p03-039",
         "in": "O facto consummado affectou a credibilidade do governo.",
         "got": "O facto consumado afectou a credibilidade do governo.",
-        "gold": "O facto consumado afetou a credibilidade do governo."
+        "silver": "O facto consumado afetou a credibilidade do governo."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p03-046",
         "in": "A inspecção tributária detectou uma fraude fiscal de grande dimensão.",
         "got": "A inspeção tributária detectou uma fraude fiscal de grande dimensão.",
-        "gold": "A inspeção tributária detetou uma fraude fiscal de grande dimensão."
+        "silver": "A inspeção tributária detetou uma fraude fiscal de grande dimensão."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p04-013",
         "in": "A óptica do oftalmologista detectou uma infecção na córnea.",
         "got": "A ótica do oftalmologista detectou uma infeção na córnea.",
-        "gold": "A ótica do oftalmologista detetou uma infeção na córnea."
+        "silver": "A ótica do oftalmologista detetou uma infeção na córnea."
       },
       {
         "pair": "etymological->ao1990-pt",
         "id": "p04-018",
         "in": "O psychólogo e o pharmacêutico discutiram o tratamento do doente.",
         "got": "O psichólogo e o farmacêutico discutiram o tratamento do doente.",
-        "gold": "O psicólogo e o farmacêutico discutiram o tratamento do doente."
+        "silver": "O psicólogo e o farmacêutico discutiram o tratamento do doente."
       }
     ]
   },

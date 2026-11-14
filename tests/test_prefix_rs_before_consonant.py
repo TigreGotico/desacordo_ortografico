@@ -6,8 +6,8 @@ antissemita, contrarregra, contrassenha, cosseno, extrarregular, infrassom, mini
 biorritmo, biossatélite, eletrossiderurgia, microssistema, microrradiografia. The
 digraphs rr and ss stand only between vowels. The tugalex AO1990 maps have no word with
 rr or ss before a consonant. So the hyphen goes and the letter stays single before a
-consonant: the gold rows p10-018 and d00691 of
-gold_full.jsonl (Hugging Face dataset TigreGotico/desacordo_ortografico) write
+consonant: the silver rows p10-018 and d00691 of
+silver_full.jsonl (Hugging Face dataset TigreGotico/desacordo_ortografico) write
 anti-spam in pt_1973 and br_1971, and antispam in ao1990-pt and ao1990-br.
 """
 import re

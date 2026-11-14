@@ -35,11 +35,11 @@ benchmark/gen/
 benchmark/cls/
 benchmark/cls2/
 benchmark/trema/
-benchmark/gold_full.jsonl
-benchmark/gold_generated.jsonl
+benchmark/silver_full.jsonl
+benchmark/silver_generated.jsonl
 benchmark/qa/spot_*.jsonl
 benchmark/qa/spot_out_*.jsonl
 benchmark/qa/spotcheck.jsonl
 benchmark/coverage/
-benchmark/gold_coverage.jsonl
+benchmark/silver_coverage.jsonl
 !tests/**/*.jsonl
