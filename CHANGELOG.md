@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.11a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.11a2) (2026-11-14)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.11a1...0.1.11a2)
+
+**Merged pull requests:**
+
+- chore: name the language-model benchmark corpus silver [\#24](https://github.com/TigreGotico/desacordo_ortografico/pull/24) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.11a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.11a1) (2026-11-14)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.10a1...0.1.11a1)
