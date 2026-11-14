@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Derive a parallel corpus from generated modern sentences (gen/out/*.txt).
 
-Reads one modern European-Portuguese sentence per line, derives all five norms with the
-verified engine (derive.py), drops the uncoverable ones, infers the feature labels from
-the cell differences, de-duplicates, and writes silver_generated.jsonl.
+Reads one modern European-Portuguese sentence per line, derives all five norms with
+derive.py (its maps are silver), drops the uncoverable ones, infers the feature labels
+from the cell differences, de-duplicates, and writes silver_generated.jsonl.
 """
 from __future__ import annotations
 

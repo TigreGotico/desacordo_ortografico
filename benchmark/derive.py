@@ -29,8 +29,8 @@ _DIFFERENTIAL = {"para", "pára", "pelo", "pêlo", "polo", "pólo", "pera", "pê
 _EEM = {"leem": "lêem", "creem": "crêem", "veem": "vêem", "deem": "dêem",
         "releem": "relêem", "preveem": "prevêem", "reveem": "revêem"}
 # Modern reflexes of a possibly-silent European c/p (-cção/-pção -> -ção; -ct-/-pt- -> -t-).
-# A word matching one of these but not in the verified map could hide a dropped consonant
-# (antárctica->antártica, restrictivas->restritivas), so it is rejected unless verified.
+# A word matching one of these but not in the maps could hide a dropped consonant
+# (antárctica->antártica, restrictivas->restritivas), so it is rejected unless mapped.
 _RISK = re.compile(r"(ç[ãõ]o|ç[õo]es|t[oa]r|t[oa]res|tiv[oa]s?|átic[oa]s?|étic[oa]s?|"
                    r"ártic[oa]s?|ânic[oa]s?|ítim[oa]s?)$", re.I)
 _RISK_VT = re.compile(r"[ae]t[oa]s?$", re.I)   # -eto/-ato: Latinate only when long (>=6)
@@ -98,9 +98,10 @@ def _case(form, like):
 
 
 def _covered(word, M):
-    """A word is safe only if every norm form it needs is verified. A word that varies in
-    the European line needs a verified PT-line form; a word that varies only in the
-    Brazilian line (open-diphthong accent, trema) needs only its verified br_1971 form."""
+    """A word is covered only if the maps hold every norm form it needs. A word that varies
+    in the European line needs a mapped PT-line form; a word that varies only in the
+    Brazilian line (open-diphthong accent, trema) needs only its mapped br_1971 form. The
+    maps are silver: a language-model panel classified the derived_lexicon.json words."""
     w = word.lower()
     lex = M.lex
     if w in _DIFFERENTIAL:
@@ -112,12 +113,12 @@ def _covered(word, M):
                  or w in lex.dual_pt2br or w in lex.dual_br2pt
                  or w in lex.divergence_pt2br or w in lex.divergence_br2pt)
     if pt_varies and w not in M.pt:
-        return False                                 # no verified PT-line form
+        return False                                 # no mapped PT-line form
     if w in lex.ao_br_new2old or w in M.voiced_u:     # varies in the Brazilian line
         br_form = lex.dual_pt2br.get(w) or lex.divergence_pt2br.get(w) \
             or rules.nasal_vowel_to_br(w)
         if br_form not in M.br and w not in M.br:
-            return False                             # trema/diphthong form not verified
+            return False                             # trema/diphthong form not mapped
     return True
 
 
@@ -151,7 +152,7 @@ def derive(sentence, M):
 
     ao_br = _TOK.sub(to_br, sentence)
 
-    # Brazilian 1971: trema + open-diphthong/oo/-êem accents, from the verified BR map
+    # Brazilian 1971: trema + open-diphthong/oo/-êem accents, from the BR map
     def to_br71(m):
         w = m.group(0)
         br = M.br.get(w.lower())
@@ -177,7 +178,7 @@ def derive(sentence, M):
 
 if __name__ == "__main__":
     M = build_maps()
-    print(f"verified PT map: {len(M.pt)} words; BR map: {len(M.br)} words\n")
+    print(f"PT map: {len(M.pt)} words; BR map: {len(M.br)} words\n")
     for s in ["O diretor aprovou a coleção objetiva em janeiro.",
               "O António é um génio académico muito ativo.",
               "A frequência da linguiça era ótima.",
