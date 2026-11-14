@@ -16,7 +16,8 @@ nothing else.
   Portuguese but are not.
 - A deterministic rule engine and curated, **sourced** exception lexicons. AO1990 word
   data is reused from [`tugalex`](https://github.com/TigreGotico/tugalex).
-- A **command-line tool** and a parallel benchmark corpus, also published on the
+- A **command-line tool** and a parallel silver benchmark corpus (written by language
+  models, not checked by a person), also published on the
   [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
 
 ## Why it is not a single find-and-replace
@@ -73,7 +74,8 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 `detect()` defaults to an explainable rule scorer. Two zero-dependency learned models
 also ship: Naive Bayes and an averaged perceptron over character n-grams, sharing one
 sparse-dot-product scoring rule. They score higher on sentence-length text
-(~96% vs ~94% compatible accuracy, held-out 5-fold CV; see `benchmark/`):
+(~96% vs ~94% compatible accuracy on the silver corpus, held-out 5-fold CV; see
+`benchmark/`):
 
 ```python
 detect("o Antônio era um génio econômico", method="nb")          # learned

@@ -1,44 +1,56 @@
 # Benchmark
 
-A parallel gold corpus and an evaluation harness for `desacordo_ortografico`.
+A parallel silver corpus and an evaluation harness for `desacordo_ortografico`.
+
+Language models wrote the corpus, and no person checked its rows, so it is silver data.
+A score in this directory measures agreement with the silver corpus. It does not
+measure accuracy against a reference that a person checked.
 
 ## What it measures
 
-Each gold item is **one Portuguese sentence written in five orthographic norms** —
+Each silver item is **one Portuguese sentence written in five orthographic norms** —
 `etymological` (pre-1911), `pt_1973` (pre-AO1990 European), `ao1990-pt`, `br_1971`
 (pre-AO1990 Brazilian), `ao1990-br`. From this, `run_benchmark.py` measures:
 
-- **Conversion** — convert the gold rendering of one norm into another and check it
-  reproduces the gold target (exact-match + token accuracy), per norm pair and per
+- **Conversion** — convert the silver rendering of one norm into another and check it
+  reproduces the silver target (exact-match + token accuracy), per norm pair and per
   orthographic feature.
 - **Detection** — classify every rendering and check the predicted norm is *compatible*
   with the column(s) it came from (renderings that are spelled identically across norms
   share an acceptable set). Plus a confusion matrix.
-- **Guard** — sister-language samples (`gold_sisters.jsonl`) must be flagged as the
+- **Guard** — sister-language samples (`silver_sisters.jsonl`) must be flagged as the
   right non-Portuguese variety; Portuguese controls must not be flagged.
 
 The parallel corpus is also published as a dataset:
 **[TigreGotico/desacordo_ortografico](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico)**
-on the Hugging Face Hub — **24,199 sentences × 5 norms** (`parallel` + `sisters` configs),
+on the Hugging Face Hub — **24,196 sentences × 5 norms** (`parallel` + `sisters` configs),
 each row tagged `source: authored | derived | coverage`. Regenerate/republish with
 `publish_hf.py`.
 
-## Scaling by verified derivation
+## Scaling by derivation
 
-`gold_corpus.jsonl` is the 1,329-sentence authored+QA'd benchmark core. The dataset is
-grown to reference scale by `derive.py`: a natural modern-European sentence is turned into
-all five norms by **per-word table lookup + deterministic rules** (nasal vowel, trema,
-month casing). Every word is transformed only via a form verified against a curated
-lexicon — the silent-consonant, trema and blocker vocabularies (`derived_lexicon.json`,
-3,582 PT-line forms + 51 BR trema words) were classified word-by-word by a language-model
-panel. Any sentence containing a word whose variation is not verified is **dropped**, so
-the European line of a derived row is correct by construction; independent sampling found
-zero spelling errors there. The Brazilian cells are not: where Brazil keeps a c/p that the
-European norm drops, they copy the pt-PT form (`infeções` in d00720, d05486 and d09303,
-where Priberam gives Brazil `infecções`).
-`derive_corpus.py` runs this over the generated sentences and infers each row's features.
-The benchmark below stays on the authored core (deriving against the library would be
-circular); the full 20k+ corpus is the HF dataset.
+`silver_corpus.jsonl` holds the 1,329 sentences that the benchmark scores. `derive.py`
+grows the dataset from it. The script turns a modern European sentence into all five
+norms by **per-word table lookup and deterministic rules** (nasal vowel, trema, month
+casing). The tables come from three sources:
+
+- the word alignments of `silver_corpus.jsonl`.
+- the AO1990 and 1911 maps of the library's own lexicon (tugalex and the files in
+  `desacordo_ortografico/data/`).
+- `derived_lexicon.json`, which holds the silent-consonant, trema and blocker words
+  (3,593 European-line forms and 54 Brazilian forms). A language-model panel classified
+  these words one by one. No person checked the classification.
+
+`derive.py` drops a sentence that holds a word with a possible variation that no table
+covers. This keeps a derived row consistent with the tables. It does not make the row
+correct: an error in a table goes into every derived row that uses the word. The
+Brazilian cells show one such error: where Brazil keeps a c/p that the European norm
+drops, they copy the pt-PT form (`infeções` in d00720, d05486 and d09303, where Priberam
+gives Brazil `infecções`).
+`derive_corpus.py` runs the derivation over the modern sentences in `gen/out/` and infers
+the feature labels of each row. The benchmark scores only `silver_corpus.jsonl`, because
+the derivation uses the library's own maps and a score on derived rows would be circular.
+The derived rows are in the Hugging Face dataset only.
 
 
 
@@ -52,21 +64,34 @@ accent, dual and divergence — appears at least once — 100% of the inventory,
 
 ## The corpus
 
-`gold_corpus.jsonl` = a small hand-authored core (`gold_parallel.jsonl`, multi-feature
-natural sentences) + an LLM-authored bulk (`parts/part_*.jsonl`, ~1300 sentences across
-12 topic domains). Every rendering was produced from linguistic knowledge against an
-explicit per-norm rule card — **not** generated by the library under test, so the corpus
-is an independent gold standard.
+`build_corpus.py` merges two sources into `silver_corpus.jsonl`:
 
-The corpus is then **tightened to reference quality** by `clean_gold.py`. Because the
-European line (etymological / pt_1973 / ao1990-pt) and the Brazilian line (br_1971 /
-ao1990-br) may legitimately differ in *lexis* (ficheiro/arquivo), consistency is checked
-**within each line**, where cells differ only by era transforms. The cleaner (a) forces
-dual/divergence words to the correct variant in the unambiguous modern cells and
-(b) **drops, never silently rewrites,** any sentence whose European or Brazilian line is
-internally inconsistent (article slips, different words, token-count mismatches). The
-output is provably self-consistent: 1341 → 1316 sentences, 25 dropped, and 0 residual
-line inconsistencies.
+- `silver_parallel.jsonl`, 21 multi-feature sentences.
+- `parts/part_*.jsonl`, about 1,300 sentences over 12 topic domains.
+
+Language models wrote all of these rows against a per-norm rule card. The commit that
+added `silver_parallel.jsonl` calls its 21 sentences hand-authored, but that commit is a
+language-model commit. No record shows that a person wrote or checked a row. A
+language-model QA pass then changed 88 sentences and dropped 3 (`qa/out/`, applied by
+`merge_qa.py`). `silver_sisters.jsonl` (the guard samples) went through the same QA pass.
+
+The library did not write the sentences, but the corpus is not independent of the
+library. `clean_silver.py` writes forms from the library's own maps into some cells.
+Because the European line (etymological / pt_1973 / ao1990-pt) and the Brazilian line
+(br_1971 / ao1990-br) can differ in *lexis* (ficheiro/arquivo), the cleaner checks
+consistency **within each line**, where cells differ only by era transforms. It does
+three things:
+
+1. It replaces a dual or divergence word in an AO1990 cell with the variant from the
+   library's maps.
+2. It replaces an etymological token with the pt_1973 token when neither the 1911 word
+   map nor the digraph and geminate rules reduce it to that token.
+3. It drops a sentence whose European or Brazilian line is internally inconsistent
+   (article slips, different words, token-count mismatches).
+
+The consistency check compares the cells of one line with each other. It does not find a
+wrong form that is the same in every cell of the line, for example a European spelling
+in both Brazilian cells.
 
 Note on PT↔BR conversion: the European and Brazilian lines can diverge *lexically*
 (quinta/fazenda), which an orthographic converter correctly does not translate — so the
@@ -76,12 +101,12 @@ cross-variant pairs are capped below 100% by design, not by a bug.
 
 ```bash
 pip install -e . matplotlib            # plus tugalex
-python benchmark/build_corpus.py       # merge + validate parts -> gold_corpus.jsonl
-python benchmark/clean_gold.py         # tighten to reference quality (drops inconsistent)
+python benchmark/build_corpus.py       # merge + validate parts -> silver_corpus.jsonl
+python benchmark/clean_silver.py       # line consistency (drops inconsistent sentences)
 python benchmark/run_benchmark.py      # -> results.md + results.json
 python benchmark/plot_results.py       # -> plots/*.png
 python benchmark/train_detector.py     # CV the learned detectors + ship models
-python benchmark/diagnose.py           # attribute failures (rule vs gold, where)
+python benchmark/diagnose.py           # attribute failures (rule vs silver, where)
 ```
 
 ## Headline results
@@ -129,8 +154,8 @@ default for explainability and robustness on short inputs.
   itself a word, or a regular inflection of one, stays as written unless the word before
   it or the caller's part-of-speech tags settle it (see `docs/api.md`). A pre-1911 word
   absent from the list keeps a bare vowel. This benchmark cannot score the guess:
-  `clean_gold.py` writes the pt_1973 accents into the etymological cells, so the gold
-  holds almost no bare pre-1911 word that needs an accent.
+  `clean_silver.py` writes the pt_1973 accents into the etymological cells, so the silver
+  corpus holds almost no bare pre-1911 word that needs an accent.
 - **Inflected silent consonants.** Dropping the silent c/p is lexical (AO1990 Base IV
   1º a/b decide word by word). The converter drops it only for a word the AO1990 map
   holds and for the regular plural of one, so a form the map lacks (`desactiva`,
