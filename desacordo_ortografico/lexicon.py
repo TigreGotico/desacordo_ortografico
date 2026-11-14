@@ -282,19 +282,17 @@ class Lexicon:
             words |= set(table) | set(table.values())
         return {_letters(w.lower()) for w in words}
 
-    def is_known(self, word: str, verbs: bool = False) -> bool:
+    def is_known(self, word: str) -> bool:
         """True when ``word``, diacritics aside, is a word form the converter knows.
 
         Diacritics aside, because the rules add or drop them (agüentar -> aguentar). The
         word list holds base forms, so a regular plural or feminine of a known word counts
-        too (económica, insectos). Verb forms count only with ``verbs``: in the converter
-        they would take acronyms (BES). A word in capitals that is not known is an
-        acronym (IPTU).
+        too (económica, insectos). Verb forms do not: they would take acronyms (BES). A
+        word in capitals that is not known is an acronym (IPTU).
         """
         letters = _letters(word)
         known = self._known_letters
-        kinds = _inflection_kinds(letters, known)
-        return letters in known or bool(kinds if verbs else kinds & {"nominal", "plural"})
+        return letters in known or bool({"nominal", "plural"} & _inflection_kinds(letters, known))
 
     @cached_property
     def _accent_candidates(self) -> Dict[str, Tuple[str, FrozenSet[str]]]:

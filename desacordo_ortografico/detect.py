@@ -130,7 +130,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if w in lex.reform1911_old2new:
             etym += 2
             markers.append(f"etym:{w}")
-        elif _is_etym_spelling(raw, i, lex):
+        elif _is_etym_spelling(w, lex):
             etym += 1
             markers.append(f"etym-pattern:{w}")
 
@@ -210,25 +210,17 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     )
 
 
-def _is_etym_spelling(raw: str, i: int, lex: Lexicon) -> bool:
-    """True when the token ``raw`` shows a pre-1911 spelling of a Portuguese word.
+def _is_etym_spelling(w: str, lex: Lexicon) -> bool:
+    """True when the lowercase token ``w`` shows a pre-1911 spelling of a known word.
 
-    The token must carry an etymological pattern (ph, th, rh, y, a geminate), and each
-    part of it must turn into a known word under the 1911 rules the converter applies
-    (theatro -> teatro, d'ella -> d'ela). The elided clitics d', n', m' and qu' have
-    under three letters and are not looked up. A token outside the lexicon (Taylor,
-    rock'n'roll, university) is foreign and no evidence for a norm. A capital mid-text
-    marks a name, and the AO1990 keeps the letters of a foreign name (Base I 2.º a)
-    and 3.º: Taylor, taylorista; garrettiano), so it is no evidence either.
+    A part of the token (split at hyphens and apostrophes) that carries an etymological
+    pattern (ph, th, rh, y, a geminate) must give a word the lexicon knows under the
+    1911 rules the converter applies: theatro gives teatro, d'ella gives d'ela. A token
+    whose 1911 form is no known word (Taylor, Joseph, university) is no evidence.
     """
-    if i > 0 and raw[:1].isupper():
-        return False
-    parts = _SEGMENT_SEP.split(raw.lower())
-    if not any(_RE_ETYM.search(p) for p in parts):
-        return False
-    return all(
-        lex.is_known(reform_1911_geminates(reform_1911_digraphs(p), lex.wordset), verbs=True)
-        for p in parts if len(p) > 2 or _RE_ETYM.search(p)
+    parts = [p for p in _SEGMENT_SEP.split(w) if _RE_ETYM.search(p)]
+    return bool(parts) and all(
+        lex.is_known(reform_1911_geminates(reform_1911_digraphs(p), lex.wordset)) for p in parts
     )
 
 

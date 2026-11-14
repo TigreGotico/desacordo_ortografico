@@ -103,10 +103,10 @@ Detection markers are scored, not learned. They cover etymological evidence (`ph
 silent-consonant forms, old BR accent/trema forms), AO1990 evidence, and PT/BR lean
 (dual forms, the nasal-vowel alternation). `markers` lists what fired.
 
-A `ph`, `th`, `rh`, `y` or geminate counts only when the 1911 rules turn its token into
-a known Portuguese word (theatro gives teatro). A foreign word or name (Taylor,
-rock'n'roll, university) is no evidence, and neither is a capitalised token after the
-first word, because the AO1990 keeps the letters of foreign names (Base I 2.º a)).
+A `ph`, `th`, `rh`, `y` or geminate counts only when the 1911 rules turn it into a
+word the lexicon knows (theatro gives teatro, d'ella gives d'ela). A foreign word or name
+whose 1911 form is no known word (Taylor, Joseph, university) is no evidence. A foreign
+word whose 1911 form is a word still counts (the gives te).
 
 ## `eras`
 
