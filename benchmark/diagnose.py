@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Attribute benchmark failures: detection vs conversion, rule-limitation vs gold-error.
+"""Attribute benchmark failures: detection vs conversion, rule-limitation vs silver-error.
 
 For every rule failure it classifies the cause from mechanical signals so we can say
 where the library loses points and whether the fault is the library's or the corpus's.
@@ -24,7 +24,7 @@ _CP = ("cç", "ct", "pç", "pt")
 
 
 def load():
-    with open(os.path.join(HERE, "gold_corpus.jsonl"), encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_corpus.jsonl"), encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
 
 
@@ -34,23 +34,23 @@ def decluster(w):
     return w
 
 
-def classify_token(got, gold, lex):
-    """Return (category, verdict) for a got/gold token mismatch."""
-    g, h = got.lower(), gold.lower()
+def classify_token(got, silver, lex):
+    """Return (category, verdict) for a got/silver token mismatch."""
+    g, h = got.lower(), silver.lower()
     if g == h:
         return "case/month", "rule-limitation"
     if deaccent(g) == deaccent(h):
         # same letters, differ only by accent
-        if g == deaccent(g):          # we produced the bare form, gold is accented
+        if g == deaccent(g):          # we produced the bare form, silver is accented
             return "accent-not-restored", "rule-limitation"
-        return "accent-mismatch", "gold-suspect"
+        return "accent-mismatch", "silver-suspect"
     if decluster(g) == h or decluster(deaccent(g)) == deaccent(h):
         return "silent-cp-not-dropped", "rule-limitation"
-    if decluster(h) == g:             # gold kept a cluster we dropped
-        return "silent-cp-overkept", "gold-suspect"
+    if decluster(h) == g:             # silver kept a cluster we dropped
+        return "silent-cp-overkept", "silver-suspect"
     # different lemma entirely
     if h in lex.wordset and g in lex.wordset and deaccent(g)[:3] != deaccent(h)[:3]:
-        return "different-word", "gold-suspect"
+        return "different-word", "silver-suspect"
     return "other", "unclassified"
 
 
@@ -64,16 +64,16 @@ def conversion(corpus, conv, lex):
         for src, dst in PAIRS:
             n += 1
             got = conv.convert(s["cells"][src], src, dst).text
-            gold = s["cells"][dst]
-            if got == gold:
+            silver = s["cells"][dst]
+            if got == silver:
                 continue
             fails += 1
-            gt, gd = got.split(), gold.split()
+            gt, gd = got.split(), silver.split()
             if len(gt) != len(gd):
                 cats["tokenisation(hyphen/spacing)"] += 1
-                verdicts["rule-or-gold(structural)"] += 1
+                verdicts["rule-or-silver(structural)"] += 1
                 if len(samples["tokenisation(hyphen/spacing)"]) < 4:
-                    samples["tokenisation(hyphen/spacing)"].append((f"{src}->{dst}", got, gold))
+                    samples["tokenisation(hyphen/spacing)"].append((f"{src}->{dst}", got, silver))
                 continue
             for a, b in zip(gt, gd):
                 if a != b:
@@ -137,7 +137,7 @@ def main():
     print("\n  samples:")
     for cat in cats:
         for pair, a, b in samples[cat][:2]:
-            print(f"    [{cat}] {pair}: got {a!r} / gold {b!r}")
+            print(f"    [{cat}] {pair}: got {a!r} / silver {b!r}")
 
     print("\n" + "=" * 70)
     print("DETECTION (rules method)")
@@ -148,7 +148,7 @@ def main():
     print("\n  samples:")
     for cat in cats:
         for comp, pred, text in samples[cat][:3]:
-            print(f"    [{cat}] gold∈{comp} pred={pred}: {text}")
+            print(f"    [{cat}] silver∈{comp} pred={pred}: {text}")
 
 
 if __name__ == "__main__":

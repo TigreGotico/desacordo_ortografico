@@ -52,8 +52,8 @@ def test_inflected_form_stays_as_written(text):
     assert convert(text, "etymological", "pt_1973") == text
 
 
-def _gold_corpus(row_id):
-    path = Path(__file__).parent.parent / "benchmark" / "gold_corpus.jsonl"
+def _silver_corpus(row_id):
+    path = Path(__file__).parent.parent / "benchmark" / "silver_corpus.jsonl"
     for line in path.open(encoding="utf-8"):
         row = json.loads(line)
         if row["id"] == row_id:
@@ -62,6 +62,6 @@ def _gold_corpus(row_id):
 
 
 @pytest.mark.parametrize("row_id", ["p02-036", "p05-034", "p06-049", "p09-024"])
-def test_gold_row_keeps_the_inflected_form(row_id):
-    cells = _gold_corpus(row_id)
+def test_silver_row_keeps_the_inflected_form(row_id):
+    cells = _silver_corpus(row_id)
     assert convert(cells["etymological"], "etymological", "pt_1973") == cells["pt_1973"]
