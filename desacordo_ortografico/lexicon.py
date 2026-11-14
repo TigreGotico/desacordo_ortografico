@@ -51,10 +51,11 @@ def _letters(word: str) -> str:
     return "".join(c for c in unicodedata.normalize("NFD", word) if not unicodedata.combining(c))
 
 
-#: The form without the consonant of these pt-PT dual cells is also a word of its own,
-#: so it never gains the consonant: contrato (a contract) beside contracto (contracted),
-#: retrato (a portrait) beside retracto (a retraction).
-_DUAL_HOMOGRAPHS = frozenset({"contrato", "retrato"})
+#: The form without the consonant of these pt-PT map rows is also a more frequent word of
+#: its own, so it never gains the consonant: contrato (a contract) beside contracto
+#: (contracted), retrato (a portrait) beside retracto (a retraction), trato (from tratar,
+#: maus tratos) beside tracto (a tract).
+_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato"})
 
 
 #: Irregular verb forms the word list lacks, which no inflection rule derives.
@@ -211,7 +212,10 @@ class Lexicon:
 
     @cached_property
     def ao_pt_new2old(self) -> Dict[str, str]:
-        return self._ao_new2old(self.ao_pt_old2new)
+        out = self._ao_new2old(self.ao_pt_old2new)
+        for word in _CP_HOMOGRAPHS:
+            out.pop(word, None)
+        return out
 
     @cached_property
     def ao_br_new2old(self) -> Dict[str, str]:
@@ -221,7 +225,7 @@ class Lexicon:
     def ao_pt_dual_full(self) -> Dict[str, str]:
         """The dual cells of the pt-PT AO1990 map (Base IV 1º c): the form without the
         consonant -> the form with it, and the same for their plurals."""
-        return _dual_full(self.tuga, "ao_pt", _DUAL_HOMOGRAPHS)
+        return _dual_full(self.tuga, "ao_pt", _CP_HOMOGRAPHS)
 
     @cached_property
     def ao_br_dual_full(self) -> Dict[str, str]:

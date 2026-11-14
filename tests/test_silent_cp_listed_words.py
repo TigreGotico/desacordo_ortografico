@@ -149,3 +149,12 @@ def test_seccao_takes_the_brazilian_form(source, target):
                                           ("ao1990-pt", "eletropunctura")])
 def test_eletropunctura_takes_its_older_european_form(source, word, target):
     assert convert(word, source, target) == "electropunctura"
+
+
+# Priberam: trato is its own entry, the noun from tratar ("maus tratos"); tracto -> trato
+# is another, rarer word (a tract), so trato keeps its frequent sense
+# (papers/linguistics/pt/priberam_trato.html)
+@pytest.mark.parametrize("target", ["pt_1973", "etymological"])
+@pytest.mark.parametrize("text", ["Sofreu maus tratos.", "Os tratos que lhe dera o marido.", "O trato."])
+def test_trato_keeps_its_frequent_sense(text, target):
+    assert convert(text, "ao1990-pt", target) == text
