@@ -46,9 +46,14 @@ def test_the_maps_hold_the_dual_cells():
     assert len(BR_CELLS) == 11
 
 
+# infeto is also a form of infetar, which has one pt-PT spelling (VOP lemma 37066), so
+# infecto converts to infeto (tests/test_dual_verb_forms.py).
+VERB_FORMS = {"infeto"}
+
+
 def test_every_pt_pt_dual_cell_takes_the_consonant_toward_pt_pt():
-    wrong = [(old, full, convert(old, "pt_1973", "ao1990-pt")) for old, full, _bare in PT_CELLS
-             if convert(old, "pt_1973", "ao1990-pt") != full]
+    wrong = [(old, full, convert(old, "pt_1973", "ao1990-pt")) for old, full, bare in PT_CELLS
+             if convert(old, "pt_1973", "ao1990-pt") != (bare if bare in VERB_FORMS else full)]
     assert wrong == []
 
 

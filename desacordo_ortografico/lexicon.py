@@ -24,6 +24,20 @@ forms follow Cunha & Cintra, *Nova Gramática do Português Contemporâneo*, 7.�
 Lexikon 2017, cap. 8 "Substantivo" (pp. 191-218) and cap. 10 "Adjetivo": the plural
 adds -s after a vowel (pai, pais) and -es after r, z and s (mar, mares), and a word
 in -o makes its feminine in -a (tanto, tanta; antigo, antigas).
+
+Two pt-PT dual adjectives have a bare form that is also the first person singular of a
+verb with one pt-PT spelling. The Vocabulário Ortográfico do Português (VOP, Portal da
+Língua Portuguesa) gives the adjectives as pairs: lemma 12090 "infeto - adjetivo ...
+variante AO : infecto" and lemma 191893 "interceto - adjetivo ... Portugal ... variante AO
+de : intercepto". It gives the verbs as single in Portugal: lemma 37066 "infetar - verbo
+... infeto infetas infeta ... variante AO de : infectar ( Brasil)" and lemma 191891
+"intercetar - verbo ... Portugal ... interceto intercetas interceta ... variante AO :
+interceptar ( Brasil)". So "eu infeto" and "eu interceto" have no form with the
+consonant in pt-PT. A rare reading needs a clear signal, otherwise the frequent sense
+wins. The verbs are the frequent sense: in wordfreq 3.1.1 (Portuguese, Zipf) the verb
+forms infectar 3.02, infectou 2.42, interceptar 3.13 and interceptou 2.87 stand against
+the adjective plurals infectos 1.05 and interceptos 0.00. The singular adjective takes the
+bare form too, which lemma 12090 and lemma 191893 also give for pt-PT.
 """
 from __future__ import annotations
 
@@ -56,6 +70,11 @@ def _letters(word: str) -> str:
 #: (contracted), retrato (a portrait) beside retracto (a retraction), trato (from tratar,
 #: maus tratos) beside tracto (a tract).
 _CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato"})
+
+#: The bare forms of pt-PT dual cells that are also a verb form of a verb with one pt-PT
+#: spelling (see the module docstring). The dual step leaves these forms as written. Their
+#: plurals are no verb forms, so infetos still gains the c.
+_SINGLE_SPELLING_VERB_FORMS = frozenset({"infeto", "interceto"})
 
 
 #: Irregular verb forms the word list lacks, which no inflection rule derives.
@@ -225,7 +244,10 @@ class Lexicon:
     def ao_pt_dual_full(self) -> Dict[str, str]:
         """The dual cells of the pt-PT AO1990 map (Base IV 1º c): the form without the
         consonant -> the form with it, and the same for their plurals."""
-        return _dual_full(self.tuga, "ao_pt", _CP_HOMOGRAPHS)
+        out = _dual_full(self.tuga, "ao_pt", _CP_HOMOGRAPHS)
+        for word in _SINGLE_SPELLING_VERB_FORMS:
+            out.pop(word, None)
+        return out
 
     @cached_property
     def ao_br_dual_full(self) -> Dict[str, str]:
