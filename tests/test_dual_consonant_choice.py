@@ -19,6 +19,8 @@ import pytest
 from tugalex import TugaLexicon
 
 from desacordo_ortografico import convert
+from desacordo_ortografico.convert import FEATURES
+from desacordo_ortografico.lexicon import get_lexicon
 
 _TUGA = TugaLexicon()
 
@@ -82,23 +84,80 @@ def test_espectador_takes_the_pt_pt_consonant():
 
 
 def test_caracteres_is_the_plural_in_both_varieties():
-    # Cunha & Cintra cap. 8, Observação 1.ª: "O plural de caráter (escrito carácter na
-    # ortografia portuguesa) é, tanto no Brasil como em Portugal, caracteres"
+    # Base IV 1º c names the pair: "caracteres e carateres"
     assert convert("o carácter e os caracteres", "pt_1973", "ao1990-pt") == "o carácter e os caracteres"
     assert convert("o caráter e os carateres", "ao1990-br", "ao1990-pt") == "o carácter e os caracteres"
 
 
 def test_al_and_el_plurals_take_the_consonant():
     # dual cells sectorial -> setorial, sectorial and perfectível -> perfetível,
-    # perfectível; -al makes -ais and -el makes -eis (Cunha & Cintra cap. 8)
+    # perfectível; -al makes -ais and -vel makes -veis
     assert convert("os setores setoriais perfetíveis", "ao1990-br", "ao1990-pt") \
         == "os sectores sectoriais perfectíveis"
 
 
 def test_pt_br_dual_plural_takes_the_consonant():
-    # -es after r, -ões for -ão (Cunha & Cintra cap. 8)
+    # -es after r (Cunha & Cintra cap. 8), and -ção makes -ções
     assert convert("os cofatores e as liquefações", "ao1990-pt", "ao1990-br") \
         == "os cofactores e as liquefacções"
+
+
+def test_unstressed_il_plural_takes_the_consonant():
+    # Priberam, táctil: "Plural: táteis. Plural: tácteis" and "Dupla grafia pelo Acordo
+    # Ortográfico de 1990: tátil ou táctil"
+    assert convert("o tátil e os táteis", "ao1990-br", "ao1990-pt") == "o táctil e os tácteis"
+
+
+# The plural of each ending that the dual cells have, written out per ending: -s after a
+# vowel and -es after r and z (Cunha & Cintra cap. 8, pp. 191-218), -ção to -ções, -al
+# to -ais, -vel and the unstressed -il of táctil to -eis (Priberam, táctil: "Plural:
+# tácteis"), and the pair caracteres, carateres (Base IV 1º c). Verbs and adverbs in
+# -mente have no plural.
+_PLURAL_ENDINGS = [("ção", "ções"), ("al", "ais"), ("vel", "veis"), ("til", "teis"),
+                   ("or", "ores"), ("z", "zes"), ("a", "as"), ("e", "es"), ("o", "os")]
+_SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres"}
+
+
+def _expected_plural(word):
+    if word in _SPECIAL_PLURALS:
+        return _SPECIAL_PLURALS[word]
+    if word.endswith(("ar", "er", "ir", "mente")):
+        return None
+    assert not word.endswith("ão") or word.endswith("ção"), word
+    for singular, plural in _PLURAL_ENDINGS:
+        if word.endswith(singular):
+            return word[:len(word) - len(singular)] + plural
+    raise AssertionError(f"no plural class for {word}")
+
+
+@pytest.mark.parametrize("table, cells", [("ao_pt_dual_full", PT_CELLS),
+                                          ("ao_br_dual_full", list(_cells(_TUGA.ao_br)))])
+def test_every_dual_cell_plural_takes_the_consonant(table, cells):
+    duals = getattr(get_lexicon(), table)
+    wrong, plurals = [], 0
+    for _old, full, bare in cells:
+        pair = _expected_plural(bare), _expected_plural(full)
+        if pair == (None, None):
+            assert bare + "es" not in duals and bare + "s" not in duals
+            continue
+        plurals += 1
+        if duals.get(pair[0]) != pair[1]:
+            wrong.append((bare, full, pair, duals.get(pair[0])))
+    assert wrong == []
+    assert plurals > len(cells) / 2
+
+
+def test_the_rule_is_the_silent_cp_feature():
+    without = FEATURES - {"silent-cp"}
+    # origin/dev output, with or without the feature
+    assert convert("o setor", "ao1990-br", "ao1990-pt", features=without) == "o setor"
+    assert convert("o setor", "ao1990-br", "ao1990-pt") == "o sector"
+
+
+def test_each_element_of_a_compound_takes_the_consonant():
+    assert convert("o setor e o setor-chave", "ao1990-br", "ao1990-pt") == "o sector e o sector-chave"
+    # a cell that is itself a compound converts as a whole
+    assert convert("a eletro-óptica", "ao1990-pt", "ao1990-br") == "a electro-óptica"
 
 
 @pytest.mark.parametrize("word", sorted(HOMOGRAPHS))

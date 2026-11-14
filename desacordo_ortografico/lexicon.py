@@ -499,18 +499,24 @@ def _dual_full(tuga, attr: str, homographs: FrozenSet[str] = frozenset()) -> Dic
 
 
 def _plural(word: str) -> Optional[str]:
-    """The regular plural of a noun or adjective (Cunha & Cintra, Nova Gramática, cap.
-    8): -ão makes -ões, a vowel takes -s, r and z take -es and lose a written accent on
-    the stressed syllable before them (carácter, caracteres), -al and -el make -ais and
-    -eis. ``None`` for other endings."""
-    if word.endswith("ão"):
-        return word[:-2] + "ões"
-    if word[-1:] in "aeiouáéíóúâêô":
-        return word + "s"
-    if word[-1:] in "rz":
+    """The plural of a dual cell form, for the endings the cells of the tugalex AO1990
+    maps have: a word in -a, -e or -o takes -s, and -or and -z take -es; carácter and
+    caráter make caracteres and carateres (Base IV 1º c names that pair); -ção makes
+    -ções; -al makes -ais; -vel and the unstressed -il of táctil make -eis (Priberam,
+    táctil: "Plural: táteis. Plural: tácteis"). ``None`` for any other form: the
+    verbs and the adverbs in -mente."""
+    if word in ("carácter", "caráter"):
         return deaccent(word) + "es"
-    if word.endswith(("al", "el")):
-        return word[:-1] + "is"
+    if word.endswith("ção"):
+        return word[:-3] + "ções"
+    if word.endswith(("a", "e", "o")) and not word.endswith(("ão", "mente")):
+        return word + "s"
+    if word.endswith(("or", "z")):
+        return word + "es"
+    if word.endswith("al"):
+        return word[:-2] + "ais"
+    if word.endswith(("vel", "til")):
+        return word[:-2] + "eis"
     return None
 
 

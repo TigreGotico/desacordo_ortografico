@@ -78,7 +78,7 @@ force from 2006 (2nd Protocol), and became mandatory in Brazil in 2016 and Portu
 in 2015.
 
 **Base IV, consonant sequences `cc, cç, ct, pc, pç, pt`**, is the hardest, irreducibly
-lexical part. It defines three sets:
+lexical part. It defines four sets:
 - **keep** (pronounced everywhere): `pacto, ficção, apto, egípcio, rapto`.
 - **drop** (mute everywhere): `acção→ação, óptimo→ótimo, director→diretor`.
 - **dual** (pronounced in one norm only, one spelling per norm):
