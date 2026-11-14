@@ -108,14 +108,22 @@ def test_unstressed_il_plural_takes_the_consonant():
     assert convert("o tátil e os táteis", "ao1990-br", "ao1990-pt") == "o táctil e os tácteis"
 
 
+def test_adjective_datilar_plural_takes_the_consonant():
+    # Aulete, datilar: "adj. || dactilar"; Dicio, datilar: "Relativo ou pertencente aos dedos ... Var: dactilar."
+    assert (convert("a impressão datilar e as impressões datilares", "ao1990-br", "ao1990-pt")
+            == "a impressão dactilar e as impressões dactilares")
+
+
 # The plural of each ending that the dual cells have, written out per ending: -s after a
 # vowel and -es after r and z (Cunha & Cintra cap. 8, pp. 191-218), -ção to -ções, -al
 # to -ais, -vel and the unstressed -il of táctil to -eis (Priberam, táctil: "Plural:
-# tácteis"), and the pair caracteres, carateres (Base IV 1º c). Verbs and adverbs in
+# tácteis"), the pair caracteres, carateres (Base IV 1º c), and the adjective
+# datilar, dactilar (Aulete, datilar: "adj. || dactilar") with -es. Verbs and adverbs in
 # -mente have no plural.
 _PLURAL_ENDINGS = [("ção", "ções"), ("al", "ais"), ("vel", "veis"), ("til", "teis"),
                    ("or", "ores"), ("z", "zes"), ("a", "as"), ("e", "es"), ("o", "os")]
-_SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres"}
+_SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres",
+                    "dactilar": "dactilares", "datilar": "datilares"}
 
 
 def _expected_plural(word):

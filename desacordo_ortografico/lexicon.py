@@ -501,12 +501,15 @@ def _dual_full(tuga, attr: str, homographs: FrozenSet[str] = frozenset()) -> Dic
 def _plural(word: str) -> Optional[str]:
     """The plural of a dual cell form, for the endings the cells of the tugalex AO1990
     maps have: a word in -a, -e or -o takes -s, and -or and -z take -es; carácter and
-    caráter make caracteres and carateres (Base IV 1º c names that pair); -ção makes
+    caráter make caracteres and carateres (Base IV 1º c names that pair), and the
+    adjectives dactilar and datilar take -es (Aulete, datilar: "adj. || dactilar"); -ção makes
     -ções; -al makes -ais; -vel and the unstressed -il of táctil make -eis (Priberam,
     táctil: "Plural: táteis. Plural: tácteis"). ``None`` for any other form: the
     verbs and the adverbs in -mente."""
     if word in ("carácter", "caráter"):
         return deaccent(word) + "es"
+    if word in ("dactilar", "datilar"):
+        return word + "es"
     if word.endswith("ção"):
         return word[:-3] + "ções"
     if word.endswith(("a", "e", "o")) and not word.endswith(("ão", "mente")):
