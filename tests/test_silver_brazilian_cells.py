@@ -9,7 +9,9 @@ writes the preterite ending -amos without the accent.
 
 ao1990-br follows the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP), then the
 Priberam Brazilian view after the AO1990. Where the VOLP lists both forms
-of one word with the same part of speech, the cell writes the c/p form.
+of one word with the same part of speech, the cell writes the c/p form. A Priberam page
+with one spelling in all four views records no spelling change, so it never gives the
+cell a form that the VOLP lacks.
 
 Where a source registers both forms, the cell writes the c/p form (owner ruling on dual
 spellings). A personal or place name stays as written unless a source names it. Each test
@@ -202,6 +204,52 @@ def test_apply_keeps_the_tram_and_writes_the_c_p_adjective():
     assert trams["ao1990-br"] == "Ciclistas e elétricos."
     adjective = _apply("O carro elétrico.", "O carro eléctrico.", "d01067")
     assert adjective["ao1990-br"] == "O carro eléctrico."
+
+
+@pytest.mark.parametrize("row_id,european,sentence,kept,rejected", [
+    # The Italian dish name "bistecca alla fiorentina", not the Portuguese word (VOLP: bisteca
+    # s.f., with no bistecca).
+    ("d03149", "Em Florença, a bistecca alla fiorentina chegou à mesa imensa e suculenta.",
+     "Em Florença, a bistecca alla fiorentina chegou à mesa imensa e suculenta.", "bistecca", "bisteca"),
+    # VOLP: elétrico adj. s.m. | eléctrico adj. The noun "linha de elétrico" is a tram line,
+    # and the VOLP lists eléctrico only as an adjective.
+    ("d05210", "A exactidão na previsão da procura evitou sobredimensionar a nova linha de eléctrico.",
+     "A exatidão na previsão da procura evitou sobredimensionar a nova linha de elétrico.",
+     "elétrico", "eléctrico"),
+    # VOLP: seção s.f. "corte", etc.; cf. secção | secção s.f. "parcela"; cf. seção. Each row
+    # names a department or a division, the "corte, etc." entry.
+    ("d13248", "A detecção de toxicidade impediu que mensagens ofensivas chegassem à secção de comentários.",
+     "A deteção de toxicidade impediu que mensagens ofensivas chegassem à secção de comentários.",
+     "seção", "secção"),
+    ("d14892", "O exactor anexou a factura ao dossiê e remeteu o processo à secção de desembaraço aduaneiro.",
+     "O exator anexou a fatura ao dossiê e remeteu o processo à secção de desembaraço aduaneiro.",
+     "seção", "secção"),
+    ("d17327", "A secção de violas foi reforçada com três novos músicos este ano.",
+     "A secção de violas foi reforçada com três novos músicos este ano.", "seção", "secção"),
+    ("d17959", "O objecto esquecido no banco do vagão foi entregue à secção de perdidos e achados.",
+     "O objeto esquecido no banco do vagão foi entregue à secção de perdidos e achados.", "seção", "secção"),
+    # The VOLP lists neither retor nor rector (it lists reitor (ô) s.m. and rétor s.m.).
+    # Priberam rector shows rector in all four views, so it decides nothing, and reitor is
+    # another word.
+    ("d22099", "O rector da universidade abriu solenemente o ano lectivo.",
+     "O retor da universidade abriu solenemente o ano letivo.", "retor", "rector"),
+])
+def test_apply_follows_the_row_decision_in_ao1990_br(row_id, european, sentence, kept, rejected):
+    tokens = [t.lower() for t in TOKEN.findall(_apply(sentence, european, row_id)["ao1990-br"])]
+    assert kept in tokens and rejected not in tokens, tokens
+
+
+def test_ao1990_br_takes_no_form_the_volp_lacks_from_a_flat_priberam_page():
+    """The VOLP lists none of these forms, and each Priberam page shows the one spelling in
+    all four views. The tokens stay as written, and retor goes on the residual list as a
+    change of word."""
+    flat = {"angiectático", "haptotáctico", "prolepticamente", "rector", "telóptico", "tigmotactismo",
+            "trofotactismo", "zigotactismo", "zigotáctico"}
+    written = {fix for cell, _token, _european, fix, _rows_named, _source in _tsv("variety_fixes.tsv")
+               if cell == "ao1990-br"}
+    assert written & flat == set()
+    keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _tsv("variety_keeps.tsv")}
+    assert keeps[("ao1990-br", "retor")].startswith("no source: a change of word")
 
 
 def _one_c_p_apart(bare, cp):

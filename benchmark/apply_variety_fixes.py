@@ -34,7 +34,9 @@ The post-1990 VOLP never decides a br_1971 cell. The ao1990-br cell, in order:
   lists both forms of one word, with the same part of speech, the cell writes the c/p
   form. Two entries linked by "cf." with different glosses are two words. The cell
   keeps -ámos, which the AO1990, Base IX, 4 allows.
-- Dicionário Priberam, the Brazilian headword in the view after the AO1990.
+- Dicionário Priberam, the Brazilian headword in the view after the AO1990, where the
+  page shows a spelling change. A page with one spelling in all four views would give
+  the cell a form that the VOLP lacks, so it decides nothing.
 - If neither decides, the token stays as written. A check list of Michaelis Moderno
   Dicionário headwords decides no further token.
 
