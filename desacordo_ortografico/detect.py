@@ -25,6 +25,20 @@ Base I applies to "palavras portuguesas, ou aportuguesadas", and its exception 1
 allows k, w and y in derivatives of foreign names ("Poderão usar-se essas letras";
 kantismo, darwinismo, byroniano), so a foreign word or
 name (the, Taylor, Mary) in a modern sentence is no pre-1911 spelling.
+
+A listed form that spells a name is no evidence either. Base XXI of the Acordo
+Ortográfico of 1990 (Portal da Língua Portuguesa text), "Das assinaturas e firmas": "Para
+ressalva de direitos, cada qual poderá manter a escrita que, por costume ou registo
+legal, adote na assinatura do seu nome. Com o mesmo fim, pode manter-se a grafia
+original de quaisquer firmas comerciais, nomes de sociedades, marcas e títulos que
+estejam inscritos em registo público." Base I 2.º a) keeps the letters of foreign
+names: "Em antropónimos/antropônimos originários de outras línguas e seus derivados:
+Franklin, frankliniano; Kant, kantismo; Darwin, darwinismo; Wagner, wagneriano; Byron,
+byroniano; Taylor, taylorista". So a part of a word that the tugalex list holds gives no
+pre-1911 evidence when it is inside a sentence and the word or the part starts with a
+capital (Sant'Anna, d'Oliveira Paes, Victoria's Secret). The first word of a sentence
+(after . ! ? … or a line break) keeps its evidence, and so does a text with no lowercase
+word, because neither gives a case signal. The 1911 word map has no such exception.
 """
 from __future__ import annotations
 
@@ -37,13 +51,13 @@ from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
 from .ml import features, get_detector_model
-from .rules import _MONTHS, _SEGMENT_SEP
-from .rules import words as _words
+from .rules import _MONTHS, _SEGMENT_SEP, _WORD_RE
 
 _VOWELS = "aeiouáàâãéêíóôõúü"
 _NASAL = "[mn][%s]" % _VOWELS
 _RE_NASAL_PT = re.compile("[éó](?=%s)" % _NASAL)
 _RE_NASAL_BR = re.compile("[êô](?=%s)" % _NASAL)
+_SENTENCE_END = re.compile(r"[.!?…\n]")
 
 
 @dataclass
@@ -135,15 +149,24 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     br_lean = 0
     markers: List[str] = []
     archaic = lex.tuga.archaic_words
+    matches = list(_WORD_RE.finditer(text))
+    # a text in capitals throughout gives no case signal
+    cased = any(m.group().islower() for m in matches)
 
-    for i, raw in enumerate(_words(text)):
+    for i, match in enumerate(matches):
+        raw = match.group()
         w = raw.lower()
+        mid_sentence = i > 0 and not _SENTENCE_END.search(
+            text, matches[i - 1].end(), match.start())
 
         # --- pre-1911 etymological evidence -----------------------------
         if w in lex.reform1911_old2new:
             etym += 2
             markers.append(f"etym:{w}")
-        elif any(part in archaic for part in _SEGMENT_SEP.split(w)):
+        # a capital part inside a sentence is a name (AO1990 Base XXI) and no evidence
+        elif any(seg.lower() in archaic
+                 and not (cased and mid_sentence and (raw[:1].isupper() or seg[:1].isupper()))
+                 for seg in _SEGMENT_SEP.split(raw)):
             etym += 1
             markers.append(f"etym-pattern:{w}")
 

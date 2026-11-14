@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.17a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.17a1) (2026-11-14)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.16a1...0.1.17a1)
+
+**Merged pull requests:**
+
+- fix: read a capitalised archaic form inside a sentence as a name [\#28](https://github.com/TigreGotico/desacordo_ortografico/pull/28) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.16a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.16a1) (2026-11-14)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.15a1...0.1.16a1)
