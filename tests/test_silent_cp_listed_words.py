@@ -62,13 +62,13 @@ def test_a_pt_pt_dual_keeps_its_consonant_toward_pt_pt():
 
 # Priberam, "Grafia alterada pelo Acordo Ortográfico de 1990": recto -> reto, colecta ->
 # coleta, corrector -> corretor, reactivar -> reativar, inexactidão -> inexatidão, rectidão
-# -> retidão, electrão -> eletrão (papers/linguistics/pt/priberam-cp-sweep/). The map lists
-# the singular of each and not the plural, so the plural rule converts it.
+# -> retidão (papers/linguistics/pt/priberam-cp-sweep/). Brazil writes the same forms. The
+# map lists the singular of each and not the plural, so the plural rule converts it.
 @pytest.mark.parametrize("target", AO)
 @pytest.mark.parametrize("old, new", [
     ("rectos", "retos"), ("colectas", "coletas"), ("correctoras", "corretoras"),
     ("reactivados", "reativados"), ("inexactidões", "inexatidões"), ("rectidões", "retidões"),
-    ("electrões", "eletrões"), ("RECTOS", "RETOS"), ("Colectas", "Coletas"),
+    ("RECTOS", "RETOS"), ("Colectas", "Coletas"),
     ("Inexactidões", "Inexatidões"),
 ])
 def test_the_plural_of_a_map_word_drops_the_consonant(old, new, target):
