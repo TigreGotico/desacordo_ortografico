@@ -180,9 +180,19 @@ def drop_silent_cp(word: str, table: Mapping[str, str]) -> str:
     word (apta -> ata, copta -> cota). One-way.
     """
     form = lookup_with_plural(word, table)
-    if form is not None and any(word.replace(pat, rep) == form for pat, rep in _CP_DROP):
-        return form
-    return word
+    return form if form is not None and _drops_cp(word, form) else word
+
+
+def restore_silent_cp(word: str, table: Mapping[str, str]) -> str:
+    """The inverse of :func:`drop_silent_cp`, for the regular plural of a word the
+    reverse AO1990 map ``table`` lists (atos -> actos). One-way."""
+    form = lookup_with_plural(word, table)
+    return form if form is not None and _drops_cp(form, word) else word
+
+
+def _drops_cp(old: str, new: str) -> bool:
+    """True when ``new`` is ``old`` without the c or p of a Base IV 1º sequence."""
+    return any(old.replace(pat, rep) == new for pat, rep in _CP_DROP)
 
 
 #: The determiners other than the bare articles: the contractions of a preposition and

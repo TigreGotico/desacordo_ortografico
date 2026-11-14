@@ -31,8 +31,11 @@ all five norms by **per-word table lookup + deterministic rules** (nasal vowel, 
 month casing). Every word is transformed only via a form verified against a curated
 lexicon — the silent-consonant, trema and blocker vocabularies (`derived_lexicon.json`,
 3,582 PT-line forms + 51 BR trema words) were classified word-by-word by a language-model
-panel. Any sentence containing a word whose variation is not verified is **dropped**, so a
-derived row is correct by construction; independent sampling found zero spelling errors.
+panel. Any sentence containing a word whose variation is not verified is **dropped**, so
+the European line of a derived row is correct by construction; independent sampling found
+zero spelling errors there. The Brazilian cells are not: where Brazil keeps a c/p that the
+European norm drops, they copy the pt-PT form (`infeções` in d00720, d05486 and d09303,
+where Priberam gives Brazil `infecções`).
 `derive_corpus.py` runs this over the generated sentences and infers each row's features.
 The benchmark below stays on the authored core (deriving against the library would be
 circular); the full 20k+ corpus is the HF dataset.

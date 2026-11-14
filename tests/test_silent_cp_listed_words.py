@@ -95,3 +95,57 @@ def test_the_step_drops_only_a_consonant():
     # c/p drop, so the silent-cp feature leaves it as written
     assert convert("agro-químicos", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "agro-químicos"
     assert convert("actos", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "atos"
+
+
+# Priberam, post-AO1990 view: "Grafia no Brasil: infecção", "Grafia no Brasil: facção";
+# "Grafia em Portugal: infeção", "Grafia em Portugal: fação"
+# (papers/linguistics/pt/priberam_infeccao.html, priberam_faccao.html)
+BRAZIL_KEEPS = ["infecção", "infecções", "facção", "facções"]
+
+
+@pytest.mark.parametrize("target", ["ao1990-br", "br_1971"])
+@pytest.mark.parametrize("word", BRAZIL_KEEPS)
+def test_a_consonant_brazil_pronounces_stays_toward_pt_br(word, target):
+    assert convert(f"As {word}.", "pt_1973", target) == f"As {word}."
+
+
+@pytest.mark.parametrize("word", BRAZIL_KEEPS)
+def test_a_consonant_brazil_pronounces_drops_toward_pt_pt(word):
+    pt = word.replace("cç", "ç")
+    assert convert(word, "pt_1973", "ao1990-pt") == pt
+    assert convert(word, "ao1990-br", "ao1990-pt") == pt
+
+
+@pytest.mark.parametrize("source", ["br_1971", "ao1990-br"])
+@pytest.mark.parametrize("word", BRAZIL_KEEPS + ["recepção"])
+def test_a_brazilian_consonant_form_stays_toward_older_european_norms(word, source):
+    # before AO1990 the European norm wrote the consonant too (Priberam, pre-AO1990
+    # view: "Grafia em Portugal: infecção")
+    assert convert(word, source, "pt_1973") == word
+    assert convert(word, source, "etymological") == word
+
+
+# Priberam, pre-AO1990 view: "Grafia no Brasil: setorial", "Grafia no Brasil: datilógrafo",
+# "Grafia no Brasil: contratura" (priberam_sectorial.html, priberam_dactilografo.html,
+# priberam_contractura.html)
+@pytest.mark.parametrize("source", ["pt_1973", "ao1990-pt", "etymological"])
+@pytest.mark.parametrize("pt, br", [("sectorial", "setorial"), ("dactilógrafo", "datilógrafo"),
+                                    ("contractura", "contratura")])
+def test_a_pt_pt_dual_takes_the_brazilian_form_toward_br_1971(pt, br, source):
+    assert convert(pt, source, "br_1971") == br
+
+
+# Priberam: "Grafia em Portugal: secção", "Grafia no Brasil: seção" (priberam_seccao.html)
+@pytest.mark.parametrize("target", ["ao1990-br", "br_1971"])
+@pytest.mark.parametrize("source", ["pt_1973", "ao1990-pt"])
+def test_seccao_takes_the_brazilian_form(source, target):
+    assert convert("A secção e as secções.", source, target) == "A seção e as seções."
+
+
+# the tugalex AO1990 pt-PT map has electropunctura -> eletropuntura, and eletropunctura is
+# the consonant form of that dual cell: both come from electropunctura before AO1990
+@pytest.mark.parametrize("target", ["pt_1973", "etymological"])
+@pytest.mark.parametrize("source, word", [("ao1990-br", "eletropuntura"), ("br_1971", "eletropuntura"),
+                                          ("ao1990-pt", "eletropunctura")])
+def test_eletropunctura_takes_its_older_european_form(source, word, target):
+    assert convert(word, source, target) == "electropunctura"

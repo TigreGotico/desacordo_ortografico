@@ -255,6 +255,12 @@ class OrthographyConverter:
         def ptbr_divergence(_w: str) -> str:
             return "ptbr-divergence"
 
+        def ptbr_before_ao1990(w: str) -> str:
+            # before AO1990 the European norm wrote the consonant too: a pt-PT form that
+            # only AO1990 writes (receção) is no older European form (recepção)
+            pt = lex.divergence_br2pt.get(w, w)
+            return w if pt in lex.ao_pt_new2old else pt
+
         # -- 1911: the word map first; the rules are a fallback for other words. 1911
         #    also introduced graphic accents the rules can't derive; convert() restores
         #    them after this pass, from the word list and the context (fosforo -> fósforo).
@@ -288,7 +294,7 @@ class OrthographyConverter:
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
             _Pass(steps=[
-                ("ptbr-divergence", get(lex.divergence_br2pt)),
+                ("ptbr-divergence", ptbr_before_ao1990),
                 ("base-iv", get(lex.base_iv_drop_reverse)),
                 ("nasal-vowel", rules.nasal_vowel_to_pt),
             ]),
@@ -338,6 +344,7 @@ class OrthographyConverter:
                 steps=[
                     ("hyphen-lexical", get(lex.hyphen_dropped_reverse)),
                     ("base-iv", get(lex.base_iv_drop_reverse)),
+                    ("silent-cp", lambda w: rules.restore_silent_cp(w, lex.ao_pt_new2old)),
                 ],
                 table=lex.ao_pt_new2old,
                 table_feature=ao_row(lex.ao_pt_row_class, lex.ao_pt_new2old),
