@@ -93,13 +93,19 @@ in both Brazilian cells.
 `apply_variety_fixes.py` corrects that class from word lists, not from the library. Each
 line of `variety_fixes.tsv` gives a cell, a token that a source lists for the other
 variety only, the form of the cell's variety, and the source: the "Grafia no Brasil" and
-"Grafia em Portugal" notes of the Priberam page of the word, or the Infopédia and
-Michaelis headwords for the open-vowel accent (comité/comitê). A token that the tugalex
-AO1990 map of the cell's variety lists stays as written. Where Brazil admits both forms
-(Michaelis lists ótica, Priberam gives óptica), the cell writes the c/p consonant. The
-table changes only Brazilian cells, for example infeção → infecção, deteção → detecção,
-perspetiva → perspectiva and comité → comitê. The derived rows keep the European words
-in the Brazilian cells (anti-sida, not antiaids): the fix corrects spelling, not lexis.
+"Grafia em Portugal" notes of the Priberam page of the word (`priberam_variety_notes.tsv`
+keeps them), or the Infopédia and Michaelis headwords for the open-vowel accent
+(comité/comitê, bebé/bebê). The table covers the regular inflections of each word, verb
+forms included (detetou → detectou). A token that a Brazilian source also lists stays as
+written, unless the Brazilian form writes the c/p consonant. Where both forms are valid
+in Brazil (Michaelis or the tugalex pt-BR map lists one, Priberam the other, and one
+page or map row holds both), the cell writes the c/p consonant: seção → secção,
+ótica → óptica. A token that the sources cannot decide goes to `variety_drops.tsv`, and
+the script drops each row that holds it in that cell. Priberam detectiva, for example, is
+a camera, not a female detective. The br_1971 cells write the preterite ending -amos
+without the accent (Formulário Ortográfico 1943); ao1990-br keeps -ámos (AO1990, Base IX,
+4). The derived rows keep the European words in the Brazilian cells (anti-sida, not
+antiaids): the fix corrects spelling, not lexis.
 
 Note on PT↔BR conversion: the European and Brazilian lines can diverge *lexically*
 (quinta/fazenda), which an orthographic converter correctly does not translate — so the
