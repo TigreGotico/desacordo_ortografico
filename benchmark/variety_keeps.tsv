@@ -298,7 +298,7 @@ br_1971	cetrígero	ceptrígero	*	no source: Formulário 1943 does not name the w
 br_1971	cinorético	cinoréctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	citofilático	citofiláctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	citopético	citopéctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
-br_1971	cliché	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, but no pre-1990 source records the vowel of this word; Priberam clichê shows one spelling in all four views, so it records no spelling before the AO1990
+br_1971	cliché	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, and the ABL Pequeno Vocabulário Ortográfico of 1943 records the vowel of this word, but the br_1971 tables do not apply it yet; Priberam clichê shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	clidorrético	clidorréctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	co-diretor	co-director	*	Priberam co-director (Brazil before the AO1990: co-diretor, after: codiretor; Portugal before: co-director, after: codiretor)
 br_1971	co-diretora	co-directora	*	Priberam co-director (Brazil before the AO1990: co-diretor, after: codiretor; Portugal before: co-director, after: codiretor)
@@ -827,7 +827,7 @@ br_1971	galvanopuntura	galvanopunctura	*	Priberam galvanopunctura (Brazil before
 br_1971	galvanotático	galvanotáctico	*	no source: Formulário 1943 does not name the word, and Priberam galvanotáctico shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	gastropético	gastropéctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	geotático	geotáctico	*	no source: Formulário 1943 does not name the word, and Priberam geotáctico shows one spelling in all four views, so it records no spelling before the AO1990
-br_1971	géiser	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, but no pre-1990 source records the vowel of this word; Priberam géiser, gêiser shows one spelling in all four views, so it records no spelling before the AO1990
+br_1971	géiser	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, and the ABL Pequeno Vocabulário Ortográfico of 1943 records the vowel of this word, but the br_1971 tables do not apply it yet; Priberam géiser, gêiser shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	haptotático	haptotáctico	*	no source: Formulário 1943 does not name the word, and Priberam haptotáctico shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	heliotatismo	heliotactismo	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	hematossético	hematosséptico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it

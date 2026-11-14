@@ -120,9 +120,8 @@ Where the VOLP lists both forms of one word, the cell writes the c/p form (`fact
 `sector`, `detectar`). Where it lists one form, the cell writes that form (`ação`,
 `acepção`, `comitê`). The `br_1971` cells write the preterite ending `-amos` without the
 accent. A word that no source of its cell decides stays as written in its row, and so
-does a personal or place name inside a sentence (`Otávia`, `o Ártico`). No vocabulary
-of the 1943 norm is online: the ABL vocabularies of 1933 follow the 1931 norm, so they do
-not decide a `br_1971` cell. Two rows
+does a personal or place name inside a sentence (`Otávia`, `o Ártico`). The ABL
+publishes its vocabulary of 1943 online, but the `br_1971` cells do not use it yet. Two rows
 are dropped: the VOLP lists no form of their word (`detetiva`), or the sentence fits
 neither of two VOLP words (`distático`).
 

@@ -10,8 +10,7 @@ writes the preterite ending -amos without the accent.
 ao1990-br follows the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP), then the
 Priberam Brazilian view after the AO1990. Where the VOLP lists both forms
 of one word with the same part of speech, the cell writes the c/p form. A Priberam page
-with one spelling in all four views records no spelling change, so it never gives the
-cell a form that the VOLP lacks.
+with one spelling in all four views records no spelling change, so it decides nothing.
 
 Where a source registers both forms, the cell writes the c/p form (owner ruling on dual
 spellings). A personal or place name stays as written unless a source names it. Each test
@@ -239,7 +238,7 @@ def test_apply_follows_the_row_decision_in_ao1990_br(row_id, european, sentence,
     assert kept in tokens and rejected not in tokens, tokens
 
 
-def test_ao1990_br_takes_no_form_the_volp_lacks_from_a_flat_priberam_page():
+def test_ao1990_br_takes_no_form_from_a_flat_priberam_page():
     """The VOLP lists none of these forms, and each Priberam page shows the one spelling in
     all four views. The tokens stay as written, and retor goes on the residual list as a
     change of word."""
