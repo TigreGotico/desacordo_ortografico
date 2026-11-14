@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.14a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.14a1) (2026-11-14)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.13a1...0.1.14a1)
+
+**Merged pull requests:**
+
+- fix: keep eu infeto and eu interceto as written into ao1990-pt [\#26](https://github.com/TigreGotico/desacordo_ortografico/pull/26) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.13a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.13a1) (2026-11-14)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.12a1...0.1.13a1)
