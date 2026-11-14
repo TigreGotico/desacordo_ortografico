@@ -43,7 +43,10 @@ casing). The tables come from three sources:
 
 `derive.py` drops a sentence that holds a word with a possible variation that no table
 covers. This keeps a derived row consistent with the tables. It does not make the row
-correct: an error in a table goes into every derived row that uses the word.
+correct: an error in a table goes into every derived row that uses the word. The
+Brazilian cells show one such error: where Brazil keeps a c/p that the European norm
+drops, they copy the pt-PT form (`infeções` in d00720, d05486 and d09303, where Priberam
+gives Brazil `infecções`).
 `derive_corpus.py` runs the derivation over the modern sentences in `gen/out/` and infers
 the feature labels of each row. The benchmark scores only `silver_corpus.jsonl`, because
 the derivation uses the library's own maps and a score on derived rows would be circular.
@@ -153,9 +156,10 @@ default for explainability and robustness on short inputs.
   absent from the list keeps a bare vowel. This benchmark cannot score the guess:
   `clean_silver.py` writes the pt_1973 accents into the etymological cells, so the silver
   corpus holds almost no bare pre-1911 word that needs an accent.
-- **Inflected silent consonants.** Dropping the silent c/p of `-ct-/-pt-` is lexical;
-  the rule fallback only fires when the modernised form is an attested word, so
-  inflections missing from the word list (`desactiva→desativa`) are left unchanged. A
-  richer word list (e.g. enriching tugalex) closes this directly.
+- **Inflected silent consonants.** Dropping the silent c/p is lexical (AO1990 Base IV
+  1º a/b decide word by word). The converter drops it only for a word the AO1990 map
+  holds and for the regular plural of one, so a form the map lacks (`desactiva`,
+  `colectiva`) stays as written. A richer word list (e.g. enriching tugalex) closes this
+  directly.
 - **Reverse (newer→older) conversions** are lexical and lossy by nature, and are
   reported via `ConversionResult.lossless`/`warnings`.
