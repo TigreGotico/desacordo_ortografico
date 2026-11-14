@@ -13,6 +13,7 @@ tugalex AO1990 map of the target variety lists the two valid forms. A word with 
 valid form takes that form. Every route that does not end at an AO1990 target converts
 as on origin/dev.
 """
+import csv
 from pathlib import Path
 
 import pytest
@@ -41,14 +42,14 @@ PT_CELLS = [c for c in _cells(_TUGA.ao_pt) if c[2] not in HOMOGRAPHS]
 BR_CELLS = sorted({(full, bare) for _old, full, bare in _cells(_TUGA.ao_br)})
 
 
-def test_the_maps_hold_the_dual_cells():
-    assert len(PT_CELLS) == 251
-    assert len(BR_CELLS) == 11
+# infeto is also a form of infetar, which has one pt-PT spelling (VOP lemma 37066), so
+# infecto converts to infeto (tests/test_dual_verb_forms.py).
+VERB_FORMS = {"infeto"}
 
 
 def test_every_pt_pt_dual_cell_takes_the_consonant_toward_pt_pt():
-    wrong = [(old, full, convert(old, "pt_1973", "ao1990-pt")) for old, full, _bare in PT_CELLS
-             if convert(old, "pt_1973", "ao1990-pt") != full]
+    wrong = [(old, full, convert(old, "pt_1973", "ao1990-pt")) for old, full, bare in PT_CELLS
+             if convert(old, "pt_1973", "ao1990-pt") != (bare if bare in VERB_FORMS else full)]
     assert wrong == []
 
 
@@ -119,7 +120,13 @@ def test_adjective_datilar_plural_takes_the_consonant():
 # to -ais, -vel and the unstressed -il of táctil to -eis (Priberam, táctil: "Plural:
 # tácteis"), the pair caracteres, carateres (Base IV 1º c), and the adjective
 # datilar, dactilar (Aulete, datilar: "adj. || dactilar") with -es. Verbs and adverbs in
-# -mente have no plural.
+# -mente have no plural. Every dual cell in -s of the tugalex map is a plural or a feminine
+# plural in -as, -os, -es or -ais (sectoriais, insectívoras, subsectores), and the map lists
+# that plural as a cell of its own, so a cell in -s takes no plural here. A singular in -s
+# has a plural of its own (país, países) or an invariable one (o lápis, os lápis). The test
+# raises for a cell in -s outside those four endings; it cannot tell a singular such as
+# atlas or cais from a plural, which is safe only while every such cell has its singular
+# in the same CSV.
 _PLURAL_ENDINGS = [("ção", "ções"), ("al", "ais"), ("vel", "veis"), ("til", "teis"),
                    ("or", "ores"), ("z", "zes"), ("a", "as"), ("e", "es"), ("o", "os")]
 _SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres",
@@ -131,11 +138,47 @@ def _expected_plural(word):
         return _SPECIAL_PLURALS[word]
     if word.endswith(("ar", "er", "ir", "mente")):
         return None
+    if word.endswith("s"):
+        assert word.endswith(("as", "os", "es", "ais")), f"no plural class for {word}"
+        return None
     assert not word.endswith("ão") or word.endswith("ção"), word
     for singular, plural in _PLURAL_ENDINGS:
         if word.endswith(singular):
             return word[:len(word) - len(singular)] + plural
     raise AssertionError(f"no plural class for {word}")
+
+
+def _csv_cells(path):
+    """(form without the consonant, form with it) of each row with two AO1990 forms in a
+    tugalex CSV, read with the csv module."""
+    with open(path, encoding="utf-8", newline="") as f:
+        rows = list(csv.reader(f))[1:]
+    for _old, new in rows:
+        forms = {w.strip().lower() for w in new.split(",") if w.strip()}
+        if len(forms) == 2:
+            yield tuple(sorted(forms, key=len))
+
+
+@pytest.mark.parametrize("table, path, cell", [
+    ("ao_pt_dual_full", _TUGA.ao_pt_path, ("setor", "sector")),
+    ("ao_br_dual_full", _TUGA.ao_br_path, ("cofator", "cofactor")),
+])
+def test_the_maps_hold_the_dual_cells(table, path, cell):
+    # every dual cell of the CSV and the plural of each, and nothing else
+    expected = {}
+    for bare, full in _csv_cells(path):
+        if bare in HOMOGRAPHS:
+            continue
+        for key, value in ((bare, full), (_expected_plural(bare), _expected_plural(full))):
+            if key is not None and value is not None:
+                assert expected.setdefault(key, value) == value, key
+    if table == "ao_pt_dual_full":
+        # Verb forms of infetar and intercetar, which have one pt-PT spelling (VOP lemmas
+        # 37066 and 191891). Their plurals infetos and intercetos stay in the table.
+        for word in ("infeto", "interceto"):
+            expected.pop(word)
+    assert expected[cell[0]] == cell[1]
+    assert getattr(get_lexicon(), table) == expected
 
 
 @pytest.mark.parametrize("table, cells", [("ao_pt_dual_full", PT_CELLS),
