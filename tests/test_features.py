@@ -37,9 +37,13 @@ CASES = {
     "differential": (P, "pára", "para"),
     # AO1990 Base XV 1º obs.: mandachuva is written joined
     "hyphen-lexical": (P, "manda-chuva", "mandachuva"),
-    # AO1990 Base IV 1º b): diretor, afetivo
-    "base-iv": (P, "directora", "diretora"),
-    "silent-cp": (P, "afectivos", "afetivos"),
+    # Formulário Ortográfico de 1943, 16.: "Não se escrevem as consoantes que se não
+    # proferem: ... diretor ... e não ... director". Toward pt-PT the AO1990 word map
+    # lists directora, and a listed word belongs to the ao-map features.
+    "base-iv": (B, "directora", "diretora"),
+    # AO1990 Base IV 1º b): exato; the plural of the map row exactidão, which the map
+    # does not list
+    "silent-cp": (P, "exactidões", "exatidões"),
     # AO1990 Base IX 3º: éi in a paroxytone loses the accent
     "diphthong-accent": (P, "assembléia", "assembleia"),
     # AO1990 Base IX 8º: ôo loses the accent

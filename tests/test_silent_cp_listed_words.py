@@ -92,9 +92,11 @@ def test_a_pt_pt_dual_form_stays_as_written_toward_pt_br(word, target):
 
 def test_the_step_drops_only_a_consonant():
     # the plural of a map row that joins a compound (agro-químico -> agroquímico) is no
-    # c/p drop, so the silent-cp feature leaves it as written
+    # c/p drop, so the silent-cp feature leaves it as written; exactidões is the plural of
+    # the map row exactidão (Base IV 1º b: exato), and the map does not list it
     assert convert("agro-químicos", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "agro-químicos"
-    assert convert("actos", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "atos"
+    assert "exactidões" not in get_lexicon().ao_pt_old2new
+    assert convert("exactidões", "pt_1973", "ao1990-pt", features={"silent-cp"}) == "exatidões"
 
 
 # Priberam, post-AO1990 view: "Grafia no Brasil: infecção", "Grafia no Brasil: facção";
