@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.15a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.15a1) (2026-11-14)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.14a1...0.1.15a1)
+
+**Merged pull requests:**
+
+- fix: count a pre-1911 pattern only when the 1911 rules give a Portuguese word [\#22](https://github.com/TigreGotico/desacordo_ortografico/pull/22) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.14a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.14a1) (2026-11-14)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.13a1...0.1.14a1)
