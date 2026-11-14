@@ -21,7 +21,7 @@ from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
 from .ml import features, get_detector_model
-from .rules import _MONTHS
+from .rules import _MONTHS, _SEGMENT_SEP, reform_1911_digraphs, reform_1911_geminates
 from .rules import words as _words
 
 _VOWELS = "aeiouáàâãéêíóôõúü"
@@ -130,7 +130,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if w in lex.reform1911_old2new:
             etym += 2
             markers.append(f"etym:{w}")
-        elif _RE_ETYM.search(w):
+        elif _is_etym_spelling(raw, i, lex):
             etym += 1
             markers.append(f"etym-pattern:{w}")
 
@@ -207,6 +207,28 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         confidence=round(min(0.99, max(0.0, conf)), 2),
         markers=markers,
         note=note,
+    )
+
+
+def _is_etym_spelling(raw: str, i: int, lex: Lexicon) -> bool:
+    """True when the token ``raw`` shows a pre-1911 spelling of a Portuguese word.
+
+    The token must carry an etymological pattern (ph, th, rh, y, a geminate), and each
+    part of it must turn into a known word under the 1911 rules the converter applies
+    (theatro -> teatro, d'ella -> d'ela). The elided clitics d', n', m' and qu' have
+    under three letters and are not looked up. A token outside the lexicon (Taylor,
+    rock'n'roll, university) is foreign and no evidence for a norm. A capital mid-text
+    marks a name, and the AO1990 keeps the letters of a foreign name (Base I 2.º a)
+    and 3.º: Taylor, taylorista; garrettiano), so it is no evidence either.
+    """
+    if i > 0 and raw[:1].isupper():
+        return False
+    parts = _SEGMENT_SEP.split(raw.lower())
+    if not any(_RE_ETYM.search(p) for p in parts):
+        return False
+    return all(
+        lex.is_known(reform_1911_geminates(reform_1911_digraphs(p), lex.wordset), verbs=True)
+        for p in parts if len(p) > 2 or _RE_ETYM.search(p)
     )
 
 
