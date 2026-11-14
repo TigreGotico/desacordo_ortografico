@@ -47,7 +47,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `ao-map-locution` | AO1990 map rows whose hyphens become spaces (fim-de-semana -> fim de semana) | ao1990_pt, ao1990_br |
 | `differential` | the AO1990 differential accent list (pára -> para) | ao1990_pt, ao1990_br |
 | `hyphen-lexical` | the AO1990 joined-compound list (manda-chuva -> mandachuva) | ao1990_pt, ao1990_br |
-| `silent-cp` | the silent c/p rule for forms outside the map | ao1990_pt |
+| `silent-cp` | the regular plural of an AO1990 map word that drops a c/p (actos -> atos) | ao1990_pt |
 | `diphthong-accent` | éi/ói in a paroxytone (assembléia -> assembleia) | ao1990_pt, ao1990_br |
 | `hiatus-accent` | ôo and êem (vôo -> voo) | ao1990_pt, ao1990_br |
 | `prefix-rs` | prefix + r/s (auto-regulável -> autorregulável) | ao1990_pt, ao1990_br |

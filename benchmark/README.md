@@ -128,9 +128,10 @@ default for explainability and robustness on short inputs.
   absent from the list keeps a bare vowel. This benchmark cannot score the guess:
   `clean_gold.py` writes the pt_1973 accents into the etymological cells, so the gold
   holds almost no bare pre-1911 word that needs an accent.
-- **Inflected silent consonants.** Dropping the silent c/p of `-ct-/-pt-` is lexical;
-  the rule fallback only fires when the modernised form is an attested word, so
-  inflections missing from the word list (`desactiva→desativa`) are left unchanged. A
-  richer word list (e.g. enriching tugalex) closes this directly.
+- **Inflected silent consonants.** Dropping the silent c/p is lexical (AO1990 Base IV
+  1º a/b decide word by word). The converter drops it only for a word the AO1990 map
+  holds and for the regular plural of one, so a form the map lacks (`desactiva`,
+  `colectiva`) stays as written. A richer word list (e.g. enriching tugalex) closes this
+  directly.
 - **Reverse (newer→older) conversions** are lexical and lossy by nature, and are
   reported via `ConversionResult.lossless`/`warnings`.

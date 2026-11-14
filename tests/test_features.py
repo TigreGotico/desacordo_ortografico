@@ -37,9 +37,9 @@ CASES = {
     "differential": (P, "pára", "para"),
     # AO1990 Base XV 1º obs.: mandachuva is written joined
     "hyphen-lexical": (P, "manda-chuva", "mandachuva"),
-    # AO1990 Base IV 1º b): ação, afetivo
-    "base-iv": (P, "acções", "ações"),
-    "silent-cp": (P, "afectiva", "afetiva"),
+    # AO1990 Base IV 1º b): diretor, afetivo
+    "base-iv": (P, "directora", "diretora"),
+    "silent-cp": (P, "afectivos", "afetivos"),
     # AO1990 Base IX 3º: éi in a paroxytone loses the accent
     "diphthong-accent": (P, "assembléia", "assembleia"),
     # AO1990 Base IX 8º: ôo loses the accent

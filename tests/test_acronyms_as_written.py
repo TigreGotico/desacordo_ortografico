@@ -72,12 +72,12 @@ def test_an_inflection_of_a_known_word_is_no_acronym():
     # lowercase word. AO1990 Base XI 3º: "académico/acadêmico". Base IV 1º b): the mute
     # c is eliminated in "coletivo"
     assert convert("A sessão ACADÉMICA abriu.", "ao1990-pt", "ao1990-br") == "A sessão ACADÊMICA abriu."
-    assert convert("As obras COLECTIVAS saíram.", "pt_1973", "ao1990-pt") == "As obras COLETIVAS saíram."
+    assert convert("Os bens COLECTIVOS saíram.", "pt_1973", "ao1990-pt") == "Os bens COLETIVOS saíram."
 
 
 @pytest.mark.parametrize("text, src, dst, want", [
     ("ART. 2.º — A COLLECÇÃO DO THEATRO", "etymological", "pt_1973", "ART. 2.º — A COLECÇÃO DO TEATRO"),
-    ("1.ª SÉRIE: ACÇÃO COLECTIVA", "pt_1973", "ao1990-pt", "1.ª SÉRIE: AÇÃO COLETIVA"),
+    ("1.ª SÉRIE: ACTO COLECTIVO", "pt_1973", "ao1990-pt", "1.ª SÉRIE: ATO COLETIVO"),
 ])
 def test_ordinal_signs_do_not_make_text_mixed_case(text, src, dst, want):
     # º and ª are lowercase letters to Python; the text is still in capitals throughout
