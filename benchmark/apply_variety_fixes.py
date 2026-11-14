@@ -2,26 +2,37 @@
 """Write Brazilian spellings in the Brazilian cells of the silver corpus.
 
 Each line of ``variety_fixes.tsv`` gives a cell, a token, the pt_1973 token it stands
-for (``*`` for any), the Brazilian form and its source. The pt_1973 token names the
-word: the line for fato/facto changes "fato" only where the European cell writes
-"facto", so the noun fato (a suit) stays. A line with ``*`` applies wherever the token
-occurs. ``variety_drops.tsv`` lists tokens whose Brazilian form the sources cannot
-decide; the script drops a row that holds one in that cell.
+for (``*`` for any), the Brazilian form, the rows it applies to (``*`` for all) and its
+source. The pt_1973 token names the word: the line for fato/facto changes "fato" only
+where the European cell writes "facto", so the noun fato (a suit) stays. A line that
+names rows decides a token whose part of speech changes its spelling, such as the noun
+reta and the adjective reta. ``variety_drops.tsv`` lists tokens whose Brazilian form the
+sources cannot decide; the script drops a row that holds one in that cell.
 
-Sources, in order of authority:
+The br_1971 cell is the pre-1990 Brazilian norm. Its sources, in order of authority:
+
+- ABL, Formulário Ortográfico (1943), with the changes of Lei 5.765/1971. Rule 18
+  registers both forms of the words it lists ("contacto e contato", "secção e seção",
+  "tecto e teto"), and the cell writes the c/p form of those (owner ruling on dual
+  spellings). Rules 16 and 17 fix one form ("diretor ... ótimo ... e não ... director
+  ... optimo"). Rule 15.ª, OBSERVAÇÃO, writes the preterite ending -amos without the
+  accent.
+- Dicionário Priberam da Língua Portuguesa, the Brazilian headword in the view before
+  the AO1990, for words the Formulário does not name.
+- If neither decides, the token stays as written.
+
+The post-1990 VOLP never decides a br_1971 cell. The ao1990-br cell, in order:
 
 - ABL, Vocabulário Ortográfico da Língua Portuguesa (VOLP), the official vocabulary of
   Brazil (https://www.academia.org.br/nossa-lingua/busca-no-vocabulario). Where it
-  lists both forms of a word, the cell writes the c/p form (owner ruling on dual
-  spellings). Two entries linked by "cf." with different glosses are two words.
-- Dicionário Priberam da Língua Portuguesa, the Brazilian headword of the page, in the
-  pre-AO1990 view for br_1971 and the post-AO1990 view for ao1990-br.
+  lists both forms of one word, with the same part of speech, the cell writes the c/p
+  form. Two entries linked by "cf." with different glosses are two words. The cell
+  keeps -ámos, which the AO1990, Base IX, 4 allows.
+- Dicionário Priberam, the Brazilian headword in the view after the AO1990.
 - Michaelis Moderno Dicionário da Língua Portuguesa.
-- Formulário Ortográfico (ABL, 1943): the br_1971 cells write the preterite ending
-  -amos without the accent. The ao1990-br cells keep -ámos, which the AO1990, Base IX,
-  4 allows.
 
-The tables are word-level, so the script also fixes rows that a later derivation adds.
+Apart from the lines that name rows, the tables are word-level, so the script also
+fixes rows that a later derivation adds.
 Run it after ``build_corpus.py``, ``clean_silver.py`` and after the derived rows are
 assembled into ``silver_full.jsonl``.
 
@@ -47,8 +58,9 @@ def load_table():
     with open(TABLE, encoding="utf-8") as f:
         next(f)
         for line in f:
-            cell, token, european, correction, _source = line.rstrip("\n").split("\t")
-            table.setdefault(cell, {})[(token, european)] = correction
+            cell, token, european, correction, rows, _source = line.rstrip("\n").split("\t")
+            for row in rows.split(","):
+                table.setdefault(cell, {})[(token, european, row)] = correction
     return table
 
 
@@ -75,7 +87,8 @@ def fix_row(rec, table, counts) -> bool:
         for k, m in enumerate(words):
             word = m.group(0)
             token = word.lower()
-            fix = (fixes.get((token, european[k])) if aligned else None) or fixes.get((token, "*"))
+            fix = ((fixes.get((token, european[k], rec.get("id"))) or fixes.get((token, european[k], "*")))
+                   if aligned else None) or fixes.get((token, "*", "*"))
             if fix:
                 counts[cell] += 1
             if cell == "br_1971" and (fix or token).endswith("ámos"):
