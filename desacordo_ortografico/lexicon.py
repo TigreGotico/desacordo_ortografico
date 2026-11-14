@@ -243,7 +243,8 @@ class Lexicon:
     @cached_property
     def ao_pt_dual_full(self) -> Dict[str, str]:
         """The dual cells of the pt-PT AO1990 map (Base IV 1º c): the form without the
-        consonant -> the form with it, and the same for their plurals."""
+        consonant -> the form with it, and the same for their plurals. The bare forms in
+        _SINGLE_SPELLING_VERB_FORMS are left out; their plurals stay."""
         out = _dual_full(self.tuga, "ao_pt", _CP_HOMOGRAPHS)
         for word in _SINGLE_SPELLING_VERB_FORMS:
             out.pop(word, None)

@@ -57,6 +57,6 @@ def test_adjective_plural_still_takes_the_consonant(src, text, out):
     ("Os tecidos infetos.", "Os tecidos infectos."),
 ])
 def test_route_out_of_ao1990_pt_restores_the_c(dst, text, out):
-    """VOP lemma 15917 "infectar - verbo ... variante AO : infetar" and Priberam, infeto:
-    "Grafia anterior ao Acordo Ortográfico de 1990: infecto"."""
+    """Priberam, infeto: "Grafia anterior ao Acordo Ortográfico de 1990: infecto", the
+    pre-AO1990 pt-PT form of the verb form and of the adjective."""
     assert convert(text, "ao1990-pt", dst) == out
