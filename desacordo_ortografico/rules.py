@@ -164,24 +164,24 @@ def reform_1911_geminates(word: str, wordset=None) -> str:
     return _GEMINATE_RE.sub(r"\1", word)
 
 
-_CP_DROP = [("cç", "ç"), ("ct", "t"), ("pç", "ç"), ("pt", "t")]
+#: The sequences of Base IV 1º: "cc (segundo c com valor de sibilante), cç e ct" and
+#: "pc (c com valor de sibilante), pç e pt", each with the c or the p dropped.
+_CP_DROP = [("cc", "c"), ("cç", "ç"), ("ct", "t"), ("pc", "c"), ("pç", "ç"), ("pt", "t")]
 
 
-def drop_silent_cp(word: str, keep: set, wordset: set) -> str:
-    """Drop a silent c/p from a -ct-/-pt-/-cç-/-pç- cluster (AO1990, European).
+def drop_silent_cp(word: str, table: Mapping[str, str]) -> str:
+    """Drop a silent c/p from a Base IV 1º sequence (AO1990, European), for the regular
+    plural of a word the AO1990 map ``table`` lists (actos -> atos).
 
-    A rule fallback for inflected forms the Base IV lexicon does not list
-    (desactiva->desativa, detectou->detetou). Guarded twice so it never mangles a
-    pronounced cluster: the word must not be in ``keep`` (Base IV keep + PT duals such
-    as facto/contacto), and the de-consonanted form must be an attested word. One-way.
+    Whether the consonant is silent is a fact about each word: Base IV 1º a keeps it
+    where the cultivated pronunciation says it (apto, rapto) and 1º b drops it where it
+    is mute (ato, ótimo). So the step drops only the consonant the map drops, and a word
+    the map does not hold stays as written: dropping a pronounced consonant gives another
+    word (apta -> ata, copta -> cota). One-way.
     """
-    if word in keep:
-        return word
-    for pat, rep in _CP_DROP:
-        if pat in word:
-            cand = word.replace(pat, rep)
-            if cand != word and cand in wordset:
-                return cand
+    form = lookup_with_plural(word, table)
+    if form is not None and any(word.replace(pat, rep) == form for pat, rep in _CP_DROP):
+        return form
     return word
 
 

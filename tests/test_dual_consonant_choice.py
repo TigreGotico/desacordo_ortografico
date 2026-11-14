@@ -207,7 +207,9 @@ def test_pt_br_dual_toward_pt_pt_converts_as_on_dev():
 
 # tests/data/ptbr_dual_dev_outputs.tsv holds the origin/dev output of every form of every
 # pt-PT dual cell, from each European source to each pt-BR norm. Only the forms of a
-# pt-BR dual cell toward ao1990-br differ, by the rule above.
+# pt-BR dual cell toward ao1990-br differ, by the rule above. The forms whose c/p the
+# pt-PT map does not drop stay as written and are not in the file
+# (tests/test_silent_cp_listed_words.py).
 _FIXTURE = Path(__file__).parent / "data" / "ptbr_dual_dev_outputs.tsv"
 _BR_DUAL_FORMS = {f for _old, full, bare in _cells(_TUGA.ao_br) for f in (full, bare)}
 
@@ -223,6 +225,6 @@ def _dev_rows():
 
 def test_pt_pt_dual_toward_pt_br_converts_as_on_dev():
     rows = list(_dev_rows())
-    assert len(rows) == 3042
+    assert len(rows) == 2995
     wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows if convert(w, s, d) != out]
     assert wrong == []

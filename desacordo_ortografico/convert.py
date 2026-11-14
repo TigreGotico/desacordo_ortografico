@@ -326,7 +326,7 @@ class OrthographyConverter:
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
                     ("hyphen-lexical", get(lex.hyphen_dropped)),
                     ("base-iv", get(lex.base_iv_drop)),
-                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset)),
+                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.ao_pt_old2new)),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
