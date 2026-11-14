@@ -1,12 +1,11 @@
 """The Brazilian cells of the silver corpus write Brazilian spellings.
 
-Brazil writes and pronounces the consonant in infecção, facção and detectar. The forms
-come from the "Grafia no Brasil" and "Grafia em Portugal" notes of the Dicionário
-Priberam pages of these words, pre- and post-AO1990 views, which
-``benchmark/priberam_variety_notes.tsv`` keeps. Michaelis also lists ótica and seção for
-Brazil, so óptica and secção follow the dual rule: where both forms are valid in the
-variety, the cell writes the c/p consonant. The 1943 Formulário Ortográfico writes the
-preterite ending -amos without the accent, so br_1971 has no -ámos form.
+Sources, in order of authority: the ABL Vocabulário Ortográfico da Língua Portuguesa
+(VOLP), the official vocabulary of Brazil; the Brazilian headword of the Dicionário
+Priberam page; Michaelis. Where the VOLP lists both forms of a word, the cell writes the
+c/p form (owner ruling on dual spellings). The Formulário Ortográfico of 1943, rule
+15.ª, writes the preterite ending -amos without the accent, so br_1971 has no -ámos.
+Each test names the entry it pins.
 """
 import importlib.util
 import json
@@ -18,7 +17,7 @@ import pytest
 
 BENCHMARK = Path(__file__).parent.parent / "benchmark"
 TOKEN = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'][0-9A-Za-zÀ-ɏ]+)*")
-ERAS = {"br_1971": "pre", "ao1990-br": "post"}
+BRAZILIAN = ("br_1971", "ao1990-br")
 
 
 def _rows():
@@ -36,72 +35,44 @@ def _tokens(row, cell):
     return [t.lower() for t in TOKEN.findall(row["cells"][cell])]
 
 
-@pytest.mark.parametrize("row_id,cell,word", [
-    ("p04-003", "ao1990-br", "infecção"),
-    ("p04-107", "ao1990-br", "infecção"),
-    ("p11-076", "ao1990-br", "facções"),
-    ("p11-076", "br_1971", "facções"),
-    ("p04-013", "ao1990-br", "óptica"),
-    ("p04-013", "br_1971", "óptica"),
-    ("p03-020", "ao1990-br", "detectou"),
-    ("p03-020", "br_1971", "detectou"),
-    ("p03-046", "ao1990-br", "detectou"),
-    ("p03-046", "br_1971", "detectou"),
-    ("p09-056", "ao1990-br", "secção"),
-    ("p09-056", "br_1971", "secção"),
+@pytest.mark.parametrize("cell", BRAZILIAN)
+@pytest.mark.parametrize("row_id,word", [
+    ("p03-020", "detectou"),   # VOLP: detectar v. | detetar v. (dual: the c/p form)
+    ("p03-046", "detectou"),
+    ("p04-003", "infecção"),   # VOLP: infecção s.f. | infeção s.f.
+    ("p04-107", "infecção"),
+    ("p11-076", "facções"),    # VOLP: facção s.f. | fação s.f.
+    ("p01-024", "eléctron"),   # VOLP: eléctron s.m. | elétron s.m.
+    ("p04-013", "óptica"),     # VOLP: óptica s.f. "ciência da visão"; cf. ótica ("ciência da audição")
+    ("p09-056", "seção"),      # VOLP: seção s.f. "corte", etc.; Michaelis seção 6, a section of a shop
+    ("p03-020", "inspeção"),   # VOLP: inspeção s.f.; no inspecção
 ])
-def test_brazilian_cell_writes_the_consonant(row_id, cell, word):
+def test_brazilian_cell_writes_the_source_form(row_id, cell, word):
     assert word in _tokens(_rows()[row_id], cell)
 
 
-def _european_only():
-    """Per era: each form a Priberam page gives for Portugal only, and the Brazilian forms.
-
-    A view with no note for one variety writes the other variety's form in it.
-    """
-    euro = {"pre": set(), "post": set()}
-    brazil = {"pre": set(), "post": set()}
-    for _page, *cols in _tsv("priberam_variety_notes.tsv"):
-        notes = dict(zip(("PT_pre", "PT_post", "BR_pre", "BR_post"),
-                         (set(c.split("|")) - {""} for c in cols)))
-        for era in ("pre", "post"):
-            pt = notes[f"PT_{era}"] or notes[f"BR_{era}"]
-            br = notes[f"BR_{era}"] or notes[f"PT_{era}"]
-            euro[era] |= pt - br
-            brazil[era] |= br
-    return euro, brazil
+def _c_p_pairs(row, cell):
+    """Tokens of the cell aligned with a pt_1973 token that is the same word plus one c/p."""
+    european = _tokens(row, "pt_1973")
+    tokens = _tokens(row, cell)
+    if len(tokens) != len(european):
+        return []
+    plain = str.maketrans("áàâãéêíóôõúç", "aaaaeeiooouc")
+    found = []
+    for t, e in zip(tokens, european):
+        a, b = t.translate(plain), e.translate(plain)
+        if len(b) == len(a) + 1 and any(b[:i] + b[i + 1:] == a for i in range(len(b)) if b[i] in "cp"):
+            found.append((t, e))
+    return found
 
 
-def _common(a, b):
-    n = 0
-    while n < min(len(a), len(b)) and a[n] == b[n]:
-        n += 1
-    return n
-
-
-def test_no_brazilian_cell_writes_a_form_priberam_gives_portugal_only():
-    """A token that is a Portugal-only form, or an inflection of one, is a gap in the table.
-
-    An inflection shares all but the last two letters of the form. A token closer to a
-    Brazilian form of the same view (a longer common start) is that Brazilian word, for
-    example detetive next to the Portugal-only detetiva. A form that the dual rule writes
-    (secção: Priberam gives Brazil seção, Michaelis lists secção) names both sources in
-    its table line.
-    """
-    euro, brazil = _european_only()
-    dual = {(cell, fix) for cell, _token, fix, source in _tsv("variety_fixes.tsv")
-            if source.startswith("dual rule: ")}
-    found = set()
-    for row_id, row in _rows().items():
-        for cell, era in ERAS.items():
-            for t in set(_tokens(row, cell)) - {fix for c, fix in dual if c == cell}:
-                for p in euro[era]:
-                    stem = p[:-2]
-                    if t != p and not (len(stem) >= 4 and t.startswith(stem) and len(t) <= len(p) + 3):
-                        continue
-                    if not any(_common(t, b) > _common(t, p) for b in brazil[era]):
-                        found.add((row_id, cell, t, p))
-    assert sorted(found) == []
+def test_every_bare_form_against_a_european_c_p_form_is_decided():
+    """A Brazilian token that drops the c/p of its pt_1973 word either changes by a table
+    line or stays by a line of variety_keeps.tsv that names its source."""
+    keeps = {(t, e) for t, e, _reason in _tsv("variety_keeps.tsv")}
+    gaps = sorted({(row_id, cell, t, e) for row_id, row in _rows().items() for cell in BRAZILIAN
+                   for t, e in _c_p_pairs(row, cell) if (t, e) not in keeps})
+    assert gaps == []
 
 
 def test_br_1971_writes_amos_without_the_accent():
@@ -113,15 +84,17 @@ def test_br_1971_writes_amos_without_the_accent():
 def test_no_row_holds_an_undecidable_token():
     drops = {(cell, token) for cell, token, _reason in _tsv("variety_drops.tsv")}
     found = [(row_id, cell, t) for row_id, row in _rows().items()
-             for cell in ERAS for t in _tokens(row, cell) if (cell, t) in drops]
+             for cell in BRAZILIAN for t in _tokens(row, cell) if (cell, t) in drops]
     assert found == []
 
 
-def test_every_fix_names_a_source_and_changes_the_word():
-    for cell, token, fix, source in _tsv("variety_fixes.tsv"):
-        assert cell in ERAS
+def test_every_line_names_its_source():
+    for cell, token, _european, fix, source in _tsv("variety_fixes.tsv"):
+        assert cell in BRAZILIAN
         assert token != fix
-        assert source.startswith(("Priberam ", "Infopédia ", "dual rule: ", "restore: "))
+        assert source.startswith(("VOLP: ", "Priberam ", "Michaelis: "))
+    for _token, _european, reason in _tsv("variety_keeps.tsv"):
+        assert reason.startswith(("VOLP: ", "Priberam ", "Michaelis: ", "no source: "))
 
 
 def _apply_module():
@@ -132,15 +105,31 @@ def _apply_module():
     return module
 
 
-def test_apply_writes_the_table_form_and_amos_only_in_br_1971():
+def _apply(sentence, european):
     apply = _apply_module()
-    sentence = "Detetámos a infeção."
-    row = {"cells": {"etymological": sentence, "pt_1973": sentence, "ao1990-pt": sentence,
-                     "br_1971": sentence, "ao1990-br": sentence}}
-    assert apply.fix_row(row, apply.load_table(), Counter())
-    assert row["cells"]["br_1971"] == "Detectamos a infecção."
-    assert row["cells"]["ao1990-br"] == "Detectámos a infecção."
-    assert row["cells"]["ao1990-pt"] == sentence
+    row = {"cells": {"pt_1973": european, "br_1971": sentence, "ao1990-br": sentence}}
+    apply.fix_row(row, apply.load_table(), Counter())
+    return row["cells"]
+
+
+def test_apply_writes_the_c_p_form_and_amos_only_in_br_1971():
+    """VOLP: detectar v. | detetar v.; infecção s.f. | infeção s.f."""
+    cells = _apply("Detetou a infeção e visitámos.", "Detectou a infecção e visitámos.")
+    assert cells["br_1971"] == "Detectou a infecção e visitamos."
+    assert cells["ao1990-br"] == "Detectou a infecção e visitámos."
+
+
+def test_apply_reads_the_word_from_the_european_cell():
+    """VOLP: facto s.m. | fato s.m. The fact is dual and takes the c/p form; the suit
+    (pt_1973 fato) is another word and stays."""
+    assert _apply("O fato é claro.", "O facto é claro.")["ao1990-br"] == "O facto é claro."
+    assert _apply("O fato é azul.", "O fato é azul.")["ao1990-br"] == "O fato é azul."
+
+
+def test_apply_keeps_a_single_brazilian_form():
+    """VOLP: ação s.f., with no acção; seção s.f. "corte", etc. for a section of a shop."""
+    cells = _apply("A ação da seção.", "A acção da secção.")
+    assert cells["ao1990-br"] == "A ação da seção."
 
 
 def test_apply_drops_a_row_with_an_undecidable_token():

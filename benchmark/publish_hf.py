@@ -108,12 +108,13 @@ The `source` field marks how each row was built:
 - `coverage` — a short carrier sentence (one quoted term), derived the same way, so that
   **every** AO1990-changed word in the reference lexicon appears at least once.
 
-A last step corrects the Brazilian cells of all rows from word lists: the variety notes
-of the Priberam dictionary and the Michaelis and Infopédia headwords. It replaces a
-European spelling with the Brazilian one (`infeção` → `infecção`, `comité` → `comitê`).
-Where both spellings are valid in Brazil, the cell writes the c/p consonant (`secção`,
-`óptica`). The `br_1971` cells write the preterite ending `-amos` without the accent.
-A row with a word whose Brazilian spelling the sources do not decide is dropped.
+A last step corrects the Brazilian cells of all rows from dictionaries. The Vocabulário
+Ortográfico da Língua Portuguesa (VOLP) of the Academia Brasileira de Letras decides
+first, then the Brazilian headword of the Priberam dictionary, then Michaelis. Where the
+VOLP lists both forms of a word, the cell writes the c/p form (`facto`, `sector`,
+`detectar`). Where it lists one form, the cell writes that form (`ação`, `acepção`,
+`comitê`). The `br_1971` cells write the preterite ending `-amos` without the accent. A
+row with a word whose Brazilian spelling the sources do not decide is dropped.
 
 Within each line (European: `etymological`/`pt_1973`/`ao1990_pt`; Brazilian:
 `br_1971`/`ao1990_br`) the cells differ only by the documented era transforms; the two

@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
-"""Replace European spellings in the Brazilian cells of the silver corpus.
+"""Write Brazilian spellings in the Brazilian cells of the silver corpus.
 
-``variety_fixes.tsv`` lists, per cell, a token that a source gives for the other variety
-only, the form of the cell's variety, and the source: the Priberam variety notes
-("Grafia no Brasil", "Grafia em Portugal", kept in ``priberam_variety_notes.tsv``) or
-the Infopédia and Michaelis headwords. Where both forms are valid in Brazil, the table
-writes the form with the c/p consonant. ``variety_drops.tsv`` lists tokens whose
-Brazilian form the sources cannot decide; a row that holds one in that cell is removed.
-The br_1971 cells also write the first person plural of the preterite without the
-accent (-amos), as the Formulário Ortográfico of 1943 prescribes; ao1990-br keeps
--ámos, which the AO1990 (Base IX, 4) allows. The tables are word-level, so the script
-also fixes rows that a later derivation adds. Run it after ``build_corpus.py``,
-``clean_silver.py`` and after the derived rows are assembled into ``silver_full.jsonl``.
+Each line of ``variety_fixes.tsv`` gives a cell, a token, the pt_1973 token it stands
+for (``*`` for any), the Brazilian form and its source. The pt_1973 token names the
+word: the line for fato/facto changes "fato" only where the European cell writes
+"facto", so the noun fato (a suit) stays. A line with ``*`` applies wherever the token
+occurs. ``variety_drops.tsv`` lists tokens whose Brazilian form the sources cannot
+decide; the script drops a row that holds one in that cell.
+
+Sources, in order of authority:
+
+- ABL, Vocabulário Ortográfico da Língua Portuguesa (VOLP), the official vocabulary of
+  Brazil (https://www.academia.org.br/nossa-lingua/busca-no-vocabulario). Where it
+  lists both forms of a word, the cell writes the c/p form (owner ruling on dual
+  spellings). Two entries linked by "cf." with different glosses are two words.
+- Dicionário Priberam da Língua Portuguesa, the Brazilian headword of the page, in the
+  pre-AO1990 view for br_1971 and the post-AO1990 view for ao1990-br.
+- Michaelis Moderno Dicionário da Língua Portuguesa.
+- Formulário Ortográfico (ABL, 1943): the br_1971 cells write the preterite ending
+  -amos without the accent. The ao1990-br cells keep -ámos, which the AO1990, Base IX,
+  4 allows.
+
+The tables are word-level, so the script also fixes rows that a later derivation adds.
+Run it after ``build_corpus.py``, ``clean_silver.py`` and after the derived rows are
+assembled into ``silver_full.jsonl``.
 
     python benchmark/apply_variety_fixes.py [file.jsonl ...]   # default: silver_corpus.jsonl, silver_full.jsonl
 """
@@ -26,6 +38,7 @@ from collections import Counter
 HERE = os.path.dirname(os.path.abspath(__file__))
 TABLE = os.path.join(HERE, "variety_fixes.tsv")
 DROPS = os.path.join(HERE, "variety_drops.tsv")
+BRAZILIAN = ("br_1971", "ao1990-br")
 _TOK = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'][0-9A-Za-zÀ-ɏ]+)*")
 
 
@@ -34,8 +47,8 @@ def load_table():
     with open(TABLE, encoding="utf-8") as f:
         next(f)
         for line in f:
-            cell, token, correction, _source = line.rstrip("\n").split("\t")
-            table.setdefault(cell, {})[token] = correction
+            cell, token, european, correction, _source = line.rstrip("\n").split("\t")
+            table.setdefault(cell, {})[(token, european)] = correction
     return table
 
 
@@ -53,31 +66,30 @@ def _recase(form: str, like: str) -> str:
 
 def fix_row(rec, table, counts) -> bool:
     changed = False
-    for cell, fixes in table.items():
-        def repl(m, fixes=fixes, cell=cell):
-            nonlocal changed
-            fix = fixes.get(m.group(0).lower())
-            if fix is None:
-                return m.group(0)
-            changed = True
-            counts[cell] += 1
-            return _recase(fix, m.group(0))
-        rec["cells"][cell] = _TOK.sub(repl, rec["cells"][cell])
-
-    def amos(m):
-        nonlocal changed
-        word = m.group(0)
-        if not word.lower().endswith("ámos"):
-            return word
-        changed = True
-        counts["br_1971 -amos"] += 1
-        return word[:-4] + ("AMOS" if word.isupper() else "amos")
-    rec["cells"]["br_1971"] = _TOK.sub(amos, rec["cells"]["br_1971"])
+    european = [t.lower() for t in _TOK.findall(rec["cells"].get("pt_1973", ""))]
+    for cell in BRAZILIAN:
+        fixes = table.get(cell, {})
+        words = list(_TOK.finditer(rec["cells"][cell]))
+        aligned = len(words) == len(european)
+        out, end = [], 0
+        for k, m in enumerate(words):
+            word = m.group(0)
+            token = word.lower()
+            fix = (fixes.get((token, european[k])) if aligned else None) or fixes.get((token, "*"))
+            if fix:
+                counts[cell] += 1
+            if cell == "br_1971" and (fix or token).endswith("ámos"):
+                counts["br_1971 -amos"] += 1
+                fix = (fix or token)[:-4] + "amos"
+            out += [rec["cells"][cell][end:m.start()], _recase(fix, word) if fix else word]
+            end = m.end()
+            changed |= bool(fix)
+        rec["cells"][cell] = "".join(out) + rec["cells"][cell][end:]
     return changed
 
 
 def undecidable(rec, drops) -> bool:
-    return any((cell, t.lower()) in drops for cell in ("br_1971", "ao1990-br")
+    return any((cell, t.lower()) in drops for cell in BRAZILIAN
                for t in _TOK.findall(rec["cells"][cell]))
 
 

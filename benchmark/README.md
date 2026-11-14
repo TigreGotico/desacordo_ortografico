@@ -90,21 +90,33 @@ The consistency check compares the cells of one line with each other. It does no
 wrong form that is the same in every cell of the line, for example a European spelling
 in both Brazilian cells.
 
-`apply_variety_fixes.py` corrects that class from word lists, not from the library. Each
-line of `variety_fixes.tsv` gives a cell, a token that a source lists for the other
-variety only, the form of the cell's variety, and the source: the "Grafia no Brasil" and
-"Grafia em Portugal" notes of the Priberam page of the word (`priberam_variety_notes.tsv`
-keeps them), or the Infopédia and Michaelis headwords for the open-vowel accent
-(comité/comitê, bebé/bebê). The table covers the regular inflections of each word, verb
-forms included (detetou → detectou). A token that a Brazilian source also lists stays as
-written, unless the Brazilian form writes the c/p consonant. Where both forms are valid
-in Brazil (Michaelis or the tugalex pt-BR map lists one, Priberam the other, and one
-page or map row holds both), the cell writes the c/p consonant: seção → secção,
-ótica → óptica. A token that the sources cannot decide goes to `variety_drops.tsv`, and
-the script drops each row that holds it in that cell. Priberam detectiva, for example, is
-a camera, not a female detective. The br_1971 cells write the preterite ending -amos
-without the accent (Formulário Ortográfico 1943); ao1990-br keeps -ámos (AO1990, Base IX,
-4). The derived rows keep the European words in the Brazilian cells (anti-sida, not
+`apply_variety_fixes.py` corrects that class from dictionaries, not from the library.
+Three sources decide the Brazilian spelling, in this order. The first is the Vocabulário
+Ortográfico da Língua Portuguesa (VOLP) of the Academia Brasileira de Letras, because it
+is the official vocabulary of Brazil. The second is the Brazilian headword of the
+Dicionário Priberam page, in the pre-AO1990 view for br_1971 and the post-AO1990 view for
+ao1990-br. The third is Michaelis. The tugalex maps are not a source.
+
+Where the VOLP lists both forms of a word, the cell writes the c/p form, by the owner
+ruling on dual spellings: fato → facto, setor → sector, ótimo → óptimo, detetou →
+detectou. Where the VOLP lists one form, the cell writes that form: ação stays, and
+aceção becomes acepção. Two VOLP entries that point to each other with "cf." and
+different glosses are two words, and the sentence decides. Thus ótica ("ciência da
+audição") becomes óptica ("ciência da visão") in sentences about sight, and seção
+("corte", etc.) stays for a section of a shop. The accent follows the same order:
+comité becomes comitê because the VOLP lists only comitê, and bebé stays because the
+VOLP lists bebé and bebê.
+
+Each line of `variety_fixes.tsv` gives a cell, a token, the pt_1973 token that names the
+word, the Brazilian form and the entry it comes from. The pt_1973 token keeps homographs
+apart: fato becomes facto only where the European cell writes facto, so fato (a suit)
+stays. `variety_keeps.tsv` lists each bare form that stays, with its source. Of the bare
+forms in the full set whose European word writes a c/p, 235 tokens of 96 words stay
+undecided: the VOLP, Priberam and Michaelis do not list them, or no VOLP answer covers
+them. `variety_drops.tsv` lists tokens that the sources cannot decide, and the script
+drops each row that holds one. The br_1971 cells write the preterite ending -amos without
+the accent (Formulário Ortográfico 1943, rule 15.ª); ao1990-br keeps -ámos (AO1990, Base
+IX, 4). The derived rows keep the European words in the Brazilian cells (anti-sida, not
 antiaids): the fix corrects spelling, not lexis.
 
 Note on PT↔BR conversion: the European and Brazilian lines can diverge *lexically*
