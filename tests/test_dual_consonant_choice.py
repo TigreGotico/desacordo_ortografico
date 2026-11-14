@@ -42,9 +42,14 @@ PT_CELLS = [c for c in _cells(_TUGA.ao_pt) if c[2] not in HOMOGRAPHS]
 BR_CELLS = sorted({(full, bare) for _old, full, bare in _cells(_TUGA.ao_br)})
 
 
+# infeto is also a form of infetar, which has one pt-PT spelling (VOP lemma 37066), so
+# infecto converts to infeto (tests/test_dual_verb_forms.py).
+VERB_FORMS = {"infeto"}
+
+
 def test_every_pt_pt_dual_cell_takes_the_consonant_toward_pt_pt():
-    wrong = [(old, full, convert(old, "pt_1973", "ao1990-pt")) for old, full, _bare in PT_CELLS
-             if convert(old, "pt_1973", "ao1990-pt") != full]
+    wrong = [(old, full, convert(old, "pt_1973", "ao1990-pt")) for old, full, bare in PT_CELLS
+             if convert(old, "pt_1973", "ao1990-pt") != (bare if bare in VERB_FORMS else full)]
     assert wrong == []
 
 
@@ -167,6 +172,11 @@ def test_the_maps_hold_the_dual_cells(table, path, cell):
         for key, value in ((bare, full), (_expected_plural(bare), _expected_plural(full))):
             if key is not None and value is not None:
                 assert expected.setdefault(key, value) == value, key
+    if table == "ao_pt_dual_full":
+        # Verb forms of infetar and intercetar, which have one pt-PT spelling (VOP lemmas
+        # 37066 and 191891). Their plurals infetos and intercetos stay in the table.
+        for word in ("infeto", "interceto"):
+            expected.pop(word)
     assert expected[cell[0]] == cell[1]
     assert getattr(get_lexicon(), table) == expected
 
