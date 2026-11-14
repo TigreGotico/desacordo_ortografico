@@ -90,6 +90,17 @@ The consistency check compares the cells of one line with each other. It does no
 wrong form that is the same in every cell of the line, for example a European spelling
 in both Brazilian cells.
 
+`apply_variety_fixes.py` corrects that class from word lists, not from the library. Each
+line of `variety_fixes.tsv` gives a cell, a token that a source lists for the other
+variety only, the form of the cell's variety, and the source: the "Grafia no Brasil" and
+"Grafia em Portugal" notes of the Priberam page of the word, or the Infopédia and
+Michaelis headwords for the open-vowel accent (comité/comitê). A token that the tugalex
+AO1990 map of the cell's variety lists stays as written. Where Brazil admits both forms
+(Michaelis lists ótica, Priberam gives óptica), the cell writes the c/p consonant. The
+table changes only Brazilian cells, for example infeção → infecção, deteção → detecção,
+perspetiva → perspectiva and comité → comitê. The derived rows keep the European words
+in the Brazilian cells (anti-sida, not antiaids): the fix corrects spelling, not lexis.
+
 Note on PT↔BR conversion: the European and Brazilian lines can diverge *lexically*
 (quinta/fazenda), which an orthographic converter correctly does not translate — so the
 cross-variant pairs are capped below 100% by design, not by a bug.
@@ -100,6 +111,7 @@ cross-variant pairs are capped below 100% by design, not by a bug.
 pip install -e . matplotlib            # plus tugalex
 python benchmark/build_corpus.py       # merge + validate parts -> silver_corpus.jsonl
 python benchmark/clean_silver.py       # line consistency (drops inconsistent sentences)
+python benchmark/apply_variety_fixes.py  # European spellings out of the Brazilian cells
 python benchmark/run_benchmark.py      # -> results.md + results.json
 python benchmark/plot_results.py       # -> plots/*.png
 python benchmark/train_detector.py     # CV the learned detectors + ship models
