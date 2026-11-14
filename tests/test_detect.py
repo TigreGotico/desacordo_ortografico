@@ -100,3 +100,65 @@ class TestConfidence:
 
     def test_markers_are_reported(self):
         assert _orth("pharmacia").markers
+
+
+
+
+
+class TestArchaicEvidence:
+    """Pre-1911 evidence comes from listed archaic forms only: the 1911 word map of this
+    package and the tugalex archaisms list (``TugaLexicon.archaic_words``). The expected
+    labels follow the Formulário Ortográfico of 1911 (Portal da Língua Portuguesa, ILTEC).
+    """
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # meio milhão de frases rows mmf-021699, mmf-025898, pilot-201, mmf-454536
+            "Por fim, Duncan Laurence, vencedor pela Holanda em 2019, cantou You'll Never "
+            "Walk Alone, de Gerry and the Pacemakers, com a ajuda de várias outras vozes.",
+            "Folha Você acha possível repetir o sucesso do hit «U Can't Touch This»?",
+            "O Tom e a Mary disseram que ficariam em Boston?",
+            "Chama-se He's a Bully, Charlie Brown e foi originalmente idealizado por Charles "
+            "Schulz e contava, entre os dubladores, com o ator Taylor Lautner, então criança.",
+        ],
+    )
+    def test_foreign_words_are_no_evidence(self, text):
+        """Base I of 1911 proscribes k, w and y in "palavras portuguesas, ou
+        aportuguesadas" only. The, This, Mary and Taylor are English words and names, no
+        pre-1911 Portuguese form, and neither list holds them. With no other marker the
+        sentence is AO1990."""
+        assert _orth(text).era == Era.AO1990
+
+    @pytest.mark.parametrize(
+        "text, archaism",
+        [
+            # Eça de Queirós, A Cidade e as Serras (Project Gutenberg 18220), 1901
+            ("Que magestoso armazem dos productos do Raciocinio e da Imaginação!", "productos"),
+            ("Ao meio dia, um tam-tam argentino e melancholico ressoava, chamando ao almoço.",
+             "melancholico"),
+            ("Ouve lá, tu hoje jantas commigo e com uns amigos, Zé Fernandes?", "commigo"),
+        ],
+    )
+    def test_listed_archaisms_are_evidence(self, text, archaism):
+        """The tugalex list holds each word. Base VI of 1911 writes the ch of [k] as c
+        (melancólico, as "técnica, cloro"), base VII doubles no consonant but rr, ss, mm
+        and nn where pronounced (comigo), and base VIII drops a silent consonant that does
+        not change the vowel before it ("autor, restrito, produto")."""
+        r = _orth(text)
+        assert r.era == Era.ETYMOLOGICAL
+        assert f"etym-pattern:{archaism}" in r.markers
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "A pharmacia do theatro vendia fósforos.",  # silver row s01
+            "Livre-me d'ella, se póde!",  # mmf-314974
+            "Tem uma collecção curiosa.",  # A Cidade e as Serras (Gutenberg 18220)
+        ],
+    )
+    def test_common_archaisms_still_count(self, text):
+        """Base VI of 1911 writes ph as f and drops the h of th ("O grupo ph será
+        expresso por f", "teatro"): pharmacia, theatro. Base VII writes "ela" with one l:
+        ella, collecção."""
+        assert _orth(text).era == Era.ETYMOLOGICAL

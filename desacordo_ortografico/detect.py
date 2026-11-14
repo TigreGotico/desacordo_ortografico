@@ -9,6 +9,22 @@ distinguishing marker is present.
 
 It calls the sister-language :mod:`guard` first; a :class:`~guard.NotPortuguese` result
 short-circuits everything else.
+
+Pre-1911 evidence is a listed archaic form: a word of the 1911 word map of this package
+(``data/reform_1911_irregular.json``) or of the ``archaisms.csv`` list of tugalex
+(``TugaLexicon.archaic_words``). The tugalex list is read for each part of a hyphenated
+or elided token (d'ella). Their source is the Formulário Ortográfico of 1911 (Portal da
+Língua Portuguesa, ILTEC): base I proscribes k, w and y in Portuguese words ("y por i
+... lira, fisiologia"), base VI drops the h of rh and th and writes ph as f ("teatro",
+"O grupo ph será expresso por f"), and base VII doubles no consonant except rr, ss, mm
+and nn where they are pronounced ("êle, ela, ... aparecer, ... atitude"), and base VIII
+drops a silent consonant that does not change the vowel before it ("autor, restrito,
+produto"). The tugalex list also rests on the Priberam dictionary for the modern forms
+and on the IRN list of admitted given names. A spelling pattern alone is no evidence.
+Base I applies to "palavras portuguesas, ou aportuguesadas", and its exception 1.ª
+allows k, w and y in derivatives of foreign names ("Poderão usar-se essas letras";
+kantismo, darwinismo, byroniano), so a foreign word or
+name (the, Taylor, Mary) in a modern sentence is no pre-1911 spelling.
 """
 from __future__ import annotations
 
@@ -21,15 +37,11 @@ from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
 from .ml import features, get_detector_model
-from .rules import _MONTHS
+from .rules import _MONTHS, _SEGMENT_SEP
 from .rules import words as _words
 
 _VOWELS = "aeiouáàâãéêíóôõúü"
 _NASAL = "[mn][%s]" % _VOWELS
-# Etymological-only patterns. Deliberately excludes mm/nn (survive in modern PT
-# comummente/connosco) and sci (modern piscina/consciência); those archaic words are
-# still caught by the reform1911 lexicon membership check.
-_RE_ETYM = re.compile(r"ph|th|rh|(?:ll|pp|tt|bb|gg|dd|ff|cc)|[a-z]y")
 _RE_NASAL_PT = re.compile("[éó](?=%s)" % _NASAL)
 _RE_NASAL_BR = re.compile("[êô](?=%s)" % _NASAL)
 
@@ -122,6 +134,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     pt_lean = 0
     br_lean = 0
     markers: List[str] = []
+    archaic = lex.tuga.archaic_words
 
     for i, raw in enumerate(_words(text)):
         w = raw.lower()
@@ -130,7 +143,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if w in lex.reform1911_old2new:
             etym += 2
             markers.append(f"etym:{w}")
-        elif _RE_ETYM.search(w):
+        elif any(part in archaic for part in _SEGMENT_SEP.split(w)):
             etym += 1
             markers.append(f"etym-pattern:{w}")
 
