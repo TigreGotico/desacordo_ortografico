@@ -84,8 +84,8 @@ def test_ordinal_signs_do_not_make_text_mixed_case(text, src, dst, want):
     assert convert(text, src, dst) == want
 
 
-def _gold_corpus(row_id):
-    path = Path(__file__).parent.parent / "benchmark" / "gold_corpus.jsonl"
+def _silver_corpus(row_id):
+    path = Path(__file__).parent.parent / "benchmark" / "silver_corpus.jsonl"
     for line in path.open(encoding="utf-8"):
         row = json.loads(line)
         if row["id"] == row_id:
@@ -93,10 +93,10 @@ def _gold_corpus(row_id):
     raise KeyError(row_id)
 
 
-# Rows of benchmark/gold_corpus.jsonl in capitals throughout. Their pre-1911 words (THEATRO,
+# Rows of benchmark/silver_corpus.jsonl in capitals throughout. Their pre-1911 words (THEATRO,
 # COLLECÇÃO, MAPPAS) are no listed words, and they still convert.
 @pytest.mark.parametrize("row_id", ["s01", "p01-021", "p06-011"])
 @pytest.mark.parametrize("target", ["pt_1973", "ao1990-pt"])
 def test_text_in_capitals_converts_every_word(row_id, target):
-    cells = _gold_corpus(row_id)
+    cells = _silver_corpus(row_id)
     assert convert(cells["etymological"].upper(), "etymological", target) == cells[target].upper()

@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Merge + validate the hand-authored core and the LLM-authored parts into one corpus.
+"""Merge + validate the language-model-authored core and parts into one corpus.
 
 Validation is structural (every line is JSON with five non-empty norm cells) plus a
 few cheap sanity checks (no cell wildly different in length, at least one norm differs
 unless explicitly invariant). Duplicates (by the ao1990-pt rendering) are dropped.
-Writes ``gold_corpus.jsonl`` and prints a report.
+Writes ``silver_corpus.jsonl`` and prints a report.
 """
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 NORMS = ["etymological", "pt_1973", "ao1990-pt", "br_1971", "ao1990-br"]
-SOURCES = ["gold_parallel.jsonl"] + sorted(
+SOURCES = ["silver_parallel.jsonl"] + sorted(
     os.path.relpath(p, HERE) for p in glob.glob(os.path.join(HERE, "parts", "*.jsonl"))
 )
 
@@ -70,7 +70,7 @@ def main():
                 n_ok += 1
         stats["by_source"][src] = n_ok
 
-    with open(os.path.join(HERE, "gold_corpus.jsonl"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_corpus.jsonl"), "w", encoding="utf-8") as f:
         for rec in out:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 

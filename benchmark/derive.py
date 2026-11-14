@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""Verified derivation: turn a modern European-Portuguese sentence into all five norms.
+"""Derivation: turn a modern European-Portuguese sentence into all five norms.
 
-Correct by construction. A word is transformed only via a *verified* per-word map (built
-from the QA'd corpus + tugalex + the curated lexicons) or a deterministic rule (nasal
+A word is transformed only via a per-word map (built from the silver corpus, tugalex and
+the language-model-classified ``derived_lexicon.json``) or a deterministic rule (nasal
 vowel, trema membership, month casing). If a sentence contains a word that *could* vary
 orthographically but is NOT covered, or a context-ambiguous differential word, the
-sentence is rejected (returns None) — so a derived sentence can never be wrong.
+sentence is rejected (returns None). A derived sentence is as correct as the maps it
+reads: an error in a map reaches every sentence that uses the word.
 
     from derive import build_maps, derive
     M = build_maps()
@@ -55,8 +56,8 @@ def _align_line(cells, cols):
 
 def build_maps():
     M = Maps()
-    # 1) verified word forms straight from the QA'd corpus
-    for line in open(os.path.join(HERE, "gold_corpus.jsonl"), encoding="utf-8"):
+    # 1) word forms straight from the silver corpus
+    for line in open(os.path.join(HERE, "silver_corpus.jsonl"), encoding="utf-8"):
         if not line.strip():
             continue
         c = json.loads(line)["cells"]
@@ -76,7 +77,7 @@ def build_maps():
             M.pt.setdefault(new, (new, old))
     for new, old in lex.ao_br_new2old.items():        # ideia -> idéia (br_1971)
         M.br.setdefault(new, old)
-    # 3) verified at-risk vocabulary (pt_1973/etymological per word) + Brazilian trema
+    # 3) at-risk vocabulary (pt_1973/etymological per word) + Brazilian trema
     #    words, classified once by an LLM panel and consolidated into a committed lexicon
     lex_path = os.path.join(HERE, "derived_lexicon.json")
     if os.path.exists(lex_path):

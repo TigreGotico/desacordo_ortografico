@@ -3,7 +3,7 @@
 
 Reads one modern European-Portuguese sentence per line, derives all five norms with the
 verified engine (derive.py), drops the uncoverable ones, infers the feature labels from
-the cell differences, de-duplicates, and writes gold_generated.jsonl.
+the cell differences, de-duplicates, and writes silver_generated.jsonl.
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ def main():
             seen.add(key)
             out.append({"id": f"d{len(out):05d}", "features": infer_features(d, M),
                         "cells": d, "source": "derived"})
-    with open(os.path.join(HERE, "gold_generated.jsonl"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_generated.jsonl"), "w", encoding="utf-8") as f:
         for r in out:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     from collections import Counter

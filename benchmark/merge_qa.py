@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply the LLM QA corrections (benchmark/qa/out/*.jsonl) to the gold corpus.
+"""Apply the LLM QA corrections (benchmark/qa/out/*.jsonl) to the silver corpus.
 
 Each correction line is {"id", "verdict":"fix"|"drop", ...}. A "fix" replaces the cells
 and/or features; a "drop" removes the sentence. After applying, a final structural check
@@ -12,7 +12,7 @@ import glob
 import json
 import os
 
-from clean_gold import cells_consistent  # noqa: E402  (same dir)
+from clean_silver import cells_consistent  # noqa: E402  (same dir)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,7 +22,7 @@ def _load(path):
 
 
 def apply_parallel():
-    rows = _load(os.path.join(HERE, "gold_corpus.jsonl"))
+    rows = _load(os.path.join(HERE, "silver_corpus.jsonl"))
     order = [r["id"] for r in rows]
     by_id = {r["id"]: r for r in rows}
     fixes = drops = 0
@@ -53,7 +53,7 @@ def apply_parallel():
             out.append(r)
         else:
             struct_drop += 1
-    with open(os.path.join(HERE, "gold_corpus.jsonl"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_corpus.jsonl"), "w", encoding="utf-8") as f:
         for r in out:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"parallel: applied {fixes} fixes, {drops} drops; "
@@ -65,7 +65,7 @@ def apply_sisters():
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         print("sisters: no corrections")
         return
-    rows = _load(os.path.join(HERE, "gold_sisters.jsonl"))
+    rows = _load(os.path.join(HERE, "silver_sisters.jsonl"))
     by_id = {r["id"]: r for r in rows}
     fixes = drops = 0
     for c in _load(path):
@@ -76,7 +76,7 @@ def apply_sisters():
             by_id[c["id"]]["text"] = c["text"]
             fixes += 1
     out = [r for r in rows if r["id"] in by_id]
-    with open(os.path.join(HERE, "gold_sisters.jsonl"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_sisters.jsonl"), "w", encoding="utf-8") as f:
         for r in out:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"sisters: applied {fixes} fixes, {drops} drops; final {len(out)}")

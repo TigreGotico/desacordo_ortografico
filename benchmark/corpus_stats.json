@@ -1,7 +1,7 @@
 {
   "n": 1341,
   "by_source": {
-    "gold_parallel.jsonl": 21,
+    "silver_parallel.jsonl": 21,
     "parts/part_01.jsonl": 110,
     "parts/part_02.jsonl": 110,
     "parts/part_03.jsonl": 110,
