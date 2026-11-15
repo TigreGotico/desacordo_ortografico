@@ -1,0 +1,118 @@
+"""The ``features=`` allowlist of :func:`convert`.
+
+Each case word is a standard example of its reform. The expected spelling comes from the
+reform text cited on the row, not from the library. The pt-PT/pt-BR divergence row has
+no reform text: connosco is the pt-PT spelling and conosco the pt-BR one.
+"""
+import pytest
+
+from desacordo_ortografico import FEATURES, convert
+
+P = ("etymological", "ao1990-pt")
+B = ("etymological", "ao1990-br")
+X = ("ao1990-pt", "ao1990-br")
+R = ("reforma_1911", "pt_1945")
+RB = ("reforma_1911", "br_1943")
+
+# feature -> (path, old word, new word)
+CASES = {
+    # Reforma de 1911: ph -> f, th -> t, geminates reduced, graphic accents. A word that
+    # a 1911 word map holds belongs to 1911-word-map, so the rule cases are unlisted words.
+    "1911-word-map": (P, "pharmacia", "farmácia"),
+    "1911-digraphs": (P, "thesouraria", "tesouraria"),
+    "1911-geminates": (P, "commissionar", "comissionar"),
+    "1911-accent-restore": (P, "fosforo", "fósforo"),
+    # Convenção de 1945 for Portugal, AO1990 Base XIV 1º for Brazil: no trema
+    "trema": (P, "lingüiça", "linguiça"),
+    # Acordo Ortográfico de 1945, Base IX: "quase (em vez de quási)"
+    "post-1911-word-map": (R, "quási", "quase"),
+    # Acordo Ortográfico de 1945, Base XIII: "também"
+    "oxytone-em": (R, "tambêm", "também"),
+    # Formulário Ortográfico de 1943, 12.ª: "tranqüilo"
+    "grave-u": (RB, "tranqùilo", "tranqüilo"),
+    # Formulário Ortográfico de 1943, 19.: "ciência"
+    "initial-sc": (RB, "sciência", "ciência"),
+    # Acordo Ortográfico de 1945, Base XXII: "ele (ê), pronome"
+    "differential-1945": (R, "êle", "ele"),
+    # Decreto-Lei 32/73: no subtonic grave accent
+    "subtonic-grave": (P, "sòmente", "somente"),
+    # AO1990 Base IV 1º b): mute c dropped (ação)
+    "ao-map-consonant": (P, "acção", "ação"),
+    # AO1990 Base IX 9º: pêlo loses its differential accent
+    "ao-map-diacritic": (P, "pêlo", "pelo"),
+    # AO1990 Base XIV 1º
+    "ao-map-trema": (B, "freqüência", "frequência"),
+    # AO1990 Base XVI 2º a): prefix + r doubles the r
+    "ao-map-join": (P, "auto-retrato", "autorretrato"),
+    # AO1990 Base XV 6º: locutions lose the hyphens
+    "ao-map-locution": (P, "fim-de-semana", "fim de semana"),
+    # AO1990 Base IX 9º: pára (verb) loses its accent
+    "differential": (P, "pára", "para"),
+    # AO1990 Base XV 1º obs.: mandachuva is written joined
+    "hyphen-lexical": (P, "manda-chuva", "mandachuva"),
+    # Formulário Ortográfico de 1943, 16.: "Não se escrevem as consoantes que se não
+    # proferem: ... diretor ... e não ... director". Toward pt-PT the AO1990 word map
+    # lists directora, and a listed word belongs to the ao-map features.
+    "base-iv": (B, "directora", "diretora"),
+    # AO1990 Base IV 1º b): exato; the plural of the map row exactidão, which the map
+    # does not list
+    "silent-cp": (P, "exactidões", "exatidões"),
+    # AO1990 Base IX 3º: éi in a paroxytone loses the accent
+    "diphthong-accent": (P, "assembléia", "assembleia"),
+    # AO1990 Base IX 8º: ôo loses the accent
+    "hiatus-accent": (P, "vôo", "voo"),
+    # AO1990 Base XVI 2º a)
+    "prefix-rs": (P, "auto-regulável", "autorregulável"),
+    # AO1990 Base XIX 1º: months take a lower-case initial
+    "months": (P, "em Janeiro", "em janeiro"),
+    # pt-PT connosco, pt-BR conosco (no AO1990 clause names either form)
+    "ptbr-divergence": (X, "connosco", "conosco"),
+    # AO1990 Base XI 3º: académico / acadêmico
+    "nasal-vowel": (X, "académica", "acadêmica"),
+    # Lei 5.765/1971: no differential circumflex
+    "differential-1971": (B, "êle", "ele"),
+    # ABL VOLP: "setor (ô) s.m. | sector (ô) s.m."; of two valid forms, the one with the
+    # consonant (owner ruling)
+    "volp": (X, "setor", "sector"),
+}
+
+
+def test_every_feature_has_a_case():
+    assert set(CASES) == FEATURES
+
+
+@pytest.mark.parametrize("feature", sorted(CASES))
+def test_feature_alone_applies(feature):
+    path, old, new = CASES[feature]
+    assert convert(old, *path, features={feature}) == new
+
+
+@pytest.mark.parametrize("feature", sorted(CASES))
+def test_feature_alone_changes_only_its_word(feature):
+    path = CASES[feature][0]
+    words = [old for p, old, _ in CASES.values() if p == path]
+    expected = [new if f == feature else old for f, (p, old, new) in CASES.items() if p == path]
+    assert convert(" , ".join(words), *path, features={feature}) == " , ".join(expected)
+
+
+@pytest.mark.parametrize("path", [P, B, X, R, RB])
+def test_no_features_changes_nothing(path):
+    text = " , ".join(old for p, old, _ in CASES.values() if p == path)
+    assert convert(text, *path, features=()) == text
+
+
+def test_unknown_feature_raises():
+    with pytest.raises(ValueError, match="no-such-feature"):
+        convert("acção", *P, features={"trema", "no-such-feature"})
+
+
+def test_a_bare_string_raises():
+    with pytest.raises(TypeError):
+        convert("acção", *P, features="trema")
+
+
+@pytest.mark.parametrize("path", [P, B, X, R, RB])
+def test_default_applies_every_feature(path):
+    text = " , ".join(old for p, old, _ in CASES.values() if p == path)
+    expected = " , ".join(new for p, _, new in CASES.values() if p == path)
+    assert convert(text, *path) == expected

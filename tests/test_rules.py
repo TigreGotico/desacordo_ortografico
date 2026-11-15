@@ -18,6 +18,25 @@ class TestReform1911Digraphs:
     def test_digraphs(self, old, new):
         assert rules.reform_1911_digraphs(old) == new
 
+    # 1911 replaced ⟨ch⟩ "com valor de [k]" by ⟨c⟩; this rule takes ⟨ch⟩ before r, l, n or th
+    @pytest.mark.parametrize(
+        "old,new",
+        [
+            ("christianismo", "cristianismo"),
+            ("chloro", "cloro"),
+            ("technica", "tecnica"),
+            ("ichthyologia", "ictiologia"),
+            ("synchronizacao", "sincronizacao"),
+        ],
+    )
+    def test_ch_before_a_consonant_is_c(self, old, new):
+        assert rules.reform_1911_digraphs(old) == new
+
+    @pytest.mark.parametrize("word", ["chave", "chuva", "bach", "chimica", "sandwichs", "utrecht",
+                                      "richmond", "schmerz", "schreiber"])
+    def test_ch_of_other_sounds_stays(self, word):
+        assert rules.reform_1911_digraphs(word) == word
+
 
 class TestNasalVowel:
     @pytest.mark.parametrize(

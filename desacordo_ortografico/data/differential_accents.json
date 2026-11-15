@@ -25,5 +25,11 @@
     "provêm",
     "fôrma"
   ],
-  "_kept_note": "'pôr' (verb) vs 'por' (prep); 'pôde' (pret.) vs 'pode' (pres.); 'têm/vêm' (3pl) vs 'tem/vem' (3sg); 'fôrma' (mould) optional circumflex to distinguish from 'forma' (shape)."
+  "_kept_note": "'pôr' (verb) vs 'por' (prep); 'pôde' (pret.) vs 'pode' (pres.); 'têm/vêm' (3pl) vs 'tem/vem' (3sg); 'fôrma' (mould) optional circumflex to distinguish from 'forma' (shape).",
+  "restore": {
+    "pera": "pêra",
+    "polo": "pólo",
+    "polos": "pólos"
+  },
+  "_restore_note": "Backward (AO1990 -> older norms) the bare form of a dropped differential accent stays as written, because it is also a proclitic in daily use (para, pela, pelo: Base IX 9.o) and only context separates the two. Two bare forms are restored, because their proclitic reading is archaic: pera, 'preposição arcaica' (Acordo de 1945, Base XXII; the plural peras never took the accent), and polo(s), 'combinação antiga e popular de por e lo(s)' (AO1990 Base IX 9.o)."
 }

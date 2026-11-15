@@ -14,7 +14,7 @@ Brazilian sub-variants that AO1990 keeps distinct.
 See :func:`detect` for classification and :func:`convert` (or
 :class:`OrthographyConverter`) for conversion.
 """
-from .convert import ConversionResult, OrthographyConverter, convert
+from .convert import FEATURES, ConversionResult, OrthographyConverter, convert
 from .detect import Orthography, detect
 from .eras import EDGES, NORMS, Era, Norm, Variant, find_path
 from .guard import NotPortuguese, detect_sister
@@ -24,6 +24,7 @@ from .version import VERSION_STR as __version__
 __all__ = [
     "detect",
     "convert",
+    "FEATURES",
     "Orthography",
     "NotPortuguese",
     "detect_sister",

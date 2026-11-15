@@ -25,7 +25,7 @@ TAU = 1.0  # perceptron margin below which the ensemble defers to the rule detec
 
 
 def load_corpus():
-    with open(os.path.join(HERE, "gold_corpus.jsonl"), encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_corpus.jsonl"), encoding="utf-8") as f:
         return [json.loads(line) for line in f if line.strip()]
 
 

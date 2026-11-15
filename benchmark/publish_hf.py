@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish the parallel gold corpus as a Hugging Face dataset.
+"""Publish the parallel silver corpus as a Hugging Face dataset.
 
 Flattens the nested cells into one column per norm (viewer-friendly), writes a dataset
 card, and uploads to ``TigreGotico/desacordo_ortografico``.
@@ -90,25 +90,44 @@ The European line (`etymological`, `pt_1973`, `ao1990_pt`) and the Brazilian lin
 
 ## Construction
 
+All rows are silver data. Language models wrote the sentences or classified the words
+they are built from, and no person checked them.
+
 The `source` field marks how each row was built:
 
-- `authored` — written from linguistic knowledge against an explicit per-norm rule card
-  (a hand-written core plus a fan-out of language models over distinct topic domains),
-  independently of any converter, then audited sentence-by-sentence by a language-model
-  panel and tightened to reference quality.
-- `derived` — a natural modern-European sentence whose other four norms are produced by a
-  **verified derivation**: each word is transformed only via a per-word form confirmed
-  against a curated lexicon (the silent-consonant, trema, nasal-vowel, dual and
-  differential vocabularies were classified word-by-word by a language-model panel); any
-  sentence containing a word whose variation is not verified is dropped, so a derived row
-  is correct by construction. Spelling correctness was confirmed by independent sampling.
+- `authored` — language models wrote the sentence in all five norms against a per-norm
+  rule card. A language-model QA pass then corrected or dropped rows. A consistency step
+  replaced some dual and divergence words with the variants of the converter's word maps,
+  and some etymological words with their `pt_1973` forms.
+- `derived` — a modern European sentence that a language model wrote. Per-word table
+  lookup and deterministic rules (nasal vowel, trema, month casing) produce the other
+  four norms. The tables come from the `authored` rows, the AO1990 and 1911 word maps of
+  the converter's lexicon, and a word list that a language-model panel classified one by
+  one. A sentence that holds a word no table covers is dropped. An error in a table goes
+  into every row that uses the word.
+- `coverage` — a short carrier sentence (one quoted term), derived the same way, so that
+  **every** AO1990-changed word in the reference lexicon appears at least once.
+
+A last step corrects the Brazilian cells of all rows from dictionaries. The `br_1971`
+cells follow the Formulário Ortográfico of 1943 of the Academia Brasileira de Letras,
+then the Pequeno Vocabulário Ortográfico of 1943 that the Formulário opens, then the
+Brazilian headword of the Priberam dictionary before the AO1990, where the page shows a
+spelling change. Where rule 18 of the Formulário or an entry of the vocabulary registers
+both forms, the cell writes the c/p form (`contacto`, `secção`, `tecto`, `sector`,
+`corrupto`); rule 16 keeps `ótimo`, and the vocabulary writes `conjetura` and `clichê`. The `ao1990_br` cells follow the Vocabulário
+Ortográfico da Língua Portuguesa (VOLP), then Priberam after the AO1990, where the page
+shows a spelling change.
+Where the VOLP lists both forms of one word, the cell writes the c/p form (`facto`,
+`sector`, `detectar`). Where it lists one form, the cell writes that form (`ação`,
+`acepção`, `comitê`). The `br_1971` cells write the preterite ending `-amos` without the
+accent. A word that no source of its cell decides stays as written in its row, and so
+does a personal or place name inside a sentence (`Otávia`, `o Ártico`). Two rows
+are dropped: the VOLP lists no form of their word (`detetiva`), or the sentence fits
+neither of two VOLP words (`distático`).
 
 Within each line (European: `etymological`/`pt_1973`/`ao1990_pt`; Brazilian:
 `br_1971`/`ao1990_br`) the cells differ only by the documented era transforms; the two
 national lines may also differ lexically in the `authored` rows.
-
-A third tag, `coverage`, marks short carrier sentences (one quoted term) added so that
-**every** AO1990-changed word in the reference lexicon appears at least once.
 
 ## Word coverage
 
@@ -138,8 +157,8 @@ def main():
     ap.add_argument("--private", action="store_true")
     args = ap.parse_args()
 
-    parallel = flatten_parallel(_load("gold_full.jsonl"))
-    sisters = _load("gold_sisters.jsonl")
+    parallel = flatten_parallel(_load("silver_full.jsonl"))
+    sisters = _load("silver_sisters.jsonl")
 
     with tempfile.TemporaryDirectory() as d:
         with open(os.path.join(d, "parallel.jsonl"), "w", encoding="utf-8") as f:
@@ -152,7 +171,8 @@ def main():
             f.write(CARD.replace("{N}", str(len(parallel))))
 
         api = HfApi()
-        api.create_repo(args.repo, repo_type="dataset", private=args.private, exist_ok=True)
+        if not api.repo_exists(args.repo, repo_type="dataset"):
+            api.create_repo(args.repo, repo_type="dataset", private=args.private, exist_ok=True)
         api.upload_folder(folder_path=d, repo_id=args.repo, repo_type="dataset",
                           commit_message="Publish Portuguese orthographies parallel corpus")
     print(f"published {len(parallel)} parallel + {len(sisters)} sister rows to "

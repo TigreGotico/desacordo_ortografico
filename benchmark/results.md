@@ -1,6 +1,6 @@
 # desacordo_ortografico benchmark
 
-Corpus: `gold_corpus.jsonl` — 1329 parallel sentences (6645 renderings across 5 norms).
+Corpus: `silver_corpus.jsonl` — 1329 parallel sentences (6645 renderings across 5 norms).
 
 ## Conversion
 
