@@ -102,9 +102,22 @@ Letras, with the changes of Lei 5.765/1971, because it is the official norm of t
 period. Its rule 18 registers both forms of the words it lists ("contacto e contato",
 "secção e seção", "tecto e teto"), and the cell writes the c/p form of those, by the
 owner ruling on dual spellings. Its rules 16 and 17 fix one form ("diretor ... ótimo ...
-e não ... director ... optimo"). For the other words, the Brazilian headword of the
-Dicionário Priberam page in the view before the AO1990 decides: fato stays (Priberam
-facto, Brazil: fato), and detetou becomes detectou (Brazil: detectar). A Priberam page
+e não ... director ... optimo"). For the other words, the second source is the Pequeno
+Vocabulário Ortográfico da Língua Portuguesa of 1943, the vocabulary that the Formulário
+opens (ABL, Imprensa Nacional, 1943; public copy on Wikimedia Commons,
+https://commons.wikimedia.org/wiki/File:Pequeno_Vocabul%C3%A1rio_Ortogr%C3%A1fico_da_L%C3%ADngua_Portuguesa_(1943).pdf).
+Its instructions register both spellings of a word "se nêle há consoante que
+facultativamente se profira", one after the other (item 6), and the entry prints the
+second after a colon: "setor (ô), s. m.: sector." (p. 1177), "corruto, adj.: corrupto."
+(p. 400). The cell writes the c/p form of such a word, by the same dual ruling: setor
+becomes sector, and corruto becomes corrupto. A word with one registered spelling takes
+that spelling: conjectura becomes conjetura ("conjetura, s. f.", p. 381, with no
+conjectura), and cliché becomes clichê ("clichê, s. m.", p. 355). Lei 5.765/1971 changes
+the accents of the vocabulary where it abolishes the differential circumflex and the
+grave accent of derived words; no decision of the tables depends on such an accent.
+For the words that neither ABL source decides, the Brazilian headword of the Dicionário
+Priberam page in the view before the AO1990 decides: deteção becomes detecção (Priberam
+detecção, Brazil: detecção), and aceção becomes acepção (Brazil: acepção). A Priberam page
 decides only when it shows a spelling change: its spelling before and after the AO1990
 differs in Brazil or in Portugal, or Brazil and Portugal wrote two spellings before it.
 A page with one spelling in all four views records no pre-1990 spelling (Priberam
@@ -150,12 +163,11 @@ count from its pt_1973 cell gets only the lines with `*` for the pt_1973 token, 
 lines that name its row (p05-046 and p05-082 reword "o facto de" as "o fato de" and
 still mean a fact). `variety_keeps.tsv` lists each bare form that stays, with its cell,
 its rows and its source. Of the bare forms in the full set whose European word writes a
-c/p, 614 br_1971 tokens of 395 words and 141 ao1990-br tokens of 102 words stay
+c/p, 336 br_1971 tokens of 265 words and 141 ao1990-br tokens of 102 words stay
 undecided, because no source of the cell decides them. In br_1971, rule 43 does not
-decide the vowel of comité (5 tokens), cliché and géiser, so these words stay as written
-too. The ABL publishes its vocabulary of 1943 online, the Pequeno Vocabulário Ortográfico
-that opens with the Formulário. The br_1971 tables do not use it yet. A later change adds
-it to the br_1971 source order. `variety_drops.tsv` lists tokens that the sources cannot decide, and the
+decide the vowel of comité (5 tokens), and the 1943 vocabulary has no entry for it
+between comissurante and comitente (p. 371), so it stays as written too.
+`variety_drops.tsv` lists tokens that the sources cannot decide, and the
 script drops each row that holds one. The br_1971 cells write the preterite ending -amos
 without the accent (Formulário Ortográfico 1943, rule 43, 15.ª, OBSERVAÇÃO); ao1990-br keeps -ámos
 (AO1990, Base IX, 4). The derived rows keep the European words in the Brazilian cells

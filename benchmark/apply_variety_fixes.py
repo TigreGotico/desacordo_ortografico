@@ -20,12 +20,18 @@ The br_1971 cell is the pre-1990 Brazilian norm. Its sources, in order of author
   spellings). Rules 16 and 17 fix one form ("diretor ... ótimo ... e não ... director
   ... optimo"). Rule 43, 15.ª, OBSERVAÇÃO, writes the preterite ending -amos without
   the accent.
+- ABL, Pequeno Vocabulário Ortográfico da Língua Portuguesa (1943), the vocabulary that
+  the Formulário opens, for words the Formulário does not name. An entry that gives two
+  spellings registers both ("setor (ô), s. m.: sector.", "corruto, adj.: corrupto."), and
+  the cell writes the c/p form. A word with one registered spelling takes that spelling
+  ("conjetura, s. f.", "clichê, s. m."). Lei 5.765/1971 overrides its accents where the
+  law changed them.
 - Dicionário Priberam da Língua Portuguesa, the Brazilian headword in the view before
-  the AO1990, for words the Formulário does not name. A page decides only when it shows
+  the AO1990, for words neither ABL source decides. A page decides only when it shows
   a spelling change: before and after the AO1990 in Brazil or in Portugal, or between
   Brazil and Portugal before it. A page with one spelling in all four views decides
   nothing.
-- If neither decides, the token stays as written.
+- If none decides, the token stays as written.
 
 The post-1990 VOLP never decides a br_1971 cell. The ao1990-br cell, in order:
 

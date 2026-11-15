@@ -3,9 +3,11 @@
 br_1971 is the pre-1990 Brazilian norm. Its sources, in order: the ABL Formulário
 Ortográfico of 1943 (with Lei 5.765/1971), whose rule 18 registers both forms of the
 words it lists and whose rule 16 fixes one form ("diretor ... ótimo ... e não ...
-director ... optimo"); then the Brazilian headword of the Dicionário Priberam page in the
-view before the AO1990, when the page shows a spelling change. Rule 43, 15.ª, OBSERVAÇÃO,
-writes the preterite ending -amos without the accent.
+director ... optimo"); then the ABL Pequeno Vocabulário Ortográfico of 1943, whose entry
+registers a second spelling after a colon ("setor (ô), s. m.: sector."); then the
+Brazilian headword of the Dicionário Priberam page in the view before the AO1990, when the
+page shows a spelling change. Rule 43, 15.ª, OBSERVAÇÃO, writes the preterite ending -amos
+without the accent.
 
 ao1990-br follows the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP), then the
 Priberam Brazilian view after the AO1990. Where the VOLP lists both forms
@@ -54,30 +56,30 @@ def _tokens(row, cell):
     # secção s.f. "parcela"; cf. seção. A section of a shop is the "corte, etc." entry.
     ("p09-056", "br_1971", "secção"),
     ("p09-056", "ao1990-br", "seção"),
-    # Priberam facto (Brazil before the AO1990: fato); VOLP: fato s.m. | facto s.m. "O fato
-    # de" means a fact; the Brazilian cells reword the sentence, so no token aligns with facto.
+    # Vocabulário 1943, p. 635: "fato, s. m.", with no facto; VOLP: fato s.m. | facto s.m. "O
+    # fato de" means a fact; the Brazilian cells reword the sentence, so no token aligns with facto.
     ("p05-046", "br_1971", "fato"),
     ("p05-046", "ao1990-br", "facto"),
     ("p05-082", "br_1971", "fato"),
     ("p05-082", "ao1990-br", "facto"),
-    # Priberam facto (Brazil before the AO1990: fato); VOLP: fato s.m. | facto s.m.
+    # Vocabulário 1943, p. 635: "fato, s. m.", with no facto; VOLP: fato s.m. | facto s.m.
     ("p02-018", "br_1971", "fato"),
     ("p02-018", "ao1990-br", "facto"),
     # Formulário 1943, 16: "ótimo ... e não ... optimo"; VOLP: ótimo adj. s.m. | óptimo adj. s.m.
     ("p04-001", "br_1971", "ótimo"),
     ("p04-001", "ao1990-br", "óptimo"),
-    # Priberam sector (Brazil before the AO1990: setor); VOLP: setor s.m. | sector s.m.
-    ("p03-034", "br_1971", "setor"),
+    # Vocabulário 1943, p. 1177: "setor (ô), s. m.: sector."; VOLP: setor s.m. | sector s.m.
+    ("p03-034", "br_1971", "sector"),
     ("p03-034", "ao1990-br", "sector"),
-    # Priberam detectar (Brazil before the AO1990: detectar); VOLP: detectar v. | detetar v.
+    # Vocabulário 1943, p. 478: "detectar, v.", with no detetar; VOLP: detectar v. | detetar v.
     ("p03-020", "br_1971", "detectou"),
     ("p03-020", "ao1990-br", "detectou"),
     # Formulário 1943, 18: "infecção e infeção"; VOLP: infecção s.f. | infeção s.f.
     ("p04-003", "br_1971", "infecção"),
     ("p04-003", "ao1990-br", "infecção"),
-    # Priberam electrónico (Brazil before the AO1990: eletrônico); VOLP: eletrônico adj. |
+    # Vocabulário 1943, p. 511: "electrônico, adj.: eletrônico."; VOLP: eletrônico adj. |
     # electrônico adj.
-    ("p10-008", "br_1971", "eletrônico"),
+    ("p10-008", "br_1971", "electrônico"),
     ("p10-008", "ao1990-br", "electrônico"),
     ("p10-052", "ao1990-br", "electrônica"),
     # Priberam recto (Brazil before the AO1990: reto); VOLP: reto adj. s.m. | recto adj. s.m.,
@@ -86,7 +88,7 @@ def _tokens(row, cell):
     ("p08-028", "ao1990-br", "recta"),
     # VOLP: elétron s.m. | eléctron s.m.
     ("p01-024", "ao1990-br", "eléctron"),
-    # Priberam óptica (Brazil before the AO1990: óptica); VOLP: óptica s.f. "ciência da
+    # Vocabulário 1943, p. 964: "óptica, s. f.: ótica."; VOLP: óptica s.f. "ciência da
     # visão"; cf. ótica ("ciência da audição")
     ("p04-013", "br_1971", "óptica"),
     ("p04-013", "ao1990-br", "óptica"),
@@ -144,18 +146,19 @@ def test_no_row_holds_an_undecidable_token():
 
 
 def test_every_line_names_its_source():
-    """A br_1971 line cites the Formulário or the Priberam view before the AO1990, never the VOLP."""
+    """A br_1971 line cites the Formulário, a page of the 1943 vocabulary or the Priberam
+    view before the AO1990, never the VOLP."""
     for cell, token, _european, fix, _rows_named, source in _tsv("variety_fixes.tsv"):
         assert cell in BRAZILIAN
         assert token != fix
         if cell == "br_1971":
-            assert source.startswith("Formulário 1943, ") or (
+            assert re.match(r"Formulário 1943, |Vocabulário 1943, p\. \d+", source) or (
                 source.startswith("Priberam ") and "before the AO1990" in source), source
         else:
             assert source.startswith(("VOLP: ", "Priberam ")), source
     for cell, _token, _european, _rows_named, reason in _tsv("variety_keeps.tsv"):
-        allowed = ("Formulário 1943, ", "Priberam ", "no source: ") if cell == "br_1971" else \
-            ("VOLP: ", "Priberam ", "no source: ")
+        allowed = ("Formulário 1943, ", "Vocabulário 1943, p. ", "Priberam ", "no source: ") \
+            if cell == "br_1971" else ("VOLP: ", "Priberam ", "no source: ")
         assert reason.startswith(allowed), reason
 
 
@@ -171,12 +174,64 @@ def test_a_br_1971_priberam_citation_shows_a_spelling_change():
              if cell == "br_1971" and source.startswith("Priberam ")]
     cited += [(token, reason) for cell, token, _e, _r, reason in _tsv("variety_keeps.tsv")
               if cell == "br_1971" and reason.startswith("Priberam ")]
-    assert len(cited) > 1000
+    assert len(cited) > 350
     for token, source in cited:
         m = PRIBERAM_VIEWS.match(source)
         assert m, source
         brazil_before, brazil_after, portugal_before, portugal_after = m.groups()
         assert len({brazil_before, brazil_after, portugal_before, portugal_after}) > 1, (token, source)
+
+
+@pytest.mark.parametrize("sentence,european,expected", [
+    # Vocabulário 1943, p. 355: "clichê, s. m.: adapt. do fr. cliché."
+    ("Um cliché gasto.", "Um cliché gasto.", "Um clichê gasto."),
+    # Vocabulário 1943, p. 687: "gêiser, s. m.: adapt. do ingl. geyser."
+    ("O géiser jorrou.", "O géiser jorrou.", "O gêiser jorrou."),
+    # Vocabulário 1943, p. 400: "corruto, adj.: corrupto." registers both spellings, and
+    # the dual ruling writes the c/p form (d18971).
+    ("O sistema corruto de distribuição.", "O sistema corrupto de distribuição.",
+     "O sistema corrupto de distribuição."),
+    # Vocabulário 1943, p. 1177: "setor (ô), s. m.: sector." Priberam sector (Brazil before
+    # the AO1990: setor) kept setor; the vocabulary comes first.
+    ("O setor público.", "O sector público.", "O sector público."),
+    # Vocabulário 1943, p. 381: "conjetura, s. f.", with no conjectura. Priberam conjectura
+    # (Brazil before the AO1990: conjectura) wrote conjectura; the vocabulary comes first.
+    ("Uma conjetura falsa.", "Uma conjectura falsa.", "Uma conjetura falsa."),
+    # Vocabulário 1943, p. 1069: "prospetiva, s. f.", with no prospectiva.
+    ("A prospetiva do mercado.", "A prospectiva do mercado.", "A prospetiva do mercado."),
+    # Vocabulário 1943, p. 796: "jacto, s. m.: jato."
+    ("Um jato de água.", "Um jacto de água.", "Um jacto de água."),
+    # The vocabulary has no comitê or comité between comissurante and comitente (p. 371),
+    # and no other source records the vowel, so the token stays.
+    ("O comité reuniu.", "O comité reuniu.", "O comité reuniu."),
+    # Vocabulário 1943, p. 1065: "produto, s. m.", with no producto.
+    ("Um produto novo.", "Um producto novo.", "Um produto novo."),
+    # Vocabulário 1943, p. 1295: "vector (ô), adj. e s. m.: vetor." Priberam vector (Brazil
+    # before the AO1990: vetor) kept vetor; the vocabulary comes first.
+    ("Um vetor unitário.", "Um vector unitário.", "Um vector unitário."),
+    # Vocabulário 1943, p. 1295: "vectorial, adj.: vetorial."
+    ("Um campo vetorial.", "Um campo vectorial.", "Um campo vectorial."),
+    # Vocabulário 1943, p. 511: "electroquímica, s. f.: eletroquímica."
+    ("A eletroquímica moderna.", "A electroquímica moderna.", "A electroquímica moderna."),
+    # Vocabulário 1943, p. 1069: "prospetor (ô), s. m.", with no prospector. Priberam
+    # prospector (Brazil before the AO1990: prospector) wrote prospector.
+    ("O prospetor de ouro.", "O prospector de ouro.", "O prospetor de ouro."),
+    # Vocabulário 1943, p. 202: "avô, s. m. F.: avó." registers both vowels, so the token stays.
+    ("A avó chegou.", "A avó chegou.", "A avó chegou."),
+])
+def test_br_1971_takes_the_spelling_of_the_1943_vocabulary(sentence, european, expected):
+    assert _apply(sentence, european)["br_1971"] == expected
+
+
+def test_a_br_1971_word_the_1943_vocabulary_registers_is_not_residual():
+    """The vocabulary decides these words, so no "no source" keep line names them."""
+    keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _tsv("variety_keeps.tsv")}
+    for token in ("produto", "produtos", "produtor"):
+        assert keeps[("br_1971", token)].startswith("Vocabulário 1943, p. 1065: produt"), token
+    # "conjeturante, adj. 2 gên." (p. 381), "inexatidão, s. f." (p. 771)
+    assert keeps[("br_1971", "conjeturante")].startswith("Vocabulário 1943, p. 381: conjeturante")
+    assert keeps[("br_1971", "inexatidão")].startswith("Vocabulário 1943, p. 771: inexatidão")
+    assert keeps[("br_1971", "comité")].startswith("no source: ")
 
 
 def test_a_personal_name_stays_as_written():
