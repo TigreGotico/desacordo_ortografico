@@ -165,6 +165,14 @@ class OrthographyConverter:
         # throughout converts each token like the same word in lowercase. The test reads
         # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
         is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
+        # AO1990 Base XXI lets a name keep the spelling it is written in. Toward pt-BR a
+        # name whose written form the VOLP lists stays as written, so every edge holds it:
+        # an edge before the VOLP step can change it (pt_1973 receptores -> ao1990-pt
+        # recetores, which the VOLP rejects). For each word of ``out``, ``written`` holds
+        # the word of the source that it comes from.
+        written = rules.words(text)
+        named = rules.names(text) if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
+        kept = [n and w.lower() in self.lex.ao_br_volp_listed for w, n in zip(written, named)]
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
@@ -175,11 +183,14 @@ class OrthographyConverter:
             # the words before it still line up one to one with the words after it
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
             own = pt_words if edge_name == "ptbr_divergence" else {}
-            out = rules.apply_to_words(out, lambda w, p=step_pass, k=own: k.get(w) or p.apply(w, enabled), is_word)
+            out, sources = rules.map_words(
+                out, lambda i, w, p=step_pass, k=own: None if kept[i] else k.get(w) or p.apply(w, enabled), is_word)
+            written, named, kept = ([x[i] for i in sources] for x in (written, named, kept))
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
-                                          self.lex.accent_restore_singular, tags, variety)
+                                          self.lex.accent_restore_singular, tags, variety,
+                                          {i for i, k in enumerate(kept) if k})
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -201,10 +212,22 @@ class OrthographyConverter:
             def choose(w: str) -> Optional[str]:
                 return pt_words.get(w) or volp.get(w) or duals.get(w)
 
-            # each element of a compound too (setor-chave), unless the compound is a cell
+            # a name keeps a form the VOLP lists and takes the VOLP form of any other
+            def choose_for_name(w: str) -> Optional[str]:
+                return None if w in self.lex.ao_br_volp_listed else pt_words.get(w) or volp.get(w)
+
+            def choose_word(i: int, w: str) -> Optional[str]:
+                if kept[i]:
+                    return None
+                # each element of a compound too (setor-chave), unless the compound is a cell
+                form = choose(w) or "-".join(choose(p) or p for p in w.split("-"))
+                # a name gains no c or p from a dual: it has no more than the source wrote
+                if named[i] and sum(map(form.count, "cp")) > sum(map(written[i].lower().count, "cp")):
+                    return choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-"))
+                return form
+
             if volp or duals:
-                out = rules.apply_to_words(
-                    out, lambda w: choose(w) or "-".join(choose(p) or p for p in w.split("-")), is_word)
+                out = rules.map_words(out, choose_word, is_word)[0]
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.

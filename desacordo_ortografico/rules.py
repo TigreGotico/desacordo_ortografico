@@ -46,7 +46,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from typing import Callable, List, Mapping, Optional, Sequence, Tuple
+from typing import Callable, Collection, List, Mapping, Optional, Sequence, Tuple
 
 from .lexicon import _ACCENTS, deaccent
 
@@ -74,17 +74,67 @@ def apply_to_words(
     whose lowercase form is no word is an acronym or a symbol, and it stays as written
     (IPTU, PPD, the axis Y; AO1990 Base I 2º c)).
     """
+    return map_words(text, lambda _i, word: fn(word), is_word)[0]
 
-    def repl(match: "re.Match[str]") -> str:
+
+def map_words(
+    text: str,
+    fn: Callable[[int, str], Optional[str]],
+    is_word: Optional[Callable[[str], bool]] = None,
+) -> Tuple[str, List[int]]:
+    """Apply ``fn`` to each word in ``text`` as :func:`apply_to_words` does, and give
+    ``fn`` the index of the word in :func:`words` before the word. A word for which
+    ``fn`` returns ``None`` stays as written.
+
+    Returns the new text and, for each word of it, the index of the word of ``text``
+    that it comes from. One word can become more than one (acha-de-armas -> acha de
+    armas), so the indexes of the words after it move.
+    """
+    out: List[str] = []
+    sources: List[int] = []
+    last = 0
+    for i, match in enumerate(_WORD_RE.finditer(text)):
+        word = new = match.group(0)
+        symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
+        acronym = is_word is not None and word.isupper() and not is_word(word.lower())
+        if not symbol and not acronym:
+            form = fn(i, word.lower())
+            new = word if form is None else _match_case(word, form)
+        out += [text[last:match.start()], new]
+        sources += [i] * len(_WORD_RE.findall(new))
+        last = match.end()
+    out.append(text[last:])
+    return "".join(out), sources
+
+
+#: A sentence end: the word after it opens a sentence.
+_SENTENCE_END = re.compile(r"[.!?…\n]")
+#: Titles whose abbreviation ends in a period that ends no sentence (o Sr. Silva).
+_TITLES = frozenset({"sr", "sra", "srs", "sras", "dr", "dra", "drs", "dras"})
+
+
+def names(text: str) -> List[bool]:
+    """Tell, for each word of :func:`words`, whether it is written as a name: a word
+    inside a sentence that starts with a capital, or has a part that does, and is not in
+    capitals throughout.
+
+    A word opens a sentence when no word comes before it or a sentence end (. ! ? … or
+    a line break) comes between it and the word before it. The period of Sr., Sra., Dr.
+    or Dra. is no sentence end; a colon or an opening quote is none either. A text with
+    no word in lowercase gives no case signal, so it has no names.
+    """
+    matches = list(_WORD_RE.finditer(text))
+    if not any(m.group(0).islower() for m in matches):
+        return [False] * len(matches)
+    out = [False]
+    for prev, match in zip(matches, matches[1:]):
         word = match.group(0)
-        if not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word)):
-            return word
-        if is_word is not None and word.isupper() and not is_word(word.lower()):
-            return word
-        out = fn(word.lower())
-        return _match_case(word, out)
-
-    return _WORD_RE.sub(repl, text)
+        gap = text[prev.end():match.start()]
+        if prev.group(0).lower() in _TITLES:
+            gap = gap.removeprefix(".")
+        out.append(not _SENTENCE_END.search(gap) and not word.isupper()
+                   and any(s[:1].isupper() for s in _SEGMENT_SEP.split(word)))
+    return out
 
 
 def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
@@ -296,6 +346,7 @@ def guess_accents(
     singular: Mapping[str, str],
     tags: Sequence[Optional[str]],
     variety: str = "pt",
+    hold: Collection[int] = (),
 ) -> str:
     """Re-supply the graphic accent 1911 introduced (fosforo -> fósforo).
 
@@ -305,7 +356,8 @@ def guess_accents(
     pronoun, the form is a verb and stays. When the word before it decides neither, a
     NOUN or ADJ tag gives the accent. It
     takes it from ``singular`` after a singular determiner (o pais -> o país). ``tags``
-    holds one tag or ``None`` per word of ``text``. Case-preserving.
+    holds one tag or ``None`` per word of ``text``. The words whose index in
+    :func:`words` is in ``hold`` stay as written. Case-preserving.
     """
     matches = list(_WORD_RE.finditer(text))
     if len(matches) != len(tags):
@@ -327,7 +379,7 @@ def guess_accents(
         symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
         name = word[:1].isupper() and low in _UNACCENTED_NAMES
         form = None
-        if not accented and not symbol and not name:
+        if not accented and not symbol and not name and i not in hold:
             form = restore.get(low)
             noun = _starts_noun_phrase(prev, before, variety)
             if form is None and (noun if noun is not None else tag in _NOMINAL_TAGS):

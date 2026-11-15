@@ -189,8 +189,10 @@ def test_seção_and_secção_are_two_words():
 
 
 def test_case_and_compounds_follow_the_volp():
-    """VOLP: setor (ô) s.m. | sector (ô) s.m.; ótimo adj. s.m. interj. | óptimo adj. s.m. interj."""
-    assert convert("O Setor é ÓTIMO.", "br_1971", "ao1990-br") == "O Sector é ÓPTIMO."
+    """VOLP: setor (ô) s.m. | sector (ô) s.m.; ótimo adj. s.m. interj. | óptimo adj. s.m. interj.
+    Setor inside the sentence is a name, see test_names_ao1990_br.py."""
+    assert convert("O Setor é ÓTIMO.", "br_1971", "ao1990-br") == "O Setor é ÓPTIMO."
+    assert convert("O setor é ÓTIMO.", "br_1971", "ao1990-br") == "O sector é ÓPTIMO."
     assert convert("o setor-chave", "br_1971", "ao1990-br") == "o sector-chave"
 
 
