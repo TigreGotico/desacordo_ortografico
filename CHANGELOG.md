@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.0a2) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.0a1...0.2.0a2)
+
+**Merged pull requests:**
+
+- refactor: store the VOLP rows for pt-BR as JSON [\#37](https://github.com/TigreGotico/desacordo_ortografico/pull/37) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.2.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.0a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.23a1...0.2.0a1)
