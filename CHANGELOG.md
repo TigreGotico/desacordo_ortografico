@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.21a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.21a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.20a1...0.1.21a1)
+
+**Merged pull requests:**
+
+- fix: convert the tugalex archaisms in the 1911 forward pass [\#32](https://github.com/TigreGotico/desacordo_ortografico/pull/32) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.20a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.20a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.19a1...0.1.20a1)
