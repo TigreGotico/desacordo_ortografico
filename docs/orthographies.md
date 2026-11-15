@@ -106,6 +106,20 @@ lexical part. It defines four sets:
   marked "one reading" in the data file. From a pt-PT source, a bare form that pt-PT
   itself does not write for the word is another word: pt-PT writes facto for the fact,
   so a pt-PT fato is the suit and stays fato.
+- **names** toward pt-BR (AO1990 Base XXI: a person, a firm, a society, a brand or a
+  registered title can keep the spelling it was written in). A word that starts with a
+  capital inside a sentence is a name. When the VOLP lists the form as written, the name
+  stays as written through every edge: "e Coletivo Farra" stays, and pt_1973 "o filme
+  Receptores" stays. When the VOLP does not list it, the name takes the form the VOLP
+  lists: "a Correcção Fraterna" becomes "a Correção Fraterna", and ao1990-pt "Recetores"
+  becomes "Receptores". A dual never gives a name a c or p that the source did not
+  write. The forms the VOLP lists are the form of each VOLP row, each headword of a quote
+  with two entries, the twin with one c or p more or fewer unless the quote rejects
+  it, and their plurals (`Lexicon.ao_br_volp_listed`). A word with no VOLP row converts as before, except
+  that no dual adds a consonant to it. The first word of a sentence, a word in capitals
+  throughout, and every word of a text with no word in lowercase follow the rule for
+  other words. A colon, an opening quote, and the period of Sr., Sra., Dr., Dra., Av.,
+  D. or S. end no sentence.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`

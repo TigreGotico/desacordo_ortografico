@@ -351,6 +351,42 @@ class Lexicon:
                 out[european] = form
         return out
 
+    @cached_property
+    def ao_br_volp_listed(self) -> FrozenSet[str]:
+        """The pt-BR AO1990 forms that the VOLP lists, from the rows of
+        ``data/volp_ao1990_br.json`` whose source quotes the VOLP.
+
+        A row gives its form ("receptores", from "VOLP: receptor (ô) adj. s.m.; no
+        recetor"). A quote with two entries gives the headword on each side of the "|"
+        ("suntuoso (ô) adj. | sumptuoso (ô) adj."). A row also gives its token or its
+        European form where that word is the form with one c or p more or fewer, unless
+        the quote rejects it: the quote ends in "; no" and a form (the bare form of
+        recetores stays out), or it names that word after "no" ("with no Egipto"). So
+        both forms of a dual count, in every inflection the rows hold ("abjeto adj. s.m.
+        | abjecto adj. s.m." for abjeta and abjecta), and so do two entries for one
+        spelling ("desinfectório adj. s.m.; desinfetório s.m. is a noun only"). Each
+        form also gives its regular plural (:func:`_plural`), or the plural that the
+        quote names ("caráter s.m.; pl. caracteres"). Rows that quote Priberam or no
+        source give nothing.
+        """
+        listed: Set[str] = set()
+        for row in self._volp_br:
+            source = row["source"]
+            if not source.startswith("VOLP: "):
+                continue
+            form = row["form"]
+            forms = {form}
+            if "|" in source:
+                forms |= {w.lower() for w in re.findall(r"(?:^VOLP: |\| )([^\s;,]+)", source)}
+            if not _VOLP_NO_FORM.match(source):
+                rejected = {w.strip('.,;"').lower() for w in re.findall(r"\bno (\S+)", source)}
+                forms |= {w for w in (row["token"], row["european"]) if w not in rejected
+                          and (_one_more_consonant(w, form) or _one_more_consonant(form, w))}
+            plural = re.search(r"\bpl\. (\w+)", source)
+            listed |= forms
+            listed |= {plural.group(1)} if plural else {_plural(w) for w in forms} - {None}
+        return frozenset(listed)
+
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent
         is also a proclitic (para, pelo: Base IX 9.o), so only the forms in
