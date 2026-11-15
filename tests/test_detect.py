@@ -138,9 +138,10 @@ class TestConfidence:
 
 
 class TestArchaicEvidence:
-    """Pre-1911 evidence comes from listed archaic forms only: the 1911 word map of this
-    package and the tugalex archaisms list (``TugaLexicon.archaic_words``). The expected
-    labels follow the Formulário Ortográfico of 1911 (Portal da Língua Portuguesa, ILTEC).
+    """Pre-1911 evidence comes from listed archaic forms only: the pre-1911 forms of the
+    spelling table (``data/spelling.json``), from the curated 1911 pairs and the tugalex
+    archaisms list. The expected labels follow the Formulário Ortográfico of 1911 (Portal
+    da Língua Portuguesa, ILTEC).
     """
 
     @pytest.mark.parametrize(

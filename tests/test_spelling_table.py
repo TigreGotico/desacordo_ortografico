@@ -21,9 +21,13 @@ from desacordo_ortografico.lexicon import Lexicon, get_lexicon
 _TABLE = Path(desacordo_ortografico.__file__).parent / "data" / "spelling.json"
 
 
-def _rows():
+def _table():
     with open(_TABLE, encoding="utf-8") as f:
-        return json.load(f)["rows"]
+        return json.load(f)
+
+
+def _rows():
+    return _table()["rows"]
 
 
 _SPELLING_LISTS = {"archaic_words", "archaic_words_br", "ao_pt", "ao_br",
@@ -94,6 +98,21 @@ def test_every_row_names_its_edge_and_its_source():
     assert [r for r in rows if not r["source"] or not isinstance(r["curated"], bool)] == []
     keys = [(r["form"], r["era"], r["target"]) for r in rows]
     assert len(keys) == len(set(keys))
+
+
+def test_every_row_cites_an_entry_of_the_sources():
+    table = _table()
+    sources, groups = table["_sources"], table["_groups"]
+    assert [r for r in table["rows"] if not any(r["source"].startswith(s) for s in sources)] == []
+    curated = [r for r in table["rows"] if r["curated"]]
+    assert curated
+    assert [r for r in curated if r["source"] not in {f"{sources[0]} ({g})" for g in groups}] == []
+
+
+def test_no_row_has_an_empty_value():
+    # convert() reads an empty 1911 value as a table hit and the rules then raise, and an
+    # empty AO1990 value deletes the word; a form with no single value needs its own rule
+    assert [r for r in _rows() if "" in r["value"].split("|")] == []
 
 
 # A pt-BR AO1990 cell gives desacordo's form: the form with the consonant of a dual cell,

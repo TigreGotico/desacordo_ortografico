@@ -49,8 +49,9 @@ The output `.jsonl` is git-ignored and regeneratable — it is third-party conte
 ## `build_spelling_table.py`
 
 Builds `desacordo_ortografico/data/spelling.json`, the spelling table that `convert()`
-and `detect()` read. It reads the curated 1911 pairs and the tugalex archaisms and AO1990
-lists, and sorts each archaism row by the reform that its modern form rests on. A row
+and `detect()` read. It reads the curated 1911 pairs, their sources and the comment of
+each group, and the tugalex archaisms and AO1990 lists. It sorts each archaism row by the
+reform that its modern form rests on. A row
 whose 1911 form is known becomes a pre-1911 -> 1911 row. Every other archaism row gives
 only its AO1990 forms.
 
@@ -59,6 +60,7 @@ python tools/build_spelling_table.py --curated-json reform_1911_irregular.json
 ```
 
 The table came from one run with the tugalex release that the package pins as its floor.
-The data file is edited by hand from then on. Without `--curated-json`, the script keeps
-the curated rows of the table and rebuilds the other rows, so a run on an unedited table
-gives the same bytes.
+`--curated-json` takes `data/reform_1911_irregular.json` of a desacordo_ortografico release
+that ships it, such as 0.2.1a1. The data file is edited by hand from then on. Without `--curated-json`, the
+script keeps the curated rows, `_sources` and `_groups` of the table and rebuilds the other
+rows, so a run on an unedited table gives the same bytes.

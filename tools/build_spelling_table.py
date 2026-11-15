@@ -5,9 +5,10 @@
 
 The table took its rows from four sources, in this order:
 
-1. the curated pre-1911 -> 1911 pairs (``curated`` true). ``--curated-json`` reads them from
-   ``data/reform_1911_irregular.json`` of desacordo_ortografico 0.1.23a1 and earlier;
-   without it the script keeps the curated rows of the table at ``--out``;
+1. the curated pre-1911 -> 1911 pairs (``curated`` true). ``--curated-json`` reads them,
+   their sources and the comment of each group from ``data/reform_1911_irregular.json``
+   of a desacordo_ortografico release that ships it, such as 0.2.1a1. Without it the
+   script keeps the curated rows, ``_sources`` and ``_groups`` of the table at ``--out``;
 2. the rows of the tugalex ``archaisms.csv`` list. A row gives its modern pt-PT form, and
    that form can also carry a change made after 1911, so :func:`archaism_row_class` sorts
    the rows. A ``1911`` or ``ao1990-map`` row becomes a pre-1911 -> 1911 row when the
@@ -27,7 +28,7 @@ import json
 import os
 import re
 from functools import cached_property
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 from tugalex import TugaLexicon
 
@@ -39,14 +40,27 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 TABLE = os.path.join(HERE, "..", "desacordo_ortografico", "data", "spelling.json")
 COLUMNS = ["form", "era", "target", "value", "curated", "source"]
 ABOUT = (
-    "The spelling facts that convert() and detect() read. Each row says that form, written "
-    "in the norm era, is value in the norm target, on the authority of source. A dual "
-    "AO1990 cell joins its two forms with '|', in source order. curated is true for the "
-    "1911 pairs that the backward 1911 pass inverts and that detect() weighs double. A "
-    "pre-1911 form whose 1911 form no source decides has rows for its AO1990 forms only. "
-    "tools/build_spelling_table.py built the rows from the tugalex archaisms and AO1990 lists."
+    "The spelling facts that convert() and detect() read. Each row maps form, written in "
+    "the norm era, to value in the norm target. source names the entry of _sources that the "
+    "row comes from, and for a curated row the group of _groups. A dual AO1990 cell joins "
+    "its two forms with '|', in source order. curated is true for the 1911 pairs that the "
+    "backward 1911 pass inverts and that detect() weighs double. A pre-1911 form whose 1911 "
+    "form no source decides has rows for its AO1990 forms only. "
+    "The reforma_1911 values do not always have the accents of the 1911 print. A curated "
+    "value has its AO1990 diacritics (elle gives ele, where the 1911 print writes êle). "
+    "Where the European and Brazilian norms differ only by an open or closed vowel before a "
+    "nasal (anónimo, anônimo; cómodo, cômodo), the value is the European form, and the "
+    "Brazilian edge derives ê and ô by rule. A value from the tugalex archaisms list is its "
+    "modern pt-PT form (comsigo gives consigo), or its pre-AO1990 form where the AO1990 "
+    "pt-PT map lists the modern form (architecto gives arquitecto). The 1911 reform kept the c and p of -ct- and -pt- words such as acto, óptimo, "
+    "director and afecto: affecto gives afecto in 1911, and only the AO1990 edge gives afeto. "
+    "tools/build_spelling_table.py built the rows with tugalex 2.4.9a1."
 )
+#: The tugalex lists that the rows other than the curated pairs come from.
+TUGALEX_SOURCES = ["tugalex archaisms.csv", "tugalex acordo_ortografico_pt_PT.csv",
+                   "tugalex acordo_ortografico_pt_BR.csv"]
 Row = Dict[str, Union[str, bool]]
+Curated = Tuple[List[Row], List[str], Dict[str, str]]
 
 #: The classes of a tugalex archaism row, see :func:`archaism_row_class`.
 ARCHAISM_ROW_CLASSES = ("1911", "ao1990-map", "ao1990-cp", "ao1990-differential", "sc", "circumflex")
@@ -103,26 +117,33 @@ def row(form: str, era: str, target: str, value: str, curated: bool, source: str
     return dict(zip(COLUMNS, (form, era, target, value, curated, source)))
 
 
-def curated_from_json(path: str) -> List[Row]:
-    """The pairs of each group of the 1911 JSON, lowercased; a key seen again keeps its
-    first position and takes the later value, as the dict of the old loader did."""
-    pairs: Dict[str, Dict[str, str]] = {}
+def curated_from_json(path: str) -> Curated:
+    """The pairs of each group of the 1911 JSON, lowercased, with its sources and the
+    comment of each group. A key seen again keeps its first position and takes the later
+    value, as the dict of the old loader did. Each pair cites the first source of the file,
+    the Portaria of 1911, and its group."""
+    pairs: Dict[str, Row] = {}
+    comments: Dict[str, str] = {}
     with open(path, encoding="utf-8") as f:
-        groups = json.load(f)
-    for group, entries in groups.items():
+        data = json.load(f)
+    sources = data["_sources"]
+    assert sources[0].startswith("Reforma Ortografica de 1911 (Portaria"), sources[0]
+    for group, entries in data.items():
         if group.startswith("_") or not isinstance(entries, dict):
             continue
+        comments[group] = entries["_comment"]
         for k, v in entries.items():
             if k.startswith("_") or not isinstance(v, str):
                 continue
             pairs[k.lower()] = row(k.lower(), "etymological", "reforma_1911", v.lower(), True,
-                                   f"reform_1911_irregular.json ({group})")
-    return list(pairs.values())
+                                   f"{sources[0]} ({group})")
+    return list(pairs.values()), sources + TUGALEX_SOURCES, comments
 
 
-def curated_from_table(path: str) -> List[Row]:
+def curated_from_table(path: str) -> Curated:
     with open(path, encoding="utf-8") as f:
-        return [r for r in json.load(f)["rows"] if r["curated"]]
+        data = json.load(f)
+    return [r for r in data["rows"] if r["curated"]], data["_sources"], data["_groups"]
 
 
 def ao_rows(tuga: TugaLexicon) -> List[Row]:
@@ -136,14 +157,36 @@ def ao_rows(tuga: TugaLexicon) -> List[Row]:
     return out
 
 
+def dump(table: Dict[str, object]) -> str:
+    """The table as JSON with one list item or one key per line, so that a change to a row
+    is a one-line diff."""
+    def block(open_: str, close: str, items: List[str]) -> str:
+        return open_ + "\n    " + ",\n    ".join(items) + "\n  " + close
+
+    parts = []
+    for key, value in table.items():
+        if isinstance(value, list):
+            text = block("[", "]", [json.dumps(v, ensure_ascii=False) for v in value])
+        elif isinstance(value, dict):
+            text = block("{", "}", [f"{json.dumps(k)}: {json.dumps(v, ensure_ascii=False)}"
+                                    for k, v in value.items()])
+        else:
+            text = json.dumps(value, ensure_ascii=False)
+        parts.append(f"  {json.dumps(key)}: {text}")
+    return "{\n" + ",\n".join(parts) + "\n}\n"
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--curated-json", help="reform_1911_irregular.json of desacordo 0.1.23a1")
+    parser.add_argument("--curated-json",
+                        help="reform_1911_irregular.json of a desacordo release that ships it, "
+                             "such as 0.2.1a1")
     parser.add_argument("--out", default=TABLE)
     args = parser.parse_args()
 
     tuga = TugaLexicon()
-    curated = curated_from_json(args.curated_json) if args.curated_json else curated_from_table(args.out)
+    curated, sources, groups = (curated_from_json(args.curated_json) if args.curated_json
+                                else curated_from_table(args.out))
     ao = ao_rows(tuga)
 
     class SourceLexicon(Lexicon):
@@ -182,9 +225,9 @@ def main() -> None:
 
     rows = curated + to_1911 + modern_only + ao
     # one row per line, so that a change to a row is a one-line diff
-    lines = ",\n".join("    " + json.dumps(r, ensure_ascii=False) for r in rows)
+    assert all(any(r["source"].startswith(s) for s in sources) for r in rows)
     with open(args.out, "w", encoding="utf-8") as f:
-        f.write(f'{{\n  "_about": {json.dumps(ABOUT, ensure_ascii=False)},\n  "rows": [\n{lines}\n  ]\n}}\n')
+        f.write(dump({"_about": ABOUT, "_sources": sources, "_groups": groups, "rows": rows}))
     print(f"archaisms in {len(tuga.archaic_words)}: to 1911 {len(to_1911)}, "
           f"AO1990 forms only {len({r['form'] for r in modern_only})}, "
           f"curated {len([a for a in tuga.archaic_words if a in curated_forms])}")

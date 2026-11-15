@@ -10,9 +10,10 @@ reversible transforms. Everything that is *irreducibly lexical* lives here:
   silent consonants), the pre-1911 archaisms and the bulk AO1990 word maps (Portal da
   Lingua Portuguesa data).
 
-Each row of the spelling table says that ``form``, written in the norm ``era``, is
-``value`` in the norm ``target``, on the authority of ``source``. A dual AO1990 cell
-joins its two forms with ``|``. ``curated`` is true for the 1911 pairs that the
+Each row of the spelling table maps ``form``, written in the norm ``era``, to ``value``
+in the norm ``target``. ``source`` names the entry of the table's ``_sources`` that the row
+comes from. The table's ``_about`` says where a 1911 value differs from the 1911 print. A
+dual AO1990 cell joins its two forms with ``|``. ``curated`` is true for the 1911 pairs that the
 backward 1911 pass inverts and that detect() weighs double. A pre-1911 form whose 1911
 form no source decides has rows for its AO1990 forms only: detect() reads it as
 evidence, and convert() does not read it. ``tools/build_spelling_table.py`` built the
