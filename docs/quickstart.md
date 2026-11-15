@@ -7,7 +7,7 @@ pip install desacordo_ortografico
 ```
 
 It depends only on [`tugalex`](https://github.com/TigreGotico/tugalex), which supplies
-the bulk AO1990 word maps.
+the word list.
 
 ## Detect
 

@@ -2,7 +2,9 @@
 
 Each expected value comes from a row of the tugalex ``archaisms.csv`` list (archaic,
 modern, modern_pt_BR) and from the Formulário Ortográfico of 1911 (Portal da Língua
-Portuguesa, ILTEC), not from the converter.
+Portuguesa, ILTEC), not from the converter. ``data/spelling.json`` holds those rows: a row
+with a known 1911 form is a pre-1911 -> 1911 row, and every other row gives only its
+AO1990 forms.
 
 Base XV: "No interior dos vocábulos é a nasalidade da vogal expressa por m antes de b, p,
 m, e por n em qualquer outra situação". The rows emquanto -> enquanto, bemdito -> bendito,
@@ -34,10 +36,15 @@ The row colleccionador -> colecionador has no pt-BR value, so pt-BR writes colec
 too. Its 1911 form coleccionador keeps a c that no Brazilian table drops, so the row stays
 out of the shared 1911 map.
 """
+import json
+from pathlib import Path
+
 import pytest
 
+import desacordo_ortografico
 from desacordo_ortografico import FEATURES, convert
-from desacordo_ortografico.lexicon import get_lexicon
+
+_TABLE = Path(desacordo_ortografico.__file__).parent / "data" / "spelling.json"
 
 ALL_TARGETS = ["reforma_1911", "pt_1945", "pt_1973", "ao1990-pt", "br_1943", "br_1971", "ao1990-br"]
 
@@ -107,17 +114,26 @@ def test_word_map_feature_gates_the_archaisms():
     assert convert("emquanto", "etymological", "reforma_1911", features=features) == "emquanto"
 
 
-@pytest.mark.parametrize("archaic,modern,row_class", [
-    ("comsigo", "consigo", "1911"),
-    ("architecto", "arquiteto", "ao1990-map"),
-    ("affectando", "afetando", "ao1990-cp"),
-    ("auctor", "autor", "ao1990-cp"),
-    ("pello", "pelo", "ao1990-differential"),
-    ("scintillar", "cintilar", "sc"),
-    ("sêcco", "seco", "circumflex"),
-    ("sôcco", "soco", "circumflex"),
-])
-def test_archaism_row_class(archaic, modern, row_class):
-    from desacordo_ortografico.convert import archaism_row_class
+def _pre1911_rows():
+    with open(_TABLE, encoding="utf-8") as f:
+        return {(r["form"], r["target"]): r["value"]
+                for r in json.load(f)["rows"] if r["era"] == "etymological"}
 
-    assert archaism_row_class(archaic, modern, get_lexicon()) == row_class
+
+# One row of each class of the tugalex list: the rows whose modern form rests on 1911 or
+# on the AO1990 map have a 1911 row; the others (a silent c or p, a dropped differential
+# accent, an initial sc, a Base XXVIII circumflex) have only their AO1990 pt-PT form.
+@pytest.mark.parametrize("archaic,target,value", [
+    ("comsigo", "reforma_1911", "consigo"),
+    ("architecto", "reforma_1911", "arquitecto"),
+    ("affectando", "ao1990-pt", "afetando"),
+    ("auctor", "ao1990-pt", "autor"),
+    ("pello", "ao1990-pt", "pelo"),
+    ("scintillar", "ao1990-pt", "cintilar"),
+    ("sêcco", "ao1990-pt", "seco"),
+    ("sôcco", "ao1990-pt", "soco"),
+])
+def test_table_row_of_each_archaism_class(archaic, target, value):
+    rows = _pre1911_rows()
+    assert rows[archaic, target] == value
+    assert (archaic, "reforma_1911" if target == "ao1990-pt" else "ao1990-pt") not in rows

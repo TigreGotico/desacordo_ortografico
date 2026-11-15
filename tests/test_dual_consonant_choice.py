@@ -9,24 +9,33 @@ Base IV 2º does the same for the m of mn: "o m da sequência mn, em amnistia, .
 omnímodo, omnipotente, omnisciente, etc.".
 
 The choice of the form with the consonant is an owner ruling. A dual cell of the
-tugalex AO1990 map of the target variety lists the two valid forms. For pt-BR the ABL
-VOLP decides each word that data/volp_ao1990_br.json holds before the tugalex map does
+AO1990 map of the target variety (data/spelling.json) lists the two valid forms. For pt-BR
+the ABL VOLP decides each word that data/volp_ao1990_br.json holds before the map does
 (tests/test_volp_ao1990_br.py): the VOLP lists only cofator. A word with one valid form
 takes that form. Every route that does not end at an AO1990 target converts as on
 origin/dev.
 """
-import csv
+import json
 from pathlib import Path
 
 import pytest
-from tugalex import TugaLexicon
 
+import desacordo_ortografico
 from desacordo_ortografico import convert
 from desacordo_ortografico.convert import FEATURES
 from desacordo_ortografico.lexicon import get_lexicon
 
-_TUGA = TugaLexicon()
 _VOLP = get_lexicon().ao_br_volp
+
+
+def _ao_cells(era):
+    """old form -> its AO1990 forms, for each row of the spelling table from ``era``."""
+    path = Path(desacordo_ortografico.__file__).parent / "data" / "spelling.json"
+    with open(path, encoding="utf-8") as f:
+        return {r["form"]: r["value"].split("|") for r in json.load(f)["rows"] if r["era"] == era}
+
+
+_AO_PT, _AO_BR = _ao_cells("pt_1973"), _ao_cells("br_1971")
 
 
 def _cells(table):
@@ -41,8 +50,8 @@ def _cells(table):
 # contrato (a contract) and retrato (a portrait) are words of their own beside the duals
 # contracto (contracted) and retracto (a retraction), so they never gain the c.
 HOMOGRAPHS = {"contrato", "retrato"}
-PT_CELLS = [c for c in _cells(_TUGA.ao_pt) if c[2] not in HOMOGRAPHS]
-BR_CELLS = sorted({(full, bare) for _old, full, bare in _cells(_TUGA.ao_br)})
+PT_CELLS = [c for c in _cells(_AO_PT) if c[2] not in HOMOGRAPHS]
+BR_CELLS = sorted({(full, bare) for _old, full, bare in _cells(_AO_BR)})
 
 
 # infeto is also a form of infetar, which has one pt-PT spelling (VOP lemma 37066), so
@@ -64,7 +73,7 @@ def test_every_pt_br_dual_cell_takes_the_consonant_toward_pt_br(full, bare):
     assert convert(full, "ao1990-pt", "ao1990-br") == expected
 
 
-# Dual cells of the tugalex pt-PT map (sector -> setor, sector; carácter -> caráter,
+# Dual cells of the pt-PT map (sector -> setor, sector; carácter -> caráter,
 # carácter; acupunctura -> acupuntura, acupunctura), and their plurals (Cunha & Cintra
 # cap. 8: -es after r, -s after a vowel).
 PT_DUALS = [("sector", "setor"), ("sectores", "setores"), ("carácter", "caráter"),
@@ -125,13 +134,13 @@ def test_adjective_datilar_plural_takes_the_consonant():
 # to -ais, -vel and the unstressed -il of táctil to -eis (Priberam, táctil: "Plural:
 # tácteis"), the pair caracteres, carateres (Base IV 1º c), and the adjective
 # datilar, dactilar (Aulete, datilar: "adj. || dactilar") with -es. Verbs and adverbs in
-# -mente have no plural. Every dual cell in -s of the tugalex map is a plural or a feminine
+# -mente have no plural. Every dual cell in -s of the map is a plural or a feminine
 # plural in -as, -os, -es or -ais (sectoriais, insectívoras, subsectores), and the map lists
 # that plural as a cell of its own, so a cell in -s takes no plural here. A singular in -s
 # has a plural of its own (país, países) or an invariable one (o lápis, os lápis). The test
 # raises for a cell in -s outside those four endings; it cannot tell a singular such as
 # atlas or cais from a plural, which is safe only while every such cell has its singular
-# in the same CSV.
+# in the same table.
 _PLURAL_ENDINGS = [("ção", "ções"), ("al", "ais"), ("vel", "veis"), ("til", "teis"),
                    ("or", "ores"), ("z", "zes"), ("a", "as"), ("e", "es"), ("o", "os")]
 _SPECIAL_PLURALS = {"carácter": "caracteres", "caráter": "carateres",
@@ -153,25 +162,22 @@ def _expected_plural(word):
     raise AssertionError(f"no plural class for {word}")
 
 
-def _csv_cells(path):
-    """(form without the consonant, form with it) of each row with two AO1990 forms in a
-    tugalex CSV, read with the csv module."""
-    with open(path, encoding="utf-8", newline="") as f:
-        rows = list(csv.reader(f))[1:]
-    for _old, new in rows:
-        forms = {w.strip().lower() for w in new.split(",") if w.strip()}
+def _table_cells(cells):
+    """(form without the consonant, form with it) of each row with two AO1990 forms."""
+    for new in cells.values():
+        forms = {w.strip().lower() for w in new if w.strip()}
         if len(forms) == 2:
             yield tuple(sorted(forms, key=len))
 
 
-@pytest.mark.parametrize("table, path, cell", [
-    ("ao_pt_dual_full", _TUGA.ao_pt_path, ("setor", "sector")),
-    ("ao_br_dual_full", _TUGA.ao_br_path, ("cofator", "cofactor")),
+@pytest.mark.parametrize("table, cells, cell", [
+    ("ao_pt_dual_full", _AO_PT, ("setor", "sector")),
+    ("ao_br_dual_full", _AO_BR, ("cofator", "cofactor")),
 ])
-def test_the_maps_hold_the_dual_cells(table, path, cell):
-    # every dual cell of the CSV and the plural of each, and nothing else
+def test_the_maps_hold_the_dual_cells(table, cells, cell):
+    # every dual cell of the table and the plural of each, and nothing else
     expected = {}
-    for bare, full in _csv_cells(path):
+    for bare, full in _table_cells(cells):
         if bare in HOMOGRAPHS:
             continue
         for key, value in ((bare, full), (_expected_plural(bare), _expected_plural(full))):
@@ -187,7 +193,7 @@ def test_the_maps_hold_the_dual_cells(table, path, cell):
 
 
 @pytest.mark.parametrize("table, cells", [("ao_pt_dual_full", PT_CELLS),
-                                          ("ao_br_dual_full", list(_cells(_TUGA.ao_br)))])
+                                          ("ao_br_dual_full", list(_cells(_AO_BR)))])
 def test_every_dual_cell_plural_takes_the_consonant(table, cells):
     duals = getattr(get_lexicon(), table)
     wrong, plurals = [], 0
@@ -264,7 +270,7 @@ def test_pt_br_dual_toward_pt_pt_converts_as_on_dev():
 # pt-BR: Priberam gives contrato and retrato, but these are also the words contract and
 # portrait, so no pt -> br row can hold them.
 _FIXTURE = Path(__file__).parent / "data" / "ptbr_dual_dev_outputs.tsv"
-_BR_DUAL_FORMS = {f for _old, full, bare in _cells(_TUGA.ao_br) for f in (full, bare)}
+_BR_DUAL_FORMS = {f for _old, full, bare in _cells(_AO_BR) for f in (full, bare)}
 
 
 def _dev_rows():

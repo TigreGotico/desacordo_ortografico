@@ -66,7 +66,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 
 | Feature | What it changes | Edges |
 | --- | --- | --- |
-| `1911-word-map` | the curated 1911 word pairs and the tugalex archaisms list (pharmacia -> farmácia, comsigo -> consigo), see below | reform_1911 |
+| `1911-word-map` | the pre-1911 -> 1911 rows of the spelling table (pharmacia -> farmácia, comsigo -> consigo), see below | reform_1911 |
 | `1911-digraphs` | ph, th, rh -> f, t, r; y -> i | reform_1911 |
 | `1911-geminates` | doubled consonants, except rr and ss | reform_1911 |
 | `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo), see below | reform_1911 |
@@ -94,14 +94,16 @@ The AO1990 word map owns the words it holds. When the class of a word's row is o
 word stays as written, and the rules of that edge do not change it either. The 1911 word
 map owns its words in the same way.
 
-The 1911 word map joins the curated 1911 pairs and the rows of the tugalex archaisms list.
-A tugalex row gives the modern pt-PT form, so a row enters only when its 1911 form is
-known. Where the AO1990 pt-PT map lists the modern form, the 1911 form is the pre-AO1990
+The 1911 word map is the pre-1911 -> 1911 rows of the spelling table
+`data/spelling.json`: the curated 1911 pairs and rows of the tugalex archaisms list. A
+tugalex row gives the modern pt-PT form, so `tools/build_spelling_table.py` made it a 1911
+row only when its 1911 form is known. Where the AO1990 pt-PT map lists the modern form, the 1911 form is the pre-AO1990
 form of that map (architecto -> arquitecto). A row stays out when its modern form drops
 a c or p that no table restores (affectando, AO1990 afetando), drops the initial sc that
 1911 keeps (scintillar), is the bare form of a differential accent (pello, AO1990 pelo),
 or drops an ê or ô of the archaic form (sêcco, 1911 sêco by Base XXVIII). Such a row
-converts by the rules, as words outside the map do. For the other rows the modern form
+holds only its AO1990 forms, and the word converts by the rules, as words outside the map
+do. For the other rows the modern form
 stands for the 1911 form, and an accent that the archaic form does not show can still be
 missing (elle gives ele, where 1911 writes êle).
 
@@ -109,9 +111,9 @@ Both varieties share the 1911 form, so a row also stays out when the Brazilian e
 not turn the form it gives the 1911 map into its pt-BR form (character, pt-BR caráter).
 This check tests only the rows whose form for the 1911 map differs from their pt-BR form.
 For the other rows it only shows that the Brazilian edges keep the word, and it says
-nothing about the 1911 form. Where the two maps hold the same word, the curated pair
-decides. The backward pass reads the curated pairs only, because several archaic forms
-can share one modern form.
+nothing about the 1911 form. Where the curated pairs and the tugalex list hold the same
+word, the table holds the curated pair. The backward pass reads the curated pairs only,
+because several archaic forms can share one modern form.
 
 The 1911 accent guess gives a bare word the accent of the one accented word that has
 the same letters. A bare form that is itself a word stays as written (para, pára). So
@@ -156,12 +158,12 @@ The guard alone, without the Portuguese classifier.
 ## Detection markers (`method="rules"`)
 
 Detection markers are scored, not learned. They cover etymological evidence (the
-listed pre-1911 forms of the 1911 word map and of the tugalex archaisms list: pharmacia,
+listed pre-1911 forms of the spelling table: pharmacia,
 theatro, collecção), pre-AO1990 evidence (old PT silent-consonant forms, old BR
 accent/trema forms), AO1990 evidence, and PT/BR lean (dual forms, the nasal-vowel
 alternation). `markers` lists what fired, except AO1990 evidence: an AO1990 map form
 counts toward `confidence` but adds no marker. A word that no list holds is no pre-1911
-evidence, whatever its letters (the, Taylor). A form of the tugalex archaisms list inside a
+evidence, whatever its letters (the, Taylor). A listed form, except a whole curated word, inside a
 sentence whose word or part starts with a capital is read as a name and is no evidence ("A Moraci
 Sant'Anna chegou." is AO1990), except in the first word of a sentence or in a text with
 no lowercase word.
@@ -190,11 +192,13 @@ emfim), so a listed pre-1911 form does not outweigh a 1911 form.
 
 `get_lexicon()` returns the shared `Lexicon`. It exposes `base_iv_keep/drop/dual`,
 `dual_pt2br`, `differential_dropped/kept`, `hyphen_dropped`, `divergence_pt2br/br2pt`,
-`reform1911_old2new`, `accent_71_73_old2new`, `sister_markers`, and the `tugalex`-backed
-`ao_pt_old2new` / `ao_br_old2new` (with their inverses). `ao_pt_row_class` and
+`reform1911_old2new` (the curated 1911 pairs), `reform1911_forward` (every pre-1911 ->
+1911 row), `pre1911_forms`, `accent_71_73_old2new`, `sister_markers`, and the AO1990 maps
+`ao_pt_old2new` / `ao_br_old2new` (with their inverses). These maps read the spelling
+table `data/spelling.json`. `ao_pt_row_class` and
 `ao_br_row_class` give the class of each AO1990 row (`ao_row_class(old, new)`).
 `ao_br_volp` maps a pt-BR word to its form in the ABL VOLP, from `data/volp_ao1990_br.json`. Every map has a reverse. AO1990
-reverses come from the `tugalex` data and are authoritative where present.
+reverses come from the spelling table and are authoritative where present.
 
 ## `ml`
 

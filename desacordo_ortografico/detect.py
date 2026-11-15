@@ -21,9 +21,9 @@ Chardron 1913) is held out, so no reforma_1911 cell has measured cal units.
 It calls the sister-language :mod:`guard` first; a :class:`~guard.NotPortuguese` result
 short-circuits everything else.
 
-Pre-1911 evidence is a listed archaic form: a word of the 1911 word map of this package
-(``data/reform_1911_irregular.json``) or of the ``archaisms.csv`` list of tugalex
-(``TugaLexicon.archaic_words``). The tugalex list is read for each part of a hyphenated
+Pre-1911 evidence is a listed archaic form of the spelling table (``data/spelling.json``).
+A curated form counts for the whole token. Every listed form, most of them from the
+``archaisms.csv`` list of tugalex, is read for each part of a hyphenated
 or elided token (d'ella). Their source is the Formulário Ortográfico of 1911 (Portal da
 Língua Portuguesa, ILTEC): base I proscribes k, w and y in Portuguese words ("y por i
 ... lira, fisiologia"), base VI drops the h of rh and th and writes ph as f ("teatro",
@@ -45,7 +45,7 @@ original de quaisquer firmas comerciais, nomes de sociedades, marcas e títulos 
 estejam inscritos em registo público." Base I 2.º a) keeps the letters of foreign
 names: "Em antropónimos/antropônimos originários de outras línguas e seus derivados:
 Franklin, frankliniano; Kant, kantismo; Darwin, darwinismo; Wagner, wagneriano; Byron,
-byroniano; Taylor, taylorista". So a part of a word that the tugalex list holds gives no
+byroniano; Taylor, taylorista". So a part of a word that the table lists gives no
 pre-1911 evidence when it is inside a sentence and the word or the part starts with a
 capital (Sant'Anna, d'Oliveira Paes, Victoria's Secret). The first word of a sentence
 (after . ! ? … or a line break) keeps its evidence, and so does a text with no lowercase
@@ -224,7 +224,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if marker:
             markers.append(f"{marker}:{word}")
 
-    archaic = lex.tuga.archaic_words
+    archaic = lex.pre1911_forms
     matches = list(_WORD_RE.finditer(text))
     # a text in capitals throughout gives no case signal
     cased = any(m.group().islower() for m in matches)
