@@ -10,6 +10,12 @@ higher accuracy on sentence-length text, opt-in). Input is NFC-normalized.
 (`float`, see below), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical
 norm id that round-trips into `convert`), `is_portuguese` (`True`).
 
+With `method="rules"`, the label is one of `etymological` (pre-1911), `reforma_1911` (the
+Portuguese spelling of the Formulário Ortográfico of 1911), `pt_1973`, `br_1971`,
+`ao1990-pt`, `ao1990-br` and `ao1990`. `etymological` and `reforma_1911` have `variant`
+`None`. `br_1943` and `pt_1945` are norms of `convert` that `detect` does not return. The
+`"nb"` and `"perceptron"` models have no `reforma_1911` class.
+
 With `method="rules"`, `confidence` is the held-out precision of the label for the number
 of distinct evidence tokens behind it: one, or two or more. Each value is the lowest
 precision over the measured populations: 13 pre-1911 Gutenberg books, `silver_corpus.jsonl`,
@@ -22,6 +28,7 @@ again from these files.
 | Label | Evidence tokens | 1 token | 2 or more |
 | --- | --- | --- | --- |
 | `etymological` | listed pre-1911 forms (pharmacia, theatro) | 0.89 | 0.99 |
+| `reforma_1911` | 1911 forms (tambêm, quási, armazêns, freqùente) | 0.89 | 0.99 |
 | `pt_1973` | pre-AO1990 PT forms, `-êem`, a capital month | 0.79 | 0.92 |
 | `br_1971` | pre-AO1990 BR forms, trema | 0.95 | 0.99 |
 | `ao1990` | AO1990 map forms (ação, ótima) | 0.96 | 0.95 |
@@ -29,6 +36,15 @@ again from these files.
 An `ao1990` result with no AO1990 form but with a PT/BR lean marker gets 0.86. A text with
 no evidence at all gets 0.34, because its label is only the default. With `"nb"` or
 `"perceptron"`, `confidence` comes from the model margin.
+
+The `reforma_1911` values are provisional copies of the `etymological` values. The only
+dated text in the 1911 spelling is Eça de Queirós, Contos, Chardron 1913 (Gutenberg
+31347), and it is held out, so no cal unit has a true `reforma_1911` label. On that book
+the label holds for 130 of 1,084 paragraphs. It holds for no unit of the 13 books printed
+before 1911, of the 1,721 news sentences, of the silver renderings or of the Formulário
+Ortográfico of 1943. A modern text that quotes a 1911 form also gets `reforma_1911` (the
+Acordos of 1945 and 1990 write "quase (em vez de quási)"), and so can OCR text that splits
+a Brazilian `-êm-` word (epidêm.io).
 
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).
@@ -71,7 +87,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `diphthong-accent` | éi/ói in a paroxytone (assembléia -> assembleia) | ao1990_pt, ao1990_br |
 | `hiatus-accent` | ôo and êem (vôo -> voo) | ao1990_pt, ao1990_br |
 | `prefix-rs` | prefix + r/s (auto-regulável -> autorregulável) | ao1990_pt, ao1990_br |
-| `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.tsv` holds (fato -> facto, aceção -> acepção) | every conversion to ao1990-br |
+| `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.json` holds (fato -> facto, aceção -> acepção) | every conversion to ao1990-br |
 | `months` | month casing | every conversion |
 
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
@@ -150,6 +166,19 @@ sentence whose word or part starts with a capital is read as a name and is no ev
 Sant'Anna chegou." is AO1990), except in the first word of a sentence or in a text with
 no lowercase word.
 
+1911 evidence (marker `reforma-1911`) is a form of the Formulário Ortográfico of 1911 that
+Brazilian print of 1943 does not have: a polysyllable that ends in `-êm` or `-êns` (Bases
+XIV and XXV: tambêm, alguêm, armazêns, Belêm), `quási` (Base XXIV), and `qù` or `gù`
+(Base XLVI: freqùente, agùentar). porêm, alêm and an acute before `-mente` (Base XXXV:
+fácilmente) do not count, because books printed before 1911 have them. The
+third person plural of the compounds of ter and vir (contêm, provêm) does not count,
+because later norms keep its circumflex. The pronoun circumflex (êle, êste, dêle) does not
+count, because the Formulário Ortográfico of 1943, rule 14.ª, also writes it. A text with
+at least one 1911 form is `reforma_1911`, whatever its other markers. Brazilian print of
+1943 to 1971 cannot have a 1911 form, because the 1943 Formulário writes também, quase and
+the trema (tranqüilo). Print in the 1911 spelling still has pre-1911 forms (emquanto,
+emfim), so a listed pre-1911 form does not outweigh a 1911 form.
+
 ## `eras`
 
 - `Era`: `ETYMOLOGICAL, REFORMA_1911, BR_1943, PT_1945, BR_1971, PT_1973, AO1990`.
@@ -164,7 +193,7 @@ no lowercase word.
 `reform1911_old2new`, `accent_71_73_old2new`, `sister_markers`, and the `tugalex`-backed
 `ao_pt_old2new` / `ao_br_old2new` (with their inverses). `ao_pt_row_class` and
 `ao_br_row_class` give the class of each AO1990 row (`ao_row_class(old, new)`).
-`ao_br_volp` maps a pt-BR word to its form in the ABL VOLP, from `data/volp_ao1990_br.tsv`. Every map has a reverse. AO1990
+`ao_br_volp` maps a pt-BR word to its form in the ABL VOLP, from `data/volp_ao1990_br.json`. Every map has a reverse. AO1990
 reverses come from the `tugalex` data and are authoritative where present.
 
 ## `ml`

@@ -33,6 +33,11 @@ the two orthographies.
 | `ph→f`, `th→t`, `rh→r`, `y→i` | deterministic |
 | `ch`(=/k/)→`c`/`qu`, geminate reduction (keep `rr`, `ss`), drop silent consonants and medial `h` | lexical |
 
+`detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943
+does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù`
+(freqùente). See the detection markers in
+[`api.md`](api.md).
+
 Sources: [Reforma Ortográfica de 1911](https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1911) ·
 [A ortografia antes de 1911 (Ciberdúvidas)](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-ortografia-antes-de-1911/33429)
 
@@ -89,7 +94,7 @@ lexical part. It defines four sets:
   consonant, in the plural too. A word with one valid form takes that form. contrato
   and retrato stay: each is a word of its own beside contracto and retracto. For pt-BR,
   the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) decides each word that
-  `data/volp_ao1990_br.tsv` holds, before the tugalex map: the VOLP lists fato and
+  `data/volp_ao1990_br.json` holds, before the tugalex map: the VOLP lists fato and
   facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator.
   Two VOLP entries that point to each other with "cf." are two words (ótica, óptica),
   and neither becomes the other. Where the VOLP gives the form with the consonant for

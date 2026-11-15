@@ -1,7 +1,7 @@
 """A conversion to ao1990-br writes the form the ABL VOLP gives each word it holds.
 
 The ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) is the official vocabulary
-of Brazil. ``data/volp_ao1990_br.tsv`` quotes the VOLP entry of each word. Where the
+of Brazil. ``data/volp_ao1990_br.json`` quotes the VOLP entry of each word. Where the
 VOLP lists both forms of one word, the converter writes the form with the consonant
 (owner ruling: "if both forms are valid, keep the one with the consonant"). Where it
 lists one form, the converter writes that form. Two entries that point to each other
@@ -10,7 +10,7 @@ other. Where the VOLP gives the form with the consonant for one reading of a tok
 the token stays as written, because the bare form is valid for every reading. Each
 expected value below comes from the VOLP entry quoted beside it.
 """
-import csv
+import json
 import re
 from pathlib import Path
 
@@ -245,9 +245,9 @@ def test_a_row_for_named_sentences_is_left_out():
     assert "elétrico" not in get_lexicon().ao_br_volp
 
 
-with (Path(__file__).parent.parent / "desacordo_ortografico" / "data" / "volp_ao1990_br.tsv").open(
-        encoding="utf-8", newline="") as _f:
-    ROWS = list(csv.DictReader(_f, delimiter="\t", quoting=csv.QUOTE_NONE))
+with (Path(__file__).parent.parent / "desacordo_ortografico" / "data" / "volp_ao1990_br.json").open(
+        encoding="utf-8") as _f:
+    ROWS = json.load(_f)
 
 
 def test_every_row_quotes_its_source():

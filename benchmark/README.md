@@ -158,7 +158,7 @@ stays as written.
 Each line of `variety_fixes.tsv` gives a cell, a token, the pt_1973 token that names the
 word, the Brazilian form, the rows it applies to and the source it comes from. The
 tables hold the br_1971 lines. The ao1990-br lines live in the package file
-`desacordo_ortografico/data/volp_ao1990_br.tsv`, which `convert()` reads too; a line
+`desacordo_ortografico/data/volp_ao1990_br.json`, which `convert()` reads too; a line
 there whose form is its token keeps the token. The
 pt_1973 token keeps homographs apart: fato becomes facto only where the European cell
 writes facto, so fato (a suit) stays. A row whose Brazilian cell has a different token
@@ -191,6 +191,12 @@ sha256 of every input. The committed table comes from revision 7049ddd of
 `parallel.jsonl` (sha256 `61f1a10a...5f5026`), which the script reads in its own flat
 schema. The relabelled sentences and the list of their 50 pre-1911 ids are not in this
 repository.
+
+The `reforma_1911` cells are provisional. pg31347 (Eça de Queirós, Contos, Chardron 1913)
+is the only book in the 1911 spelling, and it is always in the test split, so no cal unit
+has a true `reforma_1911` label. The script copies the etymological cell into each
+`reforma_1911` cell that no source fills with 15 cal units, and it prints every unit
+labelled `reforma_1911` by source, split and evidence count.
 
 ```bash
 curl -L -o parallel.jsonl \
