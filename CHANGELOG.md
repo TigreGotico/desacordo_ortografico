@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.22a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.22a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.21a1...0.1.22a1)
+
+**Merged pull requests:**
+
+- fix: give detect\(\) a measured confidence instead of a score ratio [\#34](https://github.com/TigreGotico/desacordo_ortografico/pull/34) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.21a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.21a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.20a1...0.1.21a1)
