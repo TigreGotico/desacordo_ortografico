@@ -40,12 +40,13 @@ def _publish(monkeypatch, existing):
     spec.loader.exec_module(module)
     monkeypatch.setattr(module, "_load", lambda name: [])
     module.main()
-    return [call for call in api.calls if call[0] != "repo_exists"]
+    return api.calls
 
 
 @pytest.mark.parametrize("existing, expected", [
-    ({REPO}, [("upload_folder", REPO, "dataset")]),
-    (set(), [("create_repo", REPO, "dataset"), ("upload_folder", REPO, "dataset")]),
+    ({REPO}, [("repo_exists", REPO, "dataset"), ("upload_folder", REPO, "dataset")]),
+    (set(), [("repo_exists", REPO, "dataset"), ("create_repo", REPO, "dataset"),
+             ("upload_folder", REPO, "dataset")]),
 ], ids=["repo exists", "repo missing"])
 def test_create_repo_only_for_a_missing_repo(monkeypatch, existing, expected):
     assert _publish(monkeypatch, existing) == expected
