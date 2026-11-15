@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.2a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.1a1...0.2.2a1)
+
+**Merged pull requests:**
+
+- fix: require tugalex 2.4.9a1, which keeps get\_wordlist warning-free [\#39](https://github.com/TigreGotico/desacordo_ortografico/pull/39) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.2.1a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.1a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.0a2...0.2.1a1)
