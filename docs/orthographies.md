@@ -100,7 +100,9 @@ lexical part. It defines four sets:
   and neither becomes the other. Where the VOLP gives the form with the consonant for
   one reading of a word only, the word stays as written, because the bare form is valid
   for every reading: the VOLP lists coator adj. s.m. and coactor s.m., so "o ato coator"
-  stays, and it lists faturar and no facturar, so "a empresa fatura" stays. Such a row is
+  stays, and it lists faturar and no facturar, so "a empresa fatura" stays. A past
+  participle is a reading too: the VOLP lists refletido adj. and reflectido adj., and
+  refletir v. with no reflectir, so "o relatório foi refletido" stays. Such a row is
   marked "one reading" in the data file. From a pt-PT source, a bare form that pt-PT
   itself does not write for the word is another word: pt-PT writes facto for the fact,
   so a pt-PT fato is the suit and stays fato.
