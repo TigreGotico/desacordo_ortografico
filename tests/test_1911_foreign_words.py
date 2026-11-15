@@ -17,14 +17,38 @@ TARGETS = ("pt_1973", "ao1990-pt", "br_1971", "ao1990-br")
 
 # AO1990 Base I 2º a), 2º b) and 3º, verbatim examples
 BASE_I = ["Franklin", "frankliniano", "Kant", "kantismo", "Darwin", "darwinismo",
-          "Wagner", "wagneriano", "Taylor", "taylorista", "Kwanza", "Kuwait",
+          "Wagner", "wagneriano", "Kwanza", "Kuwait",
           "kuwaitiano", "Malawi", "malawiano", "shakesperiano"]
 
 
-@pytest.mark.parametrize("word", BASE_I + ["Hollywood"])
+# Names of the review input set that a 1911 rule would change, each marked by one
+# spelling only: a final consonant (Smith, Clifford) or a w (Wellington, Cromwell). AO1990
+# Base I 2º a) keeps the spelling of "antropónimos/antropônimos originários de outras
+# línguas".
+NAMES_IN_TEXT = ["Hollywood", "Smith", "Clifford", "Wellington", "Cromwell"]
+
+
+@pytest.mark.parametrize("word", BASE_I + NAMES_IN_TEXT)
 @pytest.mark.parametrize("target", TARGETS)
 def test_foreign_name_and_derivative_keep_their_spelling(word, target):
     assert convert(f"o {word}", "etymological", target) == f"o {word}"
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "a y inside a word is also pre-1911 Portuguese (Baylão, Froylas), so no spelling rule "
+    "keeps the y of Taylor"))
+@pytest.mark.parametrize("word", ["Taylor", "taylorista"])
+@pytest.mark.parametrize("target", TARGETS)
+def test_y_inside_a_foreign_name_stays(word, target):
+    assert convert(f"o {word}", "etymological", target) == f"o {word}"
+
+
+# pre-1911 Portuguese writes y inside and at the end of a word; 1911 Base I writes i
+@pytest.mark.parametrize("old, new", [("Bayão", "Baião"), ("Moreyra", "Moreira"),
+                                      ("Jayme", "Jaime"), ("Catumby", "Catumbi")])
+@pytest.mark.parametrize("target", TARGETS)
+def test_portuguese_y_still_becomes_i(old, new, target):
+    assert convert(f"o {old}", "etymological", target) == f"o {new}"
 
 
 @pytest.mark.parametrize("target", TARGETS)

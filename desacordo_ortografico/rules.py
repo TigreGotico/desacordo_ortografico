@@ -264,19 +264,18 @@ def reform_1911_digraphs(word: str) -> str:
     return word
 
 
-# Spellings that mark a loanword or a foreign name in modern text, so the 1911 rule
-# fallbacks leave the word alone: k and w, zz, ck, sh, y opening a word before a vowel,
-# y between a vowel and a consonant (taylorista), y after a consonant at the end of a
-# word, and a final consonant other than l, r, s, z, m, n or x. Final -ie is not one:
-# Portuguese writes it (espécie, série, anuncie). The Bases Analíticas of the Acordo of
-# 1945, 1: "O k, o w e o y mantêm-se nos vocábulos derivados eruditamente de nomes
-# próprios estrangeiros que se escrevam com essas letras: frankliniano, kantismo;
+# The letters of a foreign name stay in its derivatives. The Bases Analíticas of the
+# Acordo of 1945, 1: "O k, o w e o y mantêm-se nos vocábulos derivados eruditamente de
+# nomes próprios estrangeiros que se escrevam com essas letras: frankliniano, kantismo;
 # darwinismo, wagneriano; byroniano, taylorista"; 2: "mantêm-se [...] quaisquer
-# combinações gráficas não peculiares à nossa escrita que figurem nesses nomes". The
-# Formulário of 1943, 10.: "byroniano, maynardina, taylorista".
-_FOREIGN_RE = re.compile(
-    r"[kw]|zz|ck|sh|^y[aeiou]|[aeiou]y[^aeiouáéíóú]|[^aeiouáéíóú]y$"
-    r"|[^aeiouáàâãéêíóôõúüylrszmnx]$")
+# combinações gráficas não peculiares à nossa escrita que figurem nesses nomes". So the
+# 1911 rule fallbacks leave alone a word with a spelling of a loanword or a foreign name:
+# k or w, zz, ck, sh, y before a vowel at the start, or a final consonant other than l,
+# r, s, z, m, n or x. Final -ie is no such spelling: Portuguese writes it (espécie, série,
+# anuncie). Nor is a y inside or at the end of a word: pre-1911 Portuguese writes it
+# (Bayão, Moreyra, Jayme, Piauhy), and no spelling tells taylorista or byroniano from
+# Baylão or Froylas.
+_FOREIGN_RE = re.compile(r"[kw]|zz|ck|sh|^y[aeiou]|[^aeiouáàâãéêíóôõúüylrszmnx]$")
 
 
 def is_foreign_spelling(word: str) -> bool:
