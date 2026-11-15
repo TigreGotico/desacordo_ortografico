@@ -14,10 +14,11 @@ X = ("ao1990-pt", "ao1990-br")
 
 # feature -> (path, old word, new word)
 CASES = {
-    # Reforma de 1911: ph -> f, th -> t, geminates reduced, graphic accents
+    # Reforma de 1911: ph -> f, th -> t, geminates reduced, graphic accents. A word that
+    # a 1911 word map holds belongs to 1911-word-map, so the rule cases are unlisted words.
     "1911-word-map": (P, "pharmacia", "farmácia"),
-    "1911-digraphs": (P, "theatro", "teatro"),
-    "1911-geminates": (P, "commissão", "comissão"),
+    "1911-digraphs": (P, "thesouraria", "tesouraria"),
+    "1911-geminates": (P, "commissionar", "comissionar"),
     "1911-accent-restore": (P, "fosforo", "fósforo"),
     # Convenção de 1945 for Portugal, AO1990 Base XIV 1º for Brazil: no trema
     "trema": (P, "lingüiça", "linguiça"),
