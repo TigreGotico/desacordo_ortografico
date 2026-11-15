@@ -100,10 +100,15 @@ def test_every_row_names_its_edge_and_its_source():
     assert len(keys) == len(set(keys))
 
 
+def _cites(source, entry):
+    """True when ``source`` is ``entry``, alone or followed by a note in parentheses."""
+    return source == entry or (source.startswith(f"{entry} (") and source.endswith(")"))
+
+
 def test_every_row_cites_an_entry_of_the_sources():
     table = _table()
     sources, groups = table["_sources"], table["_groups"]
-    assert [r for r in table["rows"] if not any(r["source"].startswith(s) for s in sources)] == []
+    assert [r for r in table["rows"] if not any(_cites(r["source"], s) for s in sources)] == []
     curated = [r for r in table["rows"] if r["curated"]]
     assert curated
     assert [r for r in curated if r["source"] not in {f"{sources[0]} ({g})" for g in groups}] == []

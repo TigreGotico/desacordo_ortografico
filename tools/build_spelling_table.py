@@ -56,6 +56,20 @@ ABOUT = (
     "director and afecto: affecto gives afecto in 1911, and only the AO1990 edge gives afeto. "
     "tools/build_spelling_table.py built the rows with tugalex 2.4.9a1."
 )
+
+#: The 1911 JSON writes two of its sources without accents; the table cites them as the
+#: works print them.
+REFORM_1911 = "Reforma Ortográfica de 1911 (Portaria de 1 de setembro de 1911), comissão de Gonçalves Viana"
+CITATIONS = {
+    "Reforma Ortografica de 1911 (Portaria de 1 de Setembro de 1911), comissao de Goncalves Viana": REFORM_1911,
+    "Candido de Figueiredo, Novo Diccionario da Lingua Portuguesa (1913)":
+        "Cândido de Figueiredo, Novo Diccionário da Língua Portuguesa (1913)",
+}
+
+#: A sentence of the 1911 JSON's digraphs comment that the data contradicts: the curated
+#: values carry AO1990 accents (ele, where the 1911 print writes êle), as ``ABOUT`` says.
+NOT_CARRIED = " Modern values carry the accent the 1911 systematic accentuation introduced."
+
 #: The tugalex lists that the rows other than the curated pairs come from.
 TUGALEX_SOURCES = ["tugalex archaisms.csv", "tugalex acordo_ortografico_pt_PT.csv",
                    "tugalex acordo_ortografico_pt_BR.csv"]
@@ -121,17 +135,18 @@ def curated_from_json(path: str) -> Curated:
     """The pairs of each group of the 1911 JSON, lowercased, with its sources and the
     comment of each group. A key seen again keeps its first position and takes the later
     value, as the dict of the old loader did. Each pair cites the first source of the file,
-    the Portaria of 1911, and its group."""
+    the Portaria of 1911, and its group. Sources are written as in ``CITATIONS``, and the
+    comments drop ``NOT_CARRIED``."""
     pairs: Dict[str, Row] = {}
     comments: Dict[str, str] = {}
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-    sources = data["_sources"]
-    assert sources[0].startswith("Reforma Ortografica de 1911 (Portaria"), sources[0]
+    sources = [CITATIONS.get(s, s) for s in data["_sources"]]
+    assert sources[0] == REFORM_1911, sources[0]
     for group, entries in data.items():
         if group.startswith("_") or not isinstance(entries, dict):
             continue
-        comments[group] = entries["_comment"]
+        comments[group] = entries["_comment"].replace(NOT_CARRIED, "")
         for k, v in entries.items():
             if k.startswith("_") or not isinstance(v, str):
                 continue
