@@ -114,12 +114,14 @@ then the Brazilian headword of the Priberam dictionary before the AO1990, where 
 shows a spelling change. Where rule 18
 of the Formulário registers both forms, the cell writes the c/p form (`contacto`,
 `secção`, `tecto`); rule 16 keeps `ótimo`. The `ao1990_br` cells follow the Vocabulário
-Ortográfico da Língua Portuguesa (VOLP), then Priberam after the AO1990.
+Ortográfico da Língua Portuguesa (VOLP), then Priberam after the AO1990, where the page
+shows a spelling change.
 Where the VOLP lists both forms of one word, the cell writes the c/p form (`facto`,
 `sector`, `detectar`). Where it lists one form, the cell writes that form (`ação`,
 `acepção`, `comitê`). The `br_1971` cells write the preterite ending `-amos` without the
 accent. A word that no source of its cell decides stays as written in its row, and so
-does a personal or place name inside a sentence (`Otávia`, `o Ártico`). Two rows
+does a personal or place name inside a sentence (`Otávia`, `o Ártico`). The ABL
+publishes its vocabulary of 1943 online, but the `br_1971` cells do not use it yet. Two rows
 are dropped: the VOLP lists no form of their word (`detetiva`), or the sentence fits
 neither of two VOLP words (`distático`).
 

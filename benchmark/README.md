@@ -115,6 +115,12 @@ vowels of the 1943 accent rule; the double form "bebé ou bebê" comes from the 
 The ao1990-br cell follows the Vocabulário Ortográfico da Língua Portuguesa (VOLP), the
 official vocabulary of Brazil after the AO1990, then the Priberam view after the AO1990.
 A check list of Michaelis headwords decides no token that these two leave open.
+Priberam decides only where the VOLP lists neither form, and, as in br_1971, only a page
+that shows a spelling change decides. A page with one spelling in all four views records
+no spelling change, so it decides nothing, and the token stays as written. Priberam rector
+shows rector in all four views, and the VOLP lists neither retor nor rector, so d22099
+keeps retor. That row means the rector of a university, which the VOLP writes reitor;
+the fix does not change words, so retor goes on the residual list.
 Where the VOLP lists both forms of one word, the cell writes the c/p form:
 fato → facto, setor → sector, ótimo → óptimo. The two entries must have the same part of
 speech. The VOLP lists reta s.f. and recto adj., so the noun reta stays, and only the
@@ -144,10 +150,12 @@ count from its pt_1973 cell gets only the lines with `*` for the pt_1973 token, 
 lines that name its row (p05-046 and p05-082 reword "o facto de" as "o fato de" and
 still mean a fact). `variety_keeps.tsv` lists each bare form that stays, with its cell,
 its rows and its source. Of the bare forms in the full set whose European word writes a
-c/p, 614 br_1971 tokens of 395 words and 133 ao1990-br tokens of 94 words stay
+c/p, 614 br_1971 tokens of 395 words and 141 ao1990-br tokens of 102 words stay
 undecided, because no source of the cell decides them. In br_1971, rule 43 does not
-decide the vowel of comité (5 tokens), cliché and géiser, and no pre-1990 Brazilian
-vocabulary is online, so these words stay as written too. `variety_drops.tsv` lists tokens that the sources cannot decide, and the
+decide the vowel of comité (5 tokens), cliché and géiser, so these words stay as written
+too. The ABL publishes its vocabulary of 1943 online, the Pequeno Vocabulário Ortográfico
+that opens with the Formulário. The br_1971 tables do not use it yet. A later change adds
+it to the br_1971 source order. `variety_drops.tsv` lists tokens that the sources cannot decide, and the
 script drops each row that holds one. The br_1971 cells write the preterite ending -amos
 without the accent (Formulário Ortográfico 1943, rule 43, 15.ª, OBSERVAÇÃO); ao1990-br keeps -ámos
 (AO1990, Base IX, 4). The derived rows keep the European words in the Brazilian cells

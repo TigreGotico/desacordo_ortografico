@@ -298,7 +298,7 @@ br_1971	cetrígero	ceptrígero	*	no source: Formulário 1943 does not name the w
 br_1971	cinorético	cinoréctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	citofilático	citofiláctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	citopético	citopéctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
-br_1971	cliché	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, but no pre-1990 source records the vowel of this word; Priberam clichê shows one spelling in all four views, so it records no spelling before the AO1990
+br_1971	cliché	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, and the ABL Pequeno Vocabulário Ortográfico of 1943 records the vowel of this word, but the br_1971 tables do not apply it yet; Priberam clichê shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	clidorrético	clidorréctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	co-diretor	co-director	*	Priberam co-director (Brazil before the AO1990: co-diretor, after: codiretor; Portugal before: co-director, after: codiretor)
 br_1971	co-diretora	co-directora	*	Priberam co-director (Brazil before the AO1990: co-diretor, after: codiretor; Portugal before: co-director, after: codiretor)
@@ -343,8 +343,8 @@ br_1971	coletável	colectável	*	Priberam colectável (Brazil before the AO1990:
 br_1971	coletânea	colectânea	*	Priberam colectânea (Brazil before the AO1990: coletânea, after: coletânea; Portugal before: colectânea, after: coletânea)
 br_1971	coletâneo	colectâneo	*	Priberam colectâneo (Brazil before the AO1990: coletâneo, after: coletâneo; Portugal before: colectâneo, after: coletâneo)
 br_1971	coletício	colectício	*	Priberam colectício (Brazil before the AO1990: coletício, after: coletício; Portugal before: colectício, after: coletício)
-br_1971	coleção	colecção	*	Priberam coleccao (Brazil before the AO1990: coleção, after: coleção; Portugal before: colecção, after: coleção)
-br_1971	coleções	colecções	*	Priberam coleccao (Brazil before the AO1990: coleção, after: coleção; Portugal before: colecção, after: coleção)
+br_1971	coleção	colecção	*	Priberam colecção (Brazil before the AO1990: coleção, after: coleção; Portugal before: colecção, after: coleção)
+br_1971	coleções	colecções	*	Priberam colecção (Brazil before the AO1990: coleção, after: coleção; Portugal before: colecção, after: coleção)
 br_1971	colopético	colopéctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	colorretite	colorrectite	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	comité	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, but no pre-1990 source records the vowel of this word; Priberam comité, comitê shows one spelling in all four views, so it records no spelling before the AO1990
@@ -385,7 +385,7 @@ br_1971	corretriz	correctriz	*	Priberam correctriz (Brazil before the AO1990: co
 br_1971	corretório	correctório	*	Priberam correctório (Brazil before the AO1990: corretório, after: corretório; Portugal before: correctório, after: corretório)
 br_1971	correção	correcção	*	Priberam correcção (Brazil before the AO1990: correção, after: correção; Portugal before: correcção, after: correção)
 br_1971	correções	correcções	*	Priberam correcção (Brazil before the AO1990: correção, after: correção; Portugal before: correcção, after: correção)
-br_1971	corruto	corrupto	*	no source: Formulário 1943 does not name the word, and Priberam corrupto shows one spelling in all four views, so it records no spelling before the AO1990
+br_1971	corruto	corrupto	*	no source: Formulário 1943, 18 does not list corrupto (it names "corrupção e corrução, corruptela e corrutela"), and Priberam corrupto shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	coátil	coáctil	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	cristalelétrico	cristaleléctrico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	cutirreação	cutirreacção	*	Priberam cutirreacção (Brazil before the AO1990: cutirreação, after: cutirreação; Portugal before: cutirreacção, after: cutirreação)
@@ -395,7 +395,7 @@ br_1971	céticos	cépticos	*	Priberam céptica (Brazil before the AO1990: cétic
 br_1971	datilografado	dactilografado	*	Priberam dactilografado (Brazil before the AO1990: datilografado, after: datilografado; Portugal before: dactilografado, after: datilografado ou dactilografado)
 br_1971	datilografar	dactilografar	*	Priberam dactilografar (Brazil before the AO1990: datilografar, after: datilografar; Portugal before: dactilografar, after: datilografar ou dactilografar)
 br_1971	datilográfico	dactilográfico	*	Priberam dactilográfico (Brazil before the AO1990: datilográfico, after: datilográfico; Portugal before: dactilográfico, after: datilográfico ou dactilográfico)
-br_1971	datilógrafa	dactilógrafa	*	Priberam dactilografo (Brazil before the AO1990: datilógrafo, after: datilógrafo; Portugal before: dactilógrafo, after: datilógrafo ou dactilógrafo)
+br_1971	datilógrafa	dactilógrafa	*	Priberam dactilógrafa (Brazil before the AO1990: datilógrafo, after: datilógrafo; Portugal before: dactilógrafo, after: datilógrafo ou dactilógrafo)
 br_1971	deadjetival	deadjectival	*	Priberam deadjectival (Brazil before the AO1990: deadjetival, after: deadjetival; Portugal before: deadjectival, after: deadjetival)
 br_1971	dececionável	decepcionável	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	defetório	defectório	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
@@ -536,7 +536,7 @@ br_1971	efetuável	efectuável	*	Priberam efectuável (Brazil before the AO1990:
 br_1971	efetível	efectível	*	Priberam efectível (Brazil before the AO1990: efetível, after: efetível; Portugal before: efectível, after: efetível)
 br_1971	efratura	efractura	*	Priberam efractura (Brazil before the AO1990: efratura, after: efratura; Portugal before: efractura, after: efratura)
 br_1971	efração	efracção	*	Priberam efracção (Brazil before the AO1990: efração, after: efração; Portugal before: efracção, after: efração)
-br_1971	egito	egipto	d04902,p06-038	no source: a proper name; the VOLP and Priberam entries for this spelling are common words
+br_1971	egito	egipto	d04902,p06-038	no source: a place name; the VOLP lists "Egito top.", but the VOLP does not decide this cell, and no pre-1990 source records the spelling of the name
 br_1971	ejetar	ejectar	*	Priberam ejectar (Brazil before the AO1990: ejetar, after: ejetar; Portugal before: ejectar, after: ejetar)
 br_1971	ejetor	ejector	*	Priberam ejector (Brazil before the AO1990: ejetor, after: ejetor; Portugal before: ejector, after: ejetor)
 br_1971	ejetável	ejectável	*	Priberam ejectável (Brazil before the AO1990: ejetável, after: ejetável; Portugal before: ejectável, after: ejetável)
@@ -712,10 +712,10 @@ br_1971	eletrônico	electrónico	*	Priberam electrónico (Brazil before the AO19
 br_1971	eletrônicos	electrónicos	*	Priberam electrónico (Brazil before the AO1990: eletrônico, after: eletrônico; Portugal before: electrónico, after: eletrónico)
 br_1971	eletrônio	electrónio	*	Priberam electrónio (Brazil before the AO1990: eletrônio, after: eletrônio; Portugal before: electrónio, after: eletrónio)
 br_1971	eletrões	electrões	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
-br_1971	elétrica	eléctrica	*	Priberam eletricas (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
-br_1971	elétricas	eléctricas	*	Priberam eletricas (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
-br_1971	elétrico	eléctrico	*	Priberam eletricas (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
-br_1971	elétricos	eléctricos	*	Priberam eletricas (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
+br_1971	elétrica	eléctrica	*	Priberam eléctrico (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
+br_1971	elétricas	eléctricas	*	Priberam eléctrico (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
+br_1971	elétrico	eléctrico	*	Priberam eléctrico (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
+br_1971	elétricos	eléctricos	*	Priberam eléctrico (Brazil before the AO1990: elétrico, after: elétrico; Portugal before: eléctrico, after: elétrico)
 br_1971	elétrino	eléctrino	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	elétrodo	eléctrodo	*	Priberam eléctrodo (Brazil before the AO1990: elétrodo, after: elétrodo; Portugal before: eléctrodo, after: elétrodo)
 br_1971	elétrodos	eléctrodos	*	Priberam eléctrodo (Brazil before the AO1990: elétrodo, after: elétrodo; Portugal before: eléctrodo, after: elétrodo)
@@ -759,7 +759,7 @@ br_1971	exator	exactor	*	Priberam exactor (Brazil before the AO1990: exator, aft
 br_1971	exatoria	exactoria	*	Priberam exactoria (Brazil before the AO1990: exatoria, after: exatoria; Portugal before: exactoria, after: exatoria)
 br_1971	exatos	exactos	*	Priberam exacto (Brazil before the AO1990: exato, after: exato; Portugal before: exacto, after: exato)
 br_1971	exatíssimo	exactíssimo	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
-br_1971	exação	exacção	*	Priberam exaccao (Brazil before the AO1990: exação, after: exação; Portugal before: exacção, after: exação)
+br_1971	exação	exacção	*	Priberam exacção (Brazil before the AO1990: exação, after: exação; Portugal before: exacção, after: exação)
 br_1971	exceta	excepta	*	Priberam excepto (Brazil before the AO1990: exceto, after: exceto; Portugal before: excepto, after: exceto)
 br_1971	exceto	excepto	*	Priberam excepto (Brazil before the AO1990: exceto, after: exceto; Portugal before: excepto, after: exceto)
 br_1971	excetuador	exceptuador	*	Priberam exceptuador (Brazil before the AO1990: excetuador, after: excetuador; Portugal before: exceptuador, after: excetuador)
@@ -827,7 +827,7 @@ br_1971	galvanopuntura	galvanopunctura	*	Priberam galvanopunctura (Brazil before
 br_1971	galvanotático	galvanotáctico	*	no source: Formulário 1943 does not name the word, and Priberam galvanotáctico shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	gastropético	gastropéctico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	geotático	geotáctico	*	no source: Formulário 1943 does not name the word, and Priberam geotáctico shows one spelling in all four views, so it records no spelling before the AO1990
-br_1971	géiser	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, but no pre-1990 source records the vowel of this word; Priberam géiser, gêiser shows one spelling in all four views, so it records no spelling before the AO1990
+br_1971	géiser	*	*	no source: Formulário 1943, 43 puts the circumflex on a closed e or o, and the ABL Pequeno Vocabulário Ortográfico of 1943 records the vowel of this word, but the br_1971 tables do not apply it yet; Priberam géiser, gêiser shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	haptotático	haptotáctico	*	no source: Formulário 1943 does not name the word, and Priberam haptotáctico shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	heliotatismo	heliotactismo	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
 br_1971	hematossético	hematosséptico	*	no source: Formulário 1943 does not name the word, and no Priberam page holds it
@@ -991,7 +991,7 @@ br_1971	letivo	lectivo	*	Priberam lectivo (Brazil before the AO1990: letivo, aft
 br_1971	liquefativo	liquefactivo	*	Priberam liquefactivo (Brazil before the AO1990: liquefativo, after: liquefativo; Portugal before: liquefactivo, after: liquefativo ou liquefactivo)
 br_1971	liquefato	liquefacto	*	no source: Formulário 1943 does not name the word, and Priberam liquefacto shows one spelling in all four views, so it records no spelling before the AO1990
 br_1971	liquefator	liquefactor	*	Priberam liquefactor (Brazil before the AO1990: liquefator, after: liquefator; Portugal before: liquefactor, after: liquefator)
-br_1971	liquefação	liquefacção	*	Priberam liquefaccao (Brazil before the AO1990: liquefação, after: liquefação; Portugal before: liquefacção, after: liquefação)
+br_1971	liquefação	liquefacção	*	Priberam liquefacção (Brazil before the AO1990: liquefação, after: liquefação; Portugal before: liquefacção, after: liquefação)
 br_1971	madefação	madefacção	*	Priberam madefacção (Brazil before the AO1990: madefação, after: madefação; Portugal before: madefacção, after: madefação)
 br_1971	magnetelétrica	magneteléctrica	*	Priberam magneteléctrico (Brazil before the AO1990: magnetelétrico, after: magnetelétrico; Portugal before: magneteléctrico, after: magnetelétrico)
 br_1971	magnetelétrico	magneteléctrico	*	Priberam magneteléctrico (Brazil before the AO1990: magnetelétrico, after: magnetelétrico; Portugal before: magneteléctrico, after: magnetelétrico)
@@ -1611,6 +1611,7 @@ ao1990-br	afetador	afectador	*	VOLP: afetador (ô) adj. s.m. | afectador (ô) ad
 ao1990-br	afetável	afectável	*	VOLP: afetável adj.2g.; no afectável
 ao1990-br	afetível	afectível	*	VOLP: afetível adj.2g.; no afectível
 ao1990-br	aflita	aflicta	*	VOLP: aflito adj. s.m.; no aflicto
+ao1990-br	angietático	angiectático	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	anteato	anteacto	*	VOLP: anteato s.m.; no anteacto
 ao1990-br	anteprojeto	anteprojecto	*	VOLP: anteprojeto s.m.; no anteprojecto
 ao1990-br	anticaquético	anticaquéctico	*	VOLP: anticaquético adj. s.m.; no anticaquéctico
@@ -1902,7 +1903,7 @@ ao1990-br	efetuação	efectuação	*	VOLP: efetuação s.f.; no efectuação
 ao1990-br	efetuoso	efectuoso	*	VOLP: efetuoso (ô) adj.; f. (ó); pl. (ó); no efectuoso
 ao1990-br	efetuável	efectuável	*	Priberam efectuável (Brazil after the AO1990: efetuável)
 ao1990-br	efetível	efectível	*	VOLP: efetível adj.2g.; no efectível
-ao1990-br	egito	egipto	d04902,p06-038	no source: a proper name; the VOLP and Priberam entries for this spelling are common words
+ao1990-br	egito	egipto	d04902,p06-038	VOLP: Egito top. "país da África", with no Egipto; the token is the place name
 ao1990-br	eletiva	electiva	*	VOLP: eletivo adj.; no electivo
 ao1990-br	eletivamente	electivamente	*	VOLP: eletivo adj.; no electivo
 ao1990-br	eletividade	electividade	*	VOLP: eletividade s.f.; no electividade
@@ -1985,6 +1986,7 @@ ao1990-br	fraturante	fracturante	*	VOLP: fraturante adj.2g.; no fracturante
 ao1990-br	fraturável	fracturável	*	VOLP: fraturável adj.2g.; no fracturável
 ao1990-br	galinseto	galinsecto	*	VOLP: galinseto s.m.; no galinsecto
 ao1990-br	gastropético	gastropéctico	*	no source: VOLP lists neither form, and Priberam does not decide
+ao1990-br	haptotático	haptotáctico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	hematossético	hematosséptico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	hemotético	hemotéctico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	hepatopético	hepatopéctico	*	no source: VOLP lists neither form, and Priberam does not decide
@@ -2183,6 +2185,7 @@ ao1990-br	projetógrafo	projectógrafo	*	VOLP: projetógrafo s.m.; no projectóg
 ao1990-br	projeção	projecção	*	VOLP: projeção s.f.; no projecção
 ao1990-br	projeções	projecções	*	VOLP: projeção s.f.; no projecção
 ao1990-br	projétil	projéctil	*	VOLP: projétil adj.2g. s.m.; no projéctil
+ao1990-br	proleticamente	prolepticamente	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	protecional	proteccional	*	VOLP: protecional adj.2g.; no proteccional
 ao1990-br	protecionismo	proteccionismo	*	VOLP: protecionismo s.m.; no proteccionismo
 ao1990-br	protecionista	proteccionista	*	VOLP: protecionista adj. s.2g.; no proteccionista
@@ -2261,6 +2264,7 @@ ao1990-br	retalgia	rectalgia	*	VOLP: retalgia s.f.; no rectalgia
 ao1990-br	retangularmente	rectangularmente	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	retilineamente	rectilineamente	*	Priberam rectilineamente (Brazil after the AO1990: retilineamente)
 ao1990-br	retilinearidade	rectilinearidade	*	no source: VOLP lists neither form, and Priberam does not decide
+ao1990-br	retor	rector	*	no source: a change of word, which the fix does not make; the VOLP lists neither retor nor rector, only reitor (ô) s.m. and rétor s.m., and the sentence means the rector of a university (reitor)
 ao1990-br	retratar	retractar	*	VOLP: retratar v.; no retractar
 ao1990-br	retratação	retractação	*	VOLP: retratação s.f.; no retractação
 ao1990-br	retratável	retractável	*	VOLP: retratável adj.2g.; no retractável
@@ -2344,11 +2348,13 @@ ao1990-br	tecnoleto	tecnolecto	*	Priberam tecnolecto (Brazil after the AO1990: t
 ao1990-br	teleobjetiva	teleobjectiva	*	VOLP: teleobjetiva s.f.; no teleobjectiva
 ao1990-br	teleprojétil	teleprojéctil	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	telobjetiva	telobjectiva	*	Priberam telobjectiva (Brazil after the AO1990: telobjetiva)
+ao1990-br	telótico	telóptico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	tenontopético	tenontopéctico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	tensioativo	tensioactivo	*	VOLP: tensioativo adj.; no tensioactivo
 ao1990-br	termodielétrico	termodieléctrico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	teto	tecto	*	VOLP: teto s.m. "cobertura", etc.; cf. teto (ê); no tecto
 ao1990-br	tetos	tectos	*	VOLP: teto s.m. "cobertura", etc.; cf. teto (ê); no tecto
+ao1990-br	tigmotatismo	tigmotactismo	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	tracionar	traccionar	*	VOLP: tracionar v.; no traccionar
 ao1990-br	trajeto	trajecto	*	VOLP: trajeto s.m.; no trajecto
 ao1990-br	trajetor	trajector	*	no source: VOLP lists neither form, and Priberam does not decide
@@ -2372,6 +2378,7 @@ ao1990-br	triboeletricidade	triboelectricidade	*	VOLP: triboeletricidade s.f.; n
 ao1990-br	triboelétrica	triboeléctrica	*	VOLP: triboelétrico adj.; no triboeléctrico
 ao1990-br	triboelétrico	triboeléctrico	*	VOLP: triboelétrico adj.; no triboeléctrico
 ao1990-br	trirretângulo	trirrectângulo	*	VOLP: trirretângulo adj. s.m.; no trirrectângulo
+ao1990-br	trofotatismo	trofotactismo	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	turborreator	turborreactor	*	VOLP: turborreator (ô) s.m.; no turborreactor
 ao1990-br	ultracorreto	ultracorrecto	*	VOLP: ultracorreto adj.; no ultracorrecto
 ao1990-br	ultracorreção	ultracorrecção	*	VOLP: ultracorreção s.f.; no ultracorrecção
@@ -2380,6 +2387,8 @@ ao1990-br	vasoativo	vasoactivo	*	VOLP: vasoativo adj.; no vasoactivo
 ao1990-br	vesicorretal	vesicorrectal	*	VOLP: vesicorretal adj.2g.; no vesicorrectal
 ao1990-br	vetorizar	vectorizar	*	Priberam vectorizar (Brazil after the AO1990: vetorizar)
 ao1990-br	vetrice	vectrice	*	no source: VOLP lists neither form, and Priberam does not decide
+ao1990-br	zigotatismo	zigotactismo	*	no source: VOLP lists neither form, and Priberam does not decide
+ao1990-br	zigotático	zigotáctico	*	no source: VOLP lists neither form, and Priberam does not decide
 ao1990-br	zoeletricidade	zoelectricidade	*	VOLP: zoeletricidade s.f.; no zoelectricidade
 ao1990-br	zoelétrico	zoeléctrico	*	VOLP: zoelétrico adj.; no zoeléctrico
 ao1990-br	ártico	árctico	d10219,d10463,d19831,d19841,d19854,d19895,d19907,d19915,d19918,d19933,d19944,d20015,d20027,d20036,d20061	no source: a proper name; the VOLP and Priberam entries for this spelling are common words
