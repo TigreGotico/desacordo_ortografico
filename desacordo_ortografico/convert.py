@@ -330,11 +330,16 @@ class OrthographyConverter:
         # -- 1911 -> 1945 (PT) and 1911 -> 1943 (BR): the word rows of the spelling
         #    table, then the rules; rules.py quotes the clause of each.
         def from_1911(rows: Mapping[str, str]) -> WordFn:
+            # only a form that ends in a, e or o takes the plural -s: the noun scetro
+            # (scetros), and not the adverbs quási, tam, quam or the verb forms teem, veem
+            nouns = {form: value for form, value in rows.items() if form[-1:] in "aeo"}
+
             def read(word: str) -> str:
                 parts = rules._SEGMENT_SEP.split(word)
-                if len(parts) > 1 and len(set(parts)) == 1:  # tam-tam, a gong
+                if len(parts) > 1 and len({p.removesuffix("s") for p in parts}) == 1:  # tam-tams
                     return word
-                return rules.per_segment(word, lambda p: rules.lookup_with_plural(p, rows) or p)
+                return rules.per_segment(
+                    word, lambda p: rows.get(p) or rules.lookup_with_plural(p, nouns) or p)
 
             return read
 
