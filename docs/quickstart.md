@@ -67,10 +67,11 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 - **AO1990 is two targets, not one.** Use `ao1990-pt` / `ao1990-br` (or pass `variant=`)
   to pick the European or Brazilian form of a dual word.
 - **Sister languages are flagged, not converted.** See `docs/api.md`.
-- **Featureless input defaults to `ao1990`.** Text with no orthographic markers (empty,
-  clean modern Portuguese, or non-Portuguese that slips past the guard) returns
-  `ao1990` with a low confidence (~0.34). Check `confidence` to distinguish
-  "confidently modern" from "no signal".
+- **Input with no evidence defaults to `ao1990`.** Text with no listed form of any norm
+  (empty, "a casa azul", or non-Portuguese that slips past the guard) returns `ao1990`
+  with confidence 0.34. An AO1990 map form is evidence: "a ação" returns `ao1990` with
+  0.96, although `markers` is empty. Check `confidence` to distinguish "confidently
+  modern" from "no signal".
 
 ---
 [Home](../README.md) · [API reference →](api.md)

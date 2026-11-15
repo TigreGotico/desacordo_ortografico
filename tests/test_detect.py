@@ -101,6 +101,33 @@ class TestConfidence:
     def test_markers_are_reported(self):
         assert _orth("pharmacia").markers
 
+    @pytest.mark.parametrize(
+        "text,era,expected",
+        [
+            # the held-out precision of the label for its count of distinct evidence
+            # tokens, lowest over the measured populations, as cal units correct/total
+            ("A pharmacia fechou.", Era.ETYMOLOGICAL, 0.89),          # relabel 16/18
+            ("pharmacia pharmacia", Era.ETYMOLOGICAL, 0.89),          # one distinct token
+            ("Pharmacia PHARMACIA pharmacia", Era.ETYMOLOGICAL, 0.89),  # case is no new token
+            ("A pharmacia do theatro tem um director.", Era.ETYMOLOGICAL, 0.99),
+            ("a direcção mudou", Era.PT_1973, 0.79),                  # silver_corpus 392/497
+            ("Chegou em Janeiro.", Era.PT_1973, 0.79),                # capital month only
+            ("a direcção do actor", Era.PT_1973, 0.92),               # silver_full 2934/3180
+            ("Eles lêem e crêem.", Era.PT_1973, 0.92),                # -êem only
+            ("a idéia", Era.BR_1971, 0.95),                           # silver_full 1444/1520
+            ("a idéia do vôo", Era.BR_1971, 0.99),
+            ("Ele falava freqüentemente.", Era.BR_1971, 0.95),        # trema only
+            ("a ação", Era.AO1990, 0.96),                             # silver_corpus 741/772
+            ("ótima coleção objetiva", Era.AO1990, 0.95),             # silver_corpus 216/227
+            ("o António come", Era.AO1990, 0.86),                     # silver_full 4942/5755
+            ("a casa azul", Era.AO1990, 0.34),                        # no evidence at all
+        ],
+    )
+    def test_confidence_is_measured_precision(self, text, era, expected):
+        r = _orth(text)
+        assert r.era == era
+        assert r.confidence == expected
+
 
 
 
