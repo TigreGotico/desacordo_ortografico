@@ -121,11 +121,11 @@ class TestConfidence:
             ("ótima coleção objetiva", Era.AO1990, 0.95),             # silver_corpus 216/227
             ("o António come", Era.AO1990, 0.86),                     # silver_full 4942/5755
             ("a casa azul", Era.AO1990, 0.34),                        # no evidence at all
-            # provisional: the etymological row, no held-out 1911 print (pg31347:71.4, 672.0)
+            # provisional: the etymological row, no held-out 1911 print (pg31347:71.4, 367.5)
             ("Vi-o chorar, àquele vélho de quási sessenta anos.", Era.REFORMA_1911, 0.89),
-            ("Calmo, magníficamente fecundo, corria êle, o nobre rio do Paraíso, por entre "
-             "as ilhas, quási afundadas sob o pêso rijo do rijo arvoredo todas fragrantes, e "
-             "atroadas pelo clamor das cacatuas.", Era.REFORMA_1911, 0.99),
+            ("Aos 18 anos Korriscosso servia de criado a um médico, e nos intervalos do "
+             "serviço freqùentava a Universidade de Atenas; estas coisas são freqùentes "
+             "_là-bas_, como êle dizia.", Era.REFORMA_1911, 0.99),
         ],
     )
     def test_confidence_is_measured_precision(self, text, era, expected):
@@ -297,8 +297,6 @@ class TestReforma1911:
             ("Vi-o chorar, àquele vélho de quási sessenta anos.", "quási"),  # pg31347:71.4
             # Base XLVI: "fre qùente, a gùentar, ar gùir"
             ("No entanto estava tranqùilo.", "tranqùilo"),  # pg31347:169.1
-            # Base XXXV: "a acentuação com o agudo ... mantém-se ...: fácilmente"
-            ("A raínha chorou magníficamente o rei.", "magníficamente"),  # pg31347:724.0
         ],
     )
     def test_1911_print_is_reforma_1911(self, text, marker):
@@ -309,12 +307,12 @@ class TestReforma1911:
         assert f"reforma-1911:{marker}" in r.markers
 
     def test_as_many_1911_forms_as_pre_1911_forms_is_reforma_1911(self):
-        """pg31347:948.0. The 1913 print keeps emquanto against 1911 Base XV ("conquanto,
+        """pg31347:963.0. The 1913 print keeps emfim against 1911 Base XV ("conquanto,
         com n, e não com m"), beside one 1911 form."""
-        text = ("Recusei e abalei--emquanto êle, indiferente à minha fuga, estendido na "
-                "poltrona, acendia trémulamente um imenso charuto.")
+        text = ("¿Era o grito da alma, no assombro e horror de morrer tambêm? ¿Ou era a alma "
+                "triunfando por se reconhecer emfim imortal e livre?")
         r = _orth(text)
-        assert "etym-pattern:emquanto" in r.markers
+        assert "etym-pattern:emfim" in r.markers
         assert r.era == Era.REFORMA_1911
 
     @pytest.mark.parametrize(
@@ -355,22 +353,32 @@ class TestReforma1911:
         assert r.era != Era.REFORMA_1911
         assert not [m for m in r.markers if m.startswith("reforma-1911")]
 
-    def test_brazilian_evidence_blocks_reforma_1911(self):
-        """Formulário 1943, rule 13.ª (F1943:135.0). It quotes terrívelmente, an acute
-        before -mente, beside its own circumflex forms (cômodamente, cortêsmente), which
-        lean Brazilian."""
-        text = (
-            "13.ª - Mantêm-se o acento circunflexo e o til do primeiro elemento nos "
-            "advérbios em mente e nos derivados em que figuram sufixos precedidos do infixo "
-            "z (zada, zal, zeiro, zinho, zista, zito, zona, zorro, zudo, etc.): cômodamente, "
-            "cortêsmente, dendêzeiro, ôvozito, pêssegozinho, chãmente, cristãzinha, "
-            "leõezinhos, mãozoada, romãzeira, etc.; o acento agudo do primeiro elemento "
-            "passará a ser acento grave nos derivados dessa natureza: avòzinha, cafézeiro, "
-            "faíscazinha, indelèvelmente, opùsculozinho, sòmente, sòzinho, terrívelmente, "
-            "voluntàriozinho, volùvelmente, etc.")
+    @pytest.mark.parametrize(
+        "text, shared",
+        [
+            # pg31347:208.0
+            ("Conheceu as viagens trabalhosas nos mares inimigos, o enjôo monótono num "
+             "beliche abafado, os duros sóis das colónias, a brutalidade tirânica dos "
+             "fazendeiros ricos, o pêso dos fardos humilhantes, as dilacerações da ausência, "
+             "as viagens ao interior das terras negras e a melancolia das caravanas que "
+             "costeiam por violentas noites, durante dias e dias, os rios tranqùilos, donde "
+             "se exala a morte.", "enjôo"),
+            # pg31347:672.14
+            ("A sua crassa gula, entre aquela abundância do rio, tambêm apetece uma prêsa: e "
+             "atira a garra, colhe, no seu vôo soante, cascudos insectos que farisca e "
+             "trinca.", "vôo"),
+            # pg31347, two sentences of paragraph 925
+            ("Porque? Porque Elisa tambêm ali ceava invisível. Decentemente não podia andar "
+             "com a imagem de Elisa numa tipóia de praça, nem consentir que a augusta imagem "
+             "roçasse pelas cadeiras de palhinha da plateia de S. Carlos.", "tipóia"),
+        ],
+    )
+    def test_pre_ao1990_forms_of_1911_print_do_not_block(self, text, shared):
+        """enjôo, vôo and tipóia are pre-AO1990 BR forms that Portuguese print of 1911 to
+        1945 also has, so they are no Brazilian evidence here."""
         r = _orth(text)
-        assert "reforma-1911:terrívelmente" in r.markers
-        assert r.era != Era.REFORMA_1911
+        assert f"pre-ao90-br:{shared}" in r.markers
+        assert r.era == Era.REFORMA_1911
 
     @pytest.mark.parametrize(
         "text",
@@ -381,10 +389,18 @@ class TestReforma1911:
             # one acute before -mente, two listed pre-1911 forms (typo, elle)
             "Decidídamente Isaura não lhe perdoava a creação do typo de Julieta que elle "
             "julgava que tanto devia lisongeal-a.",
+            # Eça de Queirós, Os Maias (Gutenberg 40409), pg40409:3761.0: sériamente and
+            # one listed pre-1911 form (fallar)
+            "--Mas a respeito de Santa Olavia temos a fallar mais sériamente, disse por fim "
+            "Craft, entrando na alcova, a ensaboar a cabeça.",
         ],
     )
     def test_pre_1911_print_stays_etymological(self, text):
-        assert _orth(text).era == Era.ETYMOLOGICAL
+        """Base XXXV keeps the acute before -mente ("mantém-se"), so books printed before
+        1911 have it (sériamente, decidídamente) and it is no 1911 evidence."""
+        r = _orth(text)
+        assert r.era == Era.ETYMOLOGICAL
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
 
     @pytest.mark.parametrize(
         "text",

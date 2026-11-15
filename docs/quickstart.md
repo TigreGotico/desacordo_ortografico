@@ -25,7 +25,7 @@ r.markers      # ['etym:pharmacia', 'etym-pattern:theatro']
 ```
 
 Detection works at the granularity orthography actually supports: `etymological`,
-`reforma_1911` (the 1911 Portuguese spelling: tambêm, quási, fácilmente, freqùente),
+`reforma_1911` (the 1911 Portuguese spelling: tambêm, quási, armazêns, freqùente),
 `pt_1973` / `br_1971` (pre-AO1990, European / Brazilian), and `ao1990-pt` / `ao1990-br`.
 When no marker distinguishes the national variant, `variant` is `None`.
 

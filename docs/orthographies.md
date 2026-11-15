@@ -34,8 +34,8 @@ the two orthographies.
 | `ch`(=/k/)→`c`/`qu`, geminate reduction (keep `rr`, `ss`), drop silent consonants and medial `h` | lexical |
 
 `detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943
-does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási`, an acute before
-`-mente` (fácilmente) and `qù`/`gù` (freqùente). See the detection markers in
+does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù`
+(freqùente). See the detection markers in
 [`api.md`](api.md).
 
 Sources: [Reforma Ortográfica de 1911](https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1911) ·

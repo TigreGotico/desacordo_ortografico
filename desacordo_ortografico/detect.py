@@ -64,19 +64,17 @@ Portuguesa) prints and that Brazilian print of 1943 does not:
   keeps the circumflex in later norms (Acordo Ortográfico of 1990, Base IX: "abstêm [...]
   contêm [...] provêm"), so it does not count either.
 - Base XXIV: "mas, quási, Vénus, órfã(s)".
-- Base XXXV: "Nos advérbios, porêm, formados com o referido sufixo -mente, [...] a
-  acentuação com o agudo, ou o circunflexo mantém-se, por não poder dar-se a confusão
-  apontada: fácilmente, cortêsmente, sómente." Only the acute counts, because the
-  Formulário Ortográfico of 1943, rule 13.ª, keeps the circumflex ("cômodamente,
-  cortêsmente"). sómente also occurs in books printed before 1911 and does not count.
 - Base XLVI: "O u depois de q ou g é dêle inseparável, quer seja mudo, quer se profira;
   ex.: quin ta, guer ra, fre qùente, a gùentar, ar gùir."
 
 The pronoun circumflex of Base VII ("êle, ela") is no 1911 evidence, because the
-Formulário of 1943, rule 14.ª, also writes "êsse, êsses, êste, êstes". The label is
-reforma_1911 when a text holds at least one 1911 form, at least as many distinct 1911
-forms as listed pre-1911 forms, and no Brazilian evidence: no pre-AO1990 BR form, no
-trema, and no Brazilian lean over the European lean.
+Formulário of 1943, rule 14.ª, also writes "êsse, êsses, êste, êstes". The acute before
+-mente (Base XXXV: "a acentuação com o agudo [...] mantém-se [...]: fácilmente") is no
+1911 evidence either: the acute is kept, not introduced, and books printed before 1911
+have it. The label is reforma_1911 when a text holds at least one 1911 form, at least as
+many distinct 1911 forms as listed pre-1911 forms, and no Brazilian evidence: no trema
+and no Brazilian lean over the European lean. A pre-AO1990 BR form (vôo, heróico) does
+not block the label, because Portuguese print from 1911 to 1945 has the same forms.
 """
 from __future__ import annotations
 
@@ -101,8 +99,7 @@ _SENTENCE_END = re.compile(r"[.!?…\n]")
 _RE_1911_OXYTONE = re.compile(".*[%s].*(?:[^%s]|[gq]u)ê(?:m|ns)" % (_VOWELS, _VOWELS))
 _TER_VIR_PLURAL = re.compile("(?:abs|a|con|de|entre|man|ob|re|sus)?têm"
                              "|(?:ad|a|con|contra|desa|descon|inter|pro|re|sobre)?vêm")
-_RE_1911_ADVERB = re.compile(".*[áéíóú].*mente")
-_PRINTED_BEFORE_1911 = {"porêm", "alêm", "sómente"}
+_PRINTED_BEFORE_1911 = {"porêm", "alêm"}
 
 # built by benchmark/confidence_table.py
 _CONFIDENCE: Dict[Tuple[Era, int], float] = {
@@ -283,7 +280,7 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     old_score = old_pt + old_br
 
     reform_1911 = len(evidence[Era.REFORMA_1911])
-    brazilian = bool(evidence[Era.BR_1971]) or br_lean > pt_lean
+    brazilian = any("ü" in w for w in evidence[Era.BR_1971]) or br_lean > pt_lean
 
     # ---- decide the era bucket ----
     if reform_1911 and reform_1911 >= len(evidence[Era.ETYMOLOGICAL]) and not brazilian:
@@ -319,7 +316,6 @@ def _is_1911_form(w: str) -> bool:
     if w in _PRINTED_BEFORE_1911:
         return False
     return (w == "quási" or "qù" in w or "gù" in w
-            or bool(_RE_1911_ADVERB.fullmatch(w))
             or bool(_RE_1911_OXYTONE.fullmatch(w)) and not _TER_VIR_PLURAL.fullmatch(w))
 
 
@@ -333,7 +329,7 @@ def _decide_variant(pt_lean: int, br_lean: int) -> Optional[Variant]:
 
 _ERA_NOTES = {
     Era.ETYMOLOGICAL: "pre-1911 pseudo-etymological spelling (Greek digraphs, geminates)",
-    Era.REFORMA_1911: "1911 Portuguese reform spelling (tambêm, quási, fácilmente, freqùente)",
+    Era.REFORMA_1911: "1911 Portuguese reform spelling (tambêm, quási, armazêns, freqùente)",
     Era.PT_1973: "pre-AO1990 European norm (silent consonants kept: óptimo, acção, facto)",
     Era.BR_1971: "pre-AO1990 Brazilian norm (trema and old accents: freqüência, idéia)",
     Era.AO1990: "AO1990 (post-1990 agreement)",
