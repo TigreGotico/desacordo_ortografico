@@ -306,13 +306,43 @@ class TestReforma1911:
         assert r.id == "reforma_1911"
         assert f"reforma-1911:{marker}" in r.markers
 
-    def test_as_many_1911_forms_as_pre_1911_forms_is_reforma_1911(self):
-        """pg31347:963.0. The 1913 print keeps emfim against 1911 Base XV ("conquanto,
-        com n, e não com m"), beside one 1911 form."""
-        text = ("¿Era o grito da alma, no assombro e horror de morrer tambêm? ¿Ou era a alma "
-                "triunfando por se reconhecer emfim imortal e livre?")
+    def test_pre_1911_forms_in_1911_print_do_not_block(self):
+        """pg31347 paragraph 630. The 1913 print keeps emfim and emquanto against 1911
+        Base XV ("conquanto, com n, e não com m"), beside one 1911 form."""
+        text = (
+            "Entrou emfim na choça, triunfalmente, com o assado que fumegava e rescendia, "
+            "cercado de frescas fôlhas de alface. Ternamente, ajudou a sentar o vélho, que "
+            "tremia e se babava de gula. Arredou das pobres faces maceradas os cabelos que o "
+            "suor da fraqueza empastára. E, para que o bom Egídio se não vexasse com a sua "
+            "voracidade e tam carnal apetite, ia afirmando, emquanto lhe partia as febras "
+            "gordas, que tambêm êle comeria regaladamente daquele excelente porco, se não "
+            "tivesse almoçado à farta na _Locanda dos Três Caminhos_.")
         r = _orth(text)
-        assert "etym-pattern:emfim" in r.markers
+        assert {"etym-pattern:emfim", "etym-pattern:emquanto"} <= set(r.markers)
+        assert r.era == Era.REFORMA_1911
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # pg31347:711.0, fêmea
+            "Outros gostos e modos de Eva o irritam tambêm: e por vezes, com uma "
+            "desumanidade que é já toda humana, nosso Pai arrebata pelos cabelos a sua "
+            "fêmea, e a derruba, e a pisa sob a pata calosa.",
+            # pg31347 paragraph 766, acêno and the circumflex before a nasal
+            "Uma noite em que D. Leonor, no seu quarto, rezava o terço com as aias, à luz "
+            "duma tocha de cera, o senhor de Lara entrou muito vagarosamente, trazendo na mão "
+            "uma fôlha de pergaminho e uma pena mergulhada no seu tinteiro de osso. Com um "
+            "rude acêno despediu as aias, que o temiam como a um lôbo. E, empurrando um "
+            "escabelo para junto da mesa, volvendo para D. Leonor a face a que impusera "
+            "tranqùilidade e agrado, como se apenas viesse por cousas naturais e fáceis:",
+        ],
+    )
+    def test_brazilian_lean_in_1911_print_does_not_block(self, text):
+        """The 1911 spelling writes the circumflex before a nasal (fêmea, acêno), which
+        leans Brazilian in modern text. Brazilian print of 1943 to 1971 writes também and
+        the trema (Formulário of 1943, rule 12.ª: "tranqüilo"), so it never has a 1911
+        form."""
+        r = _orth(text)
         assert r.era == Era.REFORMA_1911
 
     @pytest.mark.parametrize(

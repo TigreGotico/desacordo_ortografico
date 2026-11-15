@@ -40,7 +40,7 @@ no evidence at all gets 0.34, because its label is only the default. With `"nb"`
 The `reforma_1911` values are provisional copies of the `etymological` values. The only
 dated text in the 1911 spelling is Eça de Queirós, Contos, Chardron 1913 (Gutenberg
 31347), and it is held out, so no cal unit has a true `reforma_1911` label. On that book
-the label holds for 122 of 1,084 paragraphs. It holds for no unit of the 13 books printed
+the label holds for 130 of 1,084 paragraphs. It holds for no unit of the 13 books printed
 before 1911, of the 1,721 news sentences, of the silver renderings or of the Formulário
 Ortográfico of 1943.
 
@@ -170,11 +170,11 @@ XIV and XXV: tambêm, alguêm, armazêns, Belêm), `quási` (Base XXIV), and `q�
 fácilmente) do not count, because books printed before 1911 have them. The
 third person plural of the compounds of ter and vir (contêm, provêm) does not count,
 because later norms keep its circumflex. The pronoun circumflex (êle, êste, dêle) does not
-count, because the Formulário Ortográfico of 1943, rule 14.ª, also writes it. A text is
-`reforma_1911` when it holds at least one 1911 form, at least as many distinct 1911 forms
-as listed pre-1911 forms, and no Brazilian evidence (a trema, or a Brazilian lean over the
-European lean). A pre-AO1990 BR form (vôo, heróico) does not block it, because Portuguese
-print from 1911 to 1945 has the same forms.
+count, because the Formulário Ortográfico of 1943, rule 14.ª, also writes it. A text with
+at least one 1911 form is `reforma_1911`, whatever its other markers. Brazilian print of
+1943 to 1971 cannot have a 1911 form, because the 1943 Formulário writes também, quase and
+the trema (tranqüilo). Print in the 1911 spelling still has pre-1911 forms (emquanto,
+emfim), so a listed pre-1911 form does not outweigh a 1911 form.
 
 ## `eras`
 

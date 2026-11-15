@@ -71,10 +71,11 @@ The pronoun circumflex of Base VII ("êle, ela") is no 1911 evidence, because th
 Formulário of 1943, rule 14.ª, also writes "êsse, êsses, êste, êstes". The acute before
 -mente (Base XXXV: "a acentuação com o agudo [...] mantém-se [...]: fácilmente") is no
 1911 evidence either: the acute is kept, not introduced, and books printed before 1911
-have it. The label is reforma_1911 when a text holds at least one 1911 form, at least as
-many distinct 1911 forms as listed pre-1911 forms, and no Brazilian evidence: no trema
-and no Brazilian lean over the European lean. A pre-AO1990 BR form (vôo, heróico) does
-not block the label, because Portuguese print from 1911 to 1945 has the same forms.
+have it. A text with at least one 1911 form is reforma_1911, whatever its other markers.
+Brazilian print of 1943 to 1971 cannot have a 1911 form, because the Formulário of 1943
+writes também, quase and the trema (rule 12.ª: "tranqüilo"). Print in the 1911 spelling
+still carries pre-1911 forms (emquanto, emfim and bemdita in a 1913 print of Eça de
+Queirós), so a listed pre-1911 form does not outweigh a 1911 form.
 """
 from __future__ import annotations
 
@@ -279,11 +280,8 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     old_pt, old_br = score[Era.PT_1973], score[Era.BR_1971]
     old_score = old_pt + old_br
 
-    reform_1911 = len(evidence[Era.REFORMA_1911])
-    brazilian = any("ü" in w for w in evidence[Era.BR_1971]) or br_lean > pt_lean
-
     # ---- decide the era bucket ----
-    if reform_1911 and reform_1911 >= len(evidence[Era.ETYMOLOGICAL]) and not brazilian:
+    if evidence[Era.REFORMA_1911]:
         era = Era.REFORMA_1911
         variant = None
     elif etym >= 1 and etym >= old_score and etym >= modern:
