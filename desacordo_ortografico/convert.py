@@ -10,6 +10,16 @@ map does not cover.
 Each edge is an ordered list of named feature steps (:data:`FEATURES`). A caller can
 pass ``features=`` to run only some of them; by default every feature runs.
 
+The 1911 edge reads two word maps. The first is the 1911 map of this package
+(``data/reform_1911_irregular.json``). The second is the ``archaisms.csv`` list of
+``tugalex`` (``TugaLexicon.archaic_words``), whose rows cite the base of the Formulário
+Ortográfico of 1911 that changes each word (comsigo -> consigo, Base XV). A row gives
+its modern pt-PT form, and that form can also carry a change made after 1911, so
+:func:`archaism_row_class` sorts the rows and only two classes enter the 1911 map. The
+European and the Brazilian targets share the 1911 form, so a row enters only when the
+Brazilian edges derive its pt-BR form from its 1911 form. Where both maps hold a word,
+the map of this package decides. The backward pass reads the map of this package only.
+
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
 several edges, *lexical and lossy*: dropping a silent consonant or an accent throws
 away information that no rule can recover. The :class:`ConversionResult` reports this
@@ -17,13 +27,14 @@ via ``lossless`` and ``warnings`` instead of silently guessing.
 """
 from __future__ import annotations
 
+import re
 import unicodedata
 from dataclasses import dataclass, field
 from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Sequence, Tuple
 
 from . import rules
 from .eras import NORMS, Era, Norm, Variant, find_path
-from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, get_lexicon
+from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, deaccent, get_lexicon
 
 WordFn = Callable[[str], str]
 
@@ -47,6 +58,45 @@ FEATURES: FrozenSet[str] = frozenset({
     # month casing (text level)
     "months",
 })
+
+
+#: The classes of a tugalex archaism row, see :func:`archaism_row_class`.
+ARCHAISM_ROW_CLASSES = ("1911", "ao1990-map", "ao1990-cp", "ao1990-differential", "sc")
+
+#: A Base IV 1º sequence of the AO1990 after a vowel: cc, cç, ct, pc, pç or pt.
+_CP_SEQUENCE = re.compile(r"(?<=[aeiou])[cp][cçt]")
+
+
+def archaism_row_class(archaic: str, modern: str, lex: Lexicon) -> str:
+    """Classify a tugalex archaism row (``archaic`` -> its modern pt-PT form ``modern``)
+    by the reform that its modern form rests on.
+
+    ``1911``: the modern form is the 1911 form (comsigo -> consigo, phosphoro -> fósforo).
+    ``ao1990-map``: the AO1990 pt-PT word map lists the modern form, so the 1911 form is the
+    pre-AO1990 form of that map (architecto -> arquiteto, before AO1990 arquitecto).
+    ``ao1990-differential``: the modern form is the bare form of a differential accent
+    that the AO1990 dropped (pello -> pelo, before AO1990 pêlo).
+    ``ao1990-cp``: the modern form lacks the c or p of a Base IV 1º sequence that the
+    archaic form keeps after the regular 1911 rules, and the AO1990 map does not list it.
+    1911 Base VIII drops such a consonant where it is silent (auctor -> autor), Base IX
+    keeps it where it changes the vowel before it (affectando -> afectando, AO1990
+    afetando), and no table here tells the two apart.
+    ``sc``: the archaic form starts with the group sc and the modern form does not. Base
+    XI of 1911 keeps that group (scena, sciência), and later accords drop it (cintilar).
+
+    The ``1911`` and ``ao1990-map`` rows enter the 1911 word map when the Brazilian
+    edges derive their pt-BR form from their 1911 form (``OrthographyConverter``).
+    """
+    if archaic.startswith("sc") and not modern.startswith("sc"):
+        return "sc"
+    if modern in lex.differential_dropped.values() or modern in lex.differential_restore:
+        return "ao1990-differential"
+    if modern in lex.ao_pt_new2old:
+        return "ao1990-map"
+    regular = rules.reform_1911_geminates(rules.reform_1911_digraphs(archaic))
+    if len(_CP_SEQUENCE.findall(deaccent(regular))) > len(_CP_SEQUENCE.findall(deaccent(modern))):
+        return "ao1990-cp"
+    return "1911"
 
 
 @dataclass
@@ -261,9 +311,12 @@ class OrthographyConverter:
             pt = lex.divergence_br2pt.get(w, w)
             return w if pt in lex.ao_pt_new2old else pt
 
-        # -- 1911: the word map first; the rules are a fallback for other words. 1911
+        # -- 1911: the word maps first; the rules are a fallback for other words. 1911
         #    also introduced graphic accents the rules can't derive; convert() restores
         #    them after this pass, from the word list and the context (fosforo -> fósforo).
+        #    The tugalex archaisms join the forward map at the end of this method. The
+        #    backward pass reads the map of this package only: several archaic forms of
+        #    the tugalex list share one modern form (architectura, architetura).
         reform_1911 = _Edge(
             _Pass(
                 steps=[
@@ -382,6 +435,30 @@ class OrthographyConverter:
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt)],
                   table=lex.divergence_br2pt, table_feature=ptbr_divergence, plurals=True),
         )
+
+        # -- the tugalex archaisms in the 1911 forward map. The European and the
+        #    Brazilian targets share the 1911 form, so a row enters only when the
+        #    Brazilian edges derive its pt-BR form from that 1911 form. architecto enters
+        #    (arquitecto, Brazil arquiteto); affectado stays out, because no Brazilian
+        #    table drops the c of afectado.
+        def brazilian(word: str) -> str:
+            for edge in (br_1911_to_1943, accent_1971, ao1990_br):
+                word = edge.forward.apply(word, FEATURES)
+            return word
+
+        archaisms: Dict[str, str] = {}
+        tuga = lex.tuga
+        for archaic, modern in (tuga.archaic_words if tuga else {}).items():
+            row_class = archaism_row_class(archaic, modern, lex)
+            if row_class == "1911":
+                form = modern
+            elif row_class == "ao1990-map":
+                form = lex.ao_pt_new2old[modern]
+            else:
+                continue
+            if brazilian(form) == tuga.archaic_words_br[archaic]:
+                archaisms[archaic] = form
+        reform_1911.forward.table = {**archaisms, **lex.reform1911_old2new}
 
         return {
             "reform_1911": reform_1911,
