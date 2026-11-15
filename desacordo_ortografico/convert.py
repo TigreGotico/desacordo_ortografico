@@ -12,7 +12,10 @@ pass ``features=`` to run only some of them; by default every feature runs.
 The 1911 edge reads the pre-1911 -> 1911 rows of the spelling table
 (``data/spelling.json``, see :mod:`lexicon`). The forward pass reads every such row
 (comsigo -> consigo, Formulário Ortográfico of 1911, Base XV). The backward pass reads
-the curated rows only.
+the curated rows only. The edges out of 1911, toward pt_1945 and br_1943, read the
+reforma_1911 rows of the table (quási -> quase), then apply the rules of :mod:`rules`
+that quote the Acordo Ortográfico of 1945 and the Formulário Ortográfico of 1943
+(tambêm -> também).
 
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
 several edges, *lexical and lossy*: dropping a silent consonant or an accent throws
@@ -37,6 +40,9 @@ FEATURES: FrozenSet[str] = frozenset({
     "1911-word-map", "1911-digraphs", "1911-geminates", "1911-accent-restore",
     # trema (PT 1945, AO1990)
     "trema",
+    # the edges out of 1911 (BR 1943, PT 1945): the word rows, the oxytones in -êm, the
+    # grave on a u after q or g, the initial sc, and the PT 1945 differential circumflex
+    "post-1911-word-map", "oxytone-em", "grave-u", "initial-sc", "differential-1945",
     # subtonic grave accents (PT 1973, BR 1971)
     "subtonic-grave",
     # BR 1943 and the AO1990 PT/BR divergence
@@ -321,18 +327,37 @@ class OrthographyConverter:
             note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
         )
 
-        # -- 1911 <-> 1945 (PT): the 1945 Convenção dropped the trema for Portugal
-        #    (ü -> u); otherwise the PT spelling is unchanged across these eras.
+        # -- 1911 -> 1945 (PT) and 1911 -> 1943 (BR): the word rows of the spelling
+        #    table, then the rules; rules.py quotes the clause of each.
+        def from_1911(rows: Mapping[str, str]) -> WordFn:
+            def read(word: str) -> str:
+                parts = rules._SEGMENT_SEP.split(word)
+                if len(parts) > 1 and len(set(parts)) == 1:  # tam-tam, a gong
+                    return word
+                return rules.per_segment(word, lambda p: rules.lookup_with_plural(p, rows) or p)
+
+            return read
+
         pt_1911_to_1945 = _Edge(
-            _Pass(steps=[("trema", rules.ao1990_drop_trema)]),
+            _Pass(steps=[
+                ("post-1911-word-map", from_1911(lex.reform1911_to_1945)),
+                ("initial-sc", rules.drop_initial_sc),
+                ("oxytone-em", rules.oxytone_em_acute),
+                ("grave-u", rules.drop_grave_u),
+                ("differential-1945", lambda w: rules.drop_differential_1945(w, lex.is_listed)),
+                ("trema", rules.ao1990_drop_trema),
+            ]),
             _Pass(),
             reversible_backward=False,
             note="the trema cannot be reintroduced by rule",
         )
 
-        # -- 1911 <-> 1943 (BR) ----------------------------------------------
         br_1911_to_1943 = _Edge(
             _Pass(steps=[
+                ("post-1911-word-map", from_1911(lex.reform1911_to_1943)),
+                ("initial-sc", rules.drop_initial_sc),
+                ("oxytone-em", rules.oxytone_em_acute),
+                ("grave-u", rules.grave_u_to_trema),
                 ("base-iv", get(lex.base_iv_drop)),
                 ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
                 ("nasal-vowel", rules.nasal_vowel_to_br),

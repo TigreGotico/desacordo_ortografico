@@ -11,6 +11,8 @@ from desacordo_ortografico import FEATURES, convert
 P = ("etymological", "ao1990-pt")
 B = ("etymological", "ao1990-br")
 X = ("ao1990-pt", "ao1990-br")
+R = ("reforma_1911", "pt_1945")
+RB = ("reforma_1911", "br_1943")
 
 # feature -> (path, old word, new word)
 CASES = {
@@ -22,6 +24,16 @@ CASES = {
     "1911-accent-restore": (P, "fosforo", "fósforo"),
     # Convenção de 1945 for Portugal, AO1990 Base XIV 1º for Brazil: no trema
     "trema": (P, "lingüiça", "linguiça"),
+    # Acordo Ortográfico de 1945, Base IX: "quase (em vez de quási)"
+    "post-1911-word-map": (R, "quási", "quase"),
+    # Acordo Ortográfico de 1945, Base XIII: "também"
+    "oxytone-em": (R, "tambêm", "também"),
+    # Formulário Ortográfico de 1943, 12.ª: "tranqüilo"
+    "grave-u": (RB, "tranqùilo", "tranqüilo"),
+    # Formulário Ortográfico de 1943, 19.: "ciência"
+    "initial-sc": (RB, "sciência", "ciência"),
+    # Acordo Ortográfico de 1945, Base XXII: "ele (ê), pronome"
+    "differential-1945": (R, "êle", "ele"),
     # Decreto-Lei 32/73: no subtonic grave accent
     "subtonic-grave": (P, "sòmente", "somente"),
     # AO1990 Base IV 1º b): mute c dropped (ação)
@@ -83,7 +95,7 @@ def test_feature_alone_changes_only_its_word(feature):
     assert convert(" , ".join(words), *path, features={feature}) == " , ".join(expected)
 
 
-@pytest.mark.parametrize("path", [P, B, X])
+@pytest.mark.parametrize("path", [P, B, X, R, RB])
 def test_no_features_changes_nothing(path):
     text = " , ".join(old for p, old, _ in CASES.values() if p == path)
     assert convert(text, *path, features=()) == text
@@ -99,7 +111,7 @@ def test_a_bare_string_raises():
         convert("acção", *P, features="trema")
 
 
-@pytest.mark.parametrize("path", [P, B, X])
+@pytest.mark.parametrize("path", [P, B, X, R, RB])
 def test_default_applies_every_feature(path):
     text = " , ".join(old for p, old, _ in CASES.values() if p == path)
     expected = " , ".join(new for p, _, new in CASES.values() if p == path)

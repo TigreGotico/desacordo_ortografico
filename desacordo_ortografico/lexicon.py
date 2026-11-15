@@ -453,6 +453,13 @@ class Lexicon:
         known = self._known_letters
         return letters in known or bool({"nominal", "plural"} & _inflection_kinds(letters, known))
 
+    def is_listed(self, word: str) -> bool:
+        """True when ``word``, accents and all, is in :attr:`wordset`, or is a regular
+        plural or feminine of a word in it (aldeia, toda; not aldea, which only the
+        letters of aldeã spell)."""
+        return word in self.wordset or bool(
+            {"nominal", "plural"} & _inflection_kinds(word, self.wordset))
+
     @cached_property
     def _accent_candidates(self) -> Dict[str, Tuple[str, FrozenSet[str]]]:
         """Map an unaccented form to its unique accented word and the inflection kinds
@@ -617,6 +624,21 @@ class Lexicon:
     @cached_property
     def reform1911_new2old(self) -> Dict[str, str]:
         return _invert(self.reform1911_old2new)
+
+    def _from_1911(self, target: str) -> Dict[str, str]:
+        return {r["form"]: r["value"] for r in self._spelling
+                if r["era"] == "reforma_1911" and r["target"] == target}
+
+    @cached_property
+    def reform1911_to_1945(self) -> Dict[str, str]:
+        """The 1911 -> pt_1945 rows of the spelling table, for the words that no rule of
+        the edge reaches (quási -> quase)."""
+        return self._from_1911("pt_1945")
+
+    @cached_property
+    def reform1911_to_1943(self) -> Dict[str, str]:
+        """The 1911 -> br_1943 rows of the spelling table (quási -> quase)."""
+        return self._from_1911("br_1943")
 
     # --------------------------------------------------- 1971/73 differential
     @cached_property

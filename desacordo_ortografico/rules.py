@@ -41,6 +41,74 @@ Lexikon 2017, and the AO1990 text.
   Sibéria). A capital marks a name (AO1990 Base XIX 2º b): the city names in
   ``_UNACCENTED_NAMES``, which share their letters with an accented common word
   (Roma, romã), stay as written when capitalised.
+
+The edges out of 1911 take a word in the spelling of the Formulário Ortográfico of 1911
+to the Portuguese norm of 1945 and to the Brazilian norm of 1943. The 1945 rules quote the
+Acordo Ortográfico of 1945 (Portal da Língua Portuguesa: the Conclusões complementares and
+the Bases Analíticas), and the 1943 rules quote the Formulário Ortográfico of 1943 (Academia
+Brasileira de Letras).
+
+- An oxytone of more than one syllable in -êm or -êns takes the acute. 1911 Base XIV:
+  "Os vocábulos terminados no ditongo em (equivalente a ẽi) receberão o acento
+  circunflexo quando forem polissilabos com a última sílaba predominante. [...] contêm, do
+  verbo conter". 1945 Base XIII: "amém (variação de ámen), armazém, convém, mantém,
+  ninguém, porém, Santarém, também; convêm, mantêm, têm (3.ª pessoas do plural);
+  armazéns, desdéns, convéns, reténs". 1943, 7.ª: "Marca-se com o acento agudo o e da
+  terminação em ou en das palavras oxítonas de mais de uma sílaba: alguém, armazém,
+  convém, convéns, detém-lo, mantém-na, parabéns, retém-no, também, etc." The 1911 contêm
+  is the singular of conter, but the compounds of ter and vir stay as written: from 1945
+  on the same letters spell the plural. Conclusões complementares of 1945, 20: "têm, vêm,
+  contêm, convêm, etc., graficamente distintas das terceiras pessoas do singular
+  correspondente - tem, vem, contém, convém, etc. Essas formas terão emprego exclusivo na
+  escrita corrente, preterindo assim as flexões têem, contêem, convêem, etc." A text that
+  passes through 1911 on its way between the Portuguese and the Brazilian norms carries
+  that plural (mantêm), and the letters alone cannot tell it from the 1911 singular.
+- The 1911 grave on a u after q or g goes. 1911 Base XLVI: "fre qùente, a gùentar, ar
+  gùir". 1945 Base XXVII: "abstrai-se de sinal especial, [...] para distinguir, em sílaba
+  tónica ou átona, o u de gu ou qu de um e ou i seguintes: [...] aguentar, [...] arguir,
+  [...] frequentar, tranquilo". 1943 writes the trema instead, 12.ª: "Emprega-se o trema
+  no u que se pronuncia depois de g ou q e seguido de e ou i: agüentar, argüição,
+  eloqüente, tranqüilo, etc."
+- The initial sc loses its s in the words that 1911 Base XI names, with their derivatives:
+  "É conservado o grupo inicial sc, das seguintes palavras e seus derivados e afins, em que
+  o s é mudo: scena, sciência, scetro, scéptico, scisma, scisão, sciático, scintilar,
+  scelerado, e algum outro menos usual". A foreign word outside these families keeps its
+  sc (Science); an English word inside them (scientific, sceptical) loses it. The Bases of
+  1931, § 1.º, drop the s: "Eliminar: [...] 4.º O s do grupo inicial: ciência, ciática".
+  The decree of 1945 says Portugal adopted the 1931 accord: "foi aprovado e mandado
+  executar, em Portugal pela portaria n.o 7:117, de 27 de Maio do mesmo ano". 1943, 19.:
+  "Elimina-se o s do grupo inicial sc: celerado, cena, cenografia, ciência, cientista,
+  cindir, cintilar, ciografia, cisão, etc."
+- 1945 drops the circumflex that tells a closed e or o from an open one, the accent of
+  1911 Base XXVIII ("marcar-se hão êstes com o acento circunflexo"). 1945 Base XXII: "O
+  emprego do acento circunflexo, para distinguir formas paroxítonas ou oxítonas das suas
+  homógrafas heterofónicas, faz-se apenas em dois casos", with the forms that keep it: côa,
+  côas, pêlo, pêlos, pêra, pêro, pôlo, pôlos, pôr, pôde and dêmos. "Feita esta limitação,
+  prescinde-se do acento circunflexo [...]: [...] ele (ê), pronome, [...] este (ê),
+  pronome". Base XXI keeps it in the hiatus ee ("crêem, dêem, lêem, vêem") and drops it in
+  the hiatus oo ("abençoo, condoo-me, enjoo, moo, remoo, voos"). 1943 keeps the 1911
+  accent, 14.ª: "Emprega-se o acento circunflexo como diferencial ou distintivo no e e no
+  o fechados da sílaba tônica das palavras que estão em homografia com outras em que são
+  abertos êsse e e êsse o".
+  The 1911 circumflex marks one of two homographs. 1911 Base XXVIII: "Quando um qualquer
+  vocábulo que tenha por sílaba predominante a penúltima, e cuja vogal nessa sílaba seja e
+  ou o abertos, fôr homógrafo com outro em que êsse e ou o seja fechado, marcar-se hão êstes
+  com o acento circunflexo". So the accent goes only where the bare letters spell a
+  Portuguese word: a word of the word list as written, accents and all, a contraction of
+  de or em with one (dêste, 1911 Base XXXVIII), or a regular form of a known verb (vivêra,
+  perdôa). A pre-1911 shape that the etymological edge leaves stays. The bare letters of
+  aldêa and pôz-se spell no word of the list. In fêl-o and vêl-a the r, s or z of the verb
+  became l before the pronoun, which 1911 Base XXXIV calls an error: "São erros
+  inadmissíveis, mas muito freqùentes, louval-o, devel-o, punil-o". The bare part fel is a
+  word, so a part that ends in l before the hyphen and o, a, os or as keeps its accent. A
+  foreign word whose bare letters spell no Portuguese word stays (prêtres, être). A foreign
+  word whose bare letters spell a listed word loses its accent: Côte, tête and pôle as in
+  French, and the loans crêpe, cône and contrôle as 1945 writes them (crepe, cone,
+  controle). A 1945 word that the list lacks keeps its accent (môo, vêde, tôrvo).
+
+The words that no rule reaches are rows of the spelling table (quási, tam, teem, and
+scetro, which 1945 Base VI writes ceptro), each with its clause. The rows apply to each
+part of a hyphenated word, except in a word whose parts repeat (tam-tam, a gong).
 """
 from __future__ import annotations
 
@@ -409,6 +477,103 @@ def nasal_vowel_to_pt(word: str) -> str:
     word = re.sub("ê(?=%s)" % _NASAL_FOLLOW, "é", word)  # ê -> é
     word = re.sub("ô(?=%s)" % _NASAL_FOLLOW, "ó", word)  # ô -> ó
     return word
+
+
+# ---------------------------------------- the edges out of 1911 (BR 1943, PT 1945)
+# See the module docstring for the clause of each rule.
+# the ê of a final -êm or -êns after a consonant, or after the u of gu or qu
+_RE_OXYTONE_EM = re.compile("(?:[^%s]|[gq]u)(ê)(?:m|ns)$" % _VOWELS)
+_RE_VOWEL = re.compile("[%s]" % _VOWELS)
+_RE_GRAVE_U = re.compile("([gq])ù(?=[eiéíê])")
+# the words of 1911 Base XI and their derivatives: scena, sciência, scetro, scéptico,
+# scisma, scisão, sciático, scintilar, scelerado
+_RE_INITIAL_SC = re.compile(
+    "^sc(?=en[aáéo]|iênc|ient|etr|ept|épt|ism|isã|isõ|iát|iat|intil|eler)")
+# a closed e or o in the last-but-one syllable before a final -a, -e, -o (with -s), -am,
+# -em or -ens, or in the last syllable before a final r, z or l
+# a pre-1911 enclitic (fêl-o, vêl-a): 1911 Base XXXIV writes devê-lo
+_RE_PRE_1911_ENCLITIC = re.compile(r"l-(?:o|a|os|as)(?=$|-)")
+_RE_CIRCUMFLEX = re.compile("(.*)([êô])((?:[^%s]*(?:[aeo]s?|[ae]m|ens))|[rzl])" % _VOWELS)
+_KEPT_CIRCUMFLEX_1945 = frozenset({
+    "côa", "côas", "pêlo", "pêlos", "pêra", "pêro", "pôlo", "pôlos", "pôr", "pôde", "dêmos"})
+# the endings after the accented vowel of a regular verb form: -er and -or verbs
+# (vivêra, opôrem, fôssem) and -oar verbs (perdôa, abençôe)
+_ER_OR_ENDINGS = frozenset({
+    "r", "ra", "ras", "ram", "ramos", "rem", "res", "mos", "sse", "sses", "ssem", "ste", "stes"})
+_OAR_ENDINGS = frozenset({"a", "as", "am", "e", "es", "em", "o"})
+
+
+def per_segment(word: str, fn: Callable[[str], str]) -> str:
+    """Apply ``fn`` to each part of a hyphenated or elided word (além-rio, sobr'ôlho)."""
+    parts = re.split(r"([-'’])", word)
+    parts[::2] = [fn(p) for p in parts[::2]]
+    return "".join(parts)
+
+
+def oxytone_em_acute(word: str) -> str:
+    """-êm/-êns -> -ém/-éns in an oxytone of more than one syllable (tambêm -> também,
+    armazêns -> armazéns). A compound of ter or vir in -têm or -vêm stays. One-way."""
+    def acute(part: str) -> str:
+        m = _RE_OXYTONE_EM.search(part)
+        if m is None or not _RE_VOWEL.search(part, 0, m.start()):
+            return part
+        if len(part) > 3 and part.endswith(("têm", "vêm")) and part != "vintêm":  # contêm
+            return part
+        return part[:m.start(1)] + "é" + part[m.end(1):]
+
+    return per_segment(word, acute)
+
+
+def grave_u_to_trema(word: str) -> str:
+    """qù/gù before e or i -> qü/gü, the 1943 trema (tranqùilo -> tranqüilo). One-way."""
+    return _RE_GRAVE_U.sub(r"\1ü", word)
+
+
+def drop_grave_u(word: str) -> str:
+    """qù/gù before e or i -> qu/gu, as 1945 writes them (tranqùilo -> tranquilo). One-way."""
+    return _RE_GRAVE_U.sub(r"\1u", word)
+
+
+def drop_initial_sc(word: str) -> str:
+    """Initial sc -> c in the words of 1911 Base XI (sciência -> ciência, scena -> cena,
+    scintilava -> cintilava). One-way."""
+    return _RE_INITIAL_SC.sub("c", word)
+
+
+def _is_portuguese(bare: str, accent: int, is_word: Callable[[str], bool]) -> bool:
+    """True when ``bare``, a word with its circumflex dropped at ``accent``, is a
+    Portuguese word: a listed word, a contraction of de or em with one (deste), or a
+    regular form of a listed verb (vivera, opor, perdoa)."""
+    if is_word(bare):
+        return True
+    if bare[0] in "dn" and bare[1:2] in ("a", "e", "o") and is_word(bare[1:]):
+        return True
+    stem, vowel, ending = bare[:accent], bare[accent], bare[accent + 1:]
+    if not stem:
+        return False
+    if ending in _ER_OR_ENDINGS and is_word(stem + vowel + "r"):
+        return True
+    return vowel == "o" and ending in _OAR_ENDINGS and is_word(stem + "oar")
+
+
+def drop_differential_1945(word: str, is_word: Callable[[str], bool]) -> str:
+    """Drop the 1911 circumflex that 1945 Base XXII no longer writes (êle -> ele,
+    dêste -> deste, côr -> cor, vôo -> voo). The forms of Base XXII that keep it and the
+    hiatus ee of Base XXI (lêem) stay. The circumflex goes only when the bare letters
+    spell a Portuguese word (``is_word``): 1911 Base XXVIII puts it on one word of a pair
+    of homographs, so a word whose bare form is no word (être, prêtres) is no 1911
+    differential and stays. A pre-1911 enclitic (fêl-o) stays. One-way."""
+    if _RE_PRE_1911_ENCLITIC.search(word):
+        return word
+
+    def drop(part: str) -> str:
+        m = _RE_CIRCUMFLEX.fullmatch(part)
+        if m is None or part in _KEPT_CIRCUMFLEX_1945 or part.endswith("êem"):
+            return part
+        bare = m.group(1) + {"ê": "e", "ô": "o"}[m.group(2)] + m.group(3)
+        return bare if _is_portuguese(bare, m.start(2), is_word) else part
+
+    return per_segment(word, drop)
 
 
 # ----------------------------------------------- 1971/73 grave subtonic removal
