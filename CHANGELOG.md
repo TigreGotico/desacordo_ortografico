@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.0a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.23a1...0.2.0a1)
+
+**Merged pull requests:**
+
+- feat: detect the 1911 Portuguese spelling as reforma\_1911 [\#35](https://github.com/TigreGotico/desacordo_ortografico/pull/35) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.23a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.23a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.22a1...0.1.23a1)
