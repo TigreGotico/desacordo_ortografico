@@ -262,10 +262,12 @@ class OrthographyConverter:
             def choose(w: str) -> Optional[str]:
                 return pt_words.get(w) or volp.get(w) or duals.get(w)
 
-            # each element of a compound too (setor-chave), unless the compound is a cell
+            # each element of a compound too (setor-chave), unless the compound is a cell.
+            # Toward pt-BR the input word is already valid AO1990, so a name keeps it.
             if volp or duals:
                 out = rules.apply_to_words(
-                    out, lambda w: choose(w) or "-".join(choose(p) or p for p in w.split("-")), is_word)
+                    out, lambda w: choose(w) or "-".join(choose(p) or p for p in w.split("-")), is_word,
+                    keep_names=br)
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.

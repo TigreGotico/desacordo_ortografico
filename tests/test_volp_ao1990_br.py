@@ -124,6 +124,57 @@ def test_a_c_p_form_for_one_reading_only_leaves_the_token(text):
     assert convert(text, "br_1971", "ao1990-br") == text
 
 
+@pytest.mark.parametrize("source", ["br_1971", "ao1990"])
+@pytest.mark.parametrize("text", [
+    # VOLP: refletido adj. | reflectido adj.; the VOLP lists refletir v. and no reflectir,
+    # so the participle has the bare form only
+    ("«Os jogadores começaram a ter problemas, pois o impacto dos pés no solo era refletido "
+     "para o joelho», explicou D'Ávila."),
+    "o relatório foi refletido",
+    # the bare form is valid for the adjective and the participle, the c/p form for the
+    # adjective only, and the converter cannot see the reading
+    "a superfície refletida",
+])
+def test_a_participle_of_a_verb_with_no_c_p_twin_stays(source, text):
+    assert convert(text, source, "ao1990-br") == text
+
+
+def test_a_c_p_adjective_stays_as_written():
+    """VOLP: reflectido adj. The converter rejects no form the VOLP lists."""
+    assert convert("um olhar reflectido", "br_1971", "ao1990-br") == "um olhar reflectido"
+
+
+@pytest.mark.parametrize("source", ["br_1971", "ao1990", "ao1990-pt"])
+@pytest.mark.parametrize("text", [
+    # AO1990 Base XXI: a name, a firm, a brand or a title keeps its written form
+    "Juntaram-se editoras como Ramal, Favela Discos, Elberec e Coletivo Farra.",
+    "Quem dirigiu o filme Aventuras d'um Detetive Português?",
+    "o impacto no Setor",
+])
+def test_a_name_inside_a_sentence_keeps_its_form(source, text):
+    assert convert(text, source, "ao1990-br") == text
+
+
+def test_a_name_toward_pt_pt_keeps_the_dual_step():
+    """The name test belongs to the pt-BR VOLP step only."""
+    assert convert("o impacto no Setor", "br_1971", "ao1990-pt") == "o impacto no Sector"
+
+
+@pytest.mark.parametrize("text, expected", [
+    # VOLP: setor (ô) s.m. | sector (ô) s.m.
+    ("Setor público", "Sector público"),
+    ("o setor", "o sector"),
+    ("Fim do ano. Setor público\nSetor privado", "Fim do ano. Sector público\nSector privado"),
+    # a text in capitals throughout, or with no word in lowercase, gives no case signal
+    ("O COLETIVO DO SETOR", "O COLECTIVO DO SECTOR"),
+    ("O Coletivo Do Setor", "O Colectivo Do Sector"),
+    # a word in capitals throughout is no name
+    ("o Setor é ÓTIMO", "o Setor é ÓPTIMO"),
+])
+def test_a_word_that_opens_a_sentence_takes_the_volp_form(text, expected):
+    assert convert(text, "br_1971", "ao1990-br") == expected
+
+
 @pytest.mark.parametrize("text, expected", [
     # VOLP: profilático s.m. | profiláctico adj.; the bare form is no adjective
     ("o tratamento profilático", "o tratamento profiláctico"),
@@ -170,7 +221,7 @@ def test_seção_and_secção_are_two_words():
 
 def test_case_and_compounds_follow_the_volp():
     """VOLP: setor (ô) s.m. | sector (ô) s.m.; ótimo adj. s.m. interj. | óptimo adj. s.m. interj."""
-    assert convert("O Setor é ÓTIMO.", "br_1971", "ao1990-br") == "O Sector é ÓPTIMO."
+    assert convert("Setor é ÓTIMO.", "br_1971", "ao1990-br") == "Sector é ÓPTIMO."
     assert convert("o setor-chave", "br_1971", "ao1990-br") == "o sector-chave"
 
 
@@ -227,9 +278,13 @@ def test_a_c_p_form_for_one_reading_only_is_marked():
             assert row["source"].startswith("VOLP: ") and row["token"] not in volp, row
 
 
-# The VOLP entries of the words that a note names as a homograph of a token:
-# faturar v., injetar v., retar v., injetiva s.f.
-VOLP_HOMOGRAPHS = {("verb", "faturar"), ("verb", "injetar"), ("verb", "retar"), ("noun", "injetiva")}
+# The VOLP entries of the words that a note names as a homograph of a token, and of the
+# verb of a participle that a quote names: faturar v., injetar v., retar v., injetiva s.f.,
+# refletir v.; and coletar v.
+VOLP_LISTED = {("verb", "faturar"), ("verb", "injetar"), ("verb", "retar"), ("noun", "injetiva"),
+               ("verb", "refletir"), ("verb", "coletar")}
+# Their c/p twins, which the VOLP does not list (coletar has the twin colectar v.)
+VOLP_ABSENT = {"facturar", "injectar", "rectar", "injectiva", "reflectir"}
 _CLASSES = {"adj": "adjective", "s.m": "noun", "s.f": "noun", "s.2g": "noun", "v": "verb"}
 
 
@@ -239,29 +294,60 @@ def _classes(entry):
     return {_CLASSES[t] for t in re.findall(r"(?<![\w.])(adj|s\.[mf]|s\.2g|v)\.", entry.split(";")[0])}
 
 
+def _twin(word, token, form):
+    """``word`` with the c or p that ``form`` adds to ``token`` (faturar -> facturar)."""
+    i = next(i for i in range(len(form)) if form[:i] + form[i + 1:] == token)
+    return word[:i] + form[i] + word[i:]
+
+
+def _valid_for_every_reading(row):
+    """True when the bare entry of a VOLP dual row covers every word class of its c/p
+    entry, and either covers a class the c/p entry lacks or a note names a VOLP homograph
+    of the token with no c/p twin. A past participle of a VOLP verb with no c/p twin is a
+    verb reading of the bare form: "refletido adj. | reflectido adj.; VOLP: refletir v.;
+    no reflectir"."""
+    body = row["source"].removeprefix("VOLP: ")
+    only = re.match(r"([^;|]*); (\S+) ([^;]*?) is an? \w+ only", body)
+    if only:  # "profiláctico adj.; profilático s.m. is a noun only"
+        cons_entry, head, bare_entry = only.groups()
+    elif "|" in body:
+        bare_entry, cons_entry = (side.strip() for side in body.split("|", 1))
+        head = bare_entry.split()[0]
+    else:
+        return False
+    bare, cons = _classes(bare_entry), _classes(cons_entry)
+    if row["token"] not in (head, head + "s"):
+        bare, cons = bare - {"noun"}, cons - {"noun"}
+    verb = re.search(r"VOLP: (\S+)(ar|er|ir) v\.; no (\S+)$", body)
+    if (verb and re.fullmatch(rf"{verb[1]}{verb[2][0]}d[oa]s?", row["token"])
+            and ("verb", verb[1] + verb[2]) in VOLP_LISTED
+            and verb[3] == _twin(verb[1] + verb[2], row["token"], row["form"]) in VOLP_ABSENT):
+        bare |= {"verb"}
+    note = re.search(r"\b(?:never|not) the (verb|noun|adjective) (\S+)", body)
+    homograph = (note and (note[1], note[2]) in VOLP_LISTED
+                 and _twin(note[2], row["token"], row["form"]) in VOLP_ABSENT) or f"cf. {head} (" in body
+    return cons <= bare and bool(bare - cons or homograph)
+
+
 def test_a_one_reading_row_keeps_a_bare_form_valid_for_every_reading():
-    """The bare entry of a "one reading" row covers every word class of its c/p entry, so
-    the bare form is valid for every reading. It covers a class the c/p entry lacks, or a
-    note names a VOLP homograph of the token."""
-    wrong = []
-    for row in ROWS:
-        if row["pair"] != "one reading":
-            continue
-        body = row["source"].removeprefix("VOLP: ")
-        only = re.match(r"([^;|]*); (\S+) ([^;]*?) is an? \w+ only", body)
-        if only:  # "profiláctico adj.; profilático s.m. is a noun only"
-            cons_entry, head, bare_entry = only.groups()
-        else:
-            bare_entry, cons_entry = (side.strip() for side in body.split("|", 1))
-            head = bare_entry.split()[0]
-        bare, cons = _classes(bare_entry), _classes(cons_entry)
-        if row["token"] not in (head, head + "s"):
-            bare, cons = bare - {"noun"}, cons - {"noun"}
-        note = re.search(r"\b(?:never|not) the (verb|noun|adjective) (\S+)", body)
-        homograph = (note and (note[1], note[2]) in VOLP_HOMOGRAPHS) or f"cf. {head} (" in body
-        if not (cons <= bare and (bare - cons or homograph)):
-            wrong.append(row["token"])
+    """The bare form of a "one reading" row is valid for every reading of its token."""
+    wrong = [row["token"] for row in ROWS if row["pair"] == "one reading" and not _valid_for_every_reading(row)]
     assert wrong == [], wrong
+
+
+def test_a_row_whose_bare_form_is_valid_for_every_reading_is_marked():
+    unmarked = [row["token"] for row in ROWS if row["rows"] == "*" and row["pair"] == "one word"
+                and row["form"] != row["token"] and row["source"].startswith("VOLP: ")
+                and _valid_for_every_reading(row)]
+    assert unmarked == [], unmarked
+
+
+def test_a_homograph_with_a_c_p_twin_marks_no_row():
+    """VOLP: coletar v. | colectar v. A note that names coletar gives the token coleta no
+    reading that colecta lacks."""
+    row = {"token": "coleta", "form": "colecta", "rows": "*", "pair": "one reading",
+           "source": "VOLP: coleta s.f. | colecta s.f.; never the verb coletar"}
+    assert not _valid_for_every_reading(row)
 
 
 def test_rows_for_every_sentence_agree():
