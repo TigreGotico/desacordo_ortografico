@@ -7,8 +7,28 @@ Classify a text. Calls the sister-language guard first, then classifies. `method
 higher accuracy on sentence-length text, opt-in). Input is NFC-normalized.
 
 `Orthography` fields: `era` (`Era`), `variant` (`Variant | None`), `confidence`
-(`float`), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical norm id that
-round-trips into `convert`), `is_portuguese` (`True`).
+(`float`, see below), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical
+norm id that round-trips into `convert`), `is_portuguese` (`True`).
+
+With `method="rules"`, `confidence` is the held-out precision of the label for the number
+of distinct evidence tokens behind it: one, or two or more. Each value is the lowest
+precision over the measured populations: 13 pre-1911 Gutenberg books, `silver_corpus.jsonl`,
+`parallel.jsonl` of the Hugging Face dataset TigreGotico/desacordo_ortografico at revision
+7049ddd (sha256 `61f1a10a...5f5026`), and 1,721 modern news sentences of which 50 were judged
+pre-1911 text. The news sentences are not in this repository. The values are the
+`_CONFIDENCE` table of `detect.py`, and `benchmark/confidence_table.py` measures them
+again from these files.
+
+| Label | Evidence tokens | 1 token | 2 or more |
+| --- | --- | --- | --- |
+| `etymological` | listed pre-1911 forms (pharmacia, theatro) | 0.89 | 0.99 |
+| `pt_1973` | pre-AO1990 PT forms, `-êem`, a capital month | 0.79 | 0.92 |
+| `br_1971` | pre-AO1990 BR forms, trema | 0.95 | 0.99 |
+| `ao1990` | AO1990 map forms (ação, ótima) | 0.96 | 0.95 |
+
+An `ao1990` result with no AO1990 form but with a PT/BR lean marker gets 0.86. A text with
+no evidence at all gets 0.34, because its label is only the default. With `"nb"` or
+`"perceptron"`, `confidence` comes from the model margin.
 
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).
@@ -122,7 +142,8 @@ Detection markers are scored, not learned. They cover etymological evidence (the
 listed pre-1911 forms of the 1911 word map and of the tugalex archaisms list: pharmacia,
 theatro, collecção), pre-AO1990 evidence (old PT silent-consonant forms, old BR
 accent/trema forms), AO1990 evidence, and PT/BR lean (dual forms, the nasal-vowel
-alternation). `markers` lists what fired. A word that no list holds is no pre-1911
+alternation). `markers` lists what fired, except AO1990 evidence: an AO1990 map form
+counts toward `confidence` but adds no marker. A word that no list holds is no pre-1911
 evidence, whatever its letters (the, Taylor). A form of the tugalex archaisms list inside a
 sentence whose word or part starts with a capital is read as a name and is no evidence ("A Moraci
 Sant'Anna chegou." is AO1990), except in the first word of a sentence or in a text with

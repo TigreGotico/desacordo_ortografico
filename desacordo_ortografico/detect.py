@@ -7,6 +7,14 @@ reports at the granularity that orthography actually supports: pre-1911 *etymolo
 *pre-AO1990* (PT/BR), and *AO1990* (PT/BR), with the variant left unset when no
 distinguishing marker is present.
 
+The confidence of a rules result is a measured number, not a score. It is the held-out
+precision of the label for its count of distinct evidence tokens (one, or two or more),
+from the measured population where that precision is lowest: pre-1911 books, the silver
+corpus and modern news sentences. ``benchmark/confidence_table.py`` measures the table
+again. The evidence tokens of a label are its listed forms: pre-1911 forms for
+etymological, pre-AO1990 PT or BR forms for pt_1973 and br_1971, and AO1990 map forms for
+AO1990. A text with no evidence at all gets 0.34, because its label is only the default.
+
 It calls the sister-language :mod:`guard` first; a :class:`~guard.NotPortuguese` result
 short-circuits everything else.
 
@@ -44,8 +52,9 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Set, Tuple, Union
 
 from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
@@ -58,6 +67,19 @@ _NASAL = "[mn][%s]" % _VOWELS
 _RE_NASAL_PT = re.compile("[éó](?=%s)" % _NASAL)
 _RE_NASAL_BR = re.compile("[êô](?=%s)" % _NASAL)
 _SENTENCE_END = re.compile(r"[.!?…\n]")
+
+# built by benchmark/confidence_table.py
+_CONFIDENCE: Dict[Tuple[Era, int], float] = {
+    (Era.ETYMOLOGICAL, 1): 0.89,
+    (Era.ETYMOLOGICAL, 2): 0.99,
+    (Era.PT_1973, 1): 0.79,
+    (Era.PT_1973, 2): 0.92,
+    (Era.BR_1971, 1): 0.95,
+    (Era.BR_1971, 2): 0.99,
+    (Era.AO1990, 0): 0.86,
+    (Era.AO1990, 1): 0.96,
+    (Era.AO1990, 2): 0.95,
+}
 
 
 @dataclass
@@ -141,13 +163,20 @@ _COLUMN_TO_NORM = {
 
 def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     """Deterministic marker-based classifier."""
-    etym = 0
-    old_pt = 0
-    old_br = 0
-    modern = 0
     pt_lean = 0
     br_lean = 0
     markers: List[str] = []
+    score: Dict[Era, int] = defaultdict(int)
+    # the distinct words that count as evidence for each era
+    evidence: Dict[Era, Set[str]] = defaultdict(set)
+
+    def found(era: Era, weight: int, word: str, marker: str = "") -> None:
+        # an era scores only together with the word that is its evidence
+        score[era] += weight
+        evidence[era].add(word)
+        if marker:
+            markers.append(f"{marker}:{word}")
+
     archaic = lex.tuga.archaic_words
     matches = list(_WORD_RE.finditer(text))
     # a text in capitals throughout gives no case signal
@@ -161,43 +190,36 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
 
         # --- pre-1911 etymological evidence -----------------------------
         if w in lex.reform1911_old2new:
-            etym += 2
-            markers.append(f"etym:{w}")
+            found(Era.ETYMOLOGICAL, 2, w, "etym")
         # a capital part inside a sentence is a name (AO1990 Base XXI) and no evidence
         elif any(seg.lower() in archaic
                  and not (cased and mid_sentence and (raw[:1].isupper() or seg[:1].isupper()))
                  for seg in _SEGMENT_SEP.split(raw)):
-            etym += 1
-            markers.append(f"etym-pattern:{w}")
+            found(Era.ETYMOLOGICAL, 1, w, "etym-pattern")
 
         # --- pre-AO1990 signals the lexicon misses ----------------------
         if "êem" in w:  # lêem/crêem/vêem: -êem circumflex, dropped only by AO1990
-            old_pt += 1
-            markers.append(f"verbal-eem:{w}")
+            found(Era.PT_1973, 1, w, "verbal-eem")
         if i > 0 and raw[:1].isupper() and w in _MONTHS:
             # a month capitalised mid-sentence is pre-AO1990 European (BR lowercased
             # months in 1943; AO1990 lowercased them everywhere)
-            old_pt += 1
-            markers.append(f"capital-month:{w}")
+            found(Era.PT_1973, 1, w, "capital-month")
 
         # --- pre-AO1990 PT (silent consonants / dropped differentials) --
         if w in lex.ao_pt_old2new or w in lex.base_iv_drop or w in lex.differential_dropped:
-            old_pt += 1
+            found(Era.PT_1973, 1, w, "pre-ao90-pt")
             pt_lean += 1
-            markers.append(f"pre-ao90-pt:{w}")
 
         # --- pre-AO1990 BR (old accent/trema forms) ---------------------
         if w in lex.ao_br_old2new:
-            old_br += 1
-            markers.append(f"pre-ao90-br:{w}")
+            found(Era.BR_1971, 1, w, "pre-ao90-br")
         if "ü" in w:
-            old_br += 1
+            found(Era.BR_1971, 1, w, "trema")
             br_lean += 1
-            markers.append(f"trema:{w}")
 
         # --- modern AO1990 evidence -------------------------------------
         if w in lex.ao_pt_new2old or w in lex.ao_br_new2old:
-            modern += 1
+            found(Era.AO1990, 1, w)
 
         # --- variant lean from PT/BR divergent spellings ----------------
         if w in lex.dual_pt2br or w in lex.divergence_pt2br:
@@ -213,34 +235,32 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if _RE_NASAL_BR.search(w):
             br_lean += 1
 
+    etym, modern = score[Era.ETYMOLOGICAL], score[Era.AO1990]
+    old_pt, old_br = score[Era.PT_1973], score[Era.BR_1971]
     old_score = old_pt + old_br
-    total = etym + old_score + modern + 1e-9
 
     # ---- decide the era bucket ----
     if etym >= 1 and etym >= old_score and etym >= modern:
         era = Era.ETYMOLOGICAL
         variant = None
-        conf = etym / total
     elif old_score > 0 and old_score >= modern:
         if old_pt >= old_br:
             era, variant = Era.PT_1973, Variant.PT
         else:
             era, variant = Era.BR_1971, Variant.BR
-        conf = old_score / total
     else:
         era = Era.AO1990
         variant = _decide_variant(pt_lean, br_lean)
-        conf = (modern + max(pt_lean, br_lean)) / (total + max(pt_lean, br_lean))
 
-    # baseline confidence floor for a clean-but-featureless modern text
-    if not markers and era == Era.AO1990:
-        conf = 0.34
+    tokens = min(len(evidence[era]), 2)
+    # a text with no evidence at all gets the default label, not a finding
+    conf = _CONFIDENCE[era, tokens] if markers or tokens else 0.34
 
     note = _ERA_NOTES.get(era, "")
     return Orthography(
         era=era,
         variant=variant,
-        confidence=round(min(0.99, max(0.0, conf)), 2),
+        confidence=conf,
         markers=markers,
         note=note,
     )
