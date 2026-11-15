@@ -163,7 +163,7 @@ count from its pt_1973 cell gets only the lines with `*` for the pt_1973 token, 
 lines that name its row (p05-046 and p05-082 reword "o facto de" as "o fato de" and
 still mean a fact). `variety_keeps.tsv` lists each bare form that stays, with its cell,
 its rows and its source. Of the bare forms in the full set whose European word writes a
-c/p, 345 br_1971 tokens of 274 words and 141 ao1990-br tokens of 102 words stay
+c/p, 336 br_1971 tokens of 265 words and 141 ao1990-br tokens of 102 words stay
 undecided, because no source of the cell decides them. In br_1971, rule 43 does not
 decide the vowel of comité (5 tokens), and the 1943 vocabulary has no entry for it
 between comissurante and comitente (p. 371), so it stays as written too.

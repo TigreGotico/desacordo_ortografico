@@ -174,7 +174,7 @@ def test_a_br_1971_priberam_citation_shows_a_spelling_change():
              if cell == "br_1971" and source.startswith("Priberam ")]
     cited += [(token, reason) for cell, token, _e, _r, reason in _tsv("variety_keeps.tsv")
               if cell == "br_1971" and reason.startswith("Priberam ")]
-    assert len(cited) > 400
+    assert len(cited) > 350
     for token, source in cited:
         m = PRIBERAM_VIEWS.match(source)
         assert m, source
@@ -206,6 +206,18 @@ def test_a_br_1971_priberam_citation_shows_a_spelling_change():
     ("O comité reuniu.", "O comité reuniu.", "O comité reuniu."),
     # Vocabulário 1943, p. 1065: "produto, s. m.", with no producto.
     ("Um produto novo.", "Um producto novo.", "Um produto novo."),
+    # Vocabulário 1943, p. 1295: "vector (ô), adj. e s. m.: vetor." Priberam vector (Brazil
+    # before the AO1990: vetor) kept vetor; the vocabulary comes first.
+    ("Um vetor unitário.", "Um vector unitário.", "Um vector unitário."),
+    # Vocabulário 1943, p. 1295: "vectorial, adj.: vetorial."
+    ("Um campo vetorial.", "Um campo vectorial.", "Um campo vectorial."),
+    # Vocabulário 1943, p. 511: "electroquímica, s. f.: eletroquímica."
+    ("A eletroquímica moderna.", "A electroquímica moderna.", "A electroquímica moderna."),
+    # Vocabulário 1943, p. 1069: "prospetor (ô), s. m.", with no prospector. Priberam
+    # prospector (Brazil before the AO1990: prospector) wrote prospector.
+    ("O prospetor de ouro.", "O prospector de ouro.", "O prospetor de ouro."),
+    # Vocabulário 1943, p. 202: "avô, s. m. F.: avó." registers both vowels, so the token stays.
+    ("A avó chegou.", "A avó chegou.", "A avó chegou."),
 ])
 def test_br_1971_takes_the_spelling_of_the_1943_vocabulary(sentence, european, expected):
     assert _apply(sentence, european)["br_1971"] == expected
@@ -216,6 +228,9 @@ def test_a_br_1971_word_the_1943_vocabulary_registers_is_not_residual():
     keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _tsv("variety_keeps.tsv")}
     for token in ("produto", "produtos", "produtor"):
         assert keeps[("br_1971", token)].startswith("Vocabulário 1943, p. 1065: produt"), token
+    # "conjeturante, adj. 2 gên." (p. 381), "inexatidão, s. f." (p. 771)
+    assert keeps[("br_1971", "conjeturante")].startswith("Vocabulário 1943, p. 381: conjeturante")
+    assert keeps[("br_1971", "inexatidão")].startswith("Vocabulário 1943, p. 771: inexatidão")
     assert keeps[("br_1971", "comité")].startswith("no source: ")
 
 
