@@ -263,7 +263,8 @@ class OrthographyConverter:
                 return pt_words.get(w) or volp.get(w) or duals.get(w)
 
             # each element of a compound too (setor-chave), unless the compound is a cell.
-            # Toward pt-BR the input word is already valid AO1990, so a name keeps it.
+            # Toward pt-BR a name keeps a bare form that the step would give a c or p: the
+            # bare form is valid in pt-BR, so keeping it gives up only the dual preference.
             if volp or duals:
                 out = rules.apply_to_words(
                     out, lambda w: choose(w) or "-".join(choose(p) or p for p in w.split("-")), is_word,

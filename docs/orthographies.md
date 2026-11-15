@@ -104,12 +104,13 @@ lexical part. It defines four sets:
   participle is a reading too: the VOLP lists refletido adj. and reflectido adj., and
   refletir v. with no reflectir, so "o relatório foi refletido" stays. Such a row is
   marked "one reading" in the data file. A word inside a sentence that starts with a
-  capital is a name, a firm or a title, and the VOLP step leaves it as written (Base
-  XXI): "o filme Aventuras d'um Detetive Português" stays. The first word of a sentence
-  and a text in capitals throughout give no case signal, so "Setor público" becomes
-  "Sector público". From a pt-PT source, a bare form that pt-PT itself does not write
-  for the word is another word: pt-PT writes facto for the fact, so a pt-PT fato is the
-  suit and stays fato.
+  capital is a name, a firm or a title (Base XXI). The VOLP step does not add a c or p
+  to it, because its bare form is valid in pt-BR: "o filme Aventuras d'um Detetive
+  Português" stays. A consonant the VOLP rejects still goes ("a Correcção Fraterna"
+  becomes "a Correção Fraterna"). The first word of a sentence and a text in capitals
+  throughout give no case signal, so "Setor público" becomes "Sector público". From a
+  pt-PT source, a bare form that pt-PT itself does not write for the word is another
+  word: pt-PT writes facto for the fact, so a pt-PT fato is the suit and stays fato.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`
