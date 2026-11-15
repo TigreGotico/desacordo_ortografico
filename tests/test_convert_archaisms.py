@@ -78,6 +78,7 @@ def test_row_without_a_known_1911_form_stays_out(old, expected):
     ("sêcco", "reforma_1911", "sêco"),
     ("sêcco", "br_1943", "sêco"),
     ("modêllo", "reforma_1911", "modêlo"),
+    ("sôcco", "reforma_1911", "sôco"),
 ])
 def test_base_xxviii_circumflex_stays_in_1911(old, target, expected):
     assert convert(old, "etymological", target) == expected
@@ -114,6 +115,7 @@ def test_word_map_feature_gates_the_archaisms():
     ("pello", "pelo", "ao1990-differential"),
     ("scintillar", "cintilar", "sc"),
     ("sêcco", "seco", "circumflex"),
+    ("sôcco", "soco", "circumflex"),
 ])
 def test_archaism_row_class(archaic, modern, row_class):
     from desacordo_ortografico.convert import archaism_row_class
