@@ -87,7 +87,12 @@ lexical part. It defines four sets:
   `carácter`/`caráter`. Where both forms are valid in the target variety (a dual cell of
   that variety's tugalex AO1990 map), an AO1990 target writes the form with the
   consonant, in the plural too. A word with one valid form takes that form. contrato
-  and retrato stay: each is a word of its own beside contracto and retracto.
+  and retrato stay: each is a word of its own beside contracto and retracto. For pt-BR,
+  the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) decides each word that
+  `data/volp_ao1990_br.tsv` holds, before the tugalex map: the VOLP lists fato and
+  facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator.
+  Two VOLP entries that point to each other with "cf." are two words (ótica, óptica),
+  and neither becomes the other.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`

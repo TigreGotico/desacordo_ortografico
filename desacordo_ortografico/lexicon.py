@@ -41,8 +41,10 @@ bare form too, which lemma 12090 and lemma 191893 also give for pt-PT.
 """
 from __future__ import annotations
 
+import csv
 import json
 import os
+import re
 import unicodedata
 from functools import cached_property
 from typing import Dict, FrozenSet, List, Optional, Set, Tuple
@@ -129,6 +131,15 @@ _PLURAL_VOWELS = frozenset("aeiou")
 _ACCENTS = frozenset("\u0300\u0301\u0302")
 
 
+#: A VOLP quote that ends with a form the VOLP does not list ("abstrato adj. s.m.; no abstracto").
+_VOLP_NO_FORM = re.compile(r"^VOLP: [^|]*; no (\S+)$")
+
+
+def _one_more_consonant(bare: str, full: str) -> bool:
+    """True when ``full`` is ``bare`` with one c or p inserted (abstrato, abstracto)."""
+    return any(full[:i] + full[i + 1:] == bare for i, c in enumerate(full) if c in "cp")
+
+
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
 AO_ROW_CLASSES = ("consonant", "diacritic", "trema", "join", "locution")
 
@@ -154,6 +165,11 @@ def ao_row_class(old: str, new: str) -> str:
 def _load(name: str) -> dict:
     with open(os.path.join(_DATA_DIR, name), "r", encoding="utf-8") as f:
         return json.load(f)
+
+
+def _load_tsv(name: str) -> List[Dict[str, str]]:
+    with open(os.path.join(_DATA_DIR, name), "r", encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE))
 
 
 def _strip_meta(d: dict) -> dict:
@@ -192,6 +208,10 @@ class Lexicon:
     @cached_property
     def _accent_71_73(self) -> dict:
         return _load("accent_reform_1971_73.json")
+
+    @cached_property
+    def _volp_br(self) -> List[Dict[str, str]]:
+        return _load_tsv("volp_ao1990_br.tsv")
 
     @cached_property
     def sister_markers(self) -> dict:
@@ -254,6 +274,44 @@ class Lexicon:
     def ao_br_dual_full(self) -> Dict[str, str]:
         """The dual cells of the pt-BR AO1990 map, as :attr:`ao_pt_dual_full`."""
         return _dual_full(self.tuga, "ao_br")
+
+    @cached_property
+    def ao_br_volp(self) -> Dict[str, str]:
+        """A pt-BR AO1990 word -> its form in the ABL Vocabulário Ortográfico da Língua
+        Portuguesa (VOLP), from ``data/volp_ao1990_br.tsv``. Each row quotes its VOLP entry.
+
+        Where the VOLP lists both forms of one word, the row gives the form with the
+        consonant ("fato s.m. | facto s.m.": fato -> facto). Where it lists one form, the
+        row gives that form ("cofator adj. s.m.; no cofactor": cofator stays), and the
+        form with the consonant that the quote rejects takes it too (cofactor -> cofator).
+        Two entries that point to each other with "cf." are two words (ótica, óptica):
+        each maps to itself. Each pair holds for its regular plural too (cofactores ->
+        cofatores), see :func:`_plural`, unless a row names the plural or the quote gives
+        it ("caráter s.m.; pl. caracteres"). A row that names silver-corpus rows decides
+        the sense of those sentences only, so it is left out.
+        """
+        decided: Dict[str, str] = {}
+        plurals: Dict[str, str] = {}
+        for row in self._volp_br:
+            if row["rows"] != "*":
+                continue
+            token, form = row["token"], row["form"]
+            if row["pair"] == "two words":
+                pairs = [(w, w) for w in (token, form, row["european"])]
+            else:
+                pairs = [(token, form)]
+                rejected = _VOLP_NO_FORM.match(row["source"])
+                if rejected and form == token:
+                    # the quote names the lemma (no abstracto); the European column names
+                    # the inflected form of the row (abstractas)
+                    pairs += [(full, token) for full in (rejected.group(1), row["european"])
+                              if _one_more_consonant(token, full)]
+            for word, target in pairs:
+                decided.setdefault(word, target)
+                plural = _plural(word), _plural(target)
+                if None not in plural and "pl. " not in row["source"]:
+                    plurals.setdefault(*plural)
+        return {**plurals, **decided}
 
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent

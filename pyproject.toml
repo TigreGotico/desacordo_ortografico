@@ -39,7 +39,7 @@ where = ["."]
 include = ["desacordo_ortografico*"]
 
 [tool.setuptools.package-data]
-desacordo_ortografico = ["data/*.json"]
+desacordo_ortografico = ["data/*.json", "data/*.tsv"]
 
 [tool.setuptools.dynamic]
 version = { attr = "desacordo_ortografico.version.VERSION_STR" }

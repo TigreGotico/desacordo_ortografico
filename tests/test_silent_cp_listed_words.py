@@ -62,8 +62,9 @@ def test_a_pt_pt_dual_keeps_its_consonant_toward_pt_pt():
 
 # Priberam, "Grafia alterada pelo Acordo Ortográfico de 1990": recto -> reto, colecta ->
 # coleta, corrector -> corretor, reactivar -> reativar, inexactidão -> inexatidão, rectidão
-# -> retidão (papers/linguistics/pt/priberam-cp-sweep/). Brazil writes the same forms. The
-# map lists the singular of each and not the plural, so the plural rule converts it.
+# -> retidão (papers/linguistics/pt/priberam-cp-sweep/). Brazil writes the same forms,
+# except where the VOLP lists both. The map lists the singular of each and not the plural,
+# so the plural rule converts it.
 @pytest.mark.parametrize("target", AO)
 @pytest.mark.parametrize("old, new", [
     ("rectos", "retos"), ("colectas", "coletas"), ("correctoras", "corretoras"),
@@ -73,6 +74,10 @@ def test_a_pt_pt_dual_keeps_its_consonant_toward_pt_pt():
 ])
 def test_the_plural_of_a_map_word_drops_the_consonant(old, new, target):
     assert old.lower() not in get_lexicon().ao_pt_old2new
+    # the VOLP lists both forms of recto and colecta, so pt-BR keeps the consonant:
+    # "reto adj. s.m. | recto adj. s.m."; "coleta s.f. ... | colecta s.f."
+    if target == "ao1990-br" and old.lower() in ("rectos", "colectas"):
+        new = old
     assert convert(old, "pt_1973", target) == new
 
 

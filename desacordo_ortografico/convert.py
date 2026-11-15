@@ -44,6 +44,8 @@ FEATURES: FrozenSet[str] = frozenset({
     # AO1990 rules and curated lists
     "differential", "hyphen-lexical", "silent-cp", "diphthong-accent", "hiatus-accent",
     "prefix-rs",
+    # the ABL VOLP decisions for pt-BR words
+    "volp",
     # month casing (text level)
     "months",
 })
@@ -178,12 +180,21 @@ class OrthographyConverter:
                     result.warnings.append(msg)
 
         # Base IV 1º c: where both forms of a dual cell are valid in the target variety,
-        # an AO1990 target writes the form with the consonant (sector, liquefacto).
-        if "silent-cp" in enabled and dst.era == Era.AO1990:
-            duals = self.lex.ao_br_dual_full if dst.variant == Variant.BR else self.lex.ao_pt_dual_full
+        # an AO1990 target writes the form with the consonant (sector, liquefacto). For
+        # pt-BR the VOLP decides a word it holds before the tugalex dual cells do.
+        if dst.era == Era.AO1990:
+            br = dst.variant == Variant.BR
+            duals = ((self.lex.ao_br_dual_full if br else self.lex.ao_pt_dual_full)
+                     if "silent-cp" in enabled else {})
+            volp = self.lex.ao_br_volp if br and "volp" in enabled else {}
+
+            def choose(w: str) -> Optional[str]:
+                return volp.get(w) or duals.get(w)
+
             # each element of a compound too (setor-chave), unless the compound is a cell
-            out = rules.apply_to_words(
-                out, lambda w: duals.get(w) or "-".join(duals.get(p, p) for p in w.split("-")), is_word)
+            if volp or duals:
+                out = rules.apply_to_words(
+                    out, lambda w: choose(w) or "-".join(choose(p) or p for p in w.split("-")), is_word)
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.
