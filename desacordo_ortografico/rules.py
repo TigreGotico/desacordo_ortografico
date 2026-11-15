@@ -101,7 +101,7 @@ def map_words(
             form = fn(i, word.lower())
             new = word if form is None else _match_case(word, form)
         out += [text[last:match.start()], new]
-        sources += [i] * len(_WORD_RE.findall(new))
+        sources += [i] if new == word else [i] * len(_WORD_RE.findall(new))
         last = match.end()
     out.append(text[last:])
     return "".join(out), sources
@@ -109,8 +109,8 @@ def map_words(
 
 #: A sentence end: the word after it opens a sentence.
 _SENTENCE_END = re.compile(r"[.!?…\n]")
-#: Titles whose abbreviation ends in a period that ends no sentence (o Sr. Silva).
-_TITLES = frozenset({"sr", "sra", "srs", "sras", "dr", "dra", "drs", "dras"})
+#: Abbreviations before a name whose period ends no sentence (o Sr. Silva, a Av. Brasil).
+_ABBREVIATIONS = frozenset({"sr", "sra", "srs", "sras", "dr", "dra", "drs", "dras", "av", "d", "s"})
 
 
 def names(text: str) -> List[bool]:
@@ -119,8 +119,9 @@ def names(text: str) -> List[bool]:
     capitals throughout.
 
     A word opens a sentence when no word comes before it or a sentence end (. ! ? … or
-    a line break) comes between it and the word before it. The period of Sr., Sra., Dr.
-    or Dra. is no sentence end; a colon or an opening quote is none either. A text with
+    a line break) comes between it and the word before it. The period of Sr., Sra., Dr.,
+    Dra., Av., D. (Dom, Dona) or S. (São) is no sentence end; a colon or an opening
+    quote is none either. A text with
     no word in lowercase gives no case signal, so it has no names.
     """
     matches = list(_WORD_RE.finditer(text))
@@ -130,7 +131,7 @@ def names(text: str) -> List[bool]:
     for prev, match in zip(matches, matches[1:]):
         word = match.group(0)
         gap = text[prev.end():match.start()]
-        if prev.group(0).lower() in _TITLES:
+        if prev.group(0).lower() in _ABBREVIATIONS:
             gap = gap.removeprefix(".")
         out.append(not _SENTENCE_END.search(gap) and not word.isupper()
                    and any(s[:1].isupper() for s in _SEGMENT_SEP.split(word)))

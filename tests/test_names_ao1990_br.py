@@ -24,6 +24,10 @@ from desacordo_ortografico.lexicon import get_lexicon
     ("e Coletivo Farra", "br_1971"),
     ("Aventuras d'um Detetive Português", "ao1990"),  # VOLP: detetive s.m. | detective s.m.
     ("o Codialeto Sul", "ao1990-pt"),  # no VOLP row; tugalex dual cell codialeto, codialecto
+    # VOLP: suntuoso (ô) adj.; f. (ó); pl. (ó) | sumptuoso (ô) adj.; f. (ó); pl. (ó)
+    ("o Suntuoso Bar abriu.", "br_1971"),
+    # VOLP: assuncionista adj. s.2g. | assumpcionista adj. s.2g.
+    ("os Assuncionistas chegaram.", "br_1971"),
 ])
 def test_a_name_gains_no_consonant_from_a_dual(text, source):
     assert convert(text, source, "ao1990-br") == text
@@ -59,7 +63,8 @@ def test_a_name_may_keep_a_consonant_the_source_wrote():
 
 
 def test_the_1911_accent_guess_holds_a_name_the_volp_lists():
-    """VOLP: eletrodo (ô) s.m. | electrodo (ô) s.m. The pt-PT form eléctrodos is no VOLP form."""
+    """VOLP: eletrodo (ô) s.m. | electrodo (ô) s.m. The written form electrodos is listed,
+    so the 1911 accent guess must not change it (to eléctrodos)."""
     assert convert("o Electrodos da casa", "etymological", "ao1990-br") == "o Electrodos da casa"
 
 
@@ -96,9 +101,13 @@ def test_a_word_with_no_name_signal_takes_the_dual(text, expected):
     "Ele disse: Ótimo, vamos.",
     'Ele disse: "Ótimo, vamos."',
     "Falei com o Sr. Detetive Ótimo.",
+    "Moro na Av. Coletivo Farra.",
+    "Chegou a D. Afetiva Lda.",
+    "Rezo a S. Detetive Ótimo.",
 ])
-def test_a_colon_a_quote_or_a_title_ends_no_sentence(text):
-    """VOLP: ótimo adj. s.m. interj. | óptimo adj. s.m. interj.; detetive s.m. | detective s.m."""
+def test_a_colon_a_quote_or_an_abbreviation_ends_no_sentence(text):
+    """VOLP: ótimo adj. s.m. interj. | óptimo adj. s.m. interj.; detetive s.m. | detective
+    s.m.; coletivo adj. s.m. | colectivo adj. s.m.; afetivo adj. | afectivo adj."""
     assert convert(text, "br_1971", "ao1990-br") == text
 
 
@@ -127,6 +136,10 @@ def test_without_the_volp_step_a_name_converts_as_a_common_word(text, source, ta
     ("egipto", False),
     ("subsetor", False),  # Priberam subsector (Brazil after the AO1990: subsetor)
     ("abjecionista", False),  # no source: VOLP lists neither form
+    ("suntuoso", True),  # VOLP: suntuoso (ô) adj.; f. (ó); pl. (ó) | sumptuoso (ô) adj.
+    ("assuncionistas", True),  # VOLP: assuncionista adj. s.2g. | assumpcionista adj. s.2g.
+    ("anti-itérico", True),  # VOLP: anti-ictérico adj. | anti-itérico adj.
+    ("antiitérico", False),
     ("codialeto", False),  # no VOLP row
 ])
 def test_the_forms_the_volp_lists(word, listed):
