@@ -124,6 +124,18 @@ def test_a_c_p_form_for_one_reading_only_leaves_the_token(text):
     assert convert(text, "br_1971", "ao1990-br") == text
 
 
+@pytest.mark.parametrize("text, expected", [
+    # VOLP: profilático s.m. | profiláctico adj.; the bare form is no adjective
+    ("o tratamento profilático", "o tratamento profiláctico"),
+    # VOLP: radioeletrônico s.m. | radioelectrônico adj.; the bare form is no adjective
+    ("o circuito radioeletrônico", "o circuito radioelectrônico"),
+    # VOLP: microeletrônica s.f. | microelectrônica s.f.; microeletrônico s.m. is no adjective
+    ("a microeletrônica", "a microelectrônica"),
+])
+def test_a_bare_form_that_misses_a_reading_takes_the_c_p_form(text, expected):
+    assert convert(text, "br_1971", "ao1990-br") == expected
+
+
 def test_an_adjective_form_takes_the_c_p_form_of_the_adjective():
     """VOLP: elétrico adj. s.m. | eléctrico adj. The feminine elétrica is no form of the
     noun elétrico s.m., so it is the adjective, which has both forms."""
@@ -206,13 +218,50 @@ def test_a_c_p_form_for_one_reading_only_is_marked():
     marked = {row["token"] for row in ROWS if row["pair"] == "one reading"}
     assert marked >= {
         "fatura", "faturas", "injeto", "cato", "coleta", "coator", "tático", "táticos",
-        "refratário", "manufaturado", "profilático", "radioeletrônico", "fototático",
+        "refratário", "manufaturado", "fototático",
         "insurrecionado", "anticético", "eletromotor", "eletrocutor", "tato"}
     volp = get_lexicon().ao_br_volp
     for row in ROWS:
         if row["pair"] == "one reading":
             assert row["rows"] == "*" and row["form"] != row["token"], row
             assert row["source"].startswith("VOLP: ") and row["token"] not in volp, row
+
+
+# The VOLP entries of the words that a note names as a homograph of a token:
+# faturar v., injetar v., retar v., injetiva s.f.
+VOLP_HOMOGRAPHS = {("verb", "faturar"), ("verb", "injetar"), ("verb", "retar"), ("noun", "injetiva")}
+_CLASSES = {"adj": "adjective", "s.m": "noun", "s.f": "noun", "s.2g": "noun", "v": "verb"}
+
+
+def _classes(entry):
+    """The word classes of one VOLP entry ("coator (ô) adj. s.m.": adjective, noun)."""
+    entry = re.sub(r'\([^()]*\)|"[^"]*"', " ", re.sub(r"\([^()]*\([^()]*\)[^()]*\)", " ", entry))
+    return {_CLASSES[t] for t in re.findall(r"(?<![\w.])(adj|s\.[mf]|s\.2g|v)\.", entry.split(";")[0])}
+
+
+def test_a_one_reading_row_keeps_a_bare_form_valid_for_every_reading():
+    """The bare entry of a "one reading" row covers every word class of its c/p entry, so
+    the bare form is valid for every reading. It covers a class the c/p entry lacks, or a
+    note names a VOLP homograph of the token."""
+    wrong = []
+    for row in ROWS:
+        if row["pair"] != "one reading":
+            continue
+        body = row["source"].removeprefix("VOLP: ")
+        only = re.match(r"([^;|]*); (\S+) ([^;]*?) is an? \w+ only", body)
+        if only:  # "profiláctico adj.; profilático s.m. is a noun only"
+            cons_entry, head, bare_entry = only.groups()
+        else:
+            bare_entry, cons_entry = (side.strip() for side in body.split("|", 1))
+            head = bare_entry.split()[0]
+        bare, cons = _classes(bare_entry), _classes(cons_entry)
+        if row["token"] not in (head, head + "s"):
+            bare, cons = bare - {"noun"}, cons - {"noun"}
+        note = re.search(r"\b(?:never|not) the (verb|noun|adjective) (\S+)", body)
+        homograph = (note and (note[1], note[2]) in VOLP_HOMOGRAPHS) or f"cf. {head} (" in body
+        if not (cons <= bare and (bare - cons or homograph)):
+            wrong.append(row["token"])
+    assert wrong == [], wrong
 
 
 def test_rows_for_every_sentence_agree():
@@ -235,7 +284,7 @@ def test_a_listed_word_takes_its_row_form():
     volp = get_lexicon().ao_br_volp
     wrong = [row for row in ROWS if row["rows"] == "*" and row["pair"] == "one word"
              and volp[row["token"]] != row["form"]]
-    assert wrong == []
+    assert wrong == [], wrong
 
 
 def test_a_dual_row_writes_the_consonant():
