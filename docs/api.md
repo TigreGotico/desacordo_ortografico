@@ -71,7 +71,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `1911-geminates` | doubled consonants, except rr and ss | reform_1911 |
 | `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo), see below | reform_1911 |
 | `trema` | ü -> u | pt_1911_to_1945, ao1990_pt, ao1990_br |
-| `post-1911-word-map` | the 1911 -> pt_1945 and 1911 -> br_1943 rows of the spelling table (quási -> quase, tam -> tão, teem -> têm, scetro -> ceptro); a word whose parts repeat (tam-tam) stays | pt_1911_to_1945, br_1911_to_1943 |
+| `post-1911-word-map` | the 1911 -> pt_1945 and 1911 -> br_1943 rows of the spelling table (quási -> quase, tam -> tão, teem -> têm, scetro -> ceptro); the noun row reads its plural (scetros -> ceptros), the adverb and verb rows do not (tams stays); a word whose parts repeat (tam-tam, tam-tams) stays | pt_1911_to_1945, br_1911_to_1943 |
 | `oxytone-em` | -êm, -êns -> -ém, -éns in an oxytone of more than one syllable (tambêm -> também); a compound of ter or vir in -têm, -vêm stays | pt_1911_to_1945, br_1911_to_1943 |
 | `grave-u` | qù, gù -> qu, gu toward 1945 and qü, gü toward 1943 (tranqùilo) | pt_1911_to_1945, br_1911_to_1943 |
 | `initial-sc` | initial sc -> c in the words of 1911 Base XI and their derivatives (sciência -> ciência, scintilava -> cintilava); an English word with the same letters (scientific, sceptical) loses its s too | pt_1911_to_1945, br_1911_to_1943 |

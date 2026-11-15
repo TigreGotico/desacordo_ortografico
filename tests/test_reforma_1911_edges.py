@@ -146,10 +146,12 @@ def test_oxytone_em_takes_the_acute(old, new):
     # letters spell no Portuguese word carries no 1911 differential circumflex
     "prêtres", "prête", "être", "même", "rêve", "bête", "vôtre", "êtes",
     # 1945 Base XIII "tão (não tam)" is the adverb; Eça's tam-tam is a gong
-    "tam-tam",
+    "tam-tam", "os tam-tams",
+    # the adverbs quási, tam, quam take no plural
+    "tams", "quams", "quásis",
 ])
 def test_out_of_1911_leaves_the_word(word):
-    for target in ("pt_1945", "br_1943"):
+    for target in ("pt_1945", "pt_1973", "br_1943"):
         assert convert(word, "reforma_1911", target) == word
 
 
@@ -191,6 +193,16 @@ def test_pre_1911_enclitic_keeps_the_circumflex(target):
 @pytest.mark.parametrize("target", ["pt_1945", "pt_1973"])
 def test_scetro_row_reads_the_plural(target):
     assert convert("O scetro, os scetros", "reforma_1911", target) == "O ceptro, os ceptros"
+
+
+@pytest.mark.parametrize("target", ["pt_1945", "br_1943"])
+def test_only_the_noun_row_takes_a_plural(target):
+    # of the rows out of 1911, scetro is the one noun; quási, tam and quam are adverbs and
+    # teem, veem are verb forms
+    rows = json.loads(_TABLE.read_text(encoding="utf-8"))["rows"]
+    forms = {r["form"] for r in rows if r["era"] == "reforma_1911" and r["target"] == target}
+    plural = {f for f in forms if convert(f + "s", "reforma_1911", target) != f + "s"}
+    assert plural == ({"scetro"} if target == "pt_1945" else set())
 
 
 @pytest.mark.xfail(strict=True, reason=(
