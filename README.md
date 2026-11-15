@@ -8,15 +8,21 @@ sub-variants that AO1990 deliberately keeps distinct.
 This is a single-purpose library. It does orthography detection and conversion, and
 nothing else.
 
-- **Convert** any text between seven orthographic norms along a graph of historical
+- **Convert** any text between eight orthographic norms along a graph of historical
   reforms, with AO1990 dual-form (`facto`/`fato`) handling.
 - **Detect** which orthography a text is written in: an explainable rule scorer, or two
   shipped zero-dependency learned classifiers (Naive Bayes / averaged perceptron).
 - **Guard** against sister varieties (Mirandese, Galician, Barranquenho) that look like
   Portuguese but are not.
-- A deterministic rule engine and curated, **sourced** exception lexicons. AO1990 word
-  data is reused from [`tugalex`](https://github.com/TigreGotico/tugalex).
-- A **command-line tool** and a parallel benchmark corpus, also published on the
+- A deterministic rule engine and curated, **sourced** exception lexicons. The AO1990
+  word maps and the pre-1911 archaisms are rows of one spelling table,
+  `data/spelling.json`, built from the [`tugalex`](https://github.com/TigreGotico/tugalex)
+  lists. For pt-BR, `data/volp_ao1990_br.json` holds 1,796 spelling decisions, and each
+  row cites its source. 1,628 rows quote the ABL *Vocabulário Ortográfico da Língua
+  Portuguesa* (VOLP), 66 rows cite Priberam, and 102 rows record that no source decides
+  the word.
+- A **command-line tool** and a parallel silver benchmark corpus (written by language
+  models, not checked by a person), also published on the
   [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
 
 ## Why it is not a single find-and-replace
@@ -50,6 +56,7 @@ from desacordo_ortografico import detect, convert, OrthographyConverter
 
 # --- detection -----------------------------------------------------------
 detect("a pharmacia do theatro").id          # 'etymological'
+detect("Tambêm sei!").id                      # 'reforma_1911'  (1911 spelling)
 detect("o facto é óptimo").id                 # 'pt_1973'   (pre-AO1990, European)
 detect("a idéia do vôo").id                   # 'br_1971'   (pre-AO1990, Brazilian)
 detect("o Antônio é econômico").id            # 'ao1990-br'
@@ -58,22 +65,44 @@ detect("o Antônio é econômico").id            # 'ao1990-br'
 convert("pharmacia", "etymological", "ao1990-br")          # 'farmácia'
 convert("a acção directa", "pre-ao1990-pt", "ao1990-pt")   # 'a ação direta'
 convert("freqüência", "pre-ao1990-br", "ao1990-br")        # 'frequência'
-convert("facto", "ao1990-pt", "ao1990-br")                 # 'fato'
+convert("húmido", "ao1990-pt", "ao1990-br")                # 'úmido'
 
 # --- the full result: warnings + dual-form alternatives ------------------
 conv = OrthographyConverter()
 res = conv.convert("o facto é óptimo", "ao1990-pt", "ao1990-br")
-res.text            # 'o fato é óptimo'  (óptimo isn't a divergence, stays)
+res.text            # 'o facto é óptimo'  (the VOLP lists both forms of each word)
 res.alternatives    # {'facto': ['facto', 'fato']}
 conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção']
 ```
+
+### Names toward pt-BR
+
+AO1990 Base XXI lets a person, a firm or a brand keep the spelling of its name. Toward
+`ao1990-br`, a word inside a sentence that starts with a capital, and is not in capitals
+throughout, is a name. A name keeps
+a form that the VOLP lists. The dual rule never gives a name a c or p that the source
+did not write:
+
+```python
+convert("o setor e a Setor Norte", "ao1990-pt", "ao1990-br")
+# 'o sector e a Setor Norte'
+convert("o coletivo e o Coletivo Farra", "ao1990-pt", "ao1990-br")
+# 'o colectivo e o Coletivo Farra'
+```
+
+The first word of a sentence and a text with no lowercase word give no case signal, so
+they convert like any other word. So does a word in capitals: `o SETOR e o setor` gives
+`o SECTOR e o sector`. See [`docs/api.md`](docs/api.md) for the `volp`
+feature.
 
 ### Detection: rules or a learned model
 
 `detect()` defaults to an explainable rule scorer. Two zero-dependency learned models
 also ship: Naive Bayes and an averaged perceptron over character n-grams, sharing one
-sparse-dot-product scoring rule. They score higher on sentence-length text
-(~96% vs ~94% compatible accuracy, held-out 5-fold CV; see `benchmark/`):
+sparse-dot-product scoring rule. They score higher on sentence-length text. On held-out
+5-fold cross-validation over the 6,645 renderings of the silver corpus, the compatible
+accuracy is 96.4% for Naive Bayes, 95.6% for the perceptron and 92.6% for the rules
+(`benchmark/train_detector.py`):
 
 ```python
 detect("o Antônio era um génio econômico", method="nb")          # learned
@@ -82,7 +111,16 @@ detect("o Antônio era um génio econômico")                       # rules (def
 ```
 
 The guard runs first in every mode. Rule markers attach to a learned result for
-explainability.
+explainability. The learned models have no `reforma_1911` class, so only the rules
+return that label.
+
+A rules `confidence` is the held-out precision of the label for one, or two or more,
+evidence tokens, with two exceptions. The `reforma_1911` values are provisional copies of
+the `etymological` values. An `ao1990` result with a PT/BR lean marker and no AO1990 form
+gets 0.86: the Antônio example above returns `ao1990-br` with 0.86. A text with no
+evidence gets 0.34. A learned
+`confidence` comes from the model margin. [`docs/api.md`](docs/api.md) gives the table
+and its sources.
 
 ### Sister-language guard
 
@@ -102,9 +140,16 @@ r.name, r.convertible          # ('Galician', False)
 ```bash
 desacordo detect "a pharmacia do theatro"
 desacordo convert --from pre-ao1990-pt --to ao1990-pt "a acção directa"
-desacordo convert --from ao1990-pt --to ao1990-br --variant br "o facto"
+desacordo convert --from pre-ao1990-pt --to ao1990 --variant br "a recepção"
+desacordo convert -v --from ao1990-pt --to ao1990-br "o facto"
+desacordo detect --method nb "a idéia do vôo"
 desacordo norms          # list the available orthographic norms
 ```
+
+`--variant` picks the European or Brazilian AO1990 target: the example prints
+`a recepção`, and `--variant pt` prints `a receção`. `-v` prints the lossy-edge warnings
+and the dual-form alternatives (`alt: facto -> facto | fato`) to stderr. `--stdin` reads
+the text from standard input.
 
 ## Norms
 
@@ -129,8 +174,8 @@ instead of silently guessing.
 
 ## Related projects
 
-- [`tugalex`](https://github.com/TigreGotico/tugalex) — the AO1990 word-map data this
-  library reuses.
+- [`tugalex`](https://github.com/TigreGotico/tugalex) — the word list this library
+  reads, and the source of the AO1990 and archaism rows of its spelling table.
 
 ## License
 

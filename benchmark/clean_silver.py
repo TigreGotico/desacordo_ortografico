@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tighten the gold corpus to reference quality — safely.
+"""Make each line of the silver corpus internally consistent.
 
 The five cells of a sentence are NOT all orthographic variants of one another: the
 European line (etymological, pt_1973, ao1990-pt) and the Brazilian line (br_1971,
@@ -7,15 +7,18 @@ ao1990-br) may legitimately differ in *lexis* (ficheiro/arquivo, utilizador/usu�
 So consistency is checked **within each line**, where the cells differ only by the
 documented era transforms (which the skeleton folds).
 
-To avoid ever corrupting the reference, this tool does exactly two things:
+This tool does three things:
 
-1. **Correct AO1990 cells only** — force a dual/divergence word to the right variant in
-   the (unambiguous) modern cells (`receptor`->`recetor` in ao1990-pt). Pre-AO1990 cells
-   are never touched, because their forms are era-dependent.
-2. **Drop, never fix** — any sentence whose European *or* Brazilian line is internally
+1. **Correct AO1990 cells** — force a dual/divergence word to the variant of the
+   library's maps in the modern cells (`receptor`->`recetor` in ao1990-pt).
+2. **Normalise etymological tokens** — replace an etymological token that neither the
+   1911 word map nor the digraph and geminate rules reduce to its pt_1973 token with the
+   pt_1973 token (``validate_etym``).
+3. **Drop, never fix** — any sentence whose European *or* Brazilian line is internally
    inconsistent (an article slip, a different word, a token-count mismatch) is removed.
 
-The result is a corpus where every line is provably self-consistent.
+The result is a corpus where every line is self-consistent. A wrong form that is the same
+in every cell of a line passes the check.
 """
 from __future__ import annotations
 
@@ -134,7 +137,7 @@ def etym_ok(rec) -> bool:
 
 def main():
     lex = get_lexicon()
-    corpus = [json.loads(line) for line in open(os.path.join(HERE, "gold_corpus.jsonl"),
+    corpus = [json.loads(line) for line in open(os.path.join(HERE, "silver_corpus.jsonl"),
                                                 encoding="utf-8") if line.strip()]
     out = []
     stats = Counter()
@@ -148,7 +151,7 @@ def main():
         else:
             stats["dropped"] += 1
 
-    with open(os.path.join(HERE, "gold_corpus.jsonl"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_corpus.jsonl"), "w", encoding="utf-8") as f:
         for rec in out:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 

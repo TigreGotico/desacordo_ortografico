@@ -36,7 +36,7 @@ def main():
             continue
         out.append({"id": f"c{len(out):05d}", "features": infer_features(d, M),
                     "cells": d, "source": "coverage"})
-    with open(os.path.join(HERE, "gold_coverage.jsonl"), "w", encoding="utf-8") as f:
+    with open(os.path.join(HERE, "silver_coverage.jsonl"), "w", encoding="utf-8") as f:
         for r in out:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
     print(f"carrier rows: {len(out)}; could not carry: {len(failed)}")

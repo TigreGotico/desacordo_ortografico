@@ -2,13 +2,20 @@
 
 A conversion is a path through the norm graph (:mod:`desacordo_ortografico.eras`).
 Each edge carries a *forward* (older->newer) and *backward* transform built from the
-deterministic rules (:mod:`rules`) and the curated/`tugalex` lexicons
-(:mod:`lexicon`). Where an authoritative word map exists (the AO1990 edges, via
-``tugalex``) it is applied first and the rules act only as a fallback for words the
-map does not cover.
+deterministic rules (:mod:`rules`) and the curated lexicons (:mod:`lexicon`). Where an
+authoritative word map exists (the AO1990 edges) it is applied first and the rules act
+only as a fallback for words the map does not cover.
 
 Each edge is an ordered list of named feature steps (:data:`FEATURES`). A caller can
 pass ``features=`` to run only some of them; by default every feature runs.
+
+The 1911 edge reads the pre-1911 -> 1911 rows of the spelling table
+(``data/spelling.json``, see :mod:`lexicon`). The forward pass reads every such row
+(comsigo -> consigo, Formulário Ortográfico of 1911, Base XV). The backward pass reads
+the curated rows only. The edges out of 1911, toward pt_1945 and br_1943, read the
+reforma_1911 rows of the table (quási -> quase), then apply the rules of :mod:`rules`
+that quote the Acordo Ortográfico of 1945 and the Formulário Ortográfico of 1943
+(tambêm -> também).
 
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
 several edges, *lexical and lossy*: dropping a silent consonant or an accent throws
@@ -19,11 +26,11 @@ from __future__ import annotations
 
 import unicodedata
 from dataclasses import dataclass, field
-from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Tuple
+from typing import Callable, Collection, Dict, FrozenSet, List, Mapping, Optional, Sequence, Tuple
 
 from . import rules
-from .eras import NORMS, Era, Norm, find_path
-from .lexicon import AO_ROW_CLASSES, Lexicon, get_lexicon
+from .eras import NORMS, Era, Norm, Variant, find_path
+from .lexicon import AO_ROW_CLASSES, Lexicon, ao_row_class, get_lexicon
 
 WordFn = Callable[[str], str]
 
@@ -33,6 +40,9 @@ FEATURES: FrozenSet[str] = frozenset({
     "1911-word-map", "1911-digraphs", "1911-geminates", "1911-accent-restore",
     # trema (PT 1945, AO1990)
     "trema",
+    # the edges out of 1911 (BR 1943, PT 1945): the word rows, the oxytones in -êm, the
+    # grave on a u after q or g, the initial sc, and the PT 1945 differential circumflex
+    "post-1911-word-map", "oxytone-em", "grave-u", "initial-sc", "differential-1945",
     # subtonic grave accents (PT 1973, BR 1971)
     "subtonic-grave",
     # BR 1943 and the AO1990 PT/BR divergence
@@ -44,6 +54,8 @@ FEATURES: FrozenSet[str] = frozenset({
     # AO1990 rules and curated lists
     "differential", "hyphen-lexical", "silent-cp", "diphthong-accent", "hiatus-accent",
     "prefix-rs",
+    # the ABL VOLP decisions for pt-BR words
+    "volp",
     # month casing (text level)
     "months",
 })
@@ -121,11 +133,20 @@ class OrthographyConverter:
         target: "str | Norm",
         variant: Optional[str] = None,
         features: Optional[Collection[str]] = None,
+        pos_tags: Optional[Sequence[Tuple[str, str]]] = None,
     ) -> ConversionResult:
         """Convert ``text`` from ``source`` to ``target``.
 
         ``features`` names the :data:`FEATURES` to apply. ``None`` applies all of them.
         An unknown name raises ``ValueError``.
+
+        ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text`` from a part-of-speech
+        tagger, as ``tugatagger.TugaTagger.tag(text)`` returns them. The 1911 accent
+        guess gives a bare form that is otherwise only a verb form its accent after a
+        determiner or a preposition (a historia -> a história), and keeps it bare after a
+        clitic pronoun. A tag decides only the words that this rule leaves undecided:
+        NOUN or ADJ gives the accent. The target's variety decides when a bare article
+        is the article and when it is the pronoun, see :func:`rules.guess_accents`.
         """
         enabled = _enabled(features)
         text = unicodedata.normalize("NFC", text)
@@ -140,16 +161,45 @@ class OrthographyConverter:
             if dst.era == Era.AO1990:
                 dst = NORMS[f"ao1990-{variant}"]
         steps = find_path(src, dst)
+        # pt-PT text reaches ao1990-br through the divergence edge; there a VOLP row whose
+        # bare form is another pt-PT word (fato, the suit) keeps it
+        from_pt = dst.id == "ao1990-br" and "volp" in enabled and any(
+            name == "ptbr_divergence" and fwd for name, _frm, fwd in steps)
+        pt_words = self.lex.ao_br_volp_pt_words if from_pt else {}
         result = ConversionResult(text=text, source=src.id, target=dst.id)
         if not steps:
             return result
 
+        # A token in capitals marks an acronym only in mixed-case text. Text in capitals
+        # throughout converts each token like the same word in lowercase. The test reads
+        # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
+        is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
+        # AO1990 Base XXI lets a name keep the spelling it is written in. Toward pt-BR a
+        # name whose written form the VOLP lists stays as written, so every edge holds it:
+        # an edge before the VOLP step can change it (pt_1973 receptores -> ao1990-pt
+        # recetores, which the VOLP rejects). For each word of ``out``, ``written`` holds
+        # the word of the source that it comes from.
+        written = rules.words(text)
+        named = rules.names(text) if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
+        kept = [n and w.lower() in self.lex.ao_br_volp_listed for w, n in zip(written, named)]
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
             step_pass = edge.forward if forward else edge.backward
             reversible = edge.reversible_forward if forward else edge.reversible_backward
-            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled))
+            guess = edge_name == "reform_1911" and forward and "1911-accent-restore" in enabled
+            # the word pass rewrites letters inside each word only, so the tags aligned to
+            # the words before it still line up one to one with the words after it
+            tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
+            own = pt_words if edge_name == "ptbr_divergence" else {}
+            out, sources = rules.map_words(
+                out, lambda i, w, p=step_pass, k=own: None if kept[i] else k.get(w) or p.apply(w, enabled), is_word)
+            written, named, kept = ([x[i] for i in sources] for x in (written, named, kept))
+            if guess:
+                variety = "br" if dst.variant == Variant.BR else "pt"
+                out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
+                                          self.lex.accent_restore_singular, tags, variety,
+                                          {i for i, k in enumerate(kept) if k})
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"
@@ -158,6 +208,35 @@ class OrthographyConverter:
                     msg += f": {edge.note}"
                 if msg not in result.warnings:
                     result.warnings.append(msg)
+
+        # Base IV 1º c: where both forms of a dual cell are valid in the target variety,
+        # an AO1990 target writes the form with the consonant (sector, liquefacto). For
+        # pt-BR the VOLP decides a word it holds before the tugalex dual cells do.
+        if dst.era == Era.AO1990:
+            br = dst.variant == Variant.BR
+            duals = ((self.lex.ao_br_dual_full if br else self.lex.ao_pt_dual_full)
+                     if "silent-cp" in enabled else {})
+            volp = self.lex.ao_br_volp if br and "volp" in enabled else {}
+
+            def choose(w: str) -> Optional[str]:
+                return pt_words.get(w) or volp.get(w) or duals.get(w)
+
+            # a name keeps a form the VOLP lists and takes the VOLP form of any other
+            def choose_for_name(w: str) -> Optional[str]:
+                return None if w in self.lex.ao_br_volp_listed else pt_words.get(w) or volp.get(w)
+
+            def choose_word(i: int, w: str) -> Optional[str]:
+                if kept[i]:
+                    return None
+                # each element of a compound too (setor-chave), unless the compound is a cell
+                form = choose(w) or "-".join(choose(p) or p for p in w.split("-"))
+                # a name gains no c or p from a dual: it has no more than the source wrote
+                if named[i] and sum(map(form.count, "cp")) > sum(map(written[i].lower().count, "cp")):
+                    return choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-"))
+                return form
+
+            if volp or duals:
+                out = rules.map_words(out, choose_word, is_word)[0]
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.
@@ -221,7 +300,7 @@ class OrthographyConverter:
         def ao_row(classes: Mapping[str, str], to_old: Optional[Mapping[str, str]] = None):
             if to_old is None:
                 return lambda w: f"ao-map-{classes[w]}"
-            return lambda w: f"ao-map-{classes[to_old[w]]}"
+            return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
 
         def word_map_1911(_w: str) -> str:
             return "1911-word-map"
@@ -229,18 +308,23 @@ class OrthographyConverter:
         def ptbr_divergence(_w: str) -> str:
             return "ptbr-divergence"
 
-        # -- 1911: the word map first; the rules are a fallback for other words. They
+        def ptbr_before_ao1990(w: str) -> str:
+            # before AO1990 the European norm wrote the consonant too: a pt-PT form that
+            # only AO1990 writes (receção) is no older European form (recepção)
+            pt = lex.divergence_br2pt.get(w, w)
+            return w if pt in lex.ao_pt_new2old else pt
+
+        # -- 1911: the word maps first; the rules are a fallback for other words. They
         #    leave a loanword or a foreign name alone (rules.is_foreign_spelling). 1911
-        #    also introduced graphic accents the rules can't derive; they are restored
-        #    from the word list where unambiguous (fosforo -> fósforo).
+        #    also introduced graphic accents the rules can't derive; convert() restores
+        #    them after this pass, from the word list and the context (fosforo -> fósforo).
         reform_1911 = _Edge(
             _Pass(
                 steps=[
                     ("1911-digraphs", rules.reform_1911_digraphs),
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
-                    ("1911-accent-restore", lambda w: rules.restore_accent(w, lex.accent_restore)),
                 ],
-                table=lex.reform1911_old2new, table_feature=word_map_1911,
+                table=lex.reform1911_forward, table_feature=word_map_1911,
                 skip=rules.is_foreign_spelling,
             ),
             _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
@@ -248,24 +332,48 @@ class OrthographyConverter:
             note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
         )
 
-        # -- 1911 <-> 1945 (PT): the 1945 Convenção dropped the trema for Portugal
-        #    (ü -> u); otherwise the PT spelling is unchanged across these eras.
+        # -- 1911 -> 1945 (PT) and 1911 -> 1943 (BR): the word rows of the spelling
+        #    table, then the rules; rules.py quotes the clause of each.
+        def from_1911(rows: Mapping[str, str]) -> WordFn:
+            # only a form that ends in a, e or o takes the plural -s: the noun scetro
+            # (scetros), and not the adverbs quási, tam, quam or the verb forms teem, veem
+            nouns = {form: value for form, value in rows.items() if form[-1:] in "aeo"}
+
+            def read(word: str) -> str:
+                parts = rules._SEGMENT_SEP.split(word)
+                if len(parts) > 1 and len({p.removesuffix("s") for p in parts}) == 1:  # tam-tams
+                    return word
+                return rules.per_segment(
+                    word, lambda p: rows.get(p) or rules.lookup_with_plural(p, nouns) or p)
+
+            return read
+
         pt_1911_to_1945 = _Edge(
-            _Pass(steps=[("trema", rules.ao1990_drop_trema)]),
+            _Pass(steps=[
+                ("post-1911-word-map", from_1911(lex.reform1911_to_1945)),
+                ("initial-sc", rules.drop_initial_sc),
+                ("oxytone-em", rules.oxytone_em_acute),
+                ("grave-u", rules.drop_grave_u),
+                ("differential-1945", lambda w: rules.drop_differential_1945(w, lex.is_listed)),
+                ("trema", rules.ao1990_drop_trema),
+            ]),
             _Pass(),
             reversible_backward=False,
             note="the trema cannot be reintroduced by rule",
         )
 
-        # -- 1911 <-> 1943 (BR) ----------------------------------------------
         br_1911_to_1943 = _Edge(
             _Pass(steps=[
+                ("post-1911-word-map", from_1911(lex.reform1911_to_1943)),
+                ("initial-sc", rules.drop_initial_sc),
+                ("oxytone-em", rules.oxytone_em_acute),
+                ("grave-u", rules.grave_u_to_trema),
                 ("base-iv", get(lex.base_iv_drop)),
                 ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
             _Pass(steps=[
-                ("ptbr-divergence", get(lex.divergence_br2pt)),
+                ("ptbr-divergence", ptbr_before_ao1990),
                 ("base-iv", get(lex.base_iv_drop_reverse)),
                 ("nasal-vowel", rules.nasal_vowel_to_pt),
             ]),
@@ -303,7 +411,7 @@ class OrthographyConverter:
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
                     ("hyphen-lexical", get(lex.hyphen_dropped)),
                     ("base-iv", get(lex.base_iv_drop)),
-                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.cp_keep_pt, lex.wordset)),
+                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.ao_pt_old2new)),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
@@ -315,6 +423,7 @@ class OrthographyConverter:
                 steps=[
                     ("hyphen-lexical", get(lex.hyphen_dropped_reverse)),
                     ("base-iv", get(lex.base_iv_drop_reverse)),
+                    ("silent-cp", lambda w: rules.restore_silent_cp(w, lex.ao_pt_new2old)),
                 ],
                 table=lex.ao_pt_new2old,
                 table_feature=ao_row(lex.ao_pt_row_class, lex.ao_pt_new2old),
@@ -397,11 +506,13 @@ def convert(
     target: "str | Norm",
     variant: Optional[str] = None,
     features: Optional[Collection[str]] = None,
+    pos_tags: Optional[Sequence[Tuple[str, str]]] = None,
 ) -> str:
     """Convert ``text`` from ``source`` to ``target`` and return the string.
 
     ``features`` names the :data:`FEATURES` to apply; ``None`` applies all of them.
-    For the full result (warnings, dual-form alternatives) use
-    :meth:`OrthographyConverter.convert`.
+    ``pos_tags`` holds the ``(word, UPOS)`` pairs of ``text``; see
+    :meth:`OrthographyConverter.convert`. For the full result (warnings, dual-form
+    alternatives) use :meth:`OrthographyConverter.convert`.
     """
-    return _converter().convert(text, source, target, variant, features).text
+    return _converter().convert(text, source, target, variant, features, pos_tags).text

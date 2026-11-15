@@ -11,16 +11,29 @@ from desacordo_ortografico import FEATURES, convert
 P = ("etymological", "ao1990-pt")
 B = ("etymological", "ao1990-br")
 X = ("ao1990-pt", "ao1990-br")
+R = ("reforma_1911", "pt_1945")
+RB = ("reforma_1911", "br_1943")
 
 # feature -> (path, old word, new word)
 CASES = {
-    # Reforma de 1911: ph -> f, th -> t, geminates reduced, graphic accents
+    # Reforma de 1911: ph -> f, th -> t, geminates reduced, graphic accents. A word that
+    # a 1911 word map holds belongs to 1911-word-map, so the rule cases are unlisted words.
     "1911-word-map": (P, "pharmacia", "farmácia"),
-    "1911-digraphs": (P, "theatro", "teatro"),
-    "1911-geminates": (P, "commissão", "comissão"),
+    "1911-digraphs": (P, "thesouraria", "tesouraria"),
+    "1911-geminates": (P, "commissionar", "comissionar"),
     "1911-accent-restore": (P, "fosforo", "fósforo"),
     # Convenção de 1945 for Portugal, AO1990 Base XIV 1º for Brazil: no trema
     "trema": (P, "lingüiça", "linguiça"),
+    # Acordo Ortográfico de 1945, Base IX: "quase (em vez de quási)"
+    "post-1911-word-map": (R, "quási", "quase"),
+    # Acordo Ortográfico de 1945, Base XIII: "também"
+    "oxytone-em": (R, "tambêm", "também"),
+    # Formulário Ortográfico de 1943, 12.ª: "tranqüilo"
+    "grave-u": (RB, "tranqùilo", "tranqüilo"),
+    # Formulário Ortográfico de 1943, 19.: "ciência"
+    "initial-sc": (RB, "sciência", "ciência"),
+    # Acordo Ortográfico de 1945, Base XXII: "ele (ê), pronome"
+    "differential-1945": (R, "êle", "ele"),
     # Decreto-Lei 32/73: no subtonic grave accent
     "subtonic-grave": (P, "sòmente", "somente"),
     # AO1990 Base IV 1º b): mute c dropped (ação)
@@ -37,9 +50,13 @@ CASES = {
     "differential": (P, "pára", "para"),
     # AO1990 Base XV 1º obs.: mandachuva is written joined
     "hyphen-lexical": (P, "manda-chuva", "mandachuva"),
-    # AO1990 Base IV 1º b): ação, afetivo
-    "base-iv": (P, "acções", "ações"),
-    "silent-cp": (P, "afectiva", "afetiva"),
+    # Formulário Ortográfico de 1943, 16.: "Não se escrevem as consoantes que se não
+    # proferem: ... diretor ... e não ... director". Toward pt-PT the AO1990 word map
+    # lists directora, and a listed word belongs to the ao-map features.
+    "base-iv": (B, "directora", "diretora"),
+    # AO1990 Base IV 1º b): exato; the plural of the map row exactidão, which the map
+    # does not list
+    "silent-cp": (P, "exactidões", "exatidões"),
     # AO1990 Base IX 3º: éi in a paroxytone loses the accent
     "diphthong-accent": (P, "assembléia", "assembleia"),
     # AO1990 Base IX 8º: ôo loses the accent
@@ -54,6 +71,9 @@ CASES = {
     "nasal-vowel": (X, "académica", "acadêmica"),
     # Lei 5.765/1971: no differential circumflex
     "differential-1971": (B, "êle", "ele"),
+    # ABL VOLP: "setor (ô) s.m. | sector (ô) s.m."; of two valid forms, the one with the
+    # consonant (owner ruling)
+    "volp": (X, "setor", "sector"),
 }
 
 
@@ -75,7 +95,7 @@ def test_feature_alone_changes_only_its_word(feature):
     assert convert(" , ".join(words), *path, features={feature}) == " , ".join(expected)
 
 
-@pytest.mark.parametrize("path", [P, B, X])
+@pytest.mark.parametrize("path", [P, B, X, R, RB])
 def test_no_features_changes_nothing(path):
     text = " , ".join(old for p, old, _ in CASES.values() if p == path)
     assert convert(text, *path, features=()) == text
@@ -91,7 +111,7 @@ def test_a_bare_string_raises():
         convert("acção", *P, features="trema")
 
 
-@pytest.mark.parametrize("path", [P, B, X])
+@pytest.mark.parametrize("path", [P, B, X, R, RB])
 def test_default_applies_every_feature(path):
     text = " , ".join(old for p, old, _ in CASES.values() if p == path)
     expected = " , ".join(new for p, _, new in CASES.values() if p == path)

@@ -33,6 +33,11 @@ the two orthographies.
 | `ph→f`, `th→t`, `rh→r`, `y→i` | deterministic |
 | `ch`(=/k/)→`c`/`qu`, geminate reduction (keep `rr`, `ss`), drop silent consonants and medial `h` | lexical |
 
+`detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943
+does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù`
+(freqùente). See the detection markers in
+[`api.md`](api.md).
+
 Sources: [Reforma Ortográfica de 1911](https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1911) ·
 [A ortografia antes de 1911 (Ciberdúvidas)](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-ortografia-antes-de-1911/33429)
 
@@ -42,6 +47,12 @@ ABL, 12 Aug 1943. This was Brazil's governing norm (with the 1971 amendments) un
 AO1990. Defining traits versus the European line: Brazil **dropped the silent c/p**
 (`ação`, `ótimo`, `diretor`) and used the **acute** on stressed open vowels before a
 nasal where Portugal used the circumflex/closed vowel (`Antônio`, `gênero`).
+
+From the 1911 spelling, `convert()` writes `também` (rule 7.ª), `tranqüilo` (12.ª) and
+`ciência` (19.). It keeps the differential circumflex of `êle` and `sôbre` (14.ª). It
+leaves `convêm` and `contêm` as written, because from 1943 on these letters spell the
+plural. The 1911 words that no rule reaches are rows of the spelling table: `quási→quase`,
+`tam→tão`, `teem→têm`.
 
 Source: [Formulário Ortográfico (Academia Brasileira de Letras)](https://www.academia.org.br/nossa-lingua/formulario-ortografico)
 
@@ -56,6 +67,18 @@ This froze the two-standard system. It codified the PT/BR differences:
 | silent c/p | `acção, óptimo, director` | `ação, ótimo, diretor` | lexical |
 | open vowel before nasal | `António, fenómeno, génio` | `Antônio, fenômeno, gênio` | **deterministic** (é/ó ↔ ê/ô) |
 | pronunciation divergences | `facto, húmido` | `fato, úmido` | lexical |
+
+From the 1911 spelling, `convert()` writes `também` (Base XIII), `tranquilo` (Base
+XXVII) and `ciência` (the 1931 Bases, § 1.º 4.º, which Portugal adopted). The circumflex
+of 1911 Base XXVIII goes, except on the forms that Base XXII keeps: `êle→ele` and
+`côr→cor`, but `pêlo` and `pôde` stay. The accent goes only when the bare letters
+spell a listed Portuguese word. French `prêtres` and `être` stay, but a French word whose
+bare letters are listed loses the accent: `Côte` becomes `Cote`. A 1945 word that the list
+lacks keeps it (`môo`, `vêde`).
+The 1911 singular `convêm` stays as written, because from 1945 on these letters spell the
+plural. The 1911 words that no rule reaches are rows of the spelling table:
+`quási→quase`, `tam→tão`, `teem→têm`, and `scetro→ceptro` (Base VI, 2.°). The initial
+sc goes in the word families of 1911 Base XI, so English `scientific` loses it too.
 
 Source (official text): [Convenção Ortográfica de 1945 (Priberam)](https://www.priberam.pt/docs/AcOrtog45_73.pdf)
 
@@ -78,11 +101,43 @@ force from 2006 (2nd Protocol), and became mandatory in Brazil in 2016 and Portu
 in 2015.
 
 **Base IV, consonant sequences `cc, cç, ct, pc, pç, pt`**, is the hardest, irreducibly
-lexical part. It defines three sets:
+lexical part. It defines four sets:
 - **keep** (pronounced everywhere): `pacto, ficção, apto, egípcio, rapto`.
 - **drop** (mute everywhere): `acção→ação, óptimo→ótimo, director→diretor`.
 - **dual** (pronounced in one norm only, one spelling per norm):
   `facto`(PT)/`fato`(BR), `receção`(PT)/`recepção`(BR), `aspeto`(PT)/`aspecto`(BR).
+- **optional** (two valid spellings in one norm, Base IV 1º c): `sector`/`setor`,
+  `carácter`/`caráter`. Where both forms are valid in the target variety (a dual cell of
+  that variety's AO1990 map), an AO1990 target writes the form with the
+  consonant, in the plural too. A word with one valid form takes that form. contrato
+  and retrato stay: each is a word of its own beside contracto and retracto. For pt-BR,
+  the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) decides each word that
+  `data/volp_ao1990_br.json` holds, before the AO1990 map: the VOLP lists fato and
+  facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator.
+  Two VOLP entries that point to each other with "cf." are two words (ótica, óptica),
+  and neither becomes the other. Where the VOLP gives the form with the consonant for
+  one reading of a word only, the word stays as written, because the bare form is valid
+  for every reading: the VOLP lists coator adj. s.m. and coactor s.m., so "o ato coator"
+  stays, and it lists faturar and no facturar, so "a empresa fatura" stays. A past
+  participle is a reading too: the VOLP lists refletido adj. and reflectido adj., and
+  refletir v. with no reflectir, so "o relatório foi refletido" stays. Such a row is
+  marked "one reading" in the data file. From a pt-PT source, a bare form that pt-PT
+  itself does not write for the word is another word: pt-PT writes facto for the fact,
+  so a pt-PT fato is the suit and stays fato.
+- **names** toward pt-BR (AO1990 Base XXI: a person, a firm, a society, a brand or a
+  registered title can keep the spelling it was written in). A word that starts with a
+  capital inside a sentence is a name. When the VOLP lists the form as written, the name
+  stays as written through every edge: "e Coletivo Farra" stays, and pt_1973 "o filme
+  Receptores" stays. When the VOLP does not list it, the name takes the form the VOLP
+  lists: "a Correcção Fraterna" becomes "a Correção Fraterna", and ao1990-pt "Recetores"
+  becomes "Receptores". A dual never gives a name a c or p that the source did not
+  write. The forms the VOLP lists are the form of each VOLP row, each headword of a quote
+  with two entries, the twin with one c or p more or fewer unless the quote rejects
+  it, and their plurals (`Lexicon.ao_br_volp_listed`). A word with no VOLP row converts as before, except
+  that no dual adds a consonant to it. The first word of a sentence, a word in capitals
+  throughout, and every word of a text with no word in lowercase follow the rule for
+  other words. A colon, an opening quote, and the period of Sr., Sra., Dr., Dra., Av.,
+  D. or S. end no sentence.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`

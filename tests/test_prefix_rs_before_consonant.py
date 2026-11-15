@@ -4,26 +4,31 @@ with r or s, and the r or s doubles.
 Every example of the clause has a vowel after the doubled letter: antirreligioso,
 antissemita, contrarregra, contrassenha, cosseno, extrarregular, infrassom, minissaia,
 biorritmo, biossatélite, eletrossiderurgia, microssistema, microrradiografia. The
-digraphs rr and ss stand only between vowels. The tugalex AO1990 maps have no word with
-rr or ss before a consonant. So the hyphen goes and the letter stays single before a
-consonant: the gold rows p10-018 and d00691 of
-gold_full.jsonl (Hugging Face dataset TigreGotico/desacordo_ortografico) write
+digraphs rr and ss stand only between vowels. The AO1990 maps of data/spelling.json have
+no word with rr or ss before a consonant. So the hyphen goes and the letter stays single
+before a consonant: the silver rows p10-018 and d00691 of silver_full.jsonl (Hugging Face dataset TigreGotico/desacordo_ortografico) write
 anti-spam in pt_1973 and br_1971, and antispam in ao1990-pt and ao1990-br.
 """
+import json
 import re
+from pathlib import Path
 
 import pytest
-from tugalex import TugaLexicon
 
+import desacordo_ortografico
 from desacordo_ortografico import convert, rules
 
+_TABLE = Path(desacordo_ortografico.__file__).parent / "data" / "spelling.json"
 
-@pytest.mark.parametrize("variant", ["ao_pt", "ao_br"])
-def test_ao_map_never_writes_rr_or_ss_before_a_consonant(variant):
+
+@pytest.mark.parametrize("era", ["pt_1973", "br_1971"])
+def test_ao_map_never_writes_rr_or_ss_before_a_consonant(era):
     words = set()
-    for old, new in getattr(TugaLexicon(), variant).items():
-        words.add(old)
-        words.update(new if isinstance(new, list) else [new])
+    with open(_TABLE, encoding="utf-8") as f:
+        for row in json.load(f)["rows"]:
+            if row["era"] == era:
+                words.add(row["form"])
+                words.update(row["value"].split("|"))
     doubled = [w for w in words if re.match(r"(anti|contra|auto|micro|infra|extra|mini)(rr|ss)", w)]
     assert len(doubled) > 100
     assert not [w for w in words if re.search(r"(rr|ss)[^aeiouáàâãéêíóôõúü\s-]", w)]
