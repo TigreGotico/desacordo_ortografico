@@ -1,264 +1,420 @@
 cell	token	european	correction	rows	source
+br_1971	acataleto	acatalecto	acatalecto	*	Vocabulário 1943, p. 21: acatalecto
+br_1971	acatético	acatéctico	acatéctico	*	Vocabulário 1943, p. 21: acatético and acatéctico in one entry, both registered; the dual rule writes acatéctico
 br_1971	acetor	aceptor	aceptor	*	Priberam aceptor (Brazil before the AO1990: aceptor, after: aceptor; Portugal before: aceptor, after: acetor)
 br_1971	aceção	acepção	acepção	*	Priberam acepção (Brazil before the AO1990: acepção, after: acepção; Portugal before: acepção, after: aceção)
-br_1971	afeção	afecção	afecção	*	Priberam afecção (Brazil before the AO1990: afecção, after: afecção; Portugal before: afecção, after: afeção)
-br_1971	afeções	afecções	afecções	*	Priberam afecção (Brazil before the AO1990: afecção, after: afecção; Portugal before: afecção, after: afeção)
-br_1971	anticoncecional	anticoncepcional	anticoncepcional	*	Priberam anticoncepcional (Brazil before the AO1990: anticoncepcional, after: anticoncepcional; Portugal before: anticoncepcional, after: anticoncecional)
+br_1971	acupuntura	acupunctura	acupunctura	*	Vocabulário 1943, p. 37: acupuntura and acupunctura in one entry, both registered; the dual rule writes acupunctura
+br_1971	acupuntural	acupunctural	acupunctural	*	Vocabulário 1943, p. 37: acupuntural and acupunctural in one entry, both registered; the dual rule writes acupunctural
+br_1971	acupunturação	acupuncturação	acupuncturação	*	Vocabulário 1943, p. 37: acupunturação and acupuncturação in one entry, both registered; the dual rule writes acupuncturação
+br_1971	afecional	afeccional	afeccional	*	Vocabulário 1943, p. 49: afecional and afeccional in one entry, both registered; the dual rule writes afeccional
+br_1971	afeção	afecção	afecção	*	Vocabulário 1943, p. 49: afeção and afecção in one entry, both registered; the dual rule writes afecção
+br_1971	afeções	afecções	afecções	*	Vocabulário 1943, p. 49: afeção and afecção in one entry, both registered; the dual rule writes afecção
+br_1971	anafilático	anafiláctico	anafiláctico	*	Vocabulário 1943, p. 104: anafilático and anafiláctico in one entry, both registered; the dual rule writes anafiláctico
+br_1971	anaptítico	anaptíctico	anaptíctico	*	Vocabulário 1943, p. 107: anaptítico and anaptíctico in one entry, both registered; the dual rule writes anaptíctico
+br_1971	aneletródio	anelectródio	anelectródio	*	Vocabulário 1943, p. 111: aneletródio and anelectródio in one entry, both registered; the dual rule writes anelectródio
+br_1971	anelétrodo	aneléctrodo	aneléctrodo	*	Vocabulário 1943, p. 111: anelétrodo and aneléctrodo in one entry, both registered; the dual rule writes aneléctrodo
+br_1971	anorético	anoréctico	anoréctico	*	Vocabulário 1943, p. 122: anorético and anoréctico in one entry, both registered; the dual rule writes anoréctico
+br_1971	antasfítico	antasfíctico	antasfíctico	*	Vocabulário 1943, p. 123: antasfítico and antasfíctico in one entry, both registered; the dual rule writes antasfíctico
+br_1971	antiapoplético	antiapopléctico	antiapopléctico	*	Vocabulário 1943, p. 125: antiapoplético and antiapopléctico in one entry, both registered; the dual rule writes antiapopléctico
+br_1971	antiatático	antiatáctico	antiatáctico	*	Vocabulário 1943, p. 125: antiatáctico
+br_1971	anticeticismo	anticepticismo	anticepticismo	*	Vocabulário 1943, p. 126: anticeticismo and anticepticismo in one entry, both registered; the dual rule writes anticepticismo
+br_1971	anticoncecional	anticoncepcional	anticoncepcional	*	Vocabulário 1943, p. 126: anticoncepcional
 br_1971	anticoncetivo	anticonceptivo	anticonceptivo	*	Priberam anticonceptivo (Brazil before the AO1990: anticonceptivo, after: anticonceptivo; Portugal before: anticonceptivo, after: anticoncetivo)
-br_1971	antiepilético	antiepiléptico	antiepiléptico	*	Priberam antiepiléptico (Brazil before the AO1990: antiepiléptico, after: antiepiléptico; Portugal before: antiepiléptico, after: antiepilético ou antiepiléptico)
-br_1971	apercetibilidade	aperceptibilidade	aperceptibilidade	*	Priberam aperceptibilidade (Brazil before the AO1990: aperceptibilidade, after: aperceptibilidade; Portugal before: aperceptibilidade, after: apercetibilidade)
+br_1971	anticético	anticéptico	anticéptico	*	Vocabulário 1943, p. 126: anticético and anticéptico in one entry, both registered; the dual rule writes anticéptico
+br_1971	antiepilético	antiepiléptico	antiepiléptico	*	Vocabulário 1943, p. 127: antiepiléptico
+br_1971	antiprático	antipráctico	antipráctico	*	Vocabulário 1943, p. 131: antiprático and antipráctico in one entry, both registered; the dual rule writes antipráctico
+br_1971	antropotático	antropotáctico	antropotáctico	*	Vocabulário 1943, p. 135: antropotático and antropotáctico in one entry, both registered; the dual rule writes antropotáctico
+br_1971	antártia	antárctia	antárctia	*	Vocabulário 1943, p. 123: antárctia
+br_1971	apercetibilidade	aperceptibilidade	aperceptibilidade	*	Vocabulário 1943, p. 140: aperceptibilidade
 br_1971	apercetivo	aperceptivo	aperceptivo	*	Priberam aperceptivo (Brazil before the AO1990: aperceptivo, after: aperceptivo; Portugal before: aperceptivo, after: apercetivo)
-br_1971	apercetível	aperceptível	aperceptível	*	Priberam aperceptível (Brazil before the AO1990: aperceptível, after: aperceptível; Portugal before: aperceptível, after: apercetível)
-br_1971	aperceção	apercepção	apercepção	*	Priberam apercepção (Brazil before the AO1990: apercepção, after: apercepção; Portugal before: apercepção, after: aperceção)
-br_1971	apodítica	apodíctica	apodíctica	*	Priberam apodíctica (Brazil before the AO1990: apodíctico, after: apodíctico; Portugal before: apodíctico, after: apodíctico ou apodítico)
-br_1971	apodítico	apodíctico	apodíctico	*	Priberam apodíctica (Brazil before the AO1990: apodíctico, after: apodíctico; Portugal before: apodíctico, after: apodíctico ou apodítico)
-br_1971	bebé	*	bebê	*	Priberam bebé (Brazil before the AO1990: bebê, after: bebê; Portugal before: bebé, after: bebé); Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
-br_1971	bebés	*	bebês	*	Priberam bebé (Brazil before the AO1990: bebê, after: bebê; Portugal before: bebé, after: bebé); Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
+br_1971	apercetível	aperceptível	aperceptível	*	Vocabulário 1943, p. 140: aperceptível
+br_1971	aperceção	apercepção	apercepção	*	Vocabulário 1943, p. 140: apercepção
+br_1971	apodítica	apodíctica	apodíctica	*	Vocabulário 1943, p. 144: apodítica and apodíctica in one entry, both registered; the dual rule writes apodíctica
+br_1971	apodítico	apodíctico	apodíctico	*	Vocabulário 1943, p. 144: apodítico and apodíctico in one entry, both registered; the dual rule writes apodíctico
+br_1971	apoplético	apopléctico	apopléctico	*	Vocabulário 1943, p. 146: apoplético and apopléctico in one entry, both registered; the dual rule writes apopléctico
+br_1971	apotático	apotáctico	apotáctico	*	Vocabulário 1943, p. 147: apotático and apotáctico in one entry, both registered; the dual rule writes apotáctico
+br_1971	aquapuntura	aquapunctura	aquapunctura	*	Vocabulário 1943, p. 150: aquapuntura and aquapunctura in one entry, both registered; the dual rule writes aquapunctura
+br_1971	artícola	arctícola	arctícola	*	Vocabulário 1943, p. 156: arctícola
+br_1971	assintotismo	assimptotismo	assimptotismo	*	Vocabulário 1943, p. 181: assintotismo and assimptotismo in one entry, both registered; the dual rule writes assimptotismo
+br_1971	aurifatório	aurifactório	aurifactório	*	Vocabulário 1943, p. 195: aurifatório and aurifactório in one entry, both registered; the dual rule writes aurifactório
+br_1971	barotático	barotáctico	barotáctico	*	Vocabulário 1943, p. 221: barotático and barotáctico in one entry, both registered; the dual rule writes barotáctico
+br_1971	bebé	*	bebê	*	Vocabulário 1943, p. 226: bebê, with no bebé; Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
+br_1971	bebés	*	bebês	*	Vocabulário 1943, p. 226: bebê, with no bebé; Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
+br_1971	birrefração	birrefracção	birrefracção	*	Vocabulário 1943, p. 239: birrefração and birrefracção in one entry, both registered; the dual rule writes birrefracção
+br_1971	bissetor	bissector	bissector	*	Vocabulário 1943, p. 240: bissetor and bissector in one entry, both registered; the dual rule writes bissector
 br_1971	braquicatalético	braquicataléctico	braquicataléctico	*	Priberam braquicataléctico (Brazil before the AO1990: braquicataléctico, after: braquicataléctico; Portugal before: braquicataléctico, after: braquicatalético)
-br_1971	catalético	cataléctico	cataléctico	*	Priberam cataléctico (Brazil before the AO1990: cataléctico, after: cataléctico; Portugal before: cataléctico, after: catalético)
+br_1971	caquético	caquéctico	caquéctico	*	Vocabulário 1943, p. 297: caquético and caquéctico in one entry, both registered; the dual rule writes caquéctico
+br_1971	cardiopuntura	cardiopunctura	cardiopunctura	*	Vocabulário 1943, p. 302: cardiopuntura and cardiopunctura in one entry, both registered; the dual rule writes cardiopunctura
+br_1971	cataleto	catalecto	catalecto	*	Vocabulário 1943, p. 313: catalecto
+br_1971	catalético	cataléctico	cataléctico	*	Vocabulário 1943, p. 313: catalético and cataléctico in one entry, both registered; the dual rule writes cataléctico
 br_1971	cato	cacto	cacto	*	Priberam cacto (Brazil before the AO1990: cacto, after: cacto; Portugal before: cacto, after: cato)
 br_1971	ceptro	*	cetro	*	Priberam ceptro (Brazil before the AO1990: cetro, after: cetro; Portugal before: ceptro, after: cetro)
+br_1971	ceticismo	cepticismo	cepticismo	*	Vocabulário 1943, p. 326: ceticismo and cepticismo in one entry, both registered; the dual rule writes cepticismo
+br_1971	cetrífero	ceptrífero	ceptrífero	*	Vocabulário 1943, p. 326: ceptrífero
+br_1971	cetrígero	ceptrígero	ceptrígero	*	Vocabulário 1943, p. 326: ceptrígero
 br_1971	circunspecionar	circunspeccionar	circunspeccionar	*	Priberam circunspeccionar (Brazil before the AO1990: circunspeccionar, after: circunspeccionar; Portugal before: circunspeccionar, after: circunspecionar)
-br_1971	circunspeção	circunspecção	circunspecção	*	Priberam circunspecção (Brazil before the AO1990: circunspecção, after: circunspecção; Portugal before: circunspecção, after: circunspeção)
-br_1971	ciótico	cióptico	cióptico	*	Priberam cióptico (Brazil before the AO1990: cióptico, after: cióptico; Portugal before: cióptico, after: ciótico)
-br_1971	co-directora	*	co-diretora	*	Priberam co-director (Brazil before the AO1990: co-diretor, after: codiretor; Portugal before: co-director, after: codiretor)
-br_1971	coartada	coarctada	coarctada	*	Priberam coarctada (Brazil before the AO1990: coarctada, after: coarctada; Portugal before: coarctada, after: coartada)
-br_1971	coartar	coarctar	coarctar	*	Priberam coarctar (Brazil before the AO1990: coarctar, after: coarctar; Portugal before: coarctar, after: coartar)
-br_1971	coartação	coarctação	coarctação	*	Priberam coarctação (Brazil before the AO1990: coarctação, after: coarctação; Portugal before: coarctação, after: coartação)
-br_1971	concecional	concepcional	concepcional	*	Priberam concepcional (Brazil before the AO1990: concepcional, after: concepcional; Portugal before: concepcional, after: concecional)
+br_1971	circunspeção	circunspecção	circunspecção	*	Vocabulário 1943, p. 349: circunspeção and circunspecção in one entry, both registered; the dual rule writes circunspecção
+br_1971	citopético	citopéctico	citopéctico	*	Vocabulário 1943, p. 352: citopético and citopéctico in one entry, both registered; the dual rule writes citopéctico
+br_1971	ciótico	cióptico	cióptico	*	Vocabulário 1943, p. 348: ciótico and cióptico in one entry, both registered; the dual rule writes cióptico
+br_1971	cliché	*	clichê	*	Vocabulário 1943, p. 355: clichê, with no cliché; Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
+br_1971	co-directora	*	co-diretora	*	Vocabulário 1943, p. 361: co-diretor, with no co-director
+br_1971	coartada	coarctada	coarctada	*	Vocabulário 1943, p. 359: coartada and coarctada in one entry, both registered; the dual rule writes coarctada
+br_1971	coartar	coarctar	coarctar	*	Vocabulário 1943, p. 359: coartar and coarctar in one entry, both registered; the dual rule writes coarctar
+br_1971	coartação	coarctação	coarctação	*	Vocabulário 1943, p. 359: coartação and coarctação in one entry, both registered; the dual rule writes coarctação
+br_1971	coatar	coactar	coactar	*	Vocabulário 1943, p. 359: coatar and coactar in one entry, both registered; the dual rule writes coactar
+br_1971	concecional	concepcional	concepcional	*	Vocabulário 1943, p. 375: concepcional
 br_1971	concecionário	concepcionário	concepcionário	*	Priberam concepcionário (Brazil before the AO1990: concepcionário, after: concepcionário; Portugal before: concepcionário, after: concecionário)
-br_1971	concetivo	conceptivo	conceptivo	*	Priberam conceptiva (Brazil before the AO1990: conceptivo, after: conceptivo; Portugal before: conceptivo, after: concetivo)
+br_1971	concetaculífero	conceptaculífero	conceptaculífero	*	Vocabulário 1943, p. 375: conceptaculífero
+br_1971	concetividade	conceptividade	conceptividade	*	Vocabulário 1943, p. 375: conceptividade
+br_1971	concetivo	conceptivo	conceptivo	*	Vocabulário 1943, p. 375: conceptivo
 br_1971	conetivo	conectivo	conectivo	*	Formulário 1943, 18: "conectivo e conetivo"
-br_1971	confecionador	confeccionador	confeccionador	*	Priberam confeccionador (Brazil before the AO1990: confeccionador, after: confeccionador; Portugal before: confeccionador, after: confecionador)
-br_1971	confecionar	confeccionar	confeccionar	*	Priberam confeccionar (Brazil before the AO1990: confeccionar, after: confeccionar; Portugal before: confeccionar, after: confecionar)
-br_1971	confeção	confecção	confecção	*	Priberam confecção (Brazil before the AO1990: confecção, after: confecção; Portugal before: confecção, after: confeção)
-br_1971	conjetura	conjectura	conjectura	*	Priberam conjectura (Brazil before the AO1990: conjectura, after: conjectura; Portugal before: conjectura, after: conjetura)
-br_1971	conjeturador	conjecturador	conjecturador	*	Priberam conjecturador (Brazil before the AO1990: conjecturador, after: conjecturador; Portugal before: conjecturador, after: conjeturador)
-br_1971	conjetural	conjectural	conjectural	*	Priberam conjectural (Brazil before the AO1990: conjectural, after: conjectural; Portugal before: conjectural, after: conjetural)
-br_1971	conjeturalmente	conjecturalmente	conjecturalmente	*	Priberam conjecturalmente (Brazil before the AO1990: conjecturalmente, after: conjecturalmente; Portugal before: conjecturalmente, after: conjeturalmente)
-br_1971	conjeturar	conjecturar	conjecturar	*	Priberam conjecturar (Brazil before the AO1990: conjecturar, after: conjecturar; Portugal before: conjecturar, after: conjeturar)
-br_1971	conjeturas	conjecturas	conjecturas	*	Priberam conjectura (Brazil before the AO1990: conjectura, after: conjectura; Portugal before: conjectura, after: conjetura)
-br_1971	conjeturou	conjecturou	conjecturou	*	Priberam conjecturar (Brazil before the AO1990: conjecturar, after: conjecturar; Portugal before: conjecturar, after: conjeturar)
-br_1971	conjeturável	conjecturável	conjecturável	*	Priberam conjecturável (Brazil before the AO1990: conjecturável, after: conjecturável; Portugal before: conjecturável, after: conjeturável)
+br_1971	confecionador	confeccionador	confeccionador	*	Vocabulário 1943, p. 378: confeccionador
+br_1971	confecionar	confeccionar	confeccionar	*	Vocabulário 1943, p. 378: confeccionar
+br_1971	confeção	confecção	confecção	*	Vocabulário 1943, p. 378: confecção
+br_1971	conspeção	conspecção	conspecção	*	Vocabulário 1943, p. 384: conspeção and conspecção in one entry, both registered; the dual rule writes conspecção
+br_1971	contatar	contactar	contactar	*	Vocabulário 1943, p. 386: contatar and contactar in one entry, both registered; the dual rule writes contactar
 br_1971	contato	contacto	contacto	*	Formulário 1943, 18: "contacto e contato"
 br_1971	contracetivo	contraceptivo	contraceptivo	*	Priberam contraceptivo (Brazil before the AO1990: contraceptivo, after: contraceptivo; Portugal before: contraceptivo, after: contracetivo)
 br_1971	contraceção	contracepção	contracepção	*	Priberam contracepção (Brazil before the AO1990: contracepção, after: contracepção; Portugal before: contracepção, after: contraceção)
 br_1971	convetor	convector	convector	*	Priberam convector (Brazil before the AO1990: convector, after: convector; Portugal before: convector, after: convector ou convetor)
 br_1971	correspetivo	correspectivo	correspectivo	*	Priberam correspectivo (Brazil before the AO1990: correspectivo, after: correspectivo; Portugal before: correspectivo, after: correspetivo)
+br_1971	corruto	corrupto	corrupto	*	Vocabulário 1943, p. 400: corruto and corrupto in one entry, both registered; the dual rule writes corrupto
+br_1971	cética	céptica	céptica	*	Vocabulário 1943, p. 326: cético and céptico in one entry, both registered; the dual rule writes céptico
+br_1971	cético	céptico	céptico	*	Vocabulário 1943, p. 326: cético and céptico in one entry, both registered; the dual rule writes céptico
+br_1971	céticos	cépticos	cépticos	*	Vocabulário 1943, p. 326: cético and céptico in one entry, both registered; the dual rule writes céptico
+br_1971	datilografado	dactilografado	dactilografado	*	Vocabulário 1943, p. 423: datilografar and dactilografar in one entry, both registered; the dual rule writes dactilografar
+br_1971	datilografar	dactilografar	dactilografar	*	Vocabulário 1943, p. 423: datilografar and dactilografar in one entry, both registered; the dual rule writes dactilografar
 br_1971	datilografia	dactilografia	dactilografia	*	Formulário 1943, 18: "dactilografia e datilografia"
-br_1971	dececionado	decepcionado	decepcionado	*	Priberam decepcionado (Brazil before the AO1990: decepcionado, after: decepcionado; Portugal before: decepcionado, after: dececionado)
+br_1971	datilográfico	dactilográfico	dactilográfico	*	Vocabulário 1943, p. 423: datilográfico and dactilográfico in one entry, both registered; the dual rule writes dactilográfico
+br_1971	datilógrafa	dactilógrafa	dactilógrafa	*	Vocabulário 1943, p. 423: datilógrafo and dactilógrafo in one entry, both registered; the dual rule writes dactilógrafo
+br_1971	dececionado	decepcionado	decepcionado	*	Vocabulário 1943, p. 428: decepcionado
 br_1971	dececionante	decepcionante	decepcionante	*	Priberam decepcionante (Brazil before the AO1990: decepcionante, after: decepcionante; Portugal before: decepcionante, after: dececionante)
 br_1971	dececionar	decepcionar	decepcionar	*	Priberam decepcionar (Brazil before the AO1990: decepcionar, after: decepcionar; Portugal before: decepcionar, after: dececionar)
 br_1971	decetivo	deceptivo	deceptivo	*	Priberam deceptivo (Brazil before the AO1990: deceptivo, after: deceptivo; Portugal before: deceptivo, after: decetivo)
-br_1971	defetibilidade	defectibilidade	defectibilidade	*	Priberam defectibilidade (Brazil before the AO1990: defectibilidade, after: defectibilidade; Portugal before: defectibilidade, after: defetibilidade)
-br_1971	defetividade	defectividade	defectividade	*	Priberam defectividade (Brazil before the AO1990: defectividade, after: defectividade; Portugal before: defectividade, after: defetividade)
-br_1971	defetivo	defectivo	defectivo	*	Priberam defectivo (Brazil before the AO1990: defectivo, after: defectivo; Portugal before: defectivo, after: defetivo)
-br_1971	defetuoso	defectuoso	defectuoso	*	Priberam defectuoso (Brazil before the AO1990: defectuoso, after: defectuoso; Portugal before: defectuoso, after: defetuoso)
-br_1971	defetível	defectível	defectível	*	Priberam defectível (Brazil before the AO1990: defectível, after: defectível; Portugal before: defectível, after: defetível)
+br_1971	defetibilidade	defectibilidade	defectibilidade	*	Vocabulário 1943, p. 431: defectibilidade
+br_1971	defetividade	defectividade	defectividade	*	Vocabulário 1943, p. 431: defectividade
+br_1971	defetivo	defectivo	defectivo	*	Vocabulário 1943, p. 431: defectivo
+br_1971	defetuoso	defectuoso	defectuoso	*	Vocabulário 1943, p. 431: defectuoso
+br_1971	defetível	defectível	defectível	*	Vocabulário 1943, p. 431: defectível
+br_1971	defetório	defectório	defectório	*	Vocabulário 1943, p. 431: defectório
+br_1971	defeção	defecção	defecção	*	Vocabulário 1943, p. 431: defecção
 br_1971	defletir	deflectir	deflectir	*	Priberam deflectir (Brazil before the AO1990: deflectir, after: deflectir; Portugal before: deflectir, after: defletir ou deflectir)
-br_1971	defletor	deflector	deflector	*	Priberam deflector (Brazil before the AO1990: deflector, after: deflector; Portugal before: deflector, after: defletor ou deflector)
-br_1971	desinfecionar	desinfeccionar	desinfeccionar	*	Priberam desinfeccionar (Brazil before the AO1990: desinfeccionar, after: desinfeccionar; Portugal before: desinfeccionar, after: desinfeccionar ou desinfecionar)
-br_1971	desinfeção	desinfecção	desinfecção	*	Priberam desinfecção (Brazil before the AO1990: desinfecção, after: desinfecção; Portugal before: desinfecção, after: desinfeção ou desinfecção)
-br_1971	deteta	detecta	detecta	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
+br_1971	defletógrafo	deflectógrafo	deflectógrafo	*	Vocabulário 1943, p. 431: deflectógrafo
+br_1971	defletômetro	deflectómetro	deflectômetro	*	Vocabulário 1943, p. 431: deflectômetro
+br_1971	desinfecionar	desinfeccionar	desinfeccionar	*	Vocabulário 1943, p. 464: desinfecionar and desinfeccionar in one entry, both registered; the dual rule writes desinfeccionar
+br_1971	desinfeção	desinfecção	desinfecção	*	Vocabulário 1943, p. 464: desinfeção and desinfecção in one entry, both registered; the dual rule writes desinfecção
+br_1971	deteta	detecta	detecta	*	Vocabulário 1943, p. 478: detectar
 br_1971	detetabilidade	detectabilidade	detectabilidade	*	Priberam detectabilidade (Brazil before the AO1990: detectabilidade, after: detectabilidade; Portugal before: detectabilidade, after: detetabilidade)
-br_1971	detetada	detectada	detectada	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetado	detectado	detectado	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetar	detectar	detectar	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetarem	detectarem	detectarem	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetava	detectava	detectava	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detete	detecte	detecte	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetei	detectei	detectei	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetor	detector	detector	*	Priberam detector (Brazil before the AO1990: detector, after: detector; Portugal before: detector, after: detetor)
-br_1971	detetou	detectou	detectou	*	Priberam detectar (Brazil before the AO1990: detectar, after: detectar; Portugal before: detectar, after: detetar)
-br_1971	detetáveis	detectáveis	detectáveis	*	Priberam detectável (Brazil before the AO1990: detectável, after: detectável; Portugal before: detectável, after: detetável)
+br_1971	detetada	detectada	detectada	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetado	detectado	detectado	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetar	detectar	detectar	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetarem	detectarem	detectarem	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetava	detectava	detectava	*	Vocabulário 1943, p. 478: detectar
+br_1971	detete	detecte	detecte	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetei	detectei	detectei	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetive	detective	detective	*	Vocabulário 1943, p. 478: detective
+br_1971	detetor	detector	detector	*	Vocabulário 1943, p. 478: detector
+br_1971	detetou	detectou	detectou	*	Vocabulário 1943, p. 478: detectar
+br_1971	detetáveis	detectáveis	detectáveis	*	Vocabulário 1943, p. 478: detectar
 br_1971	detetável	detectável	detectável	*	Priberam detectável (Brazil before the AO1990: detectável, after: detectável; Portugal before: detectável, after: detetável)
 br_1971	deteção	detecção	detecção	*	Priberam detecção (Brazil before the AO1990: detecção, after: detecção; Portugal before: detecção, after: deteção)
 br_1971	dicatalético	dicataléctico	dicataléctico	*	Priberam dicataléctico (Brazil before the AO1990: dicataléctico, after: dicataléctico; Portugal before: dicataléctico, after: dicatalético)
-br_1971	epilética	epiléptica	epiléptica	*	Priberam epiléptica (Brazil before the AO1990: epiléptico, after: epiléptico; Portugal before: epiléptico, after: epilético ou epiléptico)
-br_1971	epilético	epiléptico	epiléptico	*	Priberam epiléptica (Brazil before the AO1990: epiléptico, after: epiléptico; Portugal before: epiléptico, after: epilético ou epiléptico)
-br_1971	espetadores	espectadores	espectadores	*	Priberam espectador (Brazil before the AO1990: espectador, after: espectador; Portugal before: espectador, after: espetador ou espectador)
+br_1971	dislético	disléctico	disléctico	*	Vocabulário 1943, p. 491: dislético and disléctico in one entry, both registered; the dual rule writes disléctico
+br_1971	distrátil	distráctil	distráctil	*	Vocabulário 1943, p. 494: distrátil and distráctil in one entry, both registered; the dual rule writes distráctil
+br_1971	efratura	efractura	efractura	*	Vocabulário 1943, p. 509: efratura and efractura in one entry, both registered; the dual rule writes efractura
+br_1971	efração	efracção	efracção	*	Vocabulário 1943, p. 509: efração and efracção in one entry, both registered; the dual rule writes efracção
+br_1971	eletracústica	electracústica	electracústica	*	Vocabulário 1943, p. 510: eletracústica and electracústica in one entry, both registered; the dual rule writes electracústica
+br_1971	eletrargol	electrargol	electrargol	*	Vocabulário 1943, p. 510: eletrargol and electrargol in one entry, both registered; the dual rule writes electrargol
+br_1971	eletrocardiografia	electrocardiografia	electrocardiografia	*	Vocabulário 1943, p. 510: eletrocardiografia and electrocardiografia in one entry, both registered; the dual rule writes electrocardiografia
+br_1971	eletrocardiograma	electrocardiograma	electrocardiograma	*	Vocabulário 1943, p. 510: eletrocardiograma and electrocardiograma in one entry, both registered; the dual rule writes electrocardiograma
+br_1971	eletrocardiográfico	electrocardiográfico	electrocardiográfico	*	Vocabulário 1943, p. 510: eletrocardiográfico and electrocardiográfico in one entry, both registered; the dual rule writes electrocardiográfico
+br_1971	eletrodiagnóstico	electrodiagnóstico	electrodiagnóstico	*	Vocabulário 1943, p. 510: electrodiagnóstico
+br_1971	eletrodinâmica	electrodinâmica	electrodinâmica	*	Vocabulário 1943, p. 510: eletrodinâmica and electrodinâmica in one entry, both registered; the dual rule writes electrodinâmica
+br_1971	eletrodos	electrodos	electrodos	*	Vocabulário 1943, p. 511: eletrodo and electrodo in one entry, both registered; the dual rule writes electrodo
+br_1971	eletrofisiológico	electrofisiológico	electrofisiológico	*	Vocabulário 1943, p. 511: eletrofisiológico and electrofisiológico in one entry, both registered; the dual rule writes electrofisiológico
+br_1971	eletroforese	electroforese	electroforese	*	Vocabulário 1943, p. 511: eletroforese and electroforese in one entry, both registered; the dual rule writes electroforese
+br_1971	eletrogalvânico	electrogalvânico	electrogalvânico	*	Vocabulário 1943, p. 511: eletrogalvânico and electrogalvânico in one entry, both registered; the dual rule writes electrogalvânico
+br_1971	eletrogenético	electrogenético	electrogenético	*	Vocabulário 1943, p. 511: eletrogenético and electrogenético in one entry, both registered; the dual rule writes electrogenético
+br_1971	eletrografia	electrografia	electrografia	*	Vocabulário 1943, p. 511: eletrografia and electrografia in one entry, both registered; the dual rule writes electrografia
+br_1971	eletrográfico	electrográfico	electrográfico	*	Vocabulário 1943, p. 511: electrográfico
+br_1971	eletrogêneo	electrogéneo	electrogêneo	*	Vocabulário 1943, p. 511: eletrogêneo and electrogêneo in one entry, both registered; the dual rule writes electrogêneo
+br_1971	eletrogênese	electrogénese	electrogênese	*	Vocabulário 1943, p. 511: electrogênese
+br_1971	eletrologia	electrologia	electrologia	*	Vocabulário 1943, p. 511: eletrologia and electrologia in one entry, both registered; the dual rule writes electrologia
+br_1971	eletrolítico	electrolítico	electrolítico	*	Vocabulário 1943, p. 511: eletrolítico and electrolítico in one entry, both registered; the dual rule writes electrolítico
+br_1971	eletrológico	electrológico	electrológico	*	Vocabulário 1943, p. 511: eletrológico and electrológico in one entry, both registered; the dual rule writes electrológico
+br_1971	eletromagnete	electromagnete	electromagnete	*	Vocabulário 1943, p. 511: eletromagnete and electromagnete in one entry, both registered; the dual rule writes electromagnete
+br_1971	eletromagnético	electromagnético	electromagnético	*	Vocabulário 1943, p. 511: eletromagnético and electromagnético in one entry, both registered; the dual rule writes electromagnético
+br_1971	eletrometalúrgico	electrometalúrgico	electrometalúrgico	*	Vocabulário 1943, p. 511: eletrometalúrgico and electrometalúrgico in one entry, both registered; the dual rule writes electrometalúrgico
+br_1971	eletrométrico	electrométrico	electrométrico	*	Vocabulário 1943, p. 511: eletrométrico and electrométrico in one entry, both registered; the dual rule writes electrométrico
+br_1971	eletroscopia	electroscopia	electroscopia	*	Vocabulário 1943, p. 511: eletroscopia and electroscopia in one entry, both registered; the dual rule writes electroscopia
+br_1971	eletroscópico	electroscópico	electroscópico	*	Vocabulário 1943, p. 511: eletroscópico and electroscópico in one entry, both registered; the dual rule writes electroscópico
+br_1971	eletroscópio	electroscópio	electroscópio	*	Vocabulário 1943, p. 511: electroscópio
+br_1971	eletrossiderurgia	electrossiderurgia	electrossiderurgia	*	Vocabulário 1943, p. 511: eletrossiderurgia and electrossiderurgia in one entry, both registered; the dual rule writes electrossiderurgia
+br_1971	eletrossoldadura	electrossoldadura	electrossoldadura	*	Vocabulário 1943, p. 511: eletrossoldadura and electrossoldadura in one entry, both registered; the dual rule writes electrossoldadura
+br_1971	eletrostática	electrostática	electrostática	*	Vocabulário 1943, p. 511: eletrostática and electrostática in one entry, both registered; the dual rule writes electrostática
+br_1971	eletrostático	electrostático	electrostático	*	Vocabulário 1943, p. 511: eletrostático and electrostático in one entry, both registered; the dual rule writes electrostático
+br_1971	eletrotanásia	electrotanásia	electrotanásia	*	Vocabulário 1943, p. 511: eletrotanásia and electrotanásia in one entry, both registered; the dual rule writes electrotanásia
+br_1971	eletrotecnia	electrotecnia	electrotecnia	*	Vocabulário 1943, p. 511: eletrotecnia and electrotecnia in one entry, both registered; the dual rule writes electrotecnia
+br_1971	eletroterapeuta	electroterapeuta	electroterapeuta	*	Vocabulário 1943, p. 511: eletroterapeuta and electroterapeuta in one entry, both registered; the dual rule writes electroterapeuta
+br_1971	eletroterapia	electroterapia	electroterapia	*	Vocabulário 1943, p. 512: eletroterapia and electroterapia in one entry, both registered; the dual rule writes electroterapia
+br_1971	eletroterapêutica	electroterapêutica	electroterapêutica	*	Vocabulário 1943, p. 512: electroterapêutica
+br_1971	eletroterapêutico	electroterapêutico	electroterapêutico	*	Vocabulário 1943, p. 512: eletroterapêutico and electroterapêutico in one entry, both registered; the dual rule writes electroterapêutico
+br_1971	eletrotermia	electrotermia	electrotermia	*	Vocabulário 1943, p. 512: eletrotermia and electrotermia in one entry, both registered; the dual rule writes electrotermia
+br_1971	eletroterápico	electroterápico	electroterápico	*	Vocabulário 1943, p. 512: electroterápico
+br_1971	eletrotipia	electrotipia	electrotipia	*	Vocabulário 1943, p. 512: eletrotipia and electrotipia in one entry, both registered; the dual rule writes electrotipia
+br_1971	eletrotropia	electrotropia	electrotropia	*	Vocabulário 1943, p. 512: eletrotropia and electrotropia in one entry, both registered; the dual rule writes electrotropia
+br_1971	eletrotropismo	electrotropismo	electrotropismo	*	Vocabulário 1943, p. 512: eletrotropismo and electrotropismo in one entry, both registered; the dual rule writes electrotropismo
+br_1971	eletrotrópico	electrotrópico	electrotrópico	*	Vocabulário 1943, p. 512: eletrotrópico and electrotrópico in one entry, both registered; the dual rule writes electrotrópico
+br_1971	eletrotécnica	electrotécnica	electrotécnica	*	Vocabulário 1943, p. 511: eletrotécnico and electrotécnico in one entry, both registered; the dual rule writes electrotécnico
+br_1971	eletrotécnico	electrotécnico	electrotécnico	*	Vocabulário 1943, p. 511: eletrotécnico and electrotécnico in one entry, both registered; the dual rule writes electrotécnico
+br_1971	eletrovegetômetro	electrovegetómetro	electrovegetômetro	*	Vocabulário 1943, p. 512: electrovegetômetro
+br_1971	eletrovital	electrovital	electrovital	*	Vocabulário 1943, p. 512: eletrovital and electrovital in one entry, both registered; the dual rule writes electrovital
+br_1971	eletrozônio	electrozónio	electrozônio	*	Vocabulário 1943, p. 512: electrozônio
+br_1971	eletródio	electródio	electródio	*	Vocabulário 1943, p. 511: eletródio and electródio in one entry, both registered; the dual rule writes electródio
+br_1971	eletróforo	electróforo	electróforo	*	Vocabulário 1943, p. 511: eletróforo and electróforo in one entry, both registered; the dual rule writes electróforo
+br_1971	eletrógeno	electrógeno	electrógeno	*	Vocabulário 1943, p. 511: eletrógeno and electrógeno in one entry, both registered; the dual rule writes electrógeno
+br_1971	eletrógrafo	electrógrafo	electrógrafo	*	Vocabulário 1943, p. 511: eletrógrafo and electrógrafo in one entry, both registered; the dual rule writes electrógrafo
+br_1971	eletrólito	electrólito	electrólito	*	Vocabulário 1943, p. 511: eletrólito and electrólito in one entry, both registered; the dual rule writes electrólito
+br_1971	eletrólitos	electrólitos	electrólitos	*	Vocabulário 1943, p. 511: eletrólito and electrólito in one entry, both registered; the dual rule writes electrólito
+br_1971	eletrônica	electrónica	electrônica	*	Vocabulário 1943, p. 511: eletrônica and electrônica in one entry, both registered; the dual rule writes electrônica
+br_1971	eletrônica	electrónico	electrônica	*	Vocabulário 1943, p. 511: eletrônica and electrônica in one entry, both registered; the dual rule writes electrônica
+br_1971	eletrônicas	electrónicas	electrônicas	*	Vocabulário 1943, p. 511: eletrônica and electrônica in one entry, both registered; the dual rule writes electrônica
+br_1971	eletrônico	electrónica	electrônico	*	Vocabulário 1943, p. 511: eletrônico and electrônico in one entry, both registered; the dual rule writes electrônico
+br_1971	eletrônico	electrónico	electrônico	*	Vocabulário 1943, p. 511: eletrônico and electrônico in one entry, both registered; the dual rule writes electrônico
+br_1971	eletrônicos	electrónicos	electrônicos	*	Vocabulário 1943, p. 511: eletrônico and electrônico in one entry, both registered; the dual rule writes electrônico
+br_1971	eletrônio	electrónio	electrônio	*	Vocabulário 1943, p. 511: eletrônio and electrônio in one entry, both registered; the dual rule writes electrônio
+br_1971	elétrodo	eléctrodo	eléctrodo	*	Vocabulário 1943, p. 511: elétrodo and eléctrodo in one entry, both registered; the dual rule writes eléctrodo
+br_1971	elétrodos	eléctrodos	eléctrodos	*	Vocabulário 1943, p. 511: elétrodo and eléctrodo in one entry, both registered; the dual rule writes eléctrodo
+br_1971	epilética	epiléptica	epiléptica	*	Vocabulário 1943, p. 556: epilético and epiléptico in one entry, both registered; the dual rule writes epiléptico
+br_1971	epilético	epiléptico	epiléptico	*	Vocabulário 1943, p. 556: epilético and epiléptico in one entry, both registered; the dual rule writes epiléptico
+br_1971	eretamente	erectamente	erectamente	*	Vocabulário 1943, p. 560: ereto and erecto in one entry, both registered; the dual rule writes erecto
+br_1971	ereto	erecto	erecto	*	Vocabulário 1943, p. 560: ereto and erecto in one entry, both registered; the dual rule writes erecto
+br_1971	espetadores	espectadores	espectadores	*	Vocabulário 1943, p. 583: espectador
 br_1971	espetro	espectro	espectro	*	Formulário 1943, 18: "espectro e espetro"
 br_1971	espetroscopista	espectroscopista	espectroscopista	*	Priberam espectroscopista (Brazil before the AO1990: espectroscopista, after: espectroscopista; Portugal before: espectroscopista, after: espetroscopista ou espectroscopista)
 br_1971	espetrômetro	espectrómetro	espectrômetro	*	Priberam espectrómetro (Brazil before the AO1990: espectrômetro, after: espectrômetro; Portugal before: espectrómetro, after: espetrómetro ou espectrómetro)
-br_1971	esófago	*	esôfago	*	Priberam esófago (Brazil before the AO1990: esôfago, after: esôfago; Portugal before: esófago, after: esófago); Formulário 1943, 43, 2.ª: "levam acento circunflexo as em que figuram na sílaba predominante as vogais e, o fechadas"
+br_1971	esófago	*	esôfago	*	Vocabulário 1943, p. 580: esôfago, with no esófago; Formulário 1943, 43, 2.ª: "levam acento circunflexo as em que figuram na sílaba predominante as vogais e, o fechadas"
 br_1971	excecional	excepcional	excepcional	*	Formulário 1943, 18: "excepcional e excecional"
-br_1971	excecionalidade	excepcionalidade	excepcionalidade	*	Priberam excepcionalidade (Brazil before the AO1990: excepcionalidade, after: excepcionalidade; Portugal before: excepcionalidade, after: excecionalidade)
+br_1971	excecionalidade	excepcionalidade	excepcionalidade	*	Vocabulário 1943, p. 615: excecionalidade and excepcionalidade in one entry, both registered; the dual rule writes excepcionalidade
 br_1971	excecionalmente	excepcionalmente	excepcionalmente	*	Priberam excepcionalmente (Brazil before the AO1990: excepcionalmente, after: excepcionalmente; Portugal before: excepcionalmente, after: excecionalmente)
-br_1971	excecionar	excepcionar	excepcionar	*	Priberam excepcionar (Brazil before the AO1990: excepcionar, after: excepcionar; Portugal before: excepcionar, after: excecionar)
-br_1971	excetivo	exceptivo	exceptivo	*	Priberam exceptivo (Brazil before the AO1990: exceptivo, after: exceptivo; Portugal before: exceptivo, after: excetivo)
-br_1971	expetorante	expectorante	expectorante	*	Priberam expectorante (Brazil before the AO1990: expectorante, after: expectorante; Portugal before: expectorante, after: expetorante)
-br_1971	expetorar	expectorar	expectorar	*	Priberam expectorar (Brazil before the AO1990: expectorar, after: expectorar; Portugal before: expectorar, after: expetorar)
-br_1971	expetoração	expectoração	expectoração	*	Priberam expectoração (Brazil before the AO1990: expectoração, after: expectoração; Portugal before: expectoração, after: expetoração)
+br_1971	excecionar	excepcionar	excepcionar	*	Vocabulário 1943, p. 615: excecionar and excepcionar in one entry, both registered; the dual rule writes excepcionar
+br_1971	excetivo	exceptivo	exceptivo	*	Vocabulário 1943, p. 615: excetivo and exceptivo in one entry, both registered; the dual rule writes exceptivo
+br_1971	expetorante	expectorante	expectorante	*	Vocabulário 1943, p. 619: expetorante and expectorante in one entry, both registered; the dual rule writes expectorante
+br_1971	expetorar	expectorar	expectorar	*	Vocabulário 1943, p. 619: expetorar and expectorar in one entry, both registered; the dual rule writes expectorar
+br_1971	expetoração	expectoração	expectoração	*	Vocabulário 1943, p. 619: expetoração and expectoração in one entry, both registered; the dual rule writes expectoração
 br_1971	exterocetor	exteroceptor	exteroceptor	*	Priberam exteroceptor (Brazil before the AO1990: exteroceptor, after: exteroceptor; Portugal before: exteroceptor, after: exterocetor)
 br_1971	extrospetivo	extrospectivo	extrospectivo	*	Priberam extrospectivo (Brazil before the AO1990: extrospectivo, after: extrospectivo; Portugal before: extrospectivo, after: extrospetivo)
-br_1971	extrospeção	extrospecção	extrospecção	*	Priberam extrospecção (Brazil before the AO1990: extrospecção, after: extrospecção; Portugal before: extrospecção, after: extrospeção)
-br_1971	factos	*	fatos	*	Priberam facto (Brazil before the AO1990: fato, after: fato; Portugal before: facto, after: facto)
-br_1971	fação	facção	facção	*	Priberam facção (Brazil before the AO1990: facção, after: facção; Portugal before: facção, after: fação)
-br_1971	fletido	flectido	flectido	*	Priberam flectido (Brazil before the AO1990: flectido, after: flectido; Portugal before: flectido, after: fletido)
-br_1971	fletir	flectir	flectir	*	Priberam flectir (Brazil before the AO1990: flectir, after: flectir; Portugal before: flectir, after: fletir)
-br_1971	genufletir	genuflectir	genuflectir	*	Priberam genuflectir (Brazil before the AO1990: genuflectir, after: genuflectir; Portugal before: genuflectir, after: genufletir)
-br_1971	genufletor	genuflector	genuflector	*	Priberam genuflector (Brazil before the AO1990: genuflector, after: genuflector; Portugal before: genuflector, after: genufletor)
-br_1971	genufletora	genuflectora	genuflectora	*	Priberam genuflector (Brazil before the AO1990: genuflector, after: genuflector; Portugal before: genuflector, after: genufletor)
+br_1971	extrospeção	extrospecção	extrospecção	*	Vocabulário 1943, p. 623: extrospeção and extrospecção in one entry, both registered; the dual rule writes extrospecção
+br_1971	factos	*	fatos	*	Vocabulário 1943, p. 635: fato, with no facto
+br_1971	fação	facção	facção	*	Vocabulário 1943, p. 671: fação and facção in one entry, both registered; the dual rule writes facção
+br_1971	filocato	filocacto	filocacto	*	Vocabulário 1943, p. 644: filocacto
+br_1971	fletido	flectido	flectido	*	Vocabulário 1943, p. 650: fletir and flectir in one entry, both registered; the dual rule writes flectir
+br_1971	fletir	flectir	flectir	*	Vocabulário 1943, p. 650: fletir and flectir in one entry, both registered; the dual rule writes flectir
+br_1971	fletor	flector	flector	*	Vocabulário 1943, p. 650: flector
+br_1971	flitena	flictena	flictena	*	Vocabulário 1943, p. 651: flictena
+br_1971	fototático	fototáctico	fototáctico	*	Vocabulário 1943, p. 661: fototático and fototáctico in one entry, both registered; the dual rule writes fototáctico
+br_1971	galvanopuntura	galvanopunctura	galvanopunctura	*	Vocabulário 1943, p. 680: galvanopuntura and galvanopunctura in one entry, both registered; the dual rule writes galvanopunctura
+br_1971	genufletir	genuflectir	genuflectir	*	Vocabulário 1943, p. 689: genufletir and genuflectir in one entry, both registered; the dual rule writes genuflectir
+br_1971	genufletor	genuflector	genuflector	*	Vocabulário 1943, p. 689: genufletor and genuflector in one entry, both registered; the dual rule writes genuflector
+br_1971	genufletora	genuflectora	genuflectora	*	Vocabulário 1943, p. 689: genufletor and genuflector in one entry, both registered; the dual rule writes genuflector
+br_1971	géiser	*	gêiser	*	Vocabulário 1943, p. 687: gêiser, with no géiser; Formulário 1943, 43, 8.ª: "Sobrepõe-se o acento agudo ao a, e, o abertos e ao i ou u da penúltima sílaba dos vocábulos paroxítonos que acabem em l, n, r e x e o acento circunflexo ao e, o fechados"
+br_1971	heliotatismo	heliotactismo	heliotactismo	*	Vocabulário 1943, p. 720: heliotactismo
 br_1971	heteroinfeção	heteroinfecção	heteroinfecção	*	Priberam heteroinfecção (Brazil before the AO1990: heteroinfecção, after: heteroinfecção; Portugal before: heteroinfecção, after: heteroinfeção ou heteroinfecção)
-br_1971	hipercatalético	hipercataléctico	hipercataléctico	*	Priberam hipercataléctico (Brazil before the AO1990: hipercataléctico, after: hipercataléctico; Portugal before: hipercataléctico, after: hipercatalético)
-br_1971	impercetibilidade	imperceptibilidade	imperceptibilidade	*	Priberam imperceptibilidade (Brazil before the AO1990: imperceptibilidade, after: imperceptibilidade; Portugal before: imperceptibilidade, after: impercetibilidade)
+br_1971	hidrofrático	hidrofráctico	hidrofráctico	*	Vocabulário 1943, p. 731: hidrofrático and hidrofráctico in one entry, both registered; the dual rule writes hidrofráctico
+br_1971	hipercataleto	hipercatalecto	hipercatalecto	*	Vocabulário 1943, p. 735: hipercatalecto
+br_1971	hipercatalético	hipercataléctico	hipercataléctico	*	Vocabulário 1943, p. 735: hipercataléctico
+br_1971	hipereutético	hipereutéctico	hipereutéctico	*	Vocabulário 1943, p. 736: hipereutético and hipereutéctico in one entry, both registered; the dual rule writes hipereutéctico
+br_1971	ignipuntura	ignipunctura	ignipunctura	*	Vocabulário 1943, p. 752: ignipuntura and ignipunctura in one entry, both registered; the dual rule writes ignipunctura
+br_1971	impercetibilidade	imperceptibilidade	imperceptibilidade	*	Vocabulário 1943, p. 757: imperceptibilidade
 br_1971	impercetivelmente	imperceptivelmente	imperceptivelmente	*	Priberam imperceptivelmente (Brazil before the AO1990: imperceptivelmente, after: imperceptivelmente; Portugal before: imperceptivelmente, after: impercetivelmente)
-br_1971	impercetível	imperceptível	imperceptível	*	Priberam imperceptível (Brazil before the AO1990: imperceptível, after: imperceptível; Portugal before: imperceptível, after: impercetível)
+br_1971	impercetível	imperceptível	imperceptível	*	Vocabulário 1943, p. 757: imperceptível
 br_1971	imperfetibilidade	imperfectibilidade	imperfectibilidade	*	Priberam imperfectibilidade (Brazil before the AO1990: imperfectibilidade, after: imperfectibilidade; Portugal before: imperfectibilidade, after: imperfectibilidade ou imperfetibilidade)
 br_1971	imperfetivelmente	imperfectivelmente	imperfectivelmente	*	Priberam imperfectivelmente (Brazil before the AO1990: imperfectivelmente, after: imperfectivelmente; Portugal before: imperfectivelmente, after: imperfectivelmente ou imperfetivelmente)
 br_1971	imperfetivo	imperfectivo	imperfectivo	*	Priberam imperfectivo (Brazil before the AO1990: imperfectivo, after: imperfectivo; Portugal before: imperfectivo, after: imperfectivo ou imperfetivo)
-br_1971	imperfetível	imperfectível	imperfectível	*	Priberam imperfectível (Brazil before the AO1990: imperfectível, after: imperfectível; Portugal before: imperfectível, after: imperfectível ou imperfetível)
-br_1971	indefetibilidade	indefectibilidade	indefectibilidade	*	Priberam indefectibilidade (Brazil before the AO1990: indefectibilidade, after: indefectibilidade; Portugal before: indefectibilidade, after: indefetibilidade)
+br_1971	imperfetível	imperfectível	imperfectível	*	Vocabulário 1943, p. 757: imperfectível
+br_1971	indefetibilidade	indefectibilidade	indefectibilidade	*	Vocabulário 1943, p. 767: indefectibilidade
 br_1971	indefetivelmente	indefectivelmente	indefectivelmente	*	Priberam indefectivelmente (Brazil before the AO1990: indefectivelmente, after: indefectivelmente; Portugal before: indefectivelmente, after: indefetivelmente)
-br_1971	indefetível	indefectível	indefectível	*	Priberam indefectível (Brazil before the AO1990: indefectível, after: indefectível; Portugal before: indefectível, after: indefetível)
+br_1971	indefetível	indefectível	indefectível	*	Vocabulário 1943, p. 767: indefectível
 br_1971	indetetável	indetectável	indetectável	*	Priberam indetectável (Brazil before the AO1990: indetectável, after: indetectável; Portugal before: indetectável, after: indetetável)
 br_1971	infeciologia	infecciologia	infecciologia	*	Priberam infecciologia (Brazil before the AO1990: infecciologia, after: infecciologia; Portugal before: infecciologia, after: infecciologia ou infeciologia)
 br_1971	infeciologista	infecciologista	infecciologista	*	Priberam infecciologista (Brazil before the AO1990: infecciologista, after: infecciologista; Portugal before: infecciologista, after: infecciologista ou infeciologista)
-br_1971	infecionado	infeccionado	infeccionado	*	Priberam infeccionado (Brazil before the AO1990: infeccionado, after: infeccionado; Portugal before: infeccionado, after: infeccionado ou infecionado)
+br_1971	infecionado	infeccionado	infeccionado	*	Vocabulário 1943, p. 771: infecionado and infeccionado in one entry, both registered; the dual rule writes infeccionado
 br_1971	infecionar	infeccionar	infeccionar	*	Priberam infeccionar (Brazil before the AO1990: infeccionar, after: infeccionar; Portugal before: infeccionar, after: infeccionar ou infecionar)
-br_1971	infecioso	infeccioso	infeccioso	*	Priberam infeccioso (Brazil before the AO1990: infeccioso, after: infeccioso; Portugal before: infeccioso, after: infeccioso ou infecioso)
-br_1971	infetada	infectada	infectada	*	Priberam infectado (Brazil before the AO1990: infectado, after: infectado; Portugal before: infectado, after: infetado ou infectado)
-br_1971	infetadas	infectadas	infectadas	*	Priberam infectado (Brazil before the AO1990: infectado, after: infectado; Portugal before: infectado, after: infetado ou infectado)
-br_1971	infetado	infectado	infectado	*	Priberam infectado (Brazil before the AO1990: infectado, after: infectado; Portugal before: infectado, after: infetado ou infectado)
-br_1971	infetados	infectados	infectados	*	Priberam infectado (Brazil before the AO1990: infectado, after: infectado; Portugal before: infectado, after: infetado ou infectado)
-br_1971	infetante	infectante	infectante	*	Priberam infectante (Brazil before the AO1990: infectante, after: infectante; Portugal before: infectante, after: infetante ou infectante)
-br_1971	infetar	infectar	infectar	*	Priberam infectada (Brazil before the AO1990: infectar, after: infectar; Portugal before: infectar, after: infetar ou infectar)
+br_1971	infecioso	infeccioso	infeccioso	*	Vocabulário 1943, p. 772: infecioso and infeccioso in one entry, both registered; the dual rule writes infeccioso
 br_1971	infeto	infecto	infecto	*	Priberam infecto (Brazil before the AO1990: infecto, after: infecto; Portugal before: infecto, after: infeto ou infecto)
 br_1971	infetocontagioso	infecto-contagioso	infectocontagioso	*	Priberam infectocontagioso (Brazil before the AO1990: infectocontagioso, after: infectocontagioso; Portugal before: infecto-contagioso, after: infetocontagioso ou infectocontagioso)
 br_1971	infetologia	infectologia	infectologia	*	Priberam infectologia (Brazil before the AO1990: infectologia, after: infectologia; Portugal before: infectologia, after: infetologia ou infectologia)
 br_1971	infetológico	infectológico	infectológico	*	Priberam infectológico (Brazil before the AO1990: infectológico, after: infectológico; Portugal before: infectológico, after: infetológico ou infectológico)
+br_1971	infetuosidade	infectuosidade	infectuosidade	*	Vocabulário 1943, p. 772: infetuosidade and infectuosidade in one entry, both registered; the dual rule writes infectuosidade
 br_1971	infetável	infectável	infectável	*	Priberam infectável (Brazil before the AO1990: infectável, after: infectável; Portugal before: infectável, after: infetável ou infectável)
 br_1971	infeções	infecções	infecções	*	Formulário 1943, 18: "infecção e infeção"
-br_1971	infletir	inflectir	inflectir	*	Priberam inflectir (Brazil before the AO1990: inflectir, after: inflectir; Portugal before: inflectir, after: infletir)
-br_1971	inflição	inflicção	inflicção	*	Priberam inflicção (Brazil before the AO1990: inflicção, after: inflicção; Portugal before: inflicção, after: inflição)
-br_1971	insurreta	insurrecta	insurrecta	*	Priberam insurrecta (Brazil before the AO1990: insurrecto, after: insurrecto; Portugal before: insurrecto, after: insurrecto ou insurreto)
-br_1971	insurreto	insurrecto	insurrecto	*	Priberam insurrecta (Brazil before the AO1990: insurrecto, after: insurrecto; Portugal before: insurrecto, after: insurrecto ou insurreto)
-br_1971	intercetada	interceptada	interceptada	*	Priberam interceptado (Brazil before the AO1990: interceptado, after: interceptado; Portugal before: interceptado, after: intercetado)
-br_1971	intercetadas	interceptadas	interceptadas	*	Priberam interceptado (Brazil before the AO1990: interceptado, after: interceptado; Portugal before: interceptado, after: intercetado)
-br_1971	intercetado	interceptado	interceptado	*	Priberam interceptado (Brazil before the AO1990: interceptado, after: interceptado; Portugal before: interceptado, after: intercetado)
+br_1971	infletir	inflectir	inflectir	*	Vocabulário 1943, p. 773: infletir and inflectir in one entry, both registered; the dual rule writes inflectir
+br_1971	infração	infracção	infracção	*	Vocabulário 1943, p. 773: infração and infracção in one entry, both registered; the dual rule writes infracção
+br_1971	infrações	infracções	infracções	*	Vocabulário 1943, p. 773: infração and infracção in one entry, both registered; the dual rule writes infracção
+br_1971	insuscetível	insusceptível	insusceptível	*	Vocabulário 1943, p. 780: insuscetível and insusceptível in one entry, both registered; the dual rule writes insusceptível
+br_1971	inteleção	intelecção	intelecção	*	Vocabulário 1943, p. 780: intelecção
+br_1971	intercetada	interceptada	interceptada	*	Vocabulário 1943, p. 781: interceptar
+br_1971	intercetadas	interceptadas	interceptadas	*	Vocabulário 1943, p. 781: interceptar
+br_1971	intercetado	interceptado	interceptado	*	Vocabulário 1943, p. 781: interceptar
 br_1971	intercetador	interceptador	interceptador	*	Priberam interceptador (Brazil before the AO1990: interceptador, after: interceptador; Portugal before: interceptador, after: intercetador)
 br_1971	intercetadora	interceptadora	interceptadora	*	Priberam interceptador (Brazil before the AO1990: interceptador, after: interceptador; Portugal before: interceptador, after: intercetador)
-br_1971	intercetar	interceptar	interceptar	*	Priberam interceptar (Brazil before the AO1990: interceptar, after: interceptar; Portugal before: interceptar, after: intercetar)
-br_1971	intercetava	interceptava	interceptava	*	Priberam interceptar (Brazil before the AO1990: interceptar, after: interceptar; Portugal before: interceptar, after: intercetar)
-br_1971	intercetação	interceptação	interceptação	*	Priberam interceptação (Brazil before the AO1990: interceptação, after: interceptação; Portugal before: interceptação, after: intercetação)
-br_1971	intercetor	interceptor	interceptor	*	Priberam interceptor (Brazil before the AO1990: interceptor, after: interceptor; Portugal before: interceptor, after: intercetor)
-br_1971	intercetora	interceptora	interceptora	*	Priberam interceptor (Brazil before the AO1990: interceptor, after: interceptor; Portugal before: interceptor, after: intercetor)
-br_1971	intercetou	interceptou	interceptou	*	Priberam interceptar (Brazil before the AO1990: interceptar, after: interceptar; Portugal before: interceptar, after: intercetar)
+br_1971	intercetar	interceptar	interceptar	*	Vocabulário 1943, p. 781: interceptar
+br_1971	intercetava	interceptava	interceptava	*	Vocabulário 1943, p. 781: interceptar
+br_1971	intercetação	interceptação	interceptação	*	Vocabulário 1943, p. 781: interceptação
+br_1971	intercetor	interceptor	interceptor	*	Vocabulário 1943, p. 781: interceptor
+br_1971	intercetora	interceptora	interceptora	*	Vocabulário 1943, p. 781: interceptor
+br_1971	intercetou	interceptou	interceptou	*	Vocabulário 1943, p. 781: interceptar
 br_1971	intercetável	interceptável	interceptável	*	Priberam interceptável (Brazil before the AO1990: interceptável, after: interceptável; Portugal before: interceptável, after: intercetável)
-br_1971	interceção	intercepção	intercepção	*	Priberam intercepção (Brazil before the AO1990: intercepção, after: intercepção; Portugal before: intercepção, after: interceção)
+br_1971	intercetório	interceptório	interceptório	*	Vocabulário 1943, p. 781: interceptório
+br_1971	interceção	intercepção	intercepção	*	Vocabulário 1943, p. 781: intercepção
+br_1971	intersecional	interseccional	interseccional	*	Vocabulário 1943, p. 783: intersecional and interseccional in one entry, both registered; the dual rule writes interseccional
 br_1971	intersetar	intersectar	intersectar	*	Priberam intersectar (Brazil before the AO1990: intersectar, after: intersectar; Portugal before: intersectar, after: intersectar ou intersetar)
+br_1971	interseção	intersecção	intersecção	*	Vocabulário 1943, p. 783: interseção and intersecção in one entry, both registered; the dual rule writes intersecção
 br_1971	introspecionista	introspeccionista	introspeccionista	*	Priberam introspeccionista (Brazil before the AO1990: introspeccionista, after: introspeccionista; Portugal before: introspeccionista, after: introspecionista)
-br_1971	introspetivamente	introspectivamente	introspectivamente	*	Priberam introspectivamente (Brazil before the AO1990: introspectivamente, after: introspectivamente; Portugal before: introspectivamente, after: introspetivamente)
-br_1971	introspetivo	introspectivo	introspectivo	*	Priberam introspectivo (Brazil before the AO1990: introspectivo, after: introspectivo; Portugal before: introspectivo, after: introspetivo)
-br_1971	introspeção	introspecção	introspecção	*	Priberam introspecção (Brazil before the AO1990: introspecção, after: introspecção; Portugal before: introspecção, after: introspeção)
-br_1971	intuspetivo	intuspectivo	intuspectivo	*	Priberam intuspectivo (Brazil before the AO1990: intuspectivo, after: intuspectivo; Portugal before: intuspectivo, after: intuspetivo)
-br_1971	intuspeção	intuspecção	intuspecção	*	Priberam intuspecção (Brazil before the AO1990: intuspecção, after: intuspecção; Portugal before: intuspecção, after: intuspeção)
-br_1971	intussusceção	intussuscepção	intussuscepção	*	Priberam intussuscepção (Brazil before the AO1990: intussuscepção, after: intussuscepção; Portugal before: intussuscepção, after: intussusceção)
-br_1971	invetiva	invectiva	invectiva	*	Priberam invectiva (Brazil before the AO1990: invectiva, after: invectiva; Portugal before: invectiva, after: invetiva)
-br_1971	invetivador	invectivador	invectivador	*	Priberam invectivador (Brazil before the AO1990: invectivador, after: invectivador; Portugal before: invectivador, after: invetivador)
-br_1971	invetivar	invectivar	invectivar	*	Priberam invectivar (Brazil before the AO1990: invectivar, after: invectivar; Portugal before: invectivar, after: invetivar)
+br_1971	introspetivamente	introspectivamente	introspectivamente	*	Vocabulário 1943, p. 785: introspetivo and introspectivo in one entry, both registered; the dual rule writes introspectivo
+br_1971	introspetivo	introspectivo	introspectivo	*	Vocabulário 1943, p. 785: introspetivo and introspectivo in one entry, both registered; the dual rule writes introspectivo
+br_1971	introspeção	introspecção	introspecção	*	Vocabulário 1943, p. 785: introspeção and introspecção in one entry, both registered; the dual rule writes introspecção
+br_1971	intusceção	intuscepção	intuscepção	*	Vocabulário 1943, p. 785: intuscepção
+br_1971	intuspetivamente	intuspectivamente	intuspectivamente	*	Vocabulário 1943, p. 785: intuspectivo
+br_1971	intuspetivo	intuspectivo	intuspectivo	*	Vocabulário 1943, p. 785: intuspectivo
+br_1971	intuspeção	intuspecção	intuspecção	*	Vocabulário 1943, p. 785: intuspeção and intuspecção in one entry, both registered; the dual rule writes intuspecção
+br_1971	intussusceção	intussuscepção	intussuscepção	*	Vocabulário 1943, p. 785: intussuscepção
+br_1971	invetiva	invectiva	invectiva	*	Vocabulário 1943, p. 786: invectiva
+br_1971	invetivador	invectivador	invectivador	*	Vocabulário 1943, p. 786: invectivador
+br_1971	invetivar	invectivar	invectivar	*	Vocabulário 1943, p. 786: invectivar
 br_1971	invetivista	invectivista	invectivista	*	Priberam invectivista (Brazil before the AO1990: invectivista, after: invectivista; Portugal before: invectivista, after: invetivista)
-br_1971	invetivo	invectivo	invectivo	*	Priberam invectivo (Brazil before the AO1990: invectivo, after: invectivo; Portugal before: invectivo, after: invetivo)
-br_1971	liquefacção	*	liquefação	*	Priberam liquefacção (Brazil before the AO1990: liquefação, after: liquefação; Portugal before: liquefacção, after: liquefação)
+br_1971	invetivo	invectivo	invectivo	*	Vocabulário 1943, p. 786: invectivo
+br_1971	jato	jacto	jacto	*	Vocabulário 1943, p. 796: jato and jacto in one entry, both registered; the dual rule writes jacto
+br_1971	liquefacção	*	liquefação	*	Vocabulário 1943, p. 834: liquefação, with no liquefacção
+br_1971	malático	maláctico	maláctico	*	Vocabulário 1943, p. 855: malático and maláctico in one entry, both registered; the dual rule writes maláctico
+br_1971	melocato	melocacto	melocacto	*	Vocabulário 1943, p. 880: melocacto
+br_1971	metalético	metaléptico	metaléptico	*	Vocabulário 1943, p. 887: metalético and metaléptico in one entry, both registered; the dual rule writes metaléptico
+br_1971	metamorfótico	metamorfóptico	metamorfóptico	*	Vocabulário 1943, p. 888: metamorfótico and metamorfóptico in one entry, both registered; the dual rule writes metamorfóptico
+br_1971	metapetina	metapectina	metapectina	*	Vocabulário 1943, p. 888: metapectina
+br_1971	metapético	metapéctico	metapéctico	*	Vocabulário 1943, p. 888: metapético and metapéctico in one entry, both registered; the dual rule writes metapéctico
+br_1971	mioprático	miopráctico	miopráctico	*	Vocabulário 1943, p. 898: mioprático and miopráctico in one entry, both registered; the dual rule writes miopráctico
 br_1971	multinfeção	multinfecção	multinfecção	*	Priberam multinfecção (Brazil before the AO1990: multinfecção, after: multinfecção; Portugal before: multinfecção, after: multinfeção ou multinfecção)
-br_1971	notívago	noctívago	noctívago	*	Priberam noctívaga (Brazil before the AO1990: noctívago, after: noctívago; Portugal before: noctívago, after: noctívago ou notívago)
-br_1971	organolético	organoléptico	organoléptico	*	Priberam organoléptico (Brazil before the AO1990: organoléptico, after: organoléptico; Portugal before: organoléptico, after: organolético)
-br_1971	oticista	opticista	opticista	*	Priberam opticista (Brazil before the AO1990: opticista, after: opticista; Portugal before: opticista, after: oticista)
+br_1971	notívago	noctívago	noctívago	*	Vocabulário 1943, p. 940: noctívago
+br_1971	obduto	obducto	obducto	*	Vocabulário 1943, p. 946: obducto
+br_1971	olfatometria	olfactometria	olfactometria	*	Vocabulário 1943, p. 957: olfatometria and olfactometria in one entry, both registered; the dual rule writes olfactometria
+br_1971	olfatória	olfactória	olfactória	*	Vocabulário 1943, p. 957: olfactório
+br_1971	olfatório	olfactório	olfactório	*	Vocabulário 1943, p. 957: olfactório
+br_1971	organolético	organoléptico	organoléptico	*	Vocabulário 1943, p. 966: organolético and organoléptico in one entry, both registered; the dual rule writes organoléptico
+br_1971	organotático	organotáctico	organotáctico	*	Vocabulário 1943, p. 966: organotático and organotáctico in one entry, both registered; the dual rule writes organotáctico
+br_1971	oticista	opticista	opticista	*	Vocabulário 1943, p. 964: opticista
 br_1971	otimismo	optimismo	optimismo	*	Formulário 1943, 18: "optimismo e otimismo"
-br_1971	parótico	paróptico	paróptico	*	Priberam paróptico (Brazil before the AO1990: paróptico, after: paróptico; Portugal before: paróptico, after: parótico)
+br_1971	panótico	panóptico	panóptico	*	Vocabulário 1943, p. 985: panótico and panóptico in one entry, both registered; the dual rule writes panóptico
+br_1971	paralático	paraláctico	paraláctico	*	Vocabulário 1943, p. 990: paralático and paraláctico in one entry, both registered; the dual rule writes paraláctico
+br_1971	paratático	paratáctico	paratáctico	*	Vocabulário 1943, p. 991: paratático and paratáctico in one entry, both registered; the dual rule writes paratáctico
+br_1971	parótico	paróptico	paróptico	*	Vocabulário 1943, p. 994: parótico and paróptico in one entry, both registered; the dual rule writes paróptico
 br_1971	percecionar	percepcionar	percepcionar	*	Priberam percepcionar (Brazil before the AO1990: percepcionar, after: percepcionar; Portugal before: percepcionar, after: percecionar)
 br_1971	percecionismo	percepcionismo	percepcionismo	*	Priberam percepcionismo (Brazil before the AO1990: percepcionismo, after: percepcionismo; Portugal before: percepcionismo, after: percecionismo)
 br_1971	percecionista	percepcionista	percepcionista	*	Priberam percepcionista (Brazil before the AO1990: percepcionista, after: percepcionista; Portugal before: percepcionista, after: percecionista)
 br_1971	percetibilidade	perceptibilidade	perceptibilidade	*	Priberam perceptibilidade (Brazil before the AO1990: perceptibilidade, after: perceptibilidade; Portugal before: perceptibilidade, after: percetibilidade)
-br_1971	percetivamente	perceptivamente	perceptivamente	*	Priberam perceptivamente (Brazil before the AO1990: perceptivamente, after: perceptivamente; Portugal before: perceptivamente, after: percetivamente)
+br_1971	percetivamente	perceptivamente	perceptivamente	*	Vocabulário 1943, p. 1011: perceptivo
 br_1971	percetivelmente	perceptivelmente	perceptivelmente	*	Priberam perceptivelmente (Brazil before the AO1990: perceptivelmente, after: perceptivelmente; Portugal before: perceptivelmente, after: percetivelmente)
 br_1971	percetividade	perceptividade	perceptividade	*	Priberam perceptividade (Brazil before the AO1990: perceptividade, after: perceptividade; Portugal before: perceptividade, after: percetividade)
-br_1971	percetivo	perceptivo	perceptivo	*	Priberam perceptivo (Brazil before the AO1990: perceptivo, after: perceptivo; Portugal before: perceptivo, after: percetivo)
+br_1971	percetivo	perceptivo	perceptivo	*	Vocabulário 1943, p. 1011: perceptivo
 br_1971	percetual	perceptual	perceptual	*	Priberam perceptual (Brazil before the AO1990: perceptual, after: perceptual; Portugal before: perceptual, after: percetual)
-br_1971	percetível	perceptível	perceptível	*	Priberam perceptível (Brazil before the AO1990: perceptível, after: perceptível; Portugal before: perceptível, after: percetível)
-br_1971	perento	perempto	perempto	*	Priberam perempto (Brazil before the AO1990: perempto, after: perempto; Portugal before: perempto, after: perento ou perempto)
+br_1971	percetível	perceptível	perceptível	*	Vocabulário 1943, p. 1011: perceptível
+br_1971	perento	perempto	perempto	*	Vocabulário 1943, p. 1012: perempto
 br_1971	perentoriamente	peremptoriamente	peremptoriamente	*	Priberam peremptoriamente (Brazil before the AO1990: peremptoriamente, after: peremptoriamente; Portugal before: peremptoriamente, after: perentoriamente ou peremptoriamente)
-br_1971	perentoriedade	peremptoriedade	peremptoriedade	*	Priberam peremptoriedade (Brazil before the AO1990: peremptoriedade, after: peremptoriedade; Portugal before: peremptoriedade, after: perentoriedade ou peremptoriedade)
-br_1971	perenção	perempção	perempção	*	Priberam perempção (Brazil before the AO1990: perempção, after: perempção; Portugal before: perempção, after: perenção ou perempção)
+br_1971	perentoriedade	peremptoriedade	peremptoriedade	*	Vocabulário 1943, p. 1012: peremptoriedade
+br_1971	perenção	perempção	perempção	*	Vocabulário 1943, p. 1012: perempção
 br_1971	perfecional	perfeccional	perfeccional	*	Priberam perfeccional (Brazil before the AO1990: perfeccional, after: perfeccional; Portugal before: perfeccional, after: perfeccional ou perfecional)
 br_1971	perfecionismo	perfeccionismo	perfeccionismo	*	Priberam perfeccionismo (Brazil before the AO1990: perfeccionismo, after: perfeccionismo; Portugal before: perfeccionismo, after: perfeccionismo ou perfecionismo)
 br_1971	perfecionista	perfeccionista	perfeccionista	*	Priberam perfeccionista (Brazil before the AO1990: perfeccionista, after: perfeccionista; Portugal before: perfeccionista, after: perfeccionista ou perfecionista)
-br_1971	perfetibilidade	perfectibilidade	perfectibilidade	*	Priberam perfectibilidade (Brazil before the AO1990: perfectibilidade, after: perfectibilidade; Portugal before: perfectibilidade, after: perfectibilidade ou perfetibilidade)
+br_1971	perfetibilidade	perfectibilidade	perfectibilidade	*	Vocabulário 1943, p. 1013: perfectibilidade
+br_1971	perfetibilismo	perfectibilismo	perfectibilismo	*	Vocabulário 1943, p. 1013: perfectibilismo
+br_1971	perfetibilista	perfectibilista	perfectibilista	*	Vocabulário 1943, p. 1013: perfectibilista
 br_1971	perfetibilizar	perfectibilizar	perfectibilizar	*	Priberam perfectibilizar (Brazil before the AO1990: perfectibilizar, after: perfectibilizar; Portugal before: perfectibilizar, after: perfectibilizar ou perfetibilizar)
-br_1971	perfetivo	perfectivo	perfectivo	*	Priberam perfectivo (Brazil before the AO1990: perfectivo, after: perfectivo; Portugal before: perfectivo, after: perfectivo ou perfetivo)
-br_1971	perfetível	perfectível	perfectível	*	Priberam perfectível (Brazil before the AO1990: perfectível, after: perfectível; Portugal before: perfectível, after: perfectível ou perfetível)
-br_1971	perspetiva	perspectiva	perspectiva	*	Priberam perspectiva (Brazil before the AO1990: perspectiva, after: perspectiva; Portugal before: perspectiva, after: perspetiva)
-br_1971	perspetivar	perspectivar	perspectivar	*	Priberam perspectivar (Brazil before the AO1990: perspectivar, after: perspectivar; Portugal before: perspectivar, after: perspetivar)
-br_1971	perspetivas	perspectivas	perspectivas	*	Priberam perspectiva (Brazil before the AO1990: perspectiva, after: perspectiva; Portugal before: perspectiva, after: perspetiva)
-br_1971	perspetivação	perspectivação	perspectivação	*	Priberam perspectivação (Brazil before the AO1990: perspectivação, after: perspectivação; Portugal before: perspectivação, after: perspetivação)
+br_1971	perfetivo	perfectivo	perfectivo	*	Vocabulário 1943, p. 1013: perfectivo
+br_1971	perfetível	perfectível	perfectível	*	Vocabulário 1943, p. 1013: perfectível
+br_1971	perspetiva	perspectiva	perspectiva	*	Vocabulário 1943, p. 1018: perspetiva and perspectiva in one entry, both registered; the dual rule writes perspectiva
+br_1971	perspetivar	perspectivar	perspectivar	*	Vocabulário 1943, p. 1018: perspetivar and perspectivar in one entry, both registered; the dual rule writes perspectivar
+br_1971	perspetivas	perspectivas	perspectivas	*	Vocabulário 1943, p. 1018: perspetiva and perspectiva in one entry, both registered; the dual rule writes perspectiva
+br_1971	perspetivação	perspectivação	perspectivação	*	Vocabulário 1943, p. 1018: perspetivação and perspectivação in one entry, both registered; the dual rule writes perspectivação
 br_1971	perspetividade	perspectividade	perspectividade	*	Priberam perspectividade (Brazil before the AO1990: perspectividade, after: perspectividade; Portugal before: perspectividade, after: perspetividade)
 br_1971	perspetivismo	perspectivismo	perspectivismo	*	Priberam perspectivismo (Brazil before the AO1990: perspectivismo, after: perspectivismo; Portugal before: perspectivismo, after: perspetivismo)
-br_1971	perspetivo	perspectivo	perspectivo	*	Priberam perspectivo (Brazil before the AO1990: perspectivo, after: perspectivo; Portugal before: perspectivo, after: perspetivo)
-br_1971	perspética	perspéctica	perspéctica	*	Priberam perspéctico (Brazil before the AO1990: perspéctico, after: perspéctico; Portugal before: perspéctico, after: perspético)
-br_1971	perspético	perspéctico	perspéctico	*	Priberam perspéctico (Brazil before the AO1990: perspéctico, after: perspéctico; Portugal before: perspéctico, after: perspético)
+br_1971	perspetivo	perspectivo	perspectivo	*	Vocabulário 1943, p. 1018: perspetivar and perspectivar in one entry, both registered; the dual rule writes perspectivar
+br_1971	perspetógrafo	perspectógrafo	perspectógrafo	*	Vocabulário 1943, p. 1018: perspetógrafo and perspectógrafo in one entry, both registered; the dual rule writes perspectógrafo
+br_1971	perspética	perspéctica	perspéctica	*	Vocabulário 1943, p. 1018: perspético and perspéctico in one entry, both registered; the dual rule writes perspéctico
+br_1971	perspético	perspéctico	perspéctico	*	Vocabulário 1943, p. 1018: perspético and perspéctico in one entry, both registered; the dual rule writes perspéctico
+br_1971	pneumoplético	pneumopléctico	pneumopléctico	*	Vocabulário 1943, p. 1039: pneumoplético and pneumopléctico in one entry, both registered; the dual rule writes pneumopléctico
 br_1971	polielectrólitos	*	polieletrólitos	*	Priberam polielectrólito (Brazil before the AO1990: polieletrólito, after: polieletrólito; Portugal before: polielectrólito, after: polieletrólito)
-br_1971	precetor	preceptor	preceptor	*	Priberam preceptor (Brazil before the AO1990: preceptor, after: preceptor; Portugal before: preceptor, after: precetor)
-br_1971	precetora	preceptora	preceptora	*	Priberam preceptor (Brazil before the AO1990: preceptor, after: preceptor; Portugal before: preceptor, after: precetor)
+br_1971	precetor	preceptor	preceptor	*	Vocabulário 1943, p. 1055: preceptor
+br_1971	precetora	preceptora	preceptora	*	Vocabulário 1943, p. 1055: preceptor
 br_1971	precetorado	preceptorado	preceptorado	*	Priberam preceptorado (Brazil before the AO1990: preceptorado, after: preceptorado; Portugal before: preceptorado, after: precetorado)
-br_1971	precetoral	preceptoral	preceptoral	*	Priberam preceptoral (Brazil before the AO1990: preceptoral, after: preceptoral; Portugal before: preceptoral, after: precetoral)
-br_1971	precetoria	preceptoria	preceptoria	*	Priberam preceptoria (Brazil before the AO1990: preceptoria, after: preceptoria; Portugal before: preceptoria, after: precetoria)
+br_1971	precetoral	preceptoral	preceptoral	*	Vocabulário 1943, p. 1055: preceptoral
+br_1971	precetoria	preceptoria	preceptoria	*	Vocabulário 1943, p. 1055: preceptoria
 br_1971	precetorial	preceptorial	preceptorial	*	Priberam preceptorial (Brazil before the AO1990: preceptorial, after: preceptorial; Portugal before: preceptorial, after: precetorial)
+br_1971	profilático	profiláctico	profiláctico	*	Vocabulário 1943, p. 1066: profilático and profiláctico in one entry, both registered; the dual rule writes profiláctico
+br_1971	prolético	proléctico	proléctico	*	Vocabulário 1943, p. 1067: prolético and proléctico in one entry, both registered; the dual rule writes proléctico
 br_1971	propriocetivo	proprioceptivo	proprioceptivo	*	Priberam proprioceptivo (Brazil before the AO1990: proprioceptivo, after: proprioceptivo; Portugal before: proprioceptivo, after: propriocetivo)
 br_1971	propriocetor	proprioceptor	proprioceptor	*	Priberam proprioceptor (Brazil before the AO1990: proprioceptor, after: proprioceptor; Portugal before: proprioceptor, after: propriocetor)
-br_1971	prospetar	prospectar	prospectar	*	Priberam prospectar (Brazil before the AO1990: prospectar, after: prospectar; Portugal before: prospectar, after: prospetar)
-br_1971	prospetiva	prospectiva	prospectiva	*	Priberam prospectiva (Brazil before the AO1990: prospectiva, after: prospectiva; Portugal before: prospectiva, after: prospetiva)
 br_1971	prospetivo	prospectivo	prospectivo	*	Priberam prospectivo (Brazil before the AO1990: prospectivo, after: prospectivo; Portugal before: prospectivo, after: prospetivo)
-br_1971	prospeto	prospecto	prospecto	*	Priberam prospecto (Brazil before the AO1990: prospecto, after: prospecto; Portugal before: prospecto, after: prospeto)
 br_1971	prospetor	prospector	prospector	*	Priberam prospector (Brazil before the AO1990: prospector, after: prospector; Portugal before: prospector, after: prospetor)
 br_1971	prospetora	prospectora	prospectora	*	Priberam prospector (Brazil before the AO1990: prospector, after: prospector; Portugal before: prospector, after: prospetor)
 br_1971	prospetores	prospectores	prospectores	*	Priberam prospector (Brazil before the AO1990: prospector, after: prospector; Portugal before: prospector, after: prospetor)
 br_1971	prospeção	prospecção	prospecção	*	Priberam prospecção (Brazil before the AO1990: prospecção, after: prospecção; Portugal before: prospecção, after: prospeção)
-br_1971	puré	*	purê	*	Priberam puré (Brazil before the AO1990: purê, after: purê; Portugal before: puré, after: puré); Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
+br_1971	pseudodialetal	pseudodialectal	pseudodialectal	*	Vocabulário 1943, p. 1073: pseudodialectal
+br_1971	puré	*	purê	*	Vocabulário 1943, p. 1079: purê, with no puré; Formulário 1943, 43, 1.ª: "com o acento circunflexo e os que acabam em e, o fechados"
 br_1971	quimiorrecetivo	quimiorreceptivo	quimiorreceptivo	*	Priberam quimiorreceptivo (Brazil before the AO1990: quimiorreceptivo, after: quimiorreceptivo; Portugal before: quimiorreceptivo, after: quimiorrecetivo)
 br_1971	quimiorrecetor	quimiorreceptor	quimiorreceptor	*	Priberam quimiorreceptor (Brazil before the AO1990: quimiorreceptor, after: quimiorreceptor; Portugal before: quimiorreceptor, after: quimiorrecetor)
 br_1971	radiorrecetor	radiorreceptor	radiorreceptor	*	Priberam radiorreceptor (Brazil before the AO1990: radiorreceptor, after: radiorreceptor; Portugal before: radiorreceptor, after: radiorrecetor)
 br_1971	rececionado	recepcionado	recepcionado	*	Priberam recepcionado (Brazil before the AO1990: recepcionar, after: recepcionar; Portugal before: recepcionar, after: rececionar)
 br_1971	rececionamento	recepcionamento	recepcionamento	*	Priberam recepcionamento (Brazil before the AO1990: recepcionamento, after: recepcionamento; Portugal before: recepcionamento, after: rececionamento)
-br_1971	recetacular	receptacular	receptacular	*	Priberam receptacular (Brazil before the AO1990: receptacular, after: receptacular; Portugal before: receptacular, after: recetacular)
-br_1971	recetado	receptado	receptado	*	Priberam receptado (Brazil before the AO1990: receptar, after: receptar; Portugal before: receptar, after: recetar)
-br_1971	recetador	receptador	receptador	*	Priberam receptador (Brazil before the AO1990: receptador, after: receptador; Portugal before: receptador, after: recetador)
-br_1971	recetadora	receptadora	receptadora	*	Priberam receptador (Brazil before the AO1990: receptador, after: receptador; Portugal before: receptador, after: recetador)
-br_1971	recetar	receptar	receptar	*	Priberam receptado (Brazil before the AO1990: receptar, after: receptar; Portugal before: receptar, after: recetar)
-br_1971	recetação	receptação	receptação	*	Priberam receptação (Brazil before the AO1990: receptação, after: receptação; Portugal before: receptação, after: recetação)
+br_1971	recetacular	receptacular	receptacular	*	Vocabulário 1943, p. 1103: receptacular
+br_1971	recetado	receptado	receptado	*	Vocabulário 1943, p. 1103: receptar
+br_1971	recetador	receptador	receptador	*	Vocabulário 1943, p. 1103: receptador
+br_1971	recetadora	receptadora	receptadora	*	Vocabulário 1943, p. 1103: receptador
+br_1971	recetar	receptar	receptar	*	Vocabulário 1943, p. 1103: receptar
+br_1971	recetação	receptação	receptação	*	Vocabulário 1943, p. 1103: receptação
 br_1971	recetibilidade	receptibilidade	receptibilidade	*	Priberam receptibilidade (Brazil before the AO1990: receptibilidade, after: receptibilidade; Portugal before: receptibilidade, after: recetibilidade)
-br_1971	recetiva	receptiva	receptiva	*	Priberam receptiva (Brazil before the AO1990: receptiva, after: receptiva; Portugal before: receptiva, after: recetiva)
-br_1971	recetividade	receptividade	receptividade	*	Priberam receptividade (Brazil before the AO1990: receptividade, after: receptividade; Portugal before: receptividade, after: recetividade)
-br_1971	recetivo	receptivo	receptivo	*	Priberam receptivo (Brazil before the AO1990: receptivo, after: receptivo; Portugal before: receptivo, after: recetivo)
-br_1971	recetora	receptora	receptora	*	Priberam receptor (Brazil before the AO1990: receptor, after: receptor; Portugal before: receptor, after: recetor)
-br_1971	recetores	receptores	receptores	*	Priberam receptor (Brazil before the AO1990: receptor, after: receptor; Portugal before: receptor, after: recetor)
+br_1971	recetiva	receptiva	receptiva	*	Vocabulário 1943, p. 1103: receptivo
+br_1971	recetividade	receptividade	receptividade	*	Vocabulário 1943, p. 1103: receptividade
+br_1971	recetivo	receptivo	receptivo	*	Vocabulário 1943, p. 1103: receptivo
+br_1971	recetora	receptora	receptora	*	Vocabulário 1943, p. 1103: receptor
+br_1971	recetores	receptores	receptores	*	Vocabulário 1943, p. 1103: receptor
 br_1971	recetáculo	receptáculo	receptáculo	*	Priberam receptáculo (Brazil before the AO1990: receptáculo, after: receptáculo; Portugal before: receptáculo, after: recetáculo)
-br_1971	recetámos	receptámos	receptámos	*	Priberam receptado (Brazil before the AO1990: receptar, after: receptar; Portugal before: receptar, after: recetar)
-br_1971	recetível	receptível	receptível	*	Priberam receptível (Brazil before the AO1990: receptível, after: receptível; Portugal before: receptível, after: recetível)
-br_1971	refetivo	refectivo	refectivo	*	Priberam refectivo (Brazil before the AO1990: refectivo, after: refectivo; Portugal before: refectivo, after: refetivo)
-br_1971	refetório	refectório	refectório	*	Priberam refectório (Brazil before the AO1990: refectório, after: refectório; Portugal before: refectório, after: refetório)
+br_1971	recetámos	receptámos	receptámos	*	Vocabulário 1943, p. 1103: receptar
+br_1971	recetível	receptível	receptível	*	Vocabulário 1943, p. 1103: receptível
+br_1971	refetivo	refectivo	refectivo	*	Vocabulário 1943, p. 1109: refectivo
+br_1971	refetório	refectório	refectório	*	Vocabulário 1943, p. 1109: refectório
 br_1971	reinfeção	reinfecção	reinfecção	*	Priberam reinfecção (Brazil before the AO1990: reinfecção, after: reinfecção; Portugal before: reinfecção, after: reinfeção ou reinfecção)
-br_1971	respetivamente	respectivamente	respectivamente	*	Priberam respectivamente (Brazil before the AO1990: respectivamente, after: respectivamente; Portugal before: respectivamente, after: respetivamente)
+br_1971	respetivamente	respectivamente	respectivamente	*	Vocabulário 1943, p. 1123: respetivo and respectivo in one entry, both registered; the dual rule writes respectivo
 br_1971	respetivo	respectivo	respectivo	*	Formulário 1943, 18: "respectivo e respetivo"
 br_1971	respetivos	respectivos	respectivos	*	Formulário 1943, 18: "respectivo e respetivo"
-br_1971	ressurreto	ressurrecto	ressurrecto	*	Priberam ressurrecto (Brazil before the AO1990: ressurrecto, after: ressurrecto; Portugal before: ressurrecto, after: ressurrecto ou ressurreto)
-br_1971	retrospetiva	retrospectiva	retrospectiva	*	Priberam retrospectiva (Brazil before the AO1990: retrospectiva, after: retrospectiva; Portugal before: retrospectiva, after: retrospetiva)
-br_1971	retrospetivamente	retrospectivamente	retrospectivamente	*	Priberam retrospectivamente (Brazil before the AO1990: retrospectivamente, after: retrospectivamente; Portugal before: retrospectivamente, after: retrospetivamente)
-br_1971	retrospetividade	retrospectividade	retrospectividade	*	Priberam retrospectividade (Brazil before the AO1990: retrospectividade, after: retrospectividade; Portugal before: retrospectividade, after: retrospetividade)
-br_1971	retrospetivo	retrospectivo	retrospectivo	*	Priberam retrospectivo (Brazil before the AO1990: retrospectivo, after: retrospectivo; Portugal before: retrospectivo, after: retrospetivo)
-br_1971	retrospeto	retrospecto	retrospecto	*	Priberam retrospecto (Brazil before the AO1990: retrospecto, after: retrospecto; Portugal before: retrospecto, after: retrospeto)
-br_1971	retrospeção	retrospecção	retrospecção	*	Priberam retrospecção (Brazil before the AO1990: retrospecção, after: retrospecção; Portugal before: retrospecção, after: retrospeção)
-br_1971	rutura	ruptura	ruptura	*	Priberam ruptura (Brazil before the AO1990: ruptura, after: ruptura; Portugal before: ruptura, after: rutura)
-br_1971	seccionais	*	secionais	*	Priberam seccional (Brazil before the AO1990: secional, after: secional; Portugal before: seccional, after: seccional)
+br_1971	ressurreto	ressurrecto	ressurrecto	*	Vocabulário 1943, p. 1125: ressurreto and ressurrecto in one entry, both registered; the dual rule writes ressurrecto
+br_1971	retrospetiva	retrospectiva	retrospectiva	*	Vocabulário 1943, p. 1129: retrospetivo and retrospectivo in one entry, both registered; the dual rule writes retrospectivo
+br_1971	retrospetivamente	retrospectivamente	retrospectivamente	*	Vocabulário 1943, p. 1129: retrospetivo and retrospectivo in one entry, both registered; the dual rule writes retrospectivo
+br_1971	retrospetividade	retrospectividade	retrospectividade	*	Vocabulário 1943, p. 1129: retrospetividade and retrospectividade in one entry, both registered; the dual rule writes retrospectividade
+br_1971	retrospetivo	retrospectivo	retrospectivo	*	Vocabulário 1943, p. 1129: retrospetivo and retrospectivo in one entry, both registered; the dual rule writes retrospectivo
+br_1971	retrospeto	retrospecto	retrospecto	*	Vocabulário 1943, p. 1129: retrospeto and retrospecto in one entry, both registered; the dual rule writes retrospecto
+br_1971	retrospeção	retrospecção	retrospecção	*	Vocabulário 1943, p. 1129: retrospeção and retrospecção in one entry, both registered; the dual rule writes retrospecção
+br_1971	rutura	ruptura	ruptura	*	Vocabulário 1943, p. 1144: ruptura
+br_1971	setor	sector	sector	*	Vocabulário 1943, p. 1177: setor and sector in one entry, both registered; the dual rule writes sector
+br_1971	setores	sectores	sectores	*	Vocabulário 1943, p. 1177: setor and sector in one entry, both registered; the dual rule writes sector
 br_1971	seção	secção	secção	*	Formulário 1943, 18: "secção e seção"
+br_1971	simplético	simpléctico	simpléctico	*	Vocabulário 1943, p. 1183: simplético and simpléctico in one entry, both registered; the dual rule writes simpléctico
 br_1971	suntuoso	sumptuoso	sumptuoso	*	Formulário 1943, 18: "sumptuoso e suntuoso"
 br_1971	superinfeção	superinfecção	superinfecção	*	Priberam superinfecção (Brazil before the AO1990: superinfecção, after: superinfecção; Portugal before: superinfecção, after: superinfeção ou superinfecção)
+br_1971	suscetibilidade	susceptibilidade	susceptibilidade	*	Vocabulário 1943, p. 1211: suscetibilidade and susceptibilidade in one entry, both registered; the dual rule writes susceptibilidade
+br_1971	suscetível	susceptível	susceptível	*	Vocabulário 1943, p. 1211: suscetível and susceptível in one entry, both registered; the dual rule writes susceptível
 br_1971	tato	tacto	tacto	*	Formulário 1943, 18: "tacto e tato"
 br_1971	teledeteção	teledetecção	teledetecção	*	Priberam teledetecção (Brazil before the AO1990: teledetecção, after: teledetecção; Portugal before: teledetecção, after: teledeteção)
 br_1971	teto	tecto	tecto	*	Formulário 1943, 18: "tecto e teto"
 br_1971	tetos	tectos	tectos	*	Formulário 1943, 18: "tecto e teto"
+br_1971	transato	transacto	transacto	*	Vocabulário 1943, p. 1254: transato and transacto in one entry, both registered; the dual rule writes transacto
+br_1971	transator	transactor	transactor	*	Vocabulário 1943, p. 1254: transator and transactor in one entry, both registered; the dual rule writes transactor
+br_1971	transatora	transactora	transactora	*	Vocabulário 1943, p. 1254: transator and transactor in one entry, both registered; the dual rule writes transactor
 br_1971	transcetor	transceptor	transceptor	*	Priberam transceptor (Brazil before the AO1990: transceptor, after: transceptor; Portugal before: transceptor, after: transcetor)
-br_1971	ótica	óptica	óptica	*	Priberam óptica (Brazil before the AO1990: óptica, after: óptica; Portugal before: óptica, after: ótica)
-br_1971	ótico	óptico	óptico	*	Priberam óptico (Brazil before the AO1990: óptico, after: óptico; Portugal before: óptico, after: ótico)
+br_1971	trissetriz	trissectriz	trissectriz	*	Vocabulário 1943, p. 1268: trissetriz and trissectriz in one entry, both registered; the dual rule writes trissectriz
+br_1971	vetação	vectação	vectação	*	Vocabulário 1943, p. 1295: vectação
+br_1971	vetorial	vectorial	vectorial	*	Vocabulário 1943, p. 1295: vetorial and vectorial in one entry, both registered; the dual rule writes vectorial
+br_1971	zootático	zootáctico	zootáctico	*	Vocabulário 1943, p. 1326: zootático and zootáctico in one entry, both registered; the dual rule writes zootáctico
+br_1971	ótica	óptica	óptica	*	Vocabulário 1943, p. 964: ótica and óptica in one entry, both registered; the dual rule writes óptica
+br_1971	ótico	óptico	óptico	*	Vocabulário 1943, p. 964: ótico and óptico in one entry, both registered; the dual rule writes óptico
 ao1990-br	abatista	abaptista	abaptista	*	VOLP: abatista s.m. | abaptista s.m.
 ao1990-br	abjeta	abjecta	abjecta	*	VOLP: abjeto adj. s.m. | abjecto adj. s.m.
 ao1990-br	abjetamente	abjectamente	abjectamente	*	VOLP: abjeto adj. s.m. | abjecto adj. s.m.
