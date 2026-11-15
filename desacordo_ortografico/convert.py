@@ -334,7 +334,7 @@ class OrthographyConverter:
                 parts = rules._SEGMENT_SEP.split(word)
                 if len(parts) > 1 and len(set(parts)) == 1:  # tam-tam, a gong
                     return word
-                return rules.per_segment(word, lambda p: rows.get(p, p))
+                return rules.per_segment(word, lambda p: rules.lookup_with_plural(p, rows) or p)
 
             return read
 

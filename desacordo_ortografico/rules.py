@@ -96,10 +96,15 @@ Brasileira de Letras).
   com o acento circunflexo". So the accent goes only where the bare letters spell a
   Portuguese word: a word of the word list as written, accents and all, a contraction of
   de or em with one (dêste, 1911 Base XXXVIII), or a regular form of a known verb (vivêra,
-  perdôa). A pre-1911 shape that the etymological edge leaves (aldêa, vêl-a, pôz-se)
-  stays too, because its bare letters spell no word of the list. A foreign word
-  whose bare letters spell no Portuguese word stays (prêtres, être). Côte loses its accent,
-  because cote is a Portuguese word.
+  perdôa). A pre-1911 shape that the etymological edge leaves stays. The bare letters of
+  aldêa and pôz-se spell no word of the list. In fêl-o and vêl-a the r, s or z of the verb
+  became l before the pronoun, which 1911 Base XXXIV calls an error: "São erros
+  inadmissíveis, mas muito freqùentes, louval-o, devel-o, punil-o". The bare part fel is a
+  word, so a part that ends in l before the hyphen and o, a, os or as keeps its accent. A
+  foreign word whose bare letters spell no Portuguese word stays (prêtres, être). A foreign
+  word whose bare letters spell a listed word loses its accent: Côte, tête and pôle as in
+  French, and the loans crêpe, cône and contrôle as 1945 writes them (crepe, cone,
+  controle). A 1945 word that the list lacks keeps its accent (môo, vêde, tôrvo).
 
 The words that no rule reaches are rows of the spelling table (quási, tam, teem, and
 scetro, which 1945 Base VI writes ceptro), each with its clause. The rows apply to each
@@ -486,6 +491,8 @@ _RE_INITIAL_SC = re.compile(
     "^sc(?=en[aáéo]|iênc|ient|etr|ept|épt|ism|isã|isõ|iát|iat|intil|eler)")
 # a closed e or o in the last-but-one syllable before a final -a, -e, -o (with -s), -am,
 # -em or -ens, or in the last syllable before a final r, z or l
+# a pre-1911 enclitic (fêl-o, vêl-a): 1911 Base XXXIV writes devê-lo
+_RE_PRE_1911_ENCLITIC = re.compile(r"l-(?:o|a|os|as)(?=$|-)")
 _RE_CIRCUMFLEX = re.compile("(.*)([êô])((?:[^%s]*(?:[aeo]s?|[ae]m|ens))|[rzl])" % _VOWELS)
 _KEPT_CIRCUMFLEX_1945 = frozenset({
     "côa", "côas", "pêlo", "pêlos", "pêra", "pêro", "pôlo", "pôlos", "pôr", "pôde", "dêmos"})
@@ -555,7 +562,10 @@ def drop_differential_1945(word: str, is_word: Callable[[str], bool]) -> str:
     hiatus ee of Base XXI (lêem) stay. The circumflex goes only when the bare letters
     spell a Portuguese word (``is_word``): 1911 Base XXVIII puts it on one word of a pair
     of homographs, so a word whose bare form is no word (être, prêtres) is no 1911
-    differential and stays. One-way."""
+    differential and stays. A pre-1911 enclitic (fêl-o) stays. One-way."""
+    if _RE_PRE_1911_ENCLITIC.search(word):
+        return word
+
     def drop(part: str) -> str:
         m = _RE_CIRCUMFLEX.fullmatch(part)
         if m is None or part in _KEPT_CIRCUMFLEX_1945 or part.endswith("êem"):

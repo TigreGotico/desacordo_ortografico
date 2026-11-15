@@ -72,7 +72,9 @@ From the 1911 spelling, `convert()` writes `também` (Base XIII), `tranquilo` (B
 XXVII) and `ciência` (the 1931 Bases, § 1.º 4.º, which Portugal adopted). The circumflex
 of 1911 Base XXVIII goes, except on the forms that Base XXII keeps: `êle→ele` and
 `côr→cor`, but `pêlo` and `pôde` stay. The accent goes only when the bare letters
-spell a Portuguese word, so French `prêtres` and `être` stay, but `Côte` becomes `Cote`.
+spell a listed Portuguese word. French `prêtres` and `être` stay, but a French word whose
+bare letters are listed loses the accent: `Côte` becomes `Cote`. A 1945 word that the list
+lacks keeps it (`môo`, `vêde`).
 The 1911 singular `convêm` stays as written, because from 1945 on these letters spell the
 plural. The 1911 words that no rule reaches are rows of the spelling table:
 `quási→quase`, `tam→tão`, `teem→têm`, and `scetro→ceptro` (Base VI, 2.°). The initial

@@ -75,7 +75,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `oxytone-em` | -êm, -êns -> -ém, -éns in an oxytone of more than one syllable (tambêm -> também); a compound of ter or vir in -têm, -vêm stays | pt_1911_to_1945, br_1911_to_1943 |
 | `grave-u` | qù, gù -> qu, gu toward 1945 and qü, gü toward 1943 (tranqùilo) | pt_1911_to_1945, br_1911_to_1943 |
 | `initial-sc` | initial sc -> c in the words of 1911 Base XI and their derivatives (sciência -> ciência, scintilava -> cintilava); an English word with the same letters (scientific, sceptical) loses its s too | pt_1911_to_1945, br_1911_to_1943 |
-| `differential-1945` | the 1911 circumflex that the 1945 Acordo no longer writes (êle -> ele, côr -> cor, vôo -> voo; pêlo and pôde keep it), when the bare letters spell a Portuguese word; prêtres and être stay, Côte does not | pt_1911_to_1945 |
+| `differential-1945` | the 1911 circumflex that the 1945 Acordo no longer writes (êle -> ele, côr -> cor, vôo -> voo; pêlo and pôde keep it), when the bare letters spell a listed Portuguese word; prêtres, être and the pre-1911 fêl-o stay, but a French word whose bare letters are listed (Côte, tête, pôle) loses it | pt_1911_to_1945 |
 | `subtonic-grave` | sòmente -> somente | accent_1973, accent_1971 |
 | `base-iv` | the curated Base IV drop list | br_1911_to_1943, ao1990_pt |
 | `ptbr-divergence` | the PT/BR divergence pairs (connosco -> conosco) | br_1911_to_1943, ptbr_divergence |

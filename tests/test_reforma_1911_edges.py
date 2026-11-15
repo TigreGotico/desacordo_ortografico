@@ -180,6 +180,19 @@ def test_pre_1911_shapes_keep_the_circumflex(text):
     assert convert(text, "etymological", "pt_1945") == text
 
 
+@pytest.mark.parametrize("target", ["pt_1973", "ao1990-pt"])
+def test_pre_1911_enclitic_keeps_the_circumflex(target):
+    # Eça: the r, s or z of the verb became l before the pronoun, which 1911 Base XXXIV
+    # calls an error ("louval-o, devel-o"); fel is a word, but fêl-o is no 1911 differential
+    text = "levantou um alçapão, fêl-o descer uma escada; Fêl-a pôr de pé"
+    assert convert(text, "etymological", target) == text
+
+
+@pytest.mark.parametrize("target", ["pt_1945", "pt_1973"])
+def test_scetro_row_reads_the_plural(target):
+    assert convert("O scetro, os scetros", "reforma_1911", target) == "O ceptro, os ceptros"
+
+
 @pytest.mark.xfail(strict=True, reason=(
     "cote is a Portuguese word, so the letters of Côte cannot tell the French word from a "
     "1911 differential"))
