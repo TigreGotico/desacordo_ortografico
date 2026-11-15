@@ -35,7 +35,7 @@ norms by **per-word table lookup and deterministic rules** (nasal vowel, trema, 
 casing). The tables come from three sources:
 
 - the word alignments of `silver_corpus.jsonl`.
-- the AO1990 and 1911 maps of the library's own lexicon (tugalex and the files in
+- the AO1990 and 1911 maps of the library's own lexicon (the files in
   `desacordo_ortografico/data/`).
 - `derived_lexicon.json`, which holds the silent-consonant, trema and blocker words
   (3,593 European-line forms and 54 Brazilian forms). A language-model panel classified

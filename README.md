@@ -14,8 +14,10 @@ nothing else.
   shipped zero-dependency learned classifiers (Naive Bayes / averaged perceptron).
 - **Guard** against sister varieties (Mirandese, Galician, Barranquenho) that look like
   Portuguese but are not.
-- A deterministic rule engine and curated, **sourced** exception lexicons. AO1990 word
-  data is reused from [`tugalex`](https://github.com/TigreGotico/tugalex).
+- A deterministic rule engine and curated, **sourced** exception lexicons. The AO1990
+  word maps and the pre-1911 archaisms are rows of one spelling table,
+  `data/spelling.json`, built from the [`tugalex`](https://github.com/TigreGotico/tugalex)
+  lists.
 - A **command-line tool** and a parallel silver benchmark corpus (written by language
   models, not checked by a person), also published on the
   [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
@@ -132,8 +134,8 @@ instead of silently guessing.
 
 ## Related projects
 
-- [`tugalex`](https://github.com/TigreGotico/tugalex) — the AO1990 word-map data this
-  library reuses.
+- [`tugalex`](https://github.com/TigreGotico/tugalex) — the word list this library
+  reads, and the source of the AO1990 and archaism rows of its spelling table.
 
 ## License
 

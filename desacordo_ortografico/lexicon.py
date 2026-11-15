@@ -6,13 +6,21 @@ reversible transforms. Everything that is *irreducibly lexical* lives here:
 * AO1990 **Base IV** classification (keep / drop / dual) — see ``data/base_iv.json``;
 * the differential-accent and lexicalized-hyphen exception lists;
 * the PT<->BR divergence pairs that stay valid under AO1990;
-* the 1911 irregulars (geminates, ch=/k/, silent consonants);
-* the bulk AO1990 word maps, reused from ``tugalex`` (Portal da Lingua Portuguesa
-  data) instead of being duplicated here.
+* the spelling table ``data/spelling.json``: the 1911 irregulars (geminates, ch=/k/,
+  silent consonants), the pre-1911 archaisms and the bulk AO1990 word maps (Portal da
+  Lingua Portuguesa data).
 
-``tugalex`` is a hard dependency, but every access to it is defensive: if it (or its
-data) is unavailable the lexical AO1990 maps simply fall back to empty and the
-deterministic rule engine still works on its own.
+Each row of the spelling table says that ``form``, written in the norm ``era``, is
+``value`` in the norm ``target``, on the authority of ``source``. A dual AO1990 cell
+joins its two forms with ``|``. ``curated`` is true for the 1911 pairs that the
+backward 1911 pass inverts and that detect() weighs double. A pre-1911 form whose 1911
+form no source decides has rows for its AO1990 forms only: detect() reads it as
+evidence, and convert() does not read it. ``tools/build_spelling_table.py`` built the
+table from the tugalex archaisms and AO1990 lists.
+
+``tugalex`` supplies the word list. It is a hard dependency, but every access to it is
+defensive: if it is unavailable the word set holds only the forms of the word maps and
+the deterministic rule engine still works on its own.
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
@@ -47,7 +55,7 @@ import os
 import re
 import unicodedata
 from functools import cached_property
-from typing import Dict, FrozenSet, List, Optional, Set, Tuple
+from typing import Any, Dict, FrozenSet, List, Optional, Set, Tuple
 
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
@@ -202,8 +210,8 @@ class Lexicon:
         return _load("ptbr_divergences.json")
 
     @cached_property
-    def _reform1911(self) -> dict:
-        return _load("reform_1911_irregular.json")
+    def _spelling(self) -> List[Dict[str, Any]]:
+        return _load("spelling.json")["rows"]
 
     @cached_property
     def _accent_71_73(self) -> dict:
@@ -220,7 +228,8 @@ class Lexicon:
     # ------------------------------------------------------------ tugalex
     @property
     def tuga(self):
-        """The shared :class:`tugalex.TugaLexicon`, or ``None`` if unavailable."""
+        """The shared :class:`tugalex.TugaLexicon`, or ``None`` if unavailable. Only
+        :attr:`wordset` reads it, for the word list."""
         if not self._tuga_tried:
             self._tuga_tried = True
             try:
@@ -231,13 +240,19 @@ class Lexicon:
                 self._tuga = None
         return self._tuga
 
+    # ---------------------------------------------------- the spelling table
+    def _ao_cells(self, era: str, target: str) -> Dict[str, List[str]]:
+        """The AO1990 cells of the spelling table: old form -> its AO1990 forms."""
+        return {r["form"]: r["value"].split("|") for r in self._spelling
+                if r["era"] == era and r["target"] == target}
+
     @cached_property
     def ao_pt_old2new(self) -> Dict[str, str]:
-        return _clean_ao_map(self.tuga, "ao_pt")
+        return _clean_ao_map(self._ao_cells("pt_1973", "ao1990-pt"))
 
     @cached_property
     def ao_br_old2new(self) -> Dict[str, str]:
-        return _clean_ao_map(self.tuga, "ao_br")
+        return _clean_ao_map(self._ao_cells("br_1971", "ao1990-br"))
 
     @cached_property
     def ao_pt_row_class(self) -> Dict[str, str]:
@@ -265,7 +280,7 @@ class Lexicon:
         """The dual cells of the pt-PT AO1990 map (Base IV 1º c): the form without the
         consonant -> the form with it, and the same for their plurals. The bare forms in
         _SINGLE_SPELLING_VERB_FORMS are left out; their plurals stay."""
-        out = _dual_full(self.tuga, "ao_pt", _CP_HOMOGRAPHS)
+        out = _dual_full(self._ao_cells("pt_1973", "ao1990-pt"), _CP_HOMOGRAPHS)
         for word in _SINGLE_SPELLING_VERB_FORMS:
             out.pop(word, None)
         return out
@@ -273,7 +288,7 @@ class Lexicon:
     @cached_property
     def ao_br_dual_full(self) -> Dict[str, str]:
         """The dual cells of the pt-BR AO1990 map, as :attr:`ao_pt_dual_full`."""
-        return _dual_full(self.tuga, "ao_br")
+        return _dual_full(self._ao_cells("br_1971", "ao1990-br"))
 
     @cached_property
     def ao_br_volp(self) -> Dict[str, str]:
@@ -547,17 +562,26 @@ class Lexicon:
         return _invert(self.divergence_pt2br)
 
     # ------------------------------------------------------- 1911 irregulars
+    def _reform1911_rows(self) -> List[Dict[str, Any]]:
+        return [r for r in self._spelling
+                if r["era"] == "etymological" and r["target"] == "reforma_1911"]
+
     @cached_property
     def reform1911_old2new(self) -> Dict[str, str]:
-        out: Dict[str, str] = {}
-        for group, entries in self._reform1911.items():
-            if group.startswith("_") or not isinstance(entries, dict):
-                continue
-            for k, v in entries.items():
-                if k.startswith("_") or not isinstance(v, str):
-                    continue
-                out[k.lower()] = v.lower()
-        return out
+        """The curated pre-1911 -> 1911 pairs, in table order. The backward 1911 pass
+        inverts these pairs only: several archaic forms share one modern form
+        (architectura, architetura)."""
+        return {r["form"]: r["value"] for r in self._reform1911_rows() if r["curated"]}
+
+    @cached_property
+    def reform1911_forward(self) -> Dict[str, str]:
+        """Every pre-1911 -> 1911 row of the spelling table: the forward 1911 word map."""
+        return {r["form"]: r["value"] for r in self._reform1911_rows()}
+
+    @cached_property
+    def pre1911_forms(self) -> FrozenSet[str]:
+        """Every pre-1911 form of the spelling table, the pre-1911 evidence of detect()."""
+        return frozenset(r["form"] for r in self._spelling if r["era"] == "etymological")
 
     @cached_property
     def reform1911_new2old(self) -> Dict[str, str]:
@@ -573,18 +597,15 @@ class Lexicon:
         return _invert(self.accent_71_73_old2new)
 
 
-def _clean_ao_map(tuga, attr: str) -> Dict[str, str]:
-    """Lowercase a tugalex AO map and drop its stray CSV-header entry."""
-    if not tuga:
-        return {}
-    raw = getattr(tuga, attr, {}) or {}
+def _clean_ao_map(cells: Dict[str, List[str]]) -> Dict[str, str]:
+    """Lowercase an AO1990 map and keep the first form of each cell."""
     out: Dict[str, str] = {}
-    for k, v in raw.items():
+    for k, v in cells.items():
         if not v:
             continue
         kl, vl = k.lower().strip(), v[0].lower().strip()
-        if kl == "old_form" or vl == "new_form" or not kl:
-            continue  # tugalex includes the CSV header as a bogus row
+        if not kl:
+            continue
         if kl == vl:
             continue  # capitalisation-only change (Janeiro->janeiro); after
             # casefolding it is a no-op that would otherwise pollute the
@@ -593,11 +614,12 @@ def _clean_ao_map(tuga, attr: str) -> Dict[str, str]:
     return out
 
 
-def _dual_full(tuga, attr: str, homographs: FrozenSet[str] = frozenset()) -> Dict[str, str]:
+def _dual_full(cells: Dict[str, List[str]],
+               homographs: FrozenSet[str] = frozenset()) -> Dict[str, str]:
     """The form without the consonant -> the form with it, for each dual cell (a row
-    with two AO1990 forms) of a tugalex AO map, and for the regular plurals of both."""
+    with two AO1990 forms) of an AO1990 map, and for the regular plurals of both."""
     out: Dict[str, str] = {}
-    for forms in (getattr(tuga, attr, None) or {}).values():
+    for forms in cells.values():
         cell = {f.lower().strip() for f in forms if f and f.strip()}
         if len(cell) != 2:
             continue
@@ -612,8 +634,8 @@ def _dual_full(tuga, attr: str, homographs: FrozenSet[str] = frozenset()) -> Dic
 
 
 def _plural(word: str) -> Optional[str]:
-    """The plural of a dual cell form, for the endings the cells of the tugalex AO1990
-    maps have: a word in -a, -e or -o takes -s, and -or and -z take -es; carácter and
+    """The plural of a dual cell form, for the endings the cells of the AO1990 maps
+    have: a word in -a, -e or -o takes -s, and -or and -z take -es; carácter and
     caráter make caracteres and carateres (Base IV 1º c names that pair), and the
     adjectives dactilar and datilar take -es (Aulete, datilar: "adj. || dactilar"); -ção makes
     -ções; -al makes -ais; -vel and the unstressed -il of táctil make -eis (Priberam,
