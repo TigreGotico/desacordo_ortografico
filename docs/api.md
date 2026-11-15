@@ -48,7 +48,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 
 | Feature | What it changes | Edges |
 | --- | --- | --- |
-| `1911-word-map` | the curated 1911 word pairs (pharmacia -> farmácia) | reform_1911 |
+| `1911-word-map` | the curated 1911 word pairs and the tugalex archaisms list (pharmacia -> farmácia, comsigo -> consigo), see below | reform_1911 |
 | `1911-digraphs` | ph, th, rh -> f, t, r; y -> i | reform_1911 |
 | `1911-geminates` | doubled consonants, except rr and ss | reform_1911 |
 | `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo), see below | reform_1911 |
@@ -72,7 +72,27 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `months` | month casing | every conversion |
 
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
-word stays as written, and the rules of that edge do not change it either.
+word stays as written, and the rules of that edge do not change it either. The 1911 word
+map owns its words in the same way.
+
+The 1911 word map joins the curated 1911 pairs and the rows of the tugalex archaisms list.
+A tugalex row gives the modern pt-PT form, so a row enters only when its 1911 form is
+known. Where the AO1990 pt-PT map lists the modern form, the 1911 form is the pre-AO1990
+form of that map (architecto -> arquitecto). A row stays out when its modern form drops
+a c or p that no table restores (affectando, AO1990 afetando), drops the initial sc that
+1911 keeps (scintillar), is the bare form of a differential accent (pello, AO1990 pelo),
+or drops an ê or ô of the archaic form (sêcco, 1911 sêco by Base XXVIII). Such a row
+converts by the rules, as words outside the map do. For the other rows the modern form
+stands for the 1911 form, and an accent that the archaic form does not show can still be
+missing (elle gives ele, where 1911 writes êle).
+
+Both varieties share the 1911 form, so a row also stays out when the Brazilian edges do
+not turn the form it gives the 1911 map into its pt-BR form (character, pt-BR caráter).
+This check tests only the rows whose form for the 1911 map differs from their pt-BR form.
+For the other rows it only shows that the Brazilian edges keep the word, and it says
+nothing about the 1911 form. Where the two maps hold the same word, the curated pair
+decides. The backward pass reads the curated pairs only, because several archaic forms
+can share one modern form.
 
 The 1911 accent guess gives a bare word the accent of the one accented word that has
 the same letters. A bare form that is itself a word stays as written (para, pára). So
