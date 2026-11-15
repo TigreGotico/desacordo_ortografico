@@ -144,67 +144,6 @@ def test_a_c_p_adjective_stays_as_written():
     assert convert("um olhar reflectido", "br_1971", "ao1990-br") == "um olhar reflectido"
 
 
-@pytest.mark.parametrize("source", ["br_1971", "ao1990", "ao1990-pt"])
-@pytest.mark.parametrize("text", [
-    # AO1990 Base XXI: a name, a firm, a brand or a title keeps its written form
-    "Juntaram-se editoras como Ramal, Favela Discos, Elberec e Coletivo Farra.",
-    "Quem dirigiu o filme Aventuras d'um Detetive Português?",
-    "o impacto no Setor",
-])
-def test_a_name_inside_a_sentence_keeps_its_form(source, text):
-    assert convert(text, source, "ao1990-br") == text
-
-
-@pytest.mark.parametrize("source, text, expected", [
-    # VOLP: correção s.f. "ato de corrigir"; cf. correição; no correcção
-    ("etymological", "a Correcção Fraterna", "a Correção Fraterna"),
-    # VOLP: reação s.f.; no reacção
-    ("etymological", "a Reacção Química", "a Reação Química"),
-    # VOLP: espetáculo s.m.; no espectáculo
-    ("etymological", "o Grande Espectáculo", "o Grande Espetáculo"),
-    # VOLP: eletricidade s.f.; no electricidade
-    ("etymological", "a Electricidade de Portugal", "a Eletricidade de Portugal"),
-    # VOLP: caráter s.m.; pl. caracteres; no carácter
-    ("ao1990-pt", "o Carácter Nacional", "o Caráter Nacional"),
-    # VOLP: projeto s.m.; no projecto
-    ("ao1990-pt", "o Projecto Alfa", "o Projeto Alfa"),
-    # VOLP: cofator adj. s.m.; no cofactor
-    ("ao1990-pt", "o Cofactor X", "o Cofator X"),
-])
-def test_a_name_loses_a_consonant_the_volp_rejects(source, text, expected):
-    """A name keeps only a bare form the VOLP step would give a c or p."""
-    assert convert(text, source, "ao1990-br") == expected
-
-
-@pytest.mark.parametrize("text", [
-    # a colon or an opening quote ends no sentence; VOLP: ótimo | óptimo
-    "Ele disse: Ótimo, vamos.",
-    'Ele disse: "Ótimo, vamos."',
-])
-def test_a_name_after_a_colon_or_a_quote_keeps_its_form(text):
-    assert convert(text, "br_1971", "ao1990-br") == text
-
-
-def test_a_name_toward_pt_pt_keeps_the_dual_step():
-    """The name test belongs to the pt-BR VOLP step only."""
-    assert convert("o impacto no Setor", "br_1971", "ao1990-pt") == "o impacto no Sector"
-
-
-@pytest.mark.parametrize("text, expected", [
-    # VOLP: setor (ô) s.m. | sector (ô) s.m.
-    ("Setor público", "Sector público"),
-    ("o setor", "o sector"),
-    ("Fim do ano. Setor público\nSetor privado", "Fim do ano. Sector público\nSector privado"),
-    # a text in capitals throughout, or with no word in lowercase, gives no case signal
-    ("O COLETIVO DO SETOR", "O COLECTIVO DO SECTOR"),
-    ("O Coletivo Do Setor", "O Colectivo Do Sector"),
-    # a word in capitals throughout is no name
-    ("o Setor é ÓTIMO", "o Setor é ÓPTIMO"),
-])
-def test_a_word_that_opens_a_sentence_takes_the_volp_form(text, expected):
-    assert convert(text, "br_1971", "ao1990-br") == expected
-
-
 @pytest.mark.parametrize("text, expected", [
     # VOLP: profilático s.m. | profiláctico adj.; the bare form is no adjective
     ("o tratamento profilático", "o tratamento profiláctico"),
@@ -251,7 +190,7 @@ def test_seção_and_secção_are_two_words():
 
 def test_case_and_compounds_follow_the_volp():
     """VOLP: setor (ô) s.m. | sector (ô) s.m.; ótimo adj. s.m. interj. | óptimo adj. s.m. interj."""
-    assert convert("Setor é ÓTIMO.", "br_1971", "ao1990-br") == "Sector é ÓPTIMO."
+    assert convert("O Setor é ÓTIMO.", "br_1971", "ao1990-br") == "O Sector é ÓPTIMO."
     assert convert("o setor-chave", "br_1971", "ao1990-br") == "o sector-chave"
 
 

@@ -48,15 +48,13 @@ import re
 import unicodedata
 from typing import Callable, List, Mapping, Optional, Sequence, Tuple
 
-from .lexicon import _ACCENTS, _one_more_consonant, deaccent
+from .lexicon import _ACCENTS, deaccent
 
 # letters that count as part of a word (ASCII + Latin-1 accented range)
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
 _VOWELS = "aeiouáàâãéêíóôõúü"
 # the joints of a compound word: hyphen and apostrophes
 _SEGMENT_SEP = re.compile(r"[-'’]")
-# a sentence end: the next word opens a sentence
-_SENTENCE_END = re.compile(r"[.!?…\n]")
 
 
 # ----------------------------------------------------------------- tokenising
@@ -64,7 +62,6 @@ def apply_to_words(
     text: str,
     fn: Callable[[str], str],
     is_word: Optional[Callable[[str], bool]] = None,
-    keep_names: bool = False,
 ) -> str:
     """Apply ``fn`` to each word in ``text``, preserving case and punctuation.
 
@@ -76,35 +73,15 @@ def apply_to_words(
     is returned as written. When ``is_word`` is given, a word in capitals throughout
     whose lowercase form is no word is an acronym or a symbol, and it stays as written
     (IPTU, PPD, the axis Y; AO1990 Base I 2º c)).
-
-    With ``keep_names``, a word inside a sentence that starts with a capital, or has a
-    part that does, is a name. AO1990 Base XXI lets a person keep the spelling of their
-    name, and a firm, a society, a brand or a title keep its original spelling. A name
-    stays as written when ``fn`` only adds a c or p to it (Coletivo Farra, Detetive
-    Português): the form as written is then the bare form of a dual, and valid. Every
-    other change applies (a Correcção Fraterna -> a Correção Fraterna). A word
-    opens a sentence when no word comes before it or a sentence end (. ! ? … or a line
-    break) comes between it and the word before it. The first word of a sentence, a word
-    in capitals throughout, and every word of a text with no word in lowercase give no
-    case signal, so they convert.
     """
-    cased = keep_names and any(w.islower() for w in _WORD_RE.findall(text))
-    last_end: Optional[int] = None
 
     def repl(match: "re.Match[str]") -> str:
-        nonlocal last_end
         word = match.group(0)
-        opens = last_end is None or bool(_SENTENCE_END.search(text, last_end, match.start()))
-        last_end = match.end()
         if not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word)):
             return word
         if is_word is not None and word.isupper() and not is_word(word.lower()):
             return word
         out = fn(word.lower())
-        if (cased and not opens and not word.isupper()
-                and any(s[:1].isupper() for s in _SEGMENT_SEP.split(word))
-                and _one_more_consonant(word.lower(), out)):
-            return word
         return _match_case(word, out)
 
     return _WORD_RE.sub(repl, text)
