@@ -6,8 +6,8 @@
 pip install desacordo_ortografico
 ```
 
-It depends only on [`tugalex`](https://github.com/TigreGotico/tugalex), which supplies
-the word list.
+It depends only on [`tugalex`](https://github.com/TigreGotico/tugalex) 2.4.9a1 or later,
+which supplies the word list.
 
 ## Detect
 
@@ -28,6 +28,12 @@ Detection works at the granularity orthography actually supports: `etymological`
 `reforma_1911` (the 1911 Portuguese spelling: tambêm, quási, armazêns, freqùente),
 `pt_1973` / `br_1971` (pre-AO1990, European / Brazilian), and `ao1990-pt` / `ao1990-br`.
 When no marker distinguishes the national variant, `variant` is `None`.
+
+With the default rules, `confidence` is the held-out precision of the label for one, or
+two or more, evidence tokens (`etym:pharmacia` and `etym-pattern:theatro` are two). The
+`reforma_1911` values are provisional copies of the `etymological` values. An `ao1990`
+result with a PT/BR lean marker and no AO1990 form gets 0.86. The
+[API reference](api.md) gives the table and the corpora that measure it.
 
 ## Convert
 
