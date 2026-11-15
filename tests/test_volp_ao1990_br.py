@@ -28,7 +28,9 @@ SOURCES = ("br_1971", "ao1990-pt", "etymological")
     ("liquefação", "liquefacção"),  # VOLP: liquefação (u ou ü) s.f. | liquefacção (u ou ü) s.f.
 ])
 def test_a_volp_dual_takes_the_consonant(source, bare, full):
-    assert convert(f"o {bare}", source, "ao1990-br") == f"o {full}"
+    # a pt-PT fato is the suit, see test_a_pt_pt_bare_form_that_is_another_word_stays
+    if not (source == "ao1990-pt" and bare == "fato"):
+        assert convert(f"o {bare}", source, "ao1990-br") == f"o {full}"
     assert convert(f"o {full}", source, "ao1990-br") == f"o {full}"
 
 
@@ -48,6 +50,26 @@ def test_a_single_volp_form_with_the_consonant(source, bare, full):
 ])
 def test_a_single_volp_form_without_the_consonant(source, word):
     assert convert(f"o {word}", source, "ao1990-br") == f"o {word}"
+
+
+@pytest.mark.parametrize("source", ("ao1990-pt", "pt_1973"))
+def test_a_pt_pt_bare_form_that_is_another_word_stays(source):
+    """pt-PT writes facto for the fact (base_iv.json dual facto/fato; VOP facto), so a
+    pt-PT fato is the suit, another word. VOLP: fato s.m. | facto s.m. decides the fact."""
+    assert convert("Comprei um fato novo.", source, "ao1990-br") == "Comprei um fato novo."
+    assert convert("Os fatos novos.", source, "ao1990-br") == "Os fatos novos."
+    assert convert("O facto é claro.", source, "ao1990-br") == "O facto é claro."
+
+
+def test_a_brazilian_bare_form_takes_the_volp_dual():
+    """VOLP: fato s.m. | facto s.m. A Brazilian fato is the fact."""
+    assert convert("o fato", "br_1971", "ao1990-br") == "o facto"
+
+
+def test_a_pt_pt_bare_form_of_the_same_word_takes_the_volp_dual():
+    """pt-PT drops the p of óptimo (AO1990 Base IV 1º b: "ótimo"), so a pt-PT ótimo is the
+    same word. VOLP: ótimo adj. s.m. interj. | óptimo adj. s.m. interj."""
+    assert convert("ótimo", "ao1990-pt", "ao1990-br") == "óptimo"
 
 
 @pytest.mark.parametrize("source, full, bare", [

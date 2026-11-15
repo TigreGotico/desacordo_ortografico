@@ -313,6 +313,31 @@ class Lexicon:
                     plurals.setdefault(*plural)
         return {**plurals, **decided}
 
+    @cached_property
+    def ao_br_volp_pt_words(self) -> Dict[str, str]:
+        """The VOLP rows whose bare form is another word in pt-PT text, for a pt-PT source.
+
+        pt-PT writes only the form with the consonant of a Base IV dual of
+        ``data/base_iv.json`` (facto, contacto), so a pt-PT fato is the suit, not the
+        fact. For such a row the bare form stays and the pt-PT form takes the VOLP form:
+        fato -> fato, facto -> facto, and the same for the regular plurals. A pt-PT dual
+        cell (setorial, sectorial) makes the bare form the same word, so its row applies.
+        """
+        pt_only: Dict[str, str] = {}
+        for pt, br in self.dual_pt2br.items():
+            pt_only[pt] = br
+            plural = _plural(pt), _plural(br)
+            if None not in plural:
+                pt_only.setdefault(*plural)
+        out: Dict[str, str] = {}
+        for row in self._volp_br:
+            token, form, european = row["token"], row["form"], row["european"]
+            if (row["rows"] == "*" and row["pair"] == "one word" and form != token
+                    and pt_only.get(european) == token and token not in self.ao_pt_dual_full):
+                out[token] = token
+                out[european] = form
+        return out
+
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent
         is also a proclitic (para, pelo: Base IX 9.o), so only the forms in

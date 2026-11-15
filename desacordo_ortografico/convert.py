@@ -148,6 +148,11 @@ class OrthographyConverter:
             if dst.era == Era.AO1990:
                 dst = NORMS[f"ao1990-{variant}"]
         steps = find_path(src, dst)
+        # pt-PT text reaches ao1990-br through the divergence edge; there a VOLP row whose
+        # bare form is another pt-PT word (fato, the suit) keeps it
+        from_pt = dst.id == "ao1990-br" and "volp" in enabled and any(
+            name == "ptbr_divergence" and fwd for name, _frm, fwd in steps)
+        pt_words = self.lex.ao_br_volp_pt_words if from_pt else {}
         result = ConversionResult(text=text, source=src.id, target=dst.id)
         if not steps:
             return result
@@ -165,7 +170,8 @@ class OrthographyConverter:
             # the word pass rewrites letters inside each word only, so the tags aligned to
             # the words before it still line up one to one with the words after it
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
-            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled), is_word)
+            own = pt_words if edge_name == "ptbr_divergence" else {}
+            out = rules.apply_to_words(out, lambda w, p=step_pass, k=own: k.get(w) or p.apply(w, enabled), is_word)
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
@@ -189,7 +195,7 @@ class OrthographyConverter:
             volp = self.lex.ao_br_volp if br and "volp" in enabled else {}
 
             def choose(w: str) -> Optional[str]:
-                return volp.get(w) or duals.get(w)
+                return pt_words.get(w) or volp.get(w) or duals.get(w)
 
             # each element of a compound too (setor-chave), unless the compound is a cell
             if volp or duals:
