@@ -91,6 +91,12 @@ ROWS_OUT_OF_1911 = [
     ("quam", "pt_1945", "quão", f'{ACORDO_1945} (Base XIII: "quão (não quam)")'),
     ("teem", "pt_1945", "têm", f"{ACORDO_1945} ({_TER_VIR_1945})"),
     ("veem", "pt_1945", "vêm", f"{ACORDO_1945} ({_TER_VIR_1945})"),
+    ("scetro", "pt_1945", "ceptro", f'{ACORDO_1945} (Base VI, 2.°: "Conservam-se não apenas nos '
+                                     f'casos em que são invariavelmente proferidos [...], mas '
+                                     f'também naqueles em que só se proferem em Portugal ou só '
+                                     f'no Brasil [...]: [...] assumptível, assumptivo, ceptro, '
+                                     f'consumpção [...] (p interior geralmente proferido no '
+                                     f'Brasil, mas predominantemente mudo em Portugal)")'),
     ("quási", "br_1943", "quase", f'{FORMULARIO_1943} (33.: "Assim, pois, devem ser inscritos '
                                    f'vocábulos como: [...] pior, quase, quepe")'),
     ("tam", "br_1943", "tão", f"{FORMULARIO_1943} ({_TAM_1943})"),

@@ -330,7 +330,13 @@ class OrthographyConverter:
         # -- 1911 -> 1945 (PT) and 1911 -> 1943 (BR): the word rows of the spelling
         #    table, then the rules; rules.py quotes the clause of each.
         def from_1911(rows: Mapping[str, str]) -> WordFn:
-            return lambda w: rules.per_segment(w, lambda p: rows.get(p, p))
+            def read(word: str) -> str:
+                parts = rules._SEGMENT_SEP.split(word)
+                if len(parts) > 1 and len(set(parts)) == 1:  # tam-tam, a gong
+                    return word
+                return rules.per_segment(word, lambda p: rows.get(p, p))
+
+            return read
 
         pt_1911_to_1945 = _Edge(
             _Pass(steps=[
@@ -338,7 +344,7 @@ class OrthographyConverter:
                 ("initial-sc", rules.drop_initial_sc),
                 ("oxytone-em", rules.oxytone_em_acute),
                 ("grave-u", rules.drop_grave_u),
-                ("differential-1945", rules.drop_differential_1945),
+                ("differential-1945", lambda w: rules.drop_differential_1945(w, lex.is_listed)),
                 ("trema", rules.ao1990_drop_trema),
             ]),
             _Pass(),

@@ -6,12 +6,13 @@ form comes from the clause on its row: the Acordo Ortográfico of 1945 for pt_19
 Formulário Ortográfico of 1943 for br_1943. rules.py quotes the clauses in full.
 """
 import json
+import time
 from pathlib import Path
 
 import pytest
 
 import desacordo_ortografico
-from desacordo_ortografico import convert
+from desacordo_ortografico import convert, rules
 
 _TABLE = Path(desacordo_ortografico.__file__).parent / "data" / "spelling.json"
 
@@ -71,9 +72,24 @@ def test_1911_print_converts(text, target, expected):
     # presente do indicativo de ter e vir"
     ("vocês teem os seus...", "ao1990-br", "vocês têm os seus..."),
     ("--De onde é êle?", "ao1990-pt", "--De onde é ele?"),
-    ("--Senhor, convêm que me deixeis no Cêrro!", "ao1990-pt", "--Senhor, convêm que me deixeis no Cerro!"),
 ])
 def test_1911_print_reaches_ao1990(text, target, expected):
+    assert convert(text, "reforma_1911", target) == expected
+
+
+_SINGULAR_LIMIT = (
+    "1911 Base XIV writes the singular contêm (\"contêm, do verbo conter\"); from 1945 on the "
+    "same letters spell the plural, and text between the Portuguese and Brazilian norms passes "
+    "through 1911 with that plural, so the compounds of ter and vir stay as written")
+
+
+@pytest.mark.xfail(strict=True, reason=_SINGULAR_LIMIT)
+@pytest.mark.parametrize("text,target,expected", [
+    # the subject is singular: 1945 Base XIII "convém, mantém"; AO1990 keeps the acute
+    ("--Senhor, convêm que me deixeis no Cêrro!", "pt_1945", "--Senhor, convém que me deixeis no Cêrro!"),
+    ("--Senhor, convêm que me deixeis no Cêrro!", "ao1990-pt", "--Senhor, convém que me deixeis no Cerro!"),
+])
+def test_1911_singular_of_a_ter_or_vir_compound(text, target, expected):
     assert convert(text, "reforma_1911", target) == expected
 
 
@@ -96,14 +112,26 @@ def test_1945_keeps_the_circumflex(word):
     ("compôr", "compor"), ("Êste", "Este"), ("sobr'ôlho", "sobr'olho"), ("sal-gêma", "sal-gema"),
     # 1945 Base XXI: "enjoo"
     ("enjôo", "enjoo"),
+    # a regular form of a known verb (viver, ser, opor, perdoar) and a contraction of de
+    ("vivêra", "vivera"), ("fôram", "foram"), ("opôrem", "oporem"), ("perdôa", "perdoa"),
+    ("dêsses", "desses"),
 ])
 def test_1945_drops_the_differential_circumflex(old, new):
     assert convert(old, "reforma_1911", "pt_1945") == new
 
 
+@pytest.mark.parametrize("word", ["lêem", "vêem", "crêem", "dêem", "pôde", "pêlo"])
+def test_1945_keeps_the_circumflex_whatever_the_word_set(word):
+    # Base XXI keeps the hiatus ee and Base XXII keeps pôde and pêlo, even when the bare
+    # letters spell a word
+    assert rules.drop_differential_1945(word, lambda w: True) == word
+
+
 @pytest.mark.parametrize("old,new", [
     ("Alêm-rio", "Além-rio"), ("ninguêm", "ninguém"), ("Jerusalêm", "Jerusalém"),
     ("armazêns", "armazéns"), ("alguêm", "alguém"), ("TAMBÊM", "TAMBÉM"),
+    # a noun, not a compound of ter: 1945 Base XIII and 1943, 7.ª write vintém
+    ("vintêm", "vintém"),
 ])
 def test_oxytone_em_takes_the_acute(old, new):
     for target in ("pt_1945", "br_1943"):
@@ -111,11 +139,14 @@ def test_oxytone_em_takes_the_acute(old, new):
 
 
 @pytest.mark.parametrize("word", [
-    # from 1945 on, the compounds of ter and vir in -têm and -vêm are the plural
-    # (conclusão 20 of 1945; 1943, 7.ª Observação 2.ª "(êles) contêm, (elas) convêm")
-    "contêm", "convêm", "mantêm", "provêm",
-    # 1911 Base XI names the words that keep the initial sc; a foreign word is none of them
+    # 1911 Base XI names the words that keep the initial sc; these foreign words are none
+    # of them
     "Science", "Scion", "scene",
+    # 1911 Base XXVIII marks one of two Portuguese homographs: a foreign word whose bare
+    # letters spell no Portuguese word carries no 1911 differential circumflex
+    "prêtres", "prête", "être", "même", "rêve", "bête", "vôtre", "êtes",
+    # 1945 Base XIII "tão (não tam)" is the adverb; Eça's tam-tam is a gong
+    "tam-tam",
 ])
 def test_out_of_1911_leaves_the_word(word):
     for target in ("pt_1945", "br_1943"):
@@ -130,6 +161,65 @@ def test_text_between_the_norms_keeps_the_plural_and_the_foreign_word(text):
     assert convert(text, "pt_1973", "br_1943") == text
 
 
+@pytest.mark.parametrize("text,source", [
+    ("Peuple de prêtres, peuple de rois", "br_1943"),
+    ("Il faut être bête.", "reforma_1911"),
+    # Eça de Queirós, in the spelling before 1911
+    ("um tam-tam argentino e melancólico ressoava", "etymological"),
+])
+def test_foreign_words_and_the_gong_stay(text, source):
+    for target in ("pt_1945", "pt_1973", "ao1990-pt"):
+        assert convert(text, source, target) == text
+
+
+@pytest.mark.parametrize("text", [
+    "Quiz vêl-a e pôz-se a correr para a aldêa de Corrêa, ao Musêo.", "a campêa"])
+def test_pre_1911_shapes_keep_the_circumflex(text):
+    # the etymological edge leaves these pre-1911 shapes (1945: vê-la, pôs-se, aldeia,
+    # Correia, Museu, campeia); dropping the circumflex would not give the 1945 form
+    assert convert(text, "etymological", "pt_1945") == text
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "cote is a Portuguese word, so the letters of Côte cannot tell the French word from a "
+    "1911 differential"))
+def test_cote_d_azur_stays():
+    assert convert("Passou férias na Côte d'Azur.", "br_1943", "pt_1945") == "Passou férias na Côte d'Azur."
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "the initial sc rule reads the word families of 1911 Base XI, and some English words "
+    "share their letters"))
+def test_english_sc_words_stay():
+    text = "the scientific method and a sceptical scenario"
+    assert convert(text, "reforma_1911", "pt_1945") == text
+
+
+@pytest.mark.parametrize("target", ["pt_1945", "pt_1973"])
+def test_scetro_keeps_the_p_in_portugal(target):
+    # 1945 Base VI, 2.°: "ceptro [...] (p interior geralmente proferido no Brasil, mas
+    # predominantemente mudo em Portugal)"
+    assert convert("O scetro", "reforma_1911", target) == "O ceptro"
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "data/base_iv.json maps cetro to ceptro on the Brazilian edges; the Bases of 1931, § 1.º "
+    "1.º, write cetro"))
+def test_scetro_loses_the_s_in_brazil():
+    # Bases of 1931, § 1.º: "Eliminar: 1.º As consoantes mudas: cetro, fruto, sinal em vez
+    # de sceptro, fructo, signal"
+    assert convert("O scetro", "reforma_1911", "br_1943") == "O cetro"
+
+
+@pytest.mark.parametrize("token", [
+    "a" * 3000 + "êm", "ba" * 1500 + "êm", "ê" * 3000, "b" * 3000 + "ôr", "êb" * 1500 + "a"])
+def test_a_long_token_converts_in_linear_time(token):
+    start = time.perf_counter()
+    for source, target in (("reforma_1911", "pt_1945"), ("pt_1973", "br_1943")):
+        convert(token, source, target)
+    assert time.perf_counter() - start < 2.0
+
+
 def _rows_out_of_1911():
     with open(_TABLE, encoding="utf-8") as f:
         return [r for r in json.load(f)["rows"] if r["era"] == "reforma_1911"]
@@ -139,7 +229,7 @@ def test_every_row_out_of_1911_quotes_its_clause():
     rows = _rows_out_of_1911()
     assert {(r["form"], r["target"]) for r in rows} == {
         (form, target) for form in ("quási", "tam", "quam", "teem", "veem")
-        for target in ("pt_1945", "br_1943")}
+        for target in ("pt_1945", "br_1943")} | {("scetro", "pt_1945")}
     for r in rows:
         assert r["source"].startswith(("Acordo Ortográfico de 1945", "Formulário Ortográfico de 1943"))
         assert '"' in r["source"] and r["value"] in r["source"]

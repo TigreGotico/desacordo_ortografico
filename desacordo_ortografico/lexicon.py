@@ -453,6 +453,13 @@ class Lexicon:
         known = self._known_letters
         return letters in known or bool({"nominal", "plural"} & _inflection_kinds(letters, known))
 
+    def is_listed(self, word: str) -> bool:
+        """True when ``word``, accents and all, is in :attr:`wordset`, or is a regular
+        plural or feminine of a word in it (aldeia, toda; not aldea, which only the
+        letters of aldeã spell)."""
+        return word in self.wordset or bool(
+            {"nominal", "plural"} & _inflection_kinds(word, self.wordset))
+
     @cached_property
     def _accent_candidates(self) -> Dict[str, Tuple[str, FrozenSet[str]]]:
         """Map an unaccented form to its unique accented word and the inflection kinds

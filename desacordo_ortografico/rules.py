@@ -72,11 +72,13 @@ Brasileira de Letras).
 - The initial sc loses its s in the words that 1911 Base XI names, with their derivatives:
   "É conservado o grupo inicial sc, das seguintes palavras e seus derivados e afins, em que
   o s é mudo: scena, sciência, scetro, scéptico, scisma, scisão, sciático, scintilar,
-  scelerado, e algum outro menos usual". A foreign word keeps its sc (Science). The Bases of 1931, § 1.º, drop it: "Eliminar: [...] 4.º O s do
-  grupo inicial: ciência, ciática". The decree of 1945 says Portugal adopted the 1931
-  accord: "foi aprovado e mandado executar, em Portugal pela portaria n.o 7:117, de 27 de
-  Maio do mesmo ano". 1943, 19.: "Elimina-se o s do grupo inicial sc: celerado, cena,
-  cenografia, ciência, cientista, cindir, cintilar, ciografia, cisão, etc."
+  scelerado, e algum outro menos usual". A foreign word outside these families keeps its
+  sc (Science); an English word inside them (scientific, sceptical) loses it. The Bases of
+  1931, § 1.º, drop the s: "Eliminar: [...] 4.º O s do grupo inicial: ciência, ciática".
+  The decree of 1945 says Portugal adopted the 1931 accord: "foi aprovado e mandado
+  executar, em Portugal pela portaria n.o 7:117, de 27 de Maio do mesmo ano". 1943, 19.:
+  "Elimina-se o s do grupo inicial sc: celerado, cena, cenografia, ciência, cientista,
+  cindir, cintilar, ciografia, cisão, etc."
 - 1945 drops the circumflex that tells a closed e or o from an open one, the accent of
   1911 Base XXVIII ("marcar-se hão êstes com o acento circunflexo"). 1945 Base XXII: "O
   emprego do acento circunflexo, para distinguir formas paroxítonas ou oxítonas das suas
@@ -88,9 +90,20 @@ Brasileira de Letras).
   accent, 14.ª: "Emprega-se o acento circunflexo como diferencial ou distintivo no e e no
   o fechados da sílaba tônica das palavras que estão em homografia com outras em que são
   abertos êsse e e êsse o".
+  The 1911 circumflex marks one of two homographs. 1911 Base XXVIII: "Quando um qualquer
+  vocábulo que tenha por sílaba predominante a penúltima, e cuja vogal nessa sílaba seja e
+  ou o abertos, fôr homógrafo com outro em que êsse e ou o seja fechado, marcar-se hão êstes
+  com o acento circunflexo". So the accent goes only where the bare letters spell a
+  Portuguese word: a word of the word list as written, accents and all, a contraction of
+  de or em with one (dêste, 1911 Base XXXVIII), or a regular form of a known verb (vivêra,
+  perdôa). A pre-1911 shape that the etymological edge leaves (aldêa, vêl-a, pôz-se)
+  stays too, because its bare letters spell no word of the list. A foreign word
+  whose bare letters spell no Portuguese word stays (prêtres, être). Côte loses its accent,
+  because cote is a Portuguese word.
 
-The words that no rule reaches are rows of the spelling table (quási, tam, teem), each
-with its clause.
+The words that no rule reaches are rows of the spelling table (quási, tam, teem, and
+scetro, which 1945 Base VI writes ceptro), each with its clause. The rows apply to each
+part of a hyphenated word, except in a word whose parts repeat (tam-tam, a gong).
 """
 from __future__ import annotations
 
@@ -463,9 +476,9 @@ def nasal_vowel_to_pt(word: str) -> str:
 
 # ---------------------------------------- the edges out of 1911 (BR 1943, PT 1945)
 # See the module docstring for the clause of each rule.
-_RE_OXYTONE_EM = re.compile(".*[%s].*(?:[^%s]|[gq]u)ê(?=m$|ns$)" % (_VOWELS, _VOWELS))
-# the compounds of ter and vir in -têm and -vêm (contêm, convêm); vintêm is a noun
-_RE_TER_VIR_COMPOUND = re.compile("(?!vintêm$).+[tv]êm")
+# the ê of a final -êm or -êns after a consonant, or after the u of gu or qu
+_RE_OXYTONE_EM = re.compile("(?:[^%s]|[gq]u)(ê)(?:m|ns)$" % _VOWELS)
+_RE_VOWEL = re.compile("[%s]" % _VOWELS)
 _RE_GRAVE_U = re.compile("([gq])ù(?=[eiéíê])")
 # the words of 1911 Base XI and their derivatives: scena, sciência, scetro, scéptico,
 # scisma, scisão, sciático, scintilar, scelerado
@@ -476,6 +489,11 @@ _RE_INITIAL_SC = re.compile(
 _RE_CIRCUMFLEX = re.compile("(.*)([êô])((?:[^%s]*(?:[aeo]s?|[ae]m|ens))|[rzl])" % _VOWELS)
 _KEPT_CIRCUMFLEX_1945 = frozenset({
     "côa", "côas", "pêlo", "pêlos", "pêra", "pêro", "pôlo", "pôlos", "pôr", "pôde", "dêmos"})
+# the endings after the accented vowel of a regular verb form: -er and -or verbs
+# (vivêra, opôrem, fôssem) and -oar verbs (perdôa, abençôe)
+_ER_OR_ENDINGS = frozenset({
+    "r", "ra", "ras", "ram", "ramos", "rem", "res", "mos", "sse", "sses", "ssem", "ste", "stes"})
+_OAR_ENDINGS = frozenset({"a", "as", "am", "e", "es", "em", "o"})
 
 
 def per_segment(word: str, fn: Callable[[str], str]) -> str:
@@ -489,9 +507,12 @@ def oxytone_em_acute(word: str) -> str:
     """-êm/-êns -> -ém/-éns in an oxytone of more than one syllable (tambêm -> também,
     armazêns -> armazéns). A compound of ter or vir in -têm or -vêm stays. One-way."""
     def acute(part: str) -> str:
-        if _RE_TER_VIR_COMPOUND.fullmatch(part):
+        m = _RE_OXYTONE_EM.search(part)
+        if m is None or not _RE_VOWEL.search(part, 0, m.start()):
             return part
-        return _RE_OXYTONE_EM.sub(lambda m: m.group(0)[:-1] + "é", part)
+        if len(part) > 3 and part.endswith(("têm", "vêm")) and part != "vintêm":  # contêm
+            return part
+        return part[:m.start(1)] + "é" + part[m.end(1):]
 
     return per_segment(word, acute)
 
@@ -512,15 +533,35 @@ def drop_initial_sc(word: str) -> str:
     return _RE_INITIAL_SC.sub("c", word)
 
 
-def drop_differential_1945(word: str) -> str:
+def _is_portuguese(bare: str, accent: int, is_word: Callable[[str], bool]) -> bool:
+    """True when ``bare``, a word with its circumflex dropped at ``accent``, is a
+    Portuguese word: a listed word, a contraction of de or em with one (deste), or a
+    regular form of a listed verb (vivera, opor, perdoa)."""
+    if is_word(bare):
+        return True
+    if bare[0] in "dn" and bare[1:2] in ("a", "e", "o") and is_word(bare[1:]):
+        return True
+    stem, vowel, ending = bare[:accent], bare[accent], bare[accent + 1:]
+    if not stem:
+        return False
+    if ending in _ER_OR_ENDINGS and is_word(stem + vowel + "r"):
+        return True
+    return vowel == "o" and ending in _OAR_ENDINGS and is_word(stem + "oar")
+
+
+def drop_differential_1945(word: str, is_word: Callable[[str], bool]) -> str:
     """Drop the 1911 circumflex that 1945 Base XXII no longer writes (êle -> ele,
     dêste -> deste, côr -> cor, vôo -> voo). The forms of Base XXII that keep it and the
-    hiatus ee of Base XXI (lêem) stay. One-way."""
+    hiatus ee of Base XXI (lêem) stay. The circumflex goes only when the bare letters
+    spell a Portuguese word (``is_word``): 1911 Base XXVIII puts it on one word of a pair
+    of homographs, so a word whose bare form is no word (être, prêtres) is no 1911
+    differential and stays. One-way."""
     def drop(part: str) -> str:
         m = _RE_CIRCUMFLEX.fullmatch(part)
         if m is None or part in _KEPT_CIRCUMFLEX_1945 or part.endswith("êem"):
             return part
-        return m.group(1) + {"ê": "e", "ô": "o"}[m.group(2)] + m.group(3)
+        bare = m.group(1) + {"ê": "e", "ô": "o"}[m.group(2)] + m.group(3)
+        return bare if _is_portuguese(bare, m.start(2), is_word) else part
 
     return per_segment(word, drop)
 
