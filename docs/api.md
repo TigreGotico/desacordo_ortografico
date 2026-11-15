@@ -42,7 +42,9 @@ dated text in the 1911 spelling is Eça de Queirós, Contos, Chardron 1913 (Gute
 31347), and it is held out, so no cal unit has a true `reforma_1911` label. On that book
 the label holds for 130 of 1,084 paragraphs. It holds for no unit of the 13 books printed
 before 1911, of the 1,721 news sentences, of the silver renderings or of the Formulário
-Ortográfico of 1943.
+Ortográfico of 1943. A modern text that quotes a 1911 form also gets `reforma_1911` (the
+Acordos of 1945 and 1990 write "quase (em vez de quási)"), and so can OCR text that splits
+a Brazilian `-êm-` word (epidêm.io).
 
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).

@@ -62,20 +62,29 @@ Portuguesa) prints and that Brazilian print of 1943 does not:
   international kilo". porêm and alêm also occur in books printed before 1911, so they do
   not count. The third person plural of the compounds of ter and vir (contêm, provêm)
   keeps the circumflex in later norms (Acordo Ortográfico of 1990, Base IX: "abstêm [...]
-  contêm [...] provêm"), so it does not count either.
+  contêm [...] provêm"), so it does not count either. Base IX gives its examples with
+  "tais como", so the prefixes are those of the compounds that the Priberam dictionary
+  conjugates with this plural, which include devêm (devir), reconvêm (reconvir) and
+  reobtêm (reobter).
 - Base XXIV: "mas, quási, Vénus, órfã(s)".
 - Base XLVI: "O u depois de q ou g é dêle inseparável, quer seja mudo, quer se profira;
   ex.: quin ta, guer ra, fre qùente, a gùentar, ar gùir."
 
-The pronoun circumflex of Base VII ("êle, ela") is no 1911 evidence, because the
-Formulário of 1943, rule 14.ª, also writes "êsse, êsses, êste, êstes". The acute before
--mente (Base XXXV: "a acentuação com o agudo [...] mantém-se [...]: fácilmente") is no
-1911 evidence either: the acute is kept, not introduced, and books printed before 1911
-have it. A text with at least one 1911 form is reforma_1911, whatever its other markers.
-Brazilian print of 1943 to 1971 cannot have a 1911 form, because the Formulário of 1943
-writes também, quase and the trema (rule 12.ª: "tranqüilo"). Print in the 1911 spelling
-still carries pre-1911 forms (emquanto, emfim and bemdita in a 1913 print of Eça de
-Queirós), so a listed pre-1911 form does not outweigh a 1911 form.
+The pronoun circumflex (êle, êste, dêle) is no 1911 evidence. Base XXVIII marks the
+closed e or o of a paroxytone that is a homograph of a word with the open vowel ("marcar-se
+hão êstes com o acento circunflexo"), and the Formulário of 1943, rule 14.ª, keeps that
+rule and writes "êsse, êsses, êste, êstes". The acute before -mente is no 1911 evidence
+either. Base XXXV is the source of the form: a derivative in -zinho changes the acute to
+a grave (sòzinho, cafèzinho), but in an adverb in -mente "a acentuação com o agudo, ou o
+circunflexo mantém-se" (fácilmente, sómente), so the adverb keeps the accent of its
+adjective. The exclusion rests on print: books printed before 1911 have the form
+(sériamente, decidídamente), and to count it gives reforma_1911 to 16 units of those books
+and to 1 of the news sentences. A text with at least one 1911 form is reforma_1911,
+whatever its other markers. Brazilian print of 1943 to 1971 cannot have a 1911 form,
+because the Formulário of 1943 writes também, quase and the trema (rule 12.ª:
+"tranqüilo"). Print in the 1911 spelling still carries pre-1911 forms (emquanto, emfim
+and bemdita in a 1913 print of Eça de Queirós), so a listed pre-1911 form does not
+outweigh a 1911 form.
 """
 from __future__ import annotations
 
@@ -98,8 +107,9 @@ _RE_NASAL_BR = re.compile("[êô](?=%s)" % _NASAL)
 _SENTENCE_END = re.compile(r"[.!?…\n]")
 # 1911 forms, as the module docstring quotes them
 _RE_1911_OXYTONE = re.compile(".*[%s].*(?:[^%s]|[gq]u)ê(?:m|ns)" % (_VOWELS, _VOWELS))
-_TER_VIR_PLURAL = re.compile("(?:abs|a|con|de|entre|man|ob|re|sus)?têm"
-                             "|(?:ad|a|con|contra|desa|descon|inter|pro|re|sobre)?vêm")
+_TER_VIR_PLURAL = re.compile(
+    "(?:abs|a|con|de|entre|man|ob|re|reob|sus)?têm"
+    "|(?:ad|a|con|contra|de|desa|descon|inter|pro|re|recon|sobre)?vêm")
 _PRINTED_BEFORE_1911 = {"porêm", "alêm"}
 
 # built by benchmark/confidence_table.py

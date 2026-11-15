@@ -295,6 +295,8 @@ class TestReforma1911:
              "ninguêm"),  # pg31347:77.6
             # Base XXIV: "mas, quási, Vénus, órfã(s)"
             ("Vi-o chorar, àquele vélho de quási sessenta anos.", "quási"),  # pg31347:71.4
+            # each part of a hyphenated token counts
+            ("O cão ficou quási-morto à porta.", "quási-morto"),
             # Base XLVI: "fre qùente, a gùentar, ar gùir"
             ("No entanto estava tranqùilo.", "tranqùilo"),  # pg31347:169.1
         ],
@@ -426,8 +428,10 @@ class TestReforma1911:
         ],
     )
     def test_pre_1911_print_stays_etymological(self, text):
-        """Base XXXV keeps the acute before -mente ("mantém-se"), so books printed before
-        1911 have it (sériamente, decidídamente) and it is no 1911 evidence."""
+        """Base XXXV prints the acute before -mente: the adverb keeps the accent of its
+        adjective ("mantém-se"), where a derivative in -zinho changes it to a grave. Books
+        printed before 1911 have the same form (sériamente, decidídamente), so it is no
+        1911 evidence."""
         r = _orth(text)
         assert r.era == Era.ETYMOLOGICAL
         assert not [m for m in r.markers if m.startswith("reforma-1911")]
@@ -453,4 +457,40 @@ class TestReforma1911:
         them is a 1911 form."""
         r = _orth(text)
         assert r.era == Era.AO1990
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # Priberam conjugation of devir: "eles/ elas/ vocês devêm"
+            "Na filosofia de Heraclito, todas as coisas devêm sem cessar.",
+            # Priberam conjugation of reconvir: "eles/ elas/ vocês reconvêm"
+            "Na contestação, os réus reconvêm o autor e pedem uma indemnização.",
+            # Priberam conjugation of reobter: "eles/ elas/ vocês reobtêm"
+            "Com a sentença, os herdeiros reobtêm a posse do terreno.",
+        ],
+    )
+    def test_ter_vir_plurals_outside_base_ix_are_no_1911_evidence(self, text):
+        """Base IX of 1990 lists the ter and vir plurals with "tais como". devir, reconvir
+        and reobter are compounds of the same verbs, and every norm after 1945 writes
+        their plural with the circumflex."""
+        r = _orth(text)
+        assert r.era == Era.AO1990
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # silver_corpus p07-091, gold ao1990-br
+            "A ideia do mural surgiu durante a polêmica do concurso.",
+            # silver_corpus p04-024, gold ao1990-br
+            "O acadêmico estudou o batismo das células no processo regenerativo.",
+        ],
+    )
+    def test_brazilian_circumflex_inside_a_word_is_no_1911_evidence(self, text):
+        """Base XIV marks a polysyllable that ends in -êm. Brazilian print writes êm
+        inside a word (polêmica, acadêmico), and that is no 1911 form."""
+        r = _orth(text)
+        assert r.era == Era.AO1990
+        assert r.variant == Variant.BR
         assert not [m for m in r.markers if m.startswith("reforma-1911")]
