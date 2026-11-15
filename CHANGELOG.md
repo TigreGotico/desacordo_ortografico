@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.2a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.2a2) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.2a1...0.2.2a2)
+
+**Merged pull requests:**
+
+- refactor: read the 1911, archaism and AO1990 maps from one spelling table [\#38](https://github.com/TigreGotico/desacordo_ortografico/pull/38) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.2.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.2a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.1a1...0.2.2a1)
