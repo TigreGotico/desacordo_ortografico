@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.23a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.23a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.22a1...0.1.23a1)
+
+**Merged pull requests:**
+
+- fix: write the ABL VOLP form of each pt-BR word in ao1990-br [\#33](https://github.com/TigreGotico/desacordo_ortografico/pull/33) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.22a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.22a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.21a1...0.1.22a1)
