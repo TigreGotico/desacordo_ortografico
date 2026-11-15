@@ -89,7 +89,7 @@ lexical part. It defines four sets:
   consonant, in the plural too. A word with one valid form takes that form. contrato
   and retrato stay: each is a word of its own beside contracto and retracto. For pt-BR,
   the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) decides each word that
-  `data/volp_ao1990_br.tsv` holds, before the tugalex map: the VOLP lists fato and
+  `data/volp_ao1990_br.json` holds, before the tugalex map: the VOLP lists fato and
   facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator.
   Two VOLP entries that point to each other with "cf." are two words (ótica, óptica),
   and neither becomes the other. Where the VOLP gives the form with the consonant for
