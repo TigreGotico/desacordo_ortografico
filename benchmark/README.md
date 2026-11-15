@@ -158,7 +158,7 @@ stays as written.
 Each line of `variety_fixes.tsv` gives a cell, a token, the pt_1973 token that names the
 word, the Brazilian form, the rows it applies to and the source it comes from. The
 tables hold the br_1971 lines. The ao1990-br lines live in the package file
-`desacordo_ortografico/data/volp_ao1990_br.tsv`, which `convert()` reads too; a line
+`desacordo_ortografico/data/volp_ao1990_br.json`, which `convert()` reads too; a line
 there whose form is its token keeps the token. The
 pt_1973 token keeps homographs apart: fato becomes facto only where the European cell
 writes facto, so fato (a suit) stays. A row whose Brazilian cell has a different token
