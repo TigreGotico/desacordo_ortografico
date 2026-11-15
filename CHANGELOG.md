@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.3a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.2a2...0.2.3a1)
+
+**Merged pull requests:**
+
+- fix: keep a name the VOLP lists as written in ao1990-br [\#40](https://github.com/TigreGotico/desacordo_ortografico/pull/40) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.2.2a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.2a2) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.2a1...0.2.2a2)

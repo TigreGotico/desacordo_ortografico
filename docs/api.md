@@ -92,7 +92,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `diphthong-accent` | éi/ói in a paroxytone (assembléia -> assembleia) | ao1990_pt, ao1990_br |
 | `hiatus-accent` | ôo and êem (vôo -> voo) | ao1990_pt, ao1990_br |
 | `prefix-rs` | prefix + r/s (auto-regulável -> autorregulável) | ao1990_pt, ao1990_br |
-| `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.json` holds (fato -> facto, aceção -> acepção) | every conversion to ao1990-br |
+| `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.json` holds (fato -> facto, aceção -> acepção); a name inside a sentence keeps a form the VOLP lists (e Coletivo Farra) | every conversion to ao1990-br |
 | `months` | month casing | every conversion |
 
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
@@ -202,7 +202,9 @@ emfim), so a listed pre-1911 form does not outweigh a 1911 form.
 `ao_pt_old2new` / `ao_br_old2new` (with their inverses). These maps read the spelling
 table `data/spelling.json`. `ao_pt_row_class` and
 `ao_br_row_class` give the class of each AO1990 row (`ao_row_class(old, new)`).
-`ao_br_volp` maps a pt-BR word to its form in the ABL VOLP, from `data/volp_ao1990_br.json`. Every map has a reverse. AO1990
+`ao_br_volp` maps a pt-BR word to its form in the ABL VOLP, from `data/volp_ao1990_br.json`.
+`ao_br_volp_listed` holds the forms the VOLP lists, which decide the names toward pt-BR
+(see [orthographies](orthographies.md)). Every map has a reverse. AO1990
 reverses come from the spelling table and are authoritative where present.
 
 ## `ml`
