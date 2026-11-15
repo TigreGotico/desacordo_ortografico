@@ -44,6 +44,28 @@ def _tsv(name):
         return [line.rstrip("\n").split("\t") for line in f]
 
 
+def _fixes():
+    """The br_1971 lines of variety_fixes.tsv and the ao1990-br fix lines of the package
+    file, as (cell, token, european, fix, rows, source)."""
+    return _tsv("variety_fixes.tsv") + [
+        ["ao1990-br", r["token"], r["european"], r["form"], r["rows"], r["source"]]
+        for r in _apply_module().load_volp() if r["form"] != r["token"]]
+
+
+def _keeps():
+    """The br_1971 lines of variety_keeps.tsv and the ao1990-br keep lines of the package
+    file, as (cell, token, european, rows, reason)."""
+    return _tsv("variety_keeps.tsv") + [
+        ["ao1990-br", r["token"], r["european"], r["rows"], r["source"]]
+        for r in _apply_module().load_volp() if r["form"] == r["token"]]
+
+
+def test_the_ao1990_br_lines_live_in_the_package_file():
+    """convert() and this benchmark read the ao1990-br lines from one file."""
+    assert {line[0] for line in _tsv("variety_fixes.tsv") + _tsv("variety_keeps.tsv")} == {"br_1971"}
+    assert len(_apply_module().load_volp()) > 1000
+
+
 def _tokens(row, cell):
     return [t.lower() for t in TOKEN.findall(row["cells"][cell])]
 
@@ -124,7 +146,7 @@ def test_every_bare_form_against_a_european_c_p_form_is_decided():
     """A Brazilian token that drops the c/p of its pt_1973 word either changes by a table
     line or stays by a line of variety_keeps.tsv that names its source for that cell."""
     keeps = {}
-    for c, t, e, rows_named, _reason in _tsv("variety_keeps.tsv"):
+    for c, t, e, rows_named, _reason in _keeps():
         keeps.setdefault((c, t, e), set()).update(rows_named.split(","))
     gaps = sorted({(row_id, cell, t, e) for row_id, row in _rows().items() for cell in BRAZILIAN
                    for t, e in _c_p_pairs(row, cell)
@@ -148,7 +170,7 @@ def test_no_row_holds_an_undecidable_token():
 def test_every_line_names_its_source():
     """A br_1971 line cites the Formulário, a page of the 1943 vocabulary or the Priberam
     view before the AO1990, never the VOLP."""
-    for cell, token, _european, fix, _rows_named, source in _tsv("variety_fixes.tsv"):
+    for cell, token, _european, fix, _rows_named, source in _fixes():
         assert cell in BRAZILIAN
         assert token != fix
         if cell == "br_1971":
@@ -156,7 +178,7 @@ def test_every_line_names_its_source():
                 source.startswith("Priberam ") and "before the AO1990" in source), source
         else:
             assert source.startswith(("VOLP: ", "Priberam ")), source
-    for cell, _token, _european, _rows_named, reason in _tsv("variety_keeps.tsv"):
+    for cell, _token, _european, _rows_named, reason in _keeps():
         allowed = ("Formulário 1943, ", "Vocabulário 1943, p. ", "Priberam ", "no source: ") \
             if cell == "br_1971" else ("VOLP: ", "Priberam ", "no source: ")
         assert reason.startswith(allowed), reason
@@ -170,9 +192,9 @@ def test_a_br_1971_priberam_citation_shows_a_spelling_change():
     """A Priberam page decides br_1971 only when its spelling changes with the AO1990 in
     Brazil or in Portugal, or when Brazil and Portugal wrote two spellings before it.
     Priberam produto shows produto in all four views, so it decides nothing."""
-    cited = [(token, source) for cell, token, _e, _y, _r, source in _tsv("variety_fixes.tsv")
+    cited = [(token, source) for cell, token, _e, _y, _r, source in _fixes()
              if cell == "br_1971" and source.startswith("Priberam ")]
-    cited += [(token, reason) for cell, token, _e, _r, reason in _tsv("variety_keeps.tsv")
+    cited += [(token, reason) for cell, token, _e, _r, reason in _keeps()
               if cell == "br_1971" and reason.startswith("Priberam ")]
     assert len(cited) > 350
     for token, source in cited:
@@ -225,7 +247,7 @@ def test_br_1971_takes_the_spelling_of_the_1943_vocabulary(sentence, european, e
 
 def test_a_br_1971_word_the_1943_vocabulary_registers_is_not_residual():
     """The vocabulary decides these words, so no "no source" keep line names them."""
-    keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _tsv("variety_keeps.tsv")}
+    keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _keeps()}
     for token in ("produto", "produtos", "produtor"):
         assert keeps[("br_1971", token)].startswith("Vocabulário 1943, p. 1065: produt"), token
     # "conjeturante, adj. 2 gên." (p. 381), "inexatidão, s. f." (p. 771)
@@ -239,7 +261,7 @@ def test_a_personal_name_stays_as_written():
     Otávia; no ao1990-br source names Otávia, so the token stays."""
     cells = _apply("Ontem a Otávia chegou.", "Ontem a Octávia chegou.", "d07020")
     assert (cells["br_1971"], cells["ao1990-br"]) == ("Ontem a Otávia chegou.", "Ontem a Otávia chegou.")
-    for cell, token, *_rest in _tsv("variety_fixes.tsv"):
+    for cell, token, *_rest in _fixes():
         assert token != "otávia", cell
 
 
@@ -299,10 +321,10 @@ def test_ao1990_br_takes_no_form_from_a_flat_priberam_page():
     change of word."""
     flat = {"angiectático", "haptotáctico", "prolepticamente", "rector", "telóptico", "tigmotactismo",
             "trofotactismo", "zigotactismo", "zigotáctico"}
-    written = {fix for cell, _token, _european, fix, _rows_named, _source in _tsv("variety_fixes.tsv")
+    written = {fix for cell, _token, _european, fix, _rows_named, _source in _fixes()
                if cell == "ao1990-br"}
     assert written & flat == set()
-    keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _tsv("variety_keeps.tsv")}
+    keeps = {(cell, token): reason for cell, token, _european, _rows_named, reason in _keeps()}
     assert keeps[("ao1990-br", "retor")].startswith("no source: a change of word")
 
 
@@ -315,7 +337,7 @@ def _one_c_p_apart(bare, cp):
 
 def test_every_c_p_line_changes_one_consonant_and_no_accent():
     """Deleting the consonant from the longer form gives the shorter form, accents included."""
-    for cell, token, _european, fix, _rows_named, _source in _tsv("variety_fixes.tsv"):
+    for cell, token, _european, fix, _rows_named, _source in _fixes():
         if len(fix) != len(token) and "-" not in fix + token:
             longer, shorter = (fix, token) if len(fix) > len(token) else (token, fix)
             assert _one_c_p_apart(shorter, longer), (cell, token, fix)
@@ -329,7 +351,7 @@ def _entry(text):
 
 def test_a_volp_line_pairs_one_lemma_with_one_part_of_speech():
     """VOLP: reta s.f. and recto adj. s.m. are two words, so no line pairs them."""
-    for cell, _token, _european, _fix, _rows_named, source in _tsv("variety_fixes.tsv"):
+    for cell, _token, _european, _fix, _rows_named, source in _fixes():
         m = re.match(r"VOLP: ([^|;]+?) \| ([^|;]+?)(?:;|$)", source)
         if cell != "ao1990-br" or not m:
             continue

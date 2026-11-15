@@ -9,9 +9,11 @@ Base IV 2º does the same for the m of mn: "o m da sequência mn, em amnistia, .
 omnímodo, omnipotente, omnisciente, etc.".
 
 The choice of the form with the consonant is an owner ruling. A dual cell of the
-tugalex AO1990 map of the target variety lists the two valid forms. A word with one
-valid form takes that form. Every route that does not end at an AO1990 target converts
-as on origin/dev.
+tugalex AO1990 map of the target variety lists the two valid forms. For pt-BR the ABL
+VOLP decides each word that data/volp_ao1990_br.tsv holds before the tugalex map does
+(tests/test_volp_ao1990_br.py): the VOLP lists only cofator. A word with one valid form
+takes that form. Every route that does not end at an AO1990 target converts as on
+origin/dev.
 """
 import csv
 from pathlib import Path
@@ -24,6 +26,7 @@ from desacordo_ortografico.convert import FEATURES
 from desacordo_ortografico.lexicon import get_lexicon
 
 _TUGA = TugaLexicon()
+_VOLP = get_lexicon().ao_br_volp
 
 
 def _cells(table):
@@ -55,8 +58,10 @@ def test_every_pt_pt_dual_cell_takes_the_consonant_toward_pt_pt():
 
 @pytest.mark.parametrize("full, bare", BR_CELLS)
 def test_every_pt_br_dual_cell_takes_the_consonant_toward_pt_br(full, bare):
-    assert convert(bare, "ao1990-pt", "ao1990-br") == full
-    assert convert(full, "ao1990-pt", "ao1990-br") == full
+    # VOLP: cofator adj. s.m.; no cofactor
+    expected = _VOLP.get(bare, full)
+    assert convert(bare, "ao1990-pt", "ao1990-br") == expected
+    assert convert(full, "ao1990-pt", "ao1990-br") == expected
 
 
 # Dual cells of the tugalex pt-PT map (sector -> setor, sector; carácter -> caráter,
@@ -99,8 +104,8 @@ def test_al_and_el_plurals_take_the_consonant():
 
 def test_pt_br_dual_plural_takes_the_consonant():
     # -es after r (Cunha & Cintra cap. 8), and -ção makes -ções
-    assert convert("os cofatores e as liquefações", "ao1990-pt", "ao1990-br") \
-        == "os cofactores e as liquefacções"
+    assert convert("os liquefatores e as liquefações", "ao1990-pt", "ao1990-br") \
+        == "os liquefactores e as liquefacções"
 
 
 def test_unstressed_il_plural_takes_the_consonant():
@@ -220,7 +225,8 @@ def test_word_of_its_own_does_not_gain_the_consonant(word):
 # Every other route converts as on origin/dev (a3ef145). The expected values below are
 # origin/dev output.
 def test_route_to_pt_br_converts_pt_pt_duals_as_on_dev():
-    assert convert("o sector e o carácter", "pt_1973", "ao1990-br") == "o setor e o caráter"
+    # VOLP: setor (ô) s.m. | sector (ô) s.m.; caráter s.m.; pl. caracteres; no carácter
+    assert convert("o sector e o carácter", "pt_1973", "ao1990-br") == "o sector e o caráter"
     assert convert("a acupunctura", "pt_1973", "br_1971") == "a acupuntura"
 
 
@@ -250,7 +256,9 @@ def test_pt_br_dual_toward_pt_pt_converts_as_on_dev():
 
 # tests/data/ptbr_dual_dev_outputs.tsv holds the origin/dev output of every form of every
 # pt-PT dual cell, from each European source to each pt-BR norm. Only the forms of a
-# pt-BR dual cell toward ao1990-br differ, by the rule above. The file leaves out the
+# pt-BR dual cell toward ao1990-br differ, by the rule above. Toward ao1990-br, the VOLP
+# then decides each word of the origin/dev output that it holds, or each element of a
+# compound. The file leaves out the
 # rows where the Brazilian form that Priberam gives differs from the origin/dev output
 # (tests/test_silent_cp_listed_words.py), and the rows of contracto and retracto toward
 # pt-BR: Priberam gives contrato and retrato, but these are also the words contract and
@@ -268,8 +276,15 @@ def _dev_rows():
                 yield word, src, dst, out
 
 
+def _volp_form(out, dst):
+    if dst != "ao1990-br":
+        return out
+    return _VOLP.get(out) or "-".join(_VOLP.get(p, p) for p in out.split("-"))
+
+
 def test_pt_pt_dual_toward_pt_br_converts_as_on_dev():
     rows = list(_dev_rows())
     assert len(rows) == 2825
-    wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows if convert(w, s, d) != out]
+    wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows
+             if convert(w, s, d) != _volp_form(out, d)]
     assert wrong == []

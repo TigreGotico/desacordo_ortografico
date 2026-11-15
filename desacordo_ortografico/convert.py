@@ -57,6 +57,8 @@ FEATURES: FrozenSet[str] = frozenset({
     # AO1990 rules and curated lists
     "differential", "hyphen-lexical", "silent-cp", "diphthong-accent", "hiatus-accent",
     "prefix-rs",
+    # the ABL VOLP decisions for pt-BR words
+    "volp",
     # month casing (text level)
     "months",
 })
@@ -211,6 +213,11 @@ class OrthographyConverter:
             if dst.era == Era.AO1990:
                 dst = NORMS[f"ao1990-{variant}"]
         steps = find_path(src, dst)
+        # pt-PT text reaches ao1990-br through the divergence edge; there a VOLP row whose
+        # bare form is another pt-PT word (fato, the suit) keeps it
+        from_pt = dst.id == "ao1990-br" and "volp" in enabled and any(
+            name == "ptbr_divergence" and fwd for name, _frm, fwd in steps)
+        pt_words = self.lex.ao_br_volp_pt_words if from_pt else {}
         result = ConversionResult(text=text, source=src.id, target=dst.id)
         if not steps:
             return result
@@ -228,7 +235,8 @@ class OrthographyConverter:
             # the word pass rewrites letters inside each word only, so the tags aligned to
             # the words before it still line up one to one with the words after it
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
-            out = rules.apply_to_words(out, lambda w, p=step_pass: p.apply(w, enabled), is_word)
+            own = pt_words if edge_name == "ptbr_divergence" else {}
+            out = rules.apply_to_words(out, lambda w, p=step_pass, k=own: k.get(w) or p.apply(w, enabled), is_word)
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
@@ -243,12 +251,21 @@ class OrthographyConverter:
                     result.warnings.append(msg)
 
         # Base IV 1º c: where both forms of a dual cell are valid in the target variety,
-        # an AO1990 target writes the form with the consonant (sector, liquefacto).
-        if "silent-cp" in enabled and dst.era == Era.AO1990:
-            duals = self.lex.ao_br_dual_full if dst.variant == Variant.BR else self.lex.ao_pt_dual_full
+        # an AO1990 target writes the form with the consonant (sector, liquefacto). For
+        # pt-BR the VOLP decides a word it holds before the tugalex dual cells do.
+        if dst.era == Era.AO1990:
+            br = dst.variant == Variant.BR
+            duals = ((self.lex.ao_br_dual_full if br else self.lex.ao_pt_dual_full)
+                     if "silent-cp" in enabled else {})
+            volp = self.lex.ao_br_volp if br and "volp" in enabled else {}
+
+            def choose(w: str) -> Optional[str]:
+                return pt_words.get(w) or volp.get(w) or duals.get(w)
+
             # each element of a compound too (setor-chave), unless the compound is a cell
-            out = rules.apply_to_words(
-                out, lambda w: duals.get(w) or "-".join(duals.get(p, p) for p in w.split("-")), is_word)
+            if volp or duals:
+                out = rules.apply_to_words(
+                    out, lambda w: choose(w) or "-".join(choose(p) or p for p in w.split("-")), is_word)
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.

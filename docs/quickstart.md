@@ -36,7 +36,7 @@ from desacordo_ortografico import convert
 
 convert("a acção directa", "pre-ao1990-pt", "ao1990-pt")   # 'a ação direta'
 convert("pharmacia", "etymological", "ao1990-br")          # 'farmácia'
-convert("facto", "ao1990-pt", "ao1990-br")                 # 'fato'
+convert("húmido", "ao1990-pt", "ao1990-br")                # 'úmido'
 ```
 
 Norm names accept canonical ids (`ao1990-pt`), years (`1911`, `1990`), and aliases

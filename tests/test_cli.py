@@ -25,10 +25,10 @@ class TestConvertCommand:
         assert out == "ação"
 
     def test_convert_variant_divergence(self, capsys):
-        rc = main(["convert", "--from", "ao1990-pt", "--to", "ao1990-br", "facto"])
+        rc = main(["convert", "--from", "ao1990-pt", "--to", "ao1990-br", "húmido"])
         out = capsys.readouterr().out.strip()
         assert rc == 0
-        assert out == "fato"
+        assert out == "úmido"
 
     def test_convert_verbose_warns_on_lossy(self, capsys):
         rc = main(["convert", "--from", "ao1990-pt", "--to", "etymological", "-v", "farmácia"])
