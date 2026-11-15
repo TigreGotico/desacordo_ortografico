@@ -7,8 +7,26 @@ Classify a text. Calls the sister-language guard first, then classifies. `method
 higher accuracy on sentence-length text, opt-in). Input is NFC-normalized.
 
 `Orthography` fields: `era` (`Era`), `variant` (`Variant | None`), `confidence`
-(`float`), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical norm id that
-round-trips into `convert`), `is_portuguese` (`True`).
+(`float`, see below), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical
+norm id that round-trips into `convert`), `is_portuguese` (`True`).
+
+With `method="rules"`, `confidence` is the held-out precision of the label for the number
+of distinct evidence tokens behind it: one, or two or more. Each value is the lowest
+precision over the measured populations: 13 pre-1911 Gutenberg books, `silver_corpus.jsonl`,
+the `parallel` config of the Hugging Face dataset, and modern news sentences of which 50
+were judged pre-1911 text. The values are the `_CONFIDENCE` table of `detect.py`, and
+`benchmark/confidence_table.py` measures them again from the same data.
+
+| Label | Evidence tokens | 1 token | 2 or more |
+| --- | --- | --- | --- |
+| `etymological` | listed pre-1911 forms (pharmacia, theatro) | 0.89 | 0.99 |
+| `pt_1973` | pre-AO1990 PT forms, `-êem`, a capital month | 0.79 | 0.94 |
+| `br_1971` | pre-AO1990 BR forms, trema | 0.95 | 0.99 |
+| `ao1990` | AO1990 map forms (ação, ótima) | 0.96 | 0.95 |
+
+An `ao1990` result with no AO1990 form but with a PT/BR lean marker gets 0.91. A text with
+no evidence at all gets 0.34, because its label is only the default. With `"nb"` or
+`"perceptron"`, `confidence` comes from the model margin.
 
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).

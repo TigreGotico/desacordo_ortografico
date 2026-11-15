@@ -177,6 +177,23 @@ Note on PT↔BR conversion: the European and Brazilian lines can diverge *lexica
 (quinta/fazenda), which an orthographic converter correctly does not translate — so the
 cross-variant pairs are capped below 100% by design, not by a bug.
 
+## Detection confidence
+
+`confidence_table.py` measures the `_CONFIDENCE` table of `detect.py`: the precision of
+each label for one, and for two or more, distinct evidence tokens, on the cal split of 13
+pre-1911 Gutenberg books, `silver_corpus.jsonl`, the `parallel` config of the Hugging Face
+dataset and a set of relabelled modern sentences. Each cell keeps the lowest precision
+over the sources with at least 15 cal units in it. The script fetches the books. The
+other inputs are paths:
+
+```bash
+python benchmark/confidence_table.py --books BOOKS_DIR --silver-full silver_full.jsonl \
+    --relabel rows.jsonl --pre1911 pre1911-ids.txt --check
+```
+
+With `--check`, the run ends with `table equals _CONFIDENCE: True` and exits 0 when the
+committed table matches the data.
+
 ## Reproduce
 
 ```bash
