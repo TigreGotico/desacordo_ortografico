@@ -62,11 +62,19 @@ A tugalex row gives the modern pt-PT form, so a row enters only when its 1911 fo
 known. Where the AO1990 pt-PT map lists the modern form, the 1911 form is the pre-AO1990
 form of that map (architecto -> arquitecto). A row stays out when its modern form drops
 a c or p that no table restores (affectando, AO1990 afetando), drops the initial sc that
-1911 keeps (scintillar), or is the bare form of a differential accent (pello, AO1990 pelo).
-A row also stays out when the Brazilian edges do not derive its pt-BR form from its 1911
-form, because both varieties share the 1911 form. Where the two maps hold the same word,
-the curated pair decides. The backward pass reads the curated pairs only, because several
-archaic forms can share one modern form.
+1911 keeps (scintillar), is the bare form of a differential accent (pello, AO1990 pelo),
+or drops an ê or ô of the archaic form (sêcco, 1911 sêco by Base XXVIII). Such a row
+converts by the rules, as words outside the map do. For the other rows the modern form
+stands for the 1911 form, and an accent that the archaic form does not show can still be
+missing (elle gives ele, where 1911 writes êle).
+
+Both varieties share the 1911 form, so a row also stays out when the Brazilian edges do
+not turn the form it gives the 1911 map into its pt-BR form (character, pt-BR caráter).
+This check tests only the rows whose form for the 1911 map differs from their pt-BR form.
+For the other rows it only shows that the Brazilian edges keep the word, and it says
+nothing about the 1911 form. Where the two maps hold the same word, the curated pair
+decides. The backward pass reads the curated pairs only, because several archaic forms
+can share one modern form.
 
 The 1911 accent guess gives a bare word the accent of the one accented word that has
 the same letters. A bare form that is itself a word stays as written (para, pára). So

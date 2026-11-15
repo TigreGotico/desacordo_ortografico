@@ -15,10 +15,12 @@ The 1911 edge reads two word maps. The first is the 1911 map of this package
 ``tugalex`` (``TugaLexicon.archaic_words``), whose rows cite the base of the Formulário
 Ortográfico of 1911 that changes each word (comsigo -> consigo, Base XV). A row gives
 its modern pt-PT form, and that form can also carry a change made after 1911, so
-:func:`archaism_row_class` sorts the rows and only two classes enter the 1911 map. The
-European and the Brazilian targets share the 1911 form, so a row enters only when the
-Brazilian edges derive its pt-BR form from its 1911 form. Where both maps hold a word,
-the map of this package decides. The backward pass reads the map of this package only.
+:func:`archaism_row_class` sorts the rows and only two classes enter the 1911 map. A
+row also stays out when the Brazilian edges do not turn the form it gives the 1911 map
+into its pt-BR form. That check tests only the rows whose form for the 1911 map differs
+from their pt-BR form. For the other rows it only shows that the Brazilian edges keep
+the word, and it says nothing about the 1911 form. Where both maps hold a word, the map
+of this package decides. The backward pass reads the map of this package only.
 
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
 several edges, *lexical and lossy*: dropping a silent consonant or an accent throws
@@ -61,7 +63,7 @@ FEATURES: FrozenSet[str] = frozenset({
 
 
 #: The classes of a tugalex archaism row, see :func:`archaism_row_class`.
-ARCHAISM_ROW_CLASSES = ("1911", "ao1990-map", "ao1990-cp", "ao1990-differential", "sc")
+ARCHAISM_ROW_CLASSES = ("1911", "ao1990-map", "ao1990-cp", "ao1990-differential", "sc", "circumflex")
 
 #: A Base IV 1º sequence of the AO1990 after a vowel: cc, cç, ct, pc, pç or pt.
 _CP_SEQUENCE = re.compile(r"(?<=[aeiou])[cp][cçt]")
@@ -71,7 +73,9 @@ def archaism_row_class(archaic: str, modern: str, lex: Lexicon) -> str:
     """Classify a tugalex archaism row (``archaic`` -> its modern pt-PT form ``modern``)
     by the reform that its modern form rests on.
 
-    ``1911``: the modern form is the 1911 form (comsigo -> consigo, phosphoro -> fósforo).
+    ``1911``: no check below finds a post-1911 change, so the modern form stands for the
+    1911 form (comsigo -> consigo, phosphoro -> fósforo). The checks do not find every
+    accent: Base VII of 1911 writes "êle", and the row elle -> ele is in this class.
     ``ao1990-map``: the AO1990 pt-PT word map lists the modern form, so the 1911 form is the
     pre-AO1990 form of that map (architecto -> arquiteto, before AO1990 arquitecto).
     ``ao1990-differential``: the modern form is the bare form of a differential accent
@@ -83,9 +87,13 @@ def archaism_row_class(archaic: str, modern: str, lex: Lexicon) -> str:
     afetando), and no table here tells the two apart.
     ``sc``: the archaic form starts with the group sc and the modern form does not. Base
     XI of 1911 keeps that group (scena, sciência), and later accords drop it (cintilar).
+    ``circumflex``: the archaic form has more ê or ô than the modern form. Base XXVIII
+    of 1911 marks the closed e or o of a homograph ("rêgo, substantivo, e rego,
+    verbo"), later laws drop that accent (sêcco -> seco, 1911 sêco), and no table here
+    gives the 1911 form of every such row.
 
-    The ``1911`` and ``ao1990-map`` rows enter the 1911 word map when the Brazilian
-    edges derive their pt-BR form from their 1911 form (``OrthographyConverter``).
+    Only the ``1911`` and ``ao1990-map`` rows can enter the 1911 word map
+    (``OrthographyConverter``).
     """
     if archaic.startswith("sc") and not modern.startswith("sc"):
         return "sc"
@@ -96,7 +104,14 @@ def archaism_row_class(archaic: str, modern: str, lex: Lexicon) -> str:
     regular = rules.reform_1911_geminates(rules.reform_1911_digraphs(archaic))
     if len(_CP_SEQUENCE.findall(deaccent(regular))) > len(_CP_SEQUENCE.findall(deaccent(modern))):
         return "ao1990-cp"
+    if _circumflexes(archaic) > _circumflexes(modern):
+        return "circumflex"
     return "1911"
+
+
+def _circumflexes(word: str) -> int:
+    """The number of ê and ô in ``word``, the closed vowels of Base XXVIII."""
+    return word.count("ê") + word.count("ô")
 
 
 @dataclass
@@ -437,10 +452,11 @@ class OrthographyConverter:
         )
 
         # -- the tugalex archaisms in the 1911 forward map. The European and the
-        #    Brazilian targets share the 1911 form, so a row enters only when the
-        #    Brazilian edges derive its pt-BR form from that 1911 form. architecto enters
-        #    (arquitecto, Brazil arquiteto); affectado stays out, because no Brazilian
-        #    table drops the c of afectado.
+        #    Brazilian targets share the 1911 form, so a row stays out when the Brazilian
+        #    edges do not turn its form into its pt-BR form. architecto enters (arquitecto,
+        #    Brazil arquiteto); affectado stays out, because no Brazilian table drops the c
+        #    of afectado. Where the form and the pt-BR form are the same word, the check
+        #    only shows that the Brazilian edges keep that word.
         def brazilian(word: str) -> str:
             for edge in (br_1911_to_1943, accent_1971, ao1990_br):
                 word = edge.forward.apply(word, FEATURES)

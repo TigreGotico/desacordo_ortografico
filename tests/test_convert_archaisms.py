@@ -21,6 +21,15 @@ a silent consonant ("autor, restrito, produto") and Base IX keeps one that opens
 so the row affectando -> afetando (AO1990 afetar, before AO1990 afectar) gives no 1911
 form either.
 
+Base XXVIII: "Quando um qualquer vocábulo que tenha por sílaba predominante a
+penúltima, e cuja vogal nessa sílaba seja e ou o abertos, fôr homógrafo com outro em que
+êsse e ou o seja fechado, marcar-se hão êstes com o acento circunflexo. Assim se
+diferençarão rêgo, substantivo, e rego, verbo". The rows sêcco -> seco and modêllo ->
+modelo are such nouns and adjectives (seco, modelo of secar, modelar), so 1911 writes
+sêco and modêlo. Brazil kept sêco until 1971: the 1971 table of this package
+(data/accent_reform_1971_73.json, Lei 5.765/1971) lists "sêco": "seco". These rows stay
+out of the map and convert by the rules.
+
 The row colleccionador -> colecionador has no pt-BR value, so pt-BR writes colecionador
 too. Its 1911 form coleccionador keeps a c that no Brazilian table drops, so the row stays
 out of the shared 1911 map.
@@ -65,6 +74,15 @@ def test_row_without_a_known_1911_form_stays_out(old, expected):
     assert convert(old, "etymological", "reforma_1911") == expected
 
 
+@pytest.mark.parametrize("old,target,expected", [
+    ("sêcco", "reforma_1911", "sêco"),
+    ("sêcco", "br_1943", "sêco"),
+    ("modêllo", "reforma_1911", "modêlo"),
+])
+def test_base_xxviii_circumflex_stays_in_1911(old, target, expected):
+    assert convert(old, "etymological", target) == expected
+
+
 @pytest.mark.parametrize("target", ["ao1990-pt", "ao1990-br"])
 def test_row_the_brazilian_edges_cannot_reach_stays_out(target):
     assert convert("colleccionador", "etymological", target) == "colecionador"
@@ -95,6 +113,7 @@ def test_word_map_feature_gates_the_archaisms():
     ("auctor", "autor", "ao1990-cp"),
     ("pello", "pelo", "ao1990-differential"),
     ("scintillar", "cintilar", "sc"),
+    ("sêcco", "seco", "circumflex"),
 ])
 def test_archaism_row_class(archaic, modern, row_class):
     from desacordo_ortografico.convert import archaism_row_class
