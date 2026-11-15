@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.0a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.3a2...0.3.0a1)
+
+**Merged pull requests:**
+
+- feat: convert 1911 spelling forward to pt\_1945 and br\_1943 [\#41](https://github.com/TigreGotico/desacordo_ortografico/pull/41) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.2.3a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.3a2) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.3a1...0.2.3a2)
