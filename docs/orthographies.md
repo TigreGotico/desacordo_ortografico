@@ -48,6 +48,12 @@ AO1990. Defining traits versus the European line: Brazil **dropped the silent c/
 (`ação`, `ótimo`, `diretor`) and used the **acute** on stressed open vowels before a
 nasal where Portugal used the circumflex/closed vowel (`Antônio`, `gênero`).
 
+From the 1911 spelling, `convert()` writes `também` (rule 7.ª), `tranqüilo` (12.ª) and
+`ciência` (19.). It keeps the differential circumflex of `êle` and `sôbre` (14.ª). It
+leaves `convêm` and `contêm` as written, because from 1943 on these letters spell the
+plural. The 1911 words that no rule reaches are rows of the spelling table: `quási→quase`,
+`tam→tão`, `teem→têm`.
+
 Source: [Formulário Ortográfico (Academia Brasileira de Letras)](https://www.academia.org.br/nossa-lingua/formulario-ortografico)
 
 ## Convenção Ortográfica Luso-Brasileira de 1945 (Portugal + PALOP)
@@ -61,6 +67,13 @@ This froze the two-standard system. It codified the PT/BR differences:
 | silent c/p | `acção, óptimo, director` | `ação, ótimo, diretor` | lexical |
 | open vowel before nasal | `António, fenómeno, génio` | `Antônio, fenômeno, gênio` | **deterministic** (é/ó ↔ ê/ô) |
 | pronunciation divergences | `facto, húmido` | `fato, úmido` | lexical |
+
+From the 1911 spelling, `convert()` writes `também` (Base XIII), `tranquilo` (Base
+XXVII) and `ciência` (the 1931 Bases, § 1.º 4.º, which Portugal adopted). The circumflex
+of 1911 Base XXVIII goes, except on the forms that Base XXII keeps: `êle→ele` and
+`côr→cor`, but `pêlo` and `pôde` stay. The 1911 singular `convêm` stays as written,
+because from 1945 on these letters spell the plural. The 1911 words that no rule reaches are rows of
+the spelling table: `quási→quase`, `tam→tão`, `teem→têm`.
 
 Source (official text): [Convenção Ortográfica de 1945 (Priberam)](https://www.priberam.pt/docs/AcOrtog45_73.pdf)
 

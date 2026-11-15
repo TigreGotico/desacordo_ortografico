@@ -15,7 +15,10 @@ The table took its rows from four sources, in this order:
    Brazilian edges turn its 1911 form into its pt-BR form. Every other row gets rows for
    its AO1990 forms only;
 3. the tugalex AO1990 pt-PT list (``acordo_ortografico_pt_PT.csv``), as pt_1973 rows;
-4. the tugalex AO1990 pt-BR list (``acordo_ortografico_pt_BR.csv``), as br_1971 rows.
+4. the tugalex AO1990 pt-BR list (``acordo_ortografico_pt_BR.csv``), as br_1971 rows;
+5. the rows on the edges out of 1911, :data:`ROWS_OUT_OF_1911`: the 1911 words that no
+   rule of those edges reaches, each with the clause of the Acordo Ortográfico of 1945 or
+   the Formulário Ortográfico of 1943 that gives its later form.
 
 The script ran once, with the tugalex release that desacordo_ortografico pins as its
 floor. People edit the table by hand from then on, like the other data files.
@@ -54,6 +57,8 @@ ABOUT = (
     "modern pt-PT form (comsigo gives consigo), or its pre-AO1990 form where the AO1990 "
     "pt-PT map lists the modern form (architecto gives arquitecto). The 1911 reform kept the c and p of -ct- and -pt- words such as acto, óptimo, "
     "director and afecto: affecto gives afecto in 1911, and only the AO1990 edge gives afeto. "
+    "A reforma_1911 row gives the pt_1945 or br_1943 form of a 1911 word that no rule of the "
+    "edge reaches (quási gives quase). "
     "tools/build_spelling_table.py built the rows with tugalex 2.4.9a1."
 )
 
@@ -69,6 +74,30 @@ CITATIONS = {
 #: The tugalex lists that the rows other than the curated pairs come from.
 TUGALEX_SOURCES = ["tugalex archaisms.csv", "tugalex acordo_ortografico_pt_PT.csv",
                    "tugalex acordo_ortografico_pt_BR.csv"]
+#: The norms that the edges out of 1911 lead to, and the rows of those edges: the 1911
+#: form, the target norm, the form in that norm and the clause.
+ACORDO_1945 = "Acordo Ortográfico de 1945 (Decreto n.º 35 228, de 8 de Dezembro de 1945)"
+FORMULARIO_1943 = "Formulário Ortográfico de 1943 (Academia Brasileira de Letras)"
+_TER_VIR_1945 = ('Base XX: "têm e vêm, [...] são de emprego exclusivo na escrita corrente, '
+                 'preterindo assim as formas dissilábicas têem e vêem"')
+_TAM_1943 = ('28., Observação 2.ª: "Com o ditongo nasal ão se escrevem os monossílabos, tônicos '
+             'ou não, e os polissílabos oxítonos: cão, dão, grão, não, quão, são, tão"')
+_TER_VIR_1943 = ('7.ª, Observação 2.ª: "A 3.ª pessoa do plural do presente do indicativo dos '
+                 'verbos ter, vir e seus compostos recebe acento circunflexo no e da sílaba '
+                 'tônica: (êles) contêm, (elas) convêm, (êles) têm, (elas) vêm, etc."')
+ROWS_OUT_OF_1911 = [
+    ("quási", "pt_1945", "quase", f'{ACORDO_1945} (Base IX: "quase (em vez de quási)")'),
+    ("tam", "pt_1945", "tão", f'{ACORDO_1945} (Base XIII: "tão (não tam)")'),
+    ("quam", "pt_1945", "quão", f'{ACORDO_1945} (Base XIII: "quão (não quam)")'),
+    ("teem", "pt_1945", "têm", f"{ACORDO_1945} ({_TER_VIR_1945})"),
+    ("veem", "pt_1945", "vêm", f"{ACORDO_1945} ({_TER_VIR_1945})"),
+    ("quási", "br_1943", "quase", f'{FORMULARIO_1943} (33.: "Assim, pois, devem ser inscritos '
+                                   f'vocábulos como: [...] pior, quase, quepe")'),
+    ("tam", "br_1943", "tão", f"{FORMULARIO_1943} ({_TAM_1943})"),
+    ("quam", "br_1943", "quão", f"{FORMULARIO_1943} ({_TAM_1943})"),
+    ("teem", "br_1943", "têm", f"{FORMULARIO_1943} ({_TER_VIR_1943})"),
+    ("veem", "br_1943", "vêm", f"{FORMULARIO_1943} ({_TER_VIR_1943})"),
+]
 Row = Dict[str, Union[str, bool]]
 Curated = Tuple[List[Row], List[str], Dict[str, str]]
 
@@ -147,13 +176,14 @@ def curated_from_json(path: str) -> Curated:
                 continue
             pairs[k.lower()] = row(k.lower(), "etymological", "reforma_1911", v.lower(), True,
                                    f"{sources[0]} ({group})")
-    return list(pairs.values()), sources + TUGALEX_SOURCES, comments
+    return list(pairs.values()), sources + TUGALEX_SOURCES + [ACORDO_1945, FORMULARIO_1943], comments
 
 
 def curated_from_table(path: str) -> Curated:
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
-    return [r for r in data["rows"] if r["curated"]], data["_sources"], data["_groups"]
+    sources = data["_sources"] + [s for s in (ACORDO_1945, FORMULARIO_1943) if s not in data["_sources"]]
+    return [r for r in data["rows"] if r["curated"]], sources, data["_groups"]
 
 
 def ao_rows(tuga: TugaLexicon) -> List[Row]:
@@ -233,7 +263,9 @@ def main() -> None:
             if br != modern:
                 modern_only.append(row(archaic, "etymological", "ao1990-br", br, False, notes[archaic]))
 
-    rows = curated + to_1911 + modern_only + ao
+    out_of_1911 = [row(form, "reforma_1911", target, value, False, source)
+                   for form, target, value, source in ROWS_OUT_OF_1911]
+    rows = curated + to_1911 + modern_only + out_of_1911 + ao
     # one row per line, so that a change to a row is a one-line diff
     assert all(any(r["source"].startswith(s) for s in sources) for r in rows)
     with open(args.out, "w", encoding="utf-8") as f:
@@ -242,7 +274,7 @@ def main() -> None:
           f"AO1990 forms only {len({r['form'] for r in modern_only})}, "
           f"curated {len([a for a in tuga.archaic_words if a in curated_forms])}")
     print(f"rows written {len(rows)}: curated {len(curated)}, archaisms {len(to_1911) + len(modern_only)}, "
-          f"AO1990 {len(ao)}")
+          f"out of 1911 {len(out_of_1911)}, AO1990 {len(ao)}")
 
 
 if __name__ == "__main__":
