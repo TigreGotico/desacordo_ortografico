@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.19a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.19a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.18a1...0.1.19a1)
+
+**Merged pull requests:**
+
+- fix: create the HF dataset repo only when it does not exist [\#31](https://github.com/TigreGotico/desacordo_ortografico/pull/31) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.18a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.18a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.17a1...0.1.18a1)

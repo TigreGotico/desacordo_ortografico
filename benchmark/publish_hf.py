@@ -171,7 +171,8 @@ def main():
             f.write(CARD.replace("{N}", str(len(parallel))))
 
         api = HfApi()
-        api.create_repo(args.repo, repo_type="dataset", private=args.private, exist_ok=True)
+        if not api.repo_exists(args.repo, repo_type="dataset"):
+            api.create_repo(args.repo, repo_type="dataset", private=args.private, exist_ok=True)
         api.upload_folder(folder_path=d, repo_id=args.repo, repo_type="dataset",
                           commit_message="Publish Portuguese orthographies parallel corpus")
     print(f"published {len(parallel)} parallel + {len(sisters)} sister rows to "
