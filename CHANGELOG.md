@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.20a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.20a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.19a1...0.1.20a1)
+
+**Merged pull requests:**
+
+- fix: read the ABL 1943 vocabulary before Priberam in br\_1971 cells [\#30](https://github.com/TigreGotico/desacordo_ortografico/pull/30) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.1.19a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.19a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.18a1...0.1.19a1)
