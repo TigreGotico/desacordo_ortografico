@@ -51,6 +51,7 @@ from desacordo_ortografico import detect, convert, OrthographyConverter
 
 # --- detection -----------------------------------------------------------
 detect("a pharmacia do theatro").id          # 'etymological'
+detect("Tambêm sei!").id                      # 'reforma_1911'  (1911 spelling)
 detect("o facto é óptimo").id                 # 'pt_1973'   (pre-AO1990, European)
 detect("a idéia do vôo").id                   # 'br_1971'   (pre-AO1990, Brazilian)
 detect("o Antônio é econômico").id            # 'ao1990-br'

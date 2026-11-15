@@ -10,6 +10,12 @@ higher accuracy on sentence-length text, opt-in). Input is NFC-normalized.
 (`float`, see below), `markers` (`list[str]`), `note` (`str`), `id` (`str`, a canonical
 norm id that round-trips into `convert`), `is_portuguese` (`True`).
 
+With `method="rules"`, the label is one of `etymological` (pre-1911), `reforma_1911` (the
+Portuguese spelling of the Formulário Ortográfico of 1911), `pt_1973`, `br_1971`,
+`ao1990-pt`, `ao1990-br` and `ao1990`. `etymological` and `reforma_1911` have `variant`
+`None`. `br_1943` and `pt_1945` are norms of `convert` that `detect` does not return. The
+`"nb"` and `"perceptron"` models have no `reforma_1911` class.
+
 With `method="rules"`, `confidence` is the held-out precision of the label for the number
 of distinct evidence tokens behind it: one, or two or more. Each value is the lowest
 precision over the measured populations: 13 pre-1911 Gutenberg books, `silver_corpus.jsonl`,
@@ -22,6 +28,7 @@ again from these files.
 | Label | Evidence tokens | 1 token | 2 or more |
 | --- | --- | --- | --- |
 | `etymological` | listed pre-1911 forms (pharmacia, theatro) | 0.89 | 0.99 |
+| `reforma_1911` | 1911 forms (tambêm, quási, fácilmente, freqùente) | 0.89 | 0.99 |
 | `pt_1973` | pre-AO1990 PT forms, `-êem`, a capital month | 0.79 | 0.92 |
 | `br_1971` | pre-AO1990 BR forms, trema | 0.95 | 0.99 |
 | `ao1990` | AO1990 map forms (ação, ótima) | 0.96 | 0.95 |
@@ -29,6 +36,13 @@ again from these files.
 An `ao1990` result with no AO1990 form but with a PT/BR lean marker gets 0.86. A text with
 no evidence at all gets 0.34, because its label is only the default. With `"nb"` or
 `"perceptron"`, `confidence` comes from the model margin.
+
+The `reforma_1911` values are provisional copies of the `etymological` values. The only
+dated text in the 1911 spelling is Eça de Queirós, Contos, Chardron 1913 (Gutenberg
+31347), and it is held out, so no cal unit has a true `reforma_1911` label. On that book
+the label holds for 150 of 1,084 paragraphs. Outside it, the label holds for 5 of 31,605
+paragraphs and 8 of 76,295 sentences of the 13 books printed before 1911, for 1 of the
+1,721 news sentences and for no silver rendering, each with one 1911 form.
 
 `NotPortuguese` fields: `lang`, `name`, `confidence`, `markers`, `convertible`
 (`False`), `status`, `is_portuguese` (`False`).
@@ -148,6 +162,18 @@ evidence, whatever its letters (the, Taylor). A form of the tugalex archaisms li
 sentence whose word or part starts with a capital is read as a name and is no evidence ("A Moraci
 Sant'Anna chegou." is AO1990), except in the first word of a sentence or in a text with
 no lowercase word.
+
+1911 evidence (marker `reforma-1911`) is a form of the Formulário Ortográfico of 1911 that
+Brazilian print of 1943 does not have: a polysyllable that ends in `-êm` or `-êns` (Bases
+XIV and XXV: tambêm, alguêm, armazêns, Belêm), `quási` (Base XXIV), an acute before
+`-mente` (Base XXXV: fácilmente), and `qù` or `gù` (Base XLVI: freqùente, agùentar).
+porêm, alêm and sómente do not count, because books printed before 1911 have them. The
+third person plural of the compounds of ter and vir (contêm, provêm) does not count,
+because later norms keep its circumflex. The pronoun circumflex (êle, êste, dêle) does not
+count, because the Formulário Ortográfico of 1943, rule 14.ª, also writes it. A text is
+`reforma_1911` when it holds at least one 1911 form, at least as many distinct 1911 forms
+as listed pre-1911 forms, and no Brazilian evidence (a pre-AO1990 BR form, a trema, or a
+Brazilian lean over the European lean).
 
 ## `eras`
 

@@ -12,8 +12,10 @@ Populations, each unit with a gold set of labels:
 - book13: 13 pre-1911 Gutenberg books, each paragraph and each sentence, gold
   etymological. A book sentence with no old form is spelled the same in other norms, so
   book units count only when the label is etymological.
-- pg31347: Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling. No
-  label of ``detect()`` fits it, so it counts in no precision and is reported only.
+- pg31347: Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling, gold
+  reforma_1911. Most of its sentences hold no 1911 form and are spelled the same in later
+  norms, so a pg31347 unit counts only when the label is reforma_1911. A book13 unit
+  counts when the label is etymological or reforma_1911.
 - silver_corpus: every rendering of the tracked ``benchmark/silver_corpus.jsonl``.
 - silver_full: every rendering of ``parallel.jsonl`` of the Hugging Face dataset
   TigreGotico/desacordo_ortografico, in its own flat schema (one column per norm). The
@@ -29,10 +31,16 @@ else to "test". pg31347 is always "test".
 
 The evidence tokens of a label are the distinct words behind its markers (etym and
 etym-pattern for etymological; verbal-eem, capital-month and pre-ao90-pt for pt_1973;
-pre-ao90-br and trema for br_1971), and for ao1990 the distinct words of the AO1990
-maps. A text with no marker and no AO1990 word keeps 0.34 and is no table cell. A cell
+pre-ao90-br and trema for br_1971; reforma-1911 for reforma_1911), and for ao1990 the
+distinct words of the AO1990 maps. A text with no marker and no AO1990 word keeps 0.34 and is no table cell. A cell
 takes the lowest precision over the sources that hold at least ``MIN_UNITS`` cal units
 in it, rounded to two decimals and capped at 0.99.
+
+pg31347 is the only dated text in the 1911 spelling, and it is always "test", so no cal
+unit has a true reforma_1911 label. A reforma_1911 cell that no source fills with
+``MIN_UNITS`` cal units is provisional: it copies the etymological cell of the same
+evidence count. The script prints every reforma_1911 unit by source, split and evidence
+count, so the measured precision stands beside the provisional value.
 
 The books are fetched from gutenberg.org into ``--books`` when they are missing. The
 script prints the sha256 of every input file.
@@ -74,7 +82,8 @@ HF_COLUMNS = {"etymological": "etymological", "pt_1973": "pt_1973", "ao1990_pt":
 MODERN = ["ao1990", "br_1971", "pt_1973"]
 MARKERS = {"etymological": ("etym", "etym-pattern"),
            "pt_1973": ("verbal-eem", "capital-month", "pre-ao90-pt"),
-           "br_1971": ("pre-ao90-br", "trema")}
+           "br_1971": ("pre-ao90-br", "trema"),
+           "reforma_1911": ("reforma-1911",)}
 COMPLETE_GOLD = {"silver_corpus", "silver_full", "relabel"}
 MIN_UNITS = 15
 FEATURELESS = 0.34
@@ -145,9 +154,11 @@ def evidence_count(text: str, orth: Orthography, lex) -> int:
 
 def judged(r: dict) -> bool:
     """Whether a unit's label can be judged against its gold set."""
-    if r["label"] not in ("etymological", "pt_1973", "br_1971", "ao1990"):
+    if r["label"] not in ("etymological", "reforma_1911", "pt_1973", "br_1971", "ao1990"):
         return False
-    return r["src"] in COMPLETE_GOLD or (r["src"] == "book13" and r["label"] == "etymological")
+    return (r["src"] in COMPLETE_GOLD
+            or (r["src"] == "book13" and r["label"] in ("etymological", "reforma_1911"))
+            or (r["src"] == "pg31347" and r["label"] == "reforma_1911"))
 
 
 def featureless(r: dict) -> bool:
@@ -170,7 +181,24 @@ def build_table(rows: List[dict]) -> Tuple[Dict[Cell, float], Dict[Cell, str]]:
         if units_in_cell >= MIN_UNITS and precision < table.get(cell, 2.0):
             table[cell] = precision
             source[cell] = f"{src} {ok[src, label, bucket]}/{units_in_cell}"
+    for bucket in (1, 2):
+        if ("reforma_1911", bucket) not in table and ("etymological", bucket) in table:
+            table["reforma_1911", bucket] = table["etymological", bucket]
+            source["reforma_1911", bucket] = (f"provisional, the etymological cell; no source "
+                                              f"has {MIN_UNITS} cal units")
     return {k: min(0.99, round(v, 2)) for k, v in table.items()}, source
+
+
+def reforma_1911_units(rows: List[dict]) -> List[Tuple[str, str, str, int, int, int]]:
+    """Every unit labelled reforma_1911: (source, grain, split, evidence count, correct, units)."""
+    ok: collections.Counter = collections.Counter()
+    n: collections.Counter = collections.Counter()
+    for r in rows:
+        if r["label"] == "reforma_1911":
+            key = (r["src"], r["grain"], r["split"], min(r["count"], 2))
+            n[key] += 1
+            ok[key] += "reforma_1911" in r["gold"]
+    return [k + (ok[k], v) for k, v in sorted(n.items())]
 
 
 def calibration_error(rows: List[dict]) -> List[Tuple[str, str, int, float]]:
@@ -234,6 +262,9 @@ def main() -> int:
     print("\n# confidence table (label, evidence tokens): value  # source, correct/cal units")
     for (label, bucket), value in sorted(table.items()):
         print(f"(Era.{label.upper()}, {bucket}): {value:.2f},  # {source[label, bucket]}")
+    print("\n# units labelled reforma_1911: source, grain, split, evidence tokens, correct/units")
+    for src, grain, sp, bucket, correct, units_in_key in reforma_1911_units(rows):
+        print(f"reforma_1911\t{src}\t{grain}\t{sp}\t{bucket}\t{correct}/{units_in_key}")
     print("\n# expected calibration error of detect().confidence, test split, units with evidence")
     for src, grain, n, ece in calibration_error(rows):
         print(f"ece\t{src}\t{grain}\t{n}\t{ece:.4f}")
