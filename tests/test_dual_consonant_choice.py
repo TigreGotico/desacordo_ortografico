@@ -10,7 +10,7 @@ omnímodo, omnipotente, omnisciente, etc.".
 
 The choice of the form with the consonant is an owner ruling. A dual cell of the
 AO1990 map of the target variety (data/spelling.json) lists the two valid forms. For pt-BR
-the ABL VOLP decides each word that data/volp_ao1990_br.tsv holds before the map does
+the ABL VOLP decides each word that data/volp_ao1990_br.json holds before the map does
 (tests/test_volp_ao1990_br.py): the VOLP lists only cofator. A word with one valid form
 takes that form. Every route that does not end at an AO1990 target converts as on
 origin/dev.

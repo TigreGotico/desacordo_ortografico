@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.2.1a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.1a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.0a2...0.2.1a1)
+
+**Merged pull requests:**
+
+- fix: keep the participle of refletir as written in ao1990-br [\#36](https://github.com/TigreGotico/desacordo_ortografico/pull/36) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
+## [0.2.0a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.0a2) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.0a1...0.2.0a2)
+
+**Merged pull requests:**
+
+- refactor: store the VOLP rows for pt-BR as JSON [\#37](https://github.com/TigreGotico/desacordo_ortografico/pull/37) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
+## [0.2.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.2.0a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.23a1...0.2.0a1)
+
+**Merged pull requests:**
+
+- feat: detect the 1911 Portuguese spelling as reforma\_1911 [\#35](https://github.com/TigreGotico/desacordo_ortografico/pull/35) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.1.23a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.1.23a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.1.22a1...0.1.23a1)

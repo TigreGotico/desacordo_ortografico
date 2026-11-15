@@ -98,7 +98,7 @@ def test_every_row_names_its_edge_and_its_source():
 
 # A pt-BR AO1990 cell gives desacordo's form: the form with the consonant of a dual cell,
 # else its only form. These br_1971 rows give a form whose ABL VOLP form
-# (Lexicon.ao_br_volp, from data/volp_ao1990_br.tsv) is another form. For the first six
+# (Lexicon.ao_br_volp, from data/volp_ao1990_br.json) is another form. For the first six
 # the VOLP does not list the form of the cell ("VOLP: cofator adj. s.m.; no cofactor",
 # "VOLP: intersectar v.; no intersetar"). For the last three it lists both forms ("VOLP:
 # bissetor (ô) adj. s.m. | bissector (ô) adj. s.m."), and the cell gives only the bare one.

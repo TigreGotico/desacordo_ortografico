@@ -49,7 +49,6 @@ bare form too, which lemma 12090 and lemma 191893 also give for pt-PT.
 """
 from __future__ import annotations
 
-import csv
 import json
 import os
 import re
@@ -170,14 +169,9 @@ def ao_row_class(old: str, new: str) -> str:
     return "consonant"
 
 
-def _load(name: str) -> dict:
+def _load(name: str) -> Any:
     with open(os.path.join(_DATA_DIR, name), "r", encoding="utf-8") as f:
         return json.load(f)
-
-
-def _load_tsv(name: str) -> List[Dict[str, str]]:
-    with open(os.path.join(_DATA_DIR, name), "r", encoding="utf-8", newline="") as f:
-        return list(csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE))
 
 
 def _strip_meta(d: dict) -> dict:
@@ -219,7 +213,7 @@ class Lexicon:
 
     @cached_property
     def _volp_br(self) -> List[Dict[str, str]]:
-        return _load_tsv("volp_ao1990_br.tsv")
+        return _load("volp_ao1990_br.json")
 
     @cached_property
     def sister_markers(self) -> dict:
@@ -293,7 +287,7 @@ class Lexicon:
     @cached_property
     def ao_br_volp(self) -> Dict[str, str]:
         """A pt-BR AO1990 word -> its form in the ABL Vocabulário Ortográfico da Língua
-        Portuguesa (VOLP), from ``data/volp_ao1990_br.tsv``. Each row quotes its VOLP entry.
+        Portuguesa (VOLP), from ``data/volp_ao1990_br.json``. Each row quotes its VOLP entry.
 
         Where the VOLP lists both forms of one word, the row gives the form with the
         consonant ("fato s.m. | facto s.m.": fato -> facto). Where it lists one form, the
