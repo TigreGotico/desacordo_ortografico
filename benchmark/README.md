@@ -192,6 +192,12 @@ sha256 of every input. The committed table comes from revision 7049ddd of
 schema. The relabelled sentences and the list of their 50 pre-1911 ids are not in this
 repository.
 
+The `reforma_1911` cells are provisional. pg31347 (Eça de Queirós, Contos, Chardron 1913)
+is the only book in the 1911 spelling, and it is always in the test split, so no cal unit
+has a true `reforma_1911` label. The script copies the etymological cell into each
+`reforma_1911` cell that no source fills with 15 cal units, and it prints every unit
+labelled `reforma_1911` by source, split and evidence count.
+
 ```bash
 curl -L -o parallel.jsonl \
   https://huggingface.co/datasets/TigreGotico/desacordo_ortografico/resolve/7049ddd/parallel.jsonl

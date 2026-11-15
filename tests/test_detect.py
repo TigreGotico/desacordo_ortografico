@@ -121,6 +121,11 @@ class TestConfidence:
             ("ótima coleção objetiva", Era.AO1990, 0.95),             # silver_corpus 216/227
             ("o António come", Era.AO1990, 0.86),                     # silver_full 4942/5755
             ("a casa azul", Era.AO1990, 0.34),                        # no evidence at all
+            # provisional: the etymological row, no held-out 1911 print (pg31347:71.4, 367.5)
+            ("Vi-o chorar, àquele vélho de quási sessenta anos.", Era.REFORMA_1911, 0.89),
+            ("Aos 18 anos Korriscosso servia de criado a um médico, e nos intervalos do "
+             "serviço freqùentava a Universidade de Atenas; estas coisas são freqùentes "
+             "_là-bas_, como êle dizia.", Era.REFORMA_1911, 0.99),
         ],
     )
     def test_confidence_is_measured_precision(self, text, era, expected):
@@ -266,3 +271,226 @@ class TestNamesAreNoEvidence:
         r = _orth(text)
         assert r.era == Era.ETYMOLOGICAL
         assert "etym-pattern:victoria" in r.markers
+
+
+class TestReforma1911:
+    """reforma_1911 evidence is a form that the Formulário Ortográfico of 1911 prints and
+    Brazilian print of 1943 does not. The expected labels follow the source of each text:
+    pg31347 is Eça de Queirós, Contos, 3rd edition, Chardron 1913, printed in the 1911
+    spelling; the Formulário Ortográfico of 1943 (ABL page) is Brazilian 1943 print; the
+    other books are printed before 1911.
+    """
+
+    @pytest.mark.parametrize(
+        "text, marker",
+        [
+            # Base XIV: "receberão o acento circunflexo quando forem polissilabos com a
+            # última sílaba predominante"
+            ("Tambêm sei!", "tambêm"),  # pg31347:236.13
+            ("Os filhos, duas rapariguitas e um rapaz, eram tambêm doentes, crescendo pouco "
+             "e com dificuldade, cheios de tumores nas orelhas, chorões e tristonhos.",
+             "tambêm"),  # pg31347:391.4
+            ("Mas Jacinto ergueu os ombros, com seguro desdêm.", "desdêm"),  # pg31347:545.2
+            ("Mas ninguêm se chegou à janela de peitoril, com caixilhos verdes.",
+             "ninguêm"),  # pg31347:77.6
+            # Base XXIV: "mas, quási, Vénus, órfã(s)"
+            ("Vi-o chorar, àquele vélho de quási sessenta anos.", "quási"),  # pg31347:71.4
+            # each part of a hyphenated token counts
+            ("O cão ficou quási-morto à porta.", "quási-morto"),
+            # Base XLVI: "fre qùente, a gùentar, ar gùir"
+            ("No entanto estava tranqùilo.", "tranqùilo"),  # pg31347:169.1
+        ],
+    )
+    def test_1911_print_is_reforma_1911(self, text, marker):
+        r = _orth(text)
+        assert r.era == Era.REFORMA_1911
+        assert r.variant is None
+        assert r.id == "reforma_1911"
+        assert f"reforma-1911:{marker}" in r.markers
+
+    def test_pre_1911_forms_in_1911_print_do_not_block(self):
+        """pg31347 paragraph 630. The 1913 print keeps emfim and emquanto against 1911
+        Base XV ("conquanto, com n, e não com m"), beside one 1911 form."""
+        text = (
+            "Entrou emfim na choça, triunfalmente, com o assado que fumegava e rescendia, "
+            "cercado de frescas fôlhas de alface. Ternamente, ajudou a sentar o vélho, que "
+            "tremia e se babava de gula. Arredou das pobres faces maceradas os cabelos que o "
+            "suor da fraqueza empastára. E, para que o bom Egídio se não vexasse com a sua "
+            "voracidade e tam carnal apetite, ia afirmando, emquanto lhe partia as febras "
+            "gordas, que tambêm êle comeria regaladamente daquele excelente porco, se não "
+            "tivesse almoçado à farta na _Locanda dos Três Caminhos_.")
+        r = _orth(text)
+        assert {"etym-pattern:emfim", "etym-pattern:emquanto"} <= set(r.markers)
+        assert r.era == Era.REFORMA_1911
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # pg31347:711.0, fêmea
+            "Outros gostos e modos de Eva o irritam tambêm: e por vezes, com uma "
+            "desumanidade que é já toda humana, nosso Pai arrebata pelos cabelos a sua "
+            "fêmea, e a derruba, e a pisa sob a pata calosa.",
+            # pg31347 paragraph 766, acêno and the circumflex before a nasal
+            "Uma noite em que D. Leonor, no seu quarto, rezava o terço com as aias, à luz "
+            "duma tocha de cera, o senhor de Lara entrou muito vagarosamente, trazendo na mão "
+            "uma fôlha de pergaminho e uma pena mergulhada no seu tinteiro de osso. Com um "
+            "rude acêno despediu as aias, que o temiam como a um lôbo. E, empurrando um "
+            "escabelo para junto da mesa, volvendo para D. Leonor a face a que impusera "
+            "tranqùilidade e agrado, como se apenas viesse por cousas naturais e fáceis:",
+        ],
+    )
+    def test_brazilian_lean_in_1911_print_does_not_block(self, text):
+        """The 1911 spelling writes the circumflex before a nasal (fêmea, acêno), which
+        leans Brazilian in modern text. Brazilian print of 1943 to 1971 writes também and
+        the trema (Formulário of 1943, rule 12.ª: "tranqüilo"), so it never has a 1911
+        form."""
+        r = _orth(text)
+        assert r.era == Era.REFORMA_1911
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # Camilo Castelo Branco, Novelas do Minho (Gutenberg 21406), pg21406:402.0
+            "--Não, minha senhora, veio sómente esta folha.",
+            # Perdigão Malheiro, Indice chronologico (Gutenberg 22044), pg22044:404.12
+            "Porêm alguns Deputados reunem-se aos Senadores que se achavão ainda no Senado, "
+            "envião a S.",
+        ],
+    )
+    def test_forms_printed_before_1911_are_no_1911_evidence(self, text):
+        """Base XXV writes porêm and Base XXXV writes sómente, but books printed before
+        1911 have both, so neither tells a 1911 print."""
+        r = _orth(text)
+        assert r.era != Era.REFORMA_1911
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    def test_id_is_a_norm_id(self):
+        from desacordo_ortografico.eras import Norm
+        norm = Norm.parse(_orth("Tambêm sei!").id)
+        assert norm.era == Era.REFORMA_1911
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # F1943:156.1 and F1943:205.0: the pronoun circumflex of 1943 rule 14.ª
+            "Dentro dêsse princípio, deve-se empregar o hífen nos seguintes casos:",
+            "OBSERVAÇÃO – Êsses nomes se escrevem com inicial minúscula quando são "
+            "empregados em sentido geral ou indeterminado.",
+        ],
+    )
+    def test_brazilian_1943_pronoun_circumflex_is_no_1911_evidence(self, text):
+        """Formulário 1943, rule 14.ª, writes "êsse, êsses, êste, êstes", so the pronoun
+        circumflex is also Brazilian 1943 to 1971 print."""
+        r = _orth(text)
+        assert r.era != Era.REFORMA_1911
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    @pytest.mark.parametrize(
+        "text, shared",
+        [
+            # pg31347:208.0
+            ("Conheceu as viagens trabalhosas nos mares inimigos, o enjôo monótono num "
+             "beliche abafado, os duros sóis das colónias, a brutalidade tirânica dos "
+             "fazendeiros ricos, o pêso dos fardos humilhantes, as dilacerações da ausência, "
+             "as viagens ao interior das terras negras e a melancolia das caravanas que "
+             "costeiam por violentas noites, durante dias e dias, os rios tranqùilos, donde "
+             "se exala a morte.", "enjôo"),
+            # pg31347:672.14
+            ("A sua crassa gula, entre aquela abundância do rio, tambêm apetece uma prêsa: e "
+             "atira a garra, colhe, no seu vôo soante, cascudos insectos que farisca e "
+             "trinca.", "vôo"),
+            # pg31347, two sentences of paragraph 925
+            ("Porque? Porque Elisa tambêm ali ceava invisível. Decentemente não podia andar "
+             "com a imagem de Elisa numa tipóia de praça, nem consentir que a augusta imagem "
+             "roçasse pelas cadeiras de palhinha da plateia de S. Carlos.", "tipóia"),
+        ],
+    )
+    def test_pre_ao1990_forms_of_1911_print_do_not_block(self, text, shared):
+        """enjôo, vôo and tipóia are pre-AO1990 BR forms that Portuguese print of 1911 to
+        1945 also has, so they are no Brazilian evidence here."""
+        r = _orth(text)
+        assert f"pre-ao90-br:{shared}" in r.markers
+        assert r.era == Era.REFORMA_1911
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # Teófilo Braga, Viriatho (Gutenberg 26850): no 1911 form
+            "podendo considerar tal o simples accordo da medicina e da pharmacia.",
+            # Pinheiro Chagas, A Lenda da Meia-Noite (Gutenberg 23400), pg23400:425.1:
+            # one acute before -mente, two listed pre-1911 forms (typo, elle)
+            "Decidídamente Isaura não lhe perdoava a creação do typo de Julieta que elle "
+            "julgava que tanto devia lisongeal-a.",
+            # Eça de Queirós, Os Maias (Gutenberg 40409), pg40409:3761.0: sériamente and
+            # one listed pre-1911 form (fallar)
+            "--Mas a respeito de Santa Olavia temos a fallar mais sériamente, disse por fim "
+            "Craft, entrando na alcova, a ensaboar a cabeça.",
+        ],
+    )
+    def test_pre_1911_print_stays_etymological(self, text):
+        """Base XXXV prints the acute before -mente: the adverb keeps the accent of its
+        adjective ("mantém-se"), where a derivative in -zinho changes it to a grave. Books
+        printed before 1911 have the same form (sériamente, decidídamente), so it is no
+        1911 evidence."""
+        r = _orth(text)
+        assert r.era == Era.ETYMOLOGICAL
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # silver_corpus p08-004, gold ao1990-pt and ao1990-br
+            "De facto, o diretor exato corrigiu o exercício para que ninguém errasse.",
+            # relabel row mmf-010635, modern news
+            "Mas também se bebe “d’além mar” (Cava, da Catalunha) e “d’além terra” "
+            "(Tokai, Hungria).",
+            # HF parallel d01115 and d10705, gold ao1990
+            "A atividade do vulcão diminuiu, mas os geólogos mantêm a vigilância apertada.",
+            "É facto que muitas peças do museu provêm de coleções desfeitas no decurso do "
+            "século passado.",
+        ],
+    )
+    def test_modern_text_is_ao1990(self, text):
+        """The Acordo Ortográfico of 1990 writes também with the acute (Base VIII 1.º c:
+        "porém, provém, provéns, também") and the third person plural of the compounds
+        of ter and vir with the circumflex (Base IX: "mantêm [...] provêm"), so none of
+        them is a 1911 form."""
+        r = _orth(text)
+        assert r.era == Era.AO1990
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # Priberam conjugation of devir: "eles/ elas/ vocês devêm"
+            "Na filosofia de Heraclito, todas as coisas devêm sem cessar.",
+            # Priberam conjugation of reconvir: "eles/ elas/ vocês reconvêm"
+            "Na contestação, os réus reconvêm o autor e pedem uma indemnização.",
+            # Priberam conjugation of reobter: "eles/ elas/ vocês reobtêm"
+            "Com a sentença, os herdeiros reobtêm a posse do terreno.",
+        ],
+    )
+    def test_ter_vir_plurals_outside_base_ix_are_no_1911_evidence(self, text):
+        """Base IX of 1990 lists the ter and vir plurals with "tais como". devir, reconvir
+        and reobter are compounds of the same verbs, and every norm after 1945 writes
+        their plural with the circumflex."""
+        r = _orth(text)
+        assert r.era == Era.AO1990
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            # silver_corpus p07-091, gold ao1990-br
+            "A ideia do mural surgiu durante a polêmica do concurso.",
+            # silver_corpus p04-024, gold ao1990-br
+            "O acadêmico estudou o batismo das células no processo regenerativo.",
+        ],
+    )
+    def test_brazilian_circumflex_inside_a_word_is_no_1911_evidence(self, text):
+        """Base XIV marks a polysyllable that ends in -êm. Brazilian print writes êm
+        inside a word (polêmica, acadêmico), and that is no 1911 form."""
+        r = _orth(text)
+        assert r.era == Era.AO1990
+        assert r.variant == Variant.BR
+        assert not [m for m in r.markers if m.startswith("reforma-1911")]
