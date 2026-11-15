@@ -11,7 +11,7 @@
     "tugalex acordo_ortografico_pt_BR.csv"
   ],
   "_groups": {
-    "digraphs": "ph->f, th->t, rh->r, y->i.",
+    "digraphs": "ph->f, th->t, rh->r, y->i. Modern values carry the accent the 1911 systematic accentuation introduced.",
     "ch_k": "ch = /k/ -> c (before a/o/u or consonant) or qu (before e/i). The /S/-ch of chave/chuva is untouched and never listed here.",
     "geminates": "Double consonants reduced to single, EXCEPT etymological rr/ss which survive in modern spelling (carro, passo).",
     "silent_and_h": "Etymological silent consonants in mn/ps clusters and medial/initial silent h, dropped in 1911.",

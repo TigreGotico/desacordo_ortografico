@@ -62,8 +62,7 @@ python tools/build_spelling_table.py --curated-json reform_1911_irregular.json
 The table came from one run with the tugalex release that the package pins as its floor.
 `--curated-json` takes `data/reform_1911_irregular.json` of a desacordo_ortografico release
 that ships it, such as 0.2.1a1. The script writes the two sources that this file has
-without accents as the works print them, and it drops one sentence of the digraphs
-comment that the data contradicts (`CITATIONS` and `NOT_CARRIED` in the script). The data
+without accents as the works print them (`CITATIONS` in the script). The data
 file is edited by hand from then on. Without `--curated-json`, the script keeps the curated
 rows, `_sources` and `_groups` of the table and rebuilds the other rows. Both runs give
 the committed file byte for byte.

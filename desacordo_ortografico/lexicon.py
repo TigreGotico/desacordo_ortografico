@@ -8,7 +8,7 @@ reversible transforms. Everything that is *irreducibly lexical* lives here:
 * the PT<->BR divergence pairs that stay valid under AO1990;
 * the spelling table ``data/spelling.json``: the 1911 irregulars (geminates, ch=/k/,
   silent consonants), the pre-1911 archaisms and the bulk AO1990 word maps (Portal da
-  Lingua Portuguesa data).
+  Língua Portuguesa data).
 
 Each row of the spelling table maps ``form``, written in the norm ``era``, to ``value``
 in the norm ``target``. ``source`` names the entry of the table's ``_sources`` that the row

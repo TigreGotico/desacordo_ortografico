@@ -66,10 +66,6 @@ CITATIONS = {
         "Cândido de Figueiredo, Novo Diccionário da Língua Portuguesa (1913)",
 }
 
-#: A sentence of the 1911 JSON's digraphs comment that the data contradicts: the curated
-#: values carry AO1990 accents (ele, where the 1911 print writes êle), as ``ABOUT`` says.
-NOT_CARRIED = " Modern values carry the accent the 1911 systematic accentuation introduced."
-
 #: The tugalex lists that the rows other than the curated pairs come from.
 TUGALEX_SOURCES = ["tugalex archaisms.csv", "tugalex acordo_ortografico_pt_PT.csv",
                    "tugalex acordo_ortografico_pt_BR.csv"]
@@ -135,8 +131,7 @@ def curated_from_json(path: str) -> Curated:
     """The pairs of each group of the 1911 JSON, lowercased, with its sources and the
     comment of each group. A key seen again keeps its first position and takes the later
     value, as the dict of the old loader did. Each pair cites the first source of the file,
-    the Portaria of 1911, and its group. Sources are written as in ``CITATIONS``, and the
-    comments drop ``NOT_CARRIED``."""
+    the Portaria of 1911, and its group. Sources are written as in ``CITATIONS``."""
     pairs: Dict[str, Row] = {}
     comments: Dict[str, str] = {}
     with open(path, encoding="utf-8") as f:
@@ -146,7 +141,7 @@ def curated_from_json(path: str) -> Curated:
     for group, entries in data.items():
         if group.startswith("_") or not isinstance(entries, dict):
             continue
-        comments[group] = entries["_comment"].replace(NOT_CARRIED, "")
+        comments[group] = entries["_comment"]
         for k, v in entries.items():
             if k.startswith("_") or not isinstance(v, str):
                 continue
