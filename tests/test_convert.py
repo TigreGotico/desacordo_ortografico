@@ -36,7 +36,10 @@ class TestForwardConversions:
 class TestVariantDivergence:
     @pytest.mark.parametrize(
         "text,expected",
-        [("facto", "fato"), ("contacto", "contato"), ("António", "Antônio"), ("género", "gênero")],
+        # VOLP: fato s.m. | facto s.m.; contato s.m. | contacto s.m. Of two valid pt-BR
+        # forms the converter writes the one with the consonant.
+        [("facto", "facto"), ("contacto", "contacto"), ("húmido", "úmido"), ("António", "Antônio"),
+         ("género", "gênero")],
     )
     def test_pt_to_br(self, text, expected, conv):
         assert conv.convert(text, "ao1990-pt", "ao1990-br").text == expected
@@ -113,8 +116,9 @@ class TestArchaicExpansion:
 
 class TestAuditFixes:
     def test_corrupto_dual_direction(self, conv):
-        # rare reversed dual: PT pronounces & keeps the p, BR may drop it
-        assert conv.convert("corrupto", "ao1990-pt", "ao1990-br").text == "corruto"
+        # rare reversed dual: PT pronounces & keeps the p, BR may drop it. VOLP: corruto
+        # adj. s.m. | corrupto adj. s.m., so pt-BR writes the form with the consonant.
+        assert conv.convert("corrupto", "ao1990-pt", "ao1990-br").text == "corrupto"
         assert conv.convert("corruto", "ao1990-br", "ao1990-pt").text == "corrupto"
 
     def test_egypto_era_separation(self, conv):
@@ -132,11 +136,11 @@ class TestAuditFixes:
 
     def test_variant_param_selects_ao1990_subnorm(self, conv):
         # variant= must actually steer the generic 'ao1990' target to PT or BR
-        assert conv.convert("o facto", "ao1990-pt", "ao1990", variant="br").text == "o fato"
+        assert conv.convert("o género", "ao1990-pt", "ao1990", variant="br").text == "o gênero"
         assert conv.convert("o fato", "ao1990-br", "ao1990", variant="pt").text == "o facto"
 
     def test_variant_is_case_insensitive(self, conv):
-        assert conv.convert("o facto", "ao1990-pt", "ao1990", variant="BR").text == "o fato"
+        assert conv.convert("o género", "ao1990-pt", "ao1990", variant="BR").text == "o gênero"
 
     def test_invalid_variant_raises_clean_valueerror(self, conv):
         with pytest.raises(ValueError):

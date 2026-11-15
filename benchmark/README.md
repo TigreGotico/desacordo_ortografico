@@ -157,11 +157,14 @@ stays as written.
 
 Each line of `variety_fixes.tsv` gives a cell, a token, the pt_1973 token that names the
 word, the Brazilian form, the rows it applies to and the source it comes from. The
+tables hold the br_1971 lines. The ao1990-br lines live in the package file
+`desacordo_ortografico/data/volp_ao1990_br.tsv`, which `convert()` reads too; a line
+there whose form is its token keeps the token. The
 pt_1973 token keeps homographs apart: fato becomes facto only where the European cell
 writes facto, so fato (a suit) stays. A row whose Brazilian cell has a different token
 count from its pt_1973 cell gets only the lines with `*` for the pt_1973 token, or the
 lines that name its row (p05-046 and p05-082 reword "o facto de" as "o fato de" and
-still mean a fact). `variety_keeps.tsv` lists each bare form that stays, with its cell,
+still mean a fact). `variety_keeps.tsv` lists each br_1971 bare form that stays, with
 its rows and its source. Of the bare forms in the full set whose European word writes a
 c/p, 336 br_1971 tokens of 265 words and 141 ao1990-br tokens of 102 words stay
 undecided, because no source of the cell decides them. In br_1971, rule 43 does not

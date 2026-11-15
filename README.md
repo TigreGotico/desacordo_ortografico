@@ -59,12 +59,12 @@ detect("o Antônio é econômico").id            # 'ao1990-br'
 convert("pharmacia", "etymological", "ao1990-br")          # 'farmácia'
 convert("a acção directa", "pre-ao1990-pt", "ao1990-pt")   # 'a ação direta'
 convert("freqüência", "pre-ao1990-br", "ao1990-br")        # 'frequência'
-convert("facto", "ao1990-pt", "ao1990-br")                 # 'fato'
+convert("húmido", "ao1990-pt", "ao1990-br")                # 'úmido'
 
 # --- the full result: warnings + dual-form alternatives ------------------
 conv = OrthographyConverter()
 res = conv.convert("o facto é óptimo", "ao1990-pt", "ao1990-br")
-res.text            # 'o fato é óptimo'  (óptimo isn't a divergence, stays)
+res.text            # 'o facto é óptimo'  (the VOLP lists both forms of each word)
 res.alternatives    # {'facto': ['facto', 'fato']}
 conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção']
 ```

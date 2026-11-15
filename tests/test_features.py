@@ -59,6 +59,9 @@ CASES = {
     "nasal-vowel": (X, "académica", "acadêmica"),
     # Lei 5.765/1971: no differential circumflex
     "differential-1971": (B, "êle", "ele"),
+    # ABL VOLP: "setor (ô) s.m. | sector (ô) s.m."; of two valid forms, the one with the
+    # consonant (owner ruling)
+    "volp": (X, "setor", "sector"),
 }
 
 
