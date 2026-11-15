@@ -92,9 +92,13 @@ lexical part. It defines four sets:
   `data/volp_ao1990_br.tsv` holds, before the tugalex map: the VOLP lists fato and
   facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator.
   Two VOLP entries that point to each other with "cf." are two words (ótica, óptica),
-  and neither becomes the other. From a pt-PT source, a bare form that pt-PT itself does
-  not write for the word is another word: pt-PT writes facto for the fact, so a pt-PT
-  fato is the suit and stays fato.
+  and neither becomes the other. Where the VOLP gives the form with the consonant for
+  one reading of a word only, the word stays as written, because the bare form is valid
+  for every reading: the VOLP lists coator adj. s.m. and coactor s.m., so "o ato coator"
+  stays, and it lists faturar and no facturar, so "a empresa fatura" stays. Such a row is
+  marked "one reading" in the data file. From a pt-PT source, a bare form that pt-PT
+  itself does not write for the word is another word: pt-PT writes facto for the fact,
+  so a pt-PT fato is the suit and stays fato.
 
 **Accentuation** is mostly deterministic:
 - Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`

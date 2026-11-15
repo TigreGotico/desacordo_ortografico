@@ -288,12 +288,15 @@ class Lexicon:
         each maps to itself. Each pair holds for its regular plural too (cofactores ->
         cofatores), see :func:`_plural`, unless a row names the plural or the quote gives
         it ("caráter s.m.; pl. caracteres"). A row that names silver-corpus rows decides
-        the sense of those sentences only, so it is left out.
+        the sense of those sentences only, so it is left out. So is a row marked "one
+        reading": its quote gives the form with the consonant for one reading of the token
+        only ("coator (ô) adj. s.m. | coactor (ô) s.m.", "never the verb faturar"), and the
+        bare form, valid for every reading, stays.
         """
         decided: Dict[str, str] = {}
         plurals: Dict[str, str] = {}
         for row in self._volp_br:
-            if row["rows"] != "*":
+            if row["rows"] != "*" or row["pair"] == "one reading":
                 continue
             token, form = row["token"], row["form"]
             if row["pair"] == "two words":

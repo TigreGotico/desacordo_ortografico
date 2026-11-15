@@ -6,7 +6,9 @@ VOLP lists both forms of one word, the converter writes the form with the conson
 (owner ruling: "if both forms are valid, keep the one with the consonant"). Where it
 lists one form, the converter writes that form. Two entries that point to each other
 with "cf." and carry different glosses are two words, so neither form becomes the
-other. Each expected value below comes from the VOLP entry quoted beside it.
+other. Where the VOLP gives the form with the consonant for one reading of a token only,
+the token stays as written, because the bare form is valid for every reading. Each
+expected value below comes from the VOLP entry quoted beside it.
 """
 import csv
 import re
@@ -98,6 +100,44 @@ def test_a_quote_with_a_sense_note_rejects_no_form():
     assert convert("a engenharia electromecânica", "ao1990-pt", "ao1990-br") == "a engenharia electromecânica"
 
 
+def test_a_rejected_form_takes_the_gender_and_number_of_its_token():
+    """VOLP: abstrato adj. s.m.; no abstracto. adotar v.; no adoptar. The rejected form
+    with the consonant takes the token of its own row, not a token of another inflection."""
+    assert convert("o abstracto e os adoptados", "ao1990-pt", "ao1990-br") == "o abstrato e os adotados"
+
+
+@pytest.mark.parametrize("text", [
+    # VOLP: fatura s.f. | factura s.f.; the VOLP lists faturar v. and no facturar
+    "A empresa fatura milhões.",
+    # VOLP: coator (ô) adj. s.m. | coactor (ô) s.m.; coactor is no adjective
+    "a autoridade coatora e o ato coator",
+    # VOLP: injeto s.m. | injecto s.m.; the VOLP lists injetar v. and no injectar
+    "Eu injeto o remédio.",
+    # VOLP: cato adj. s.m. | cacto s.m.; cato is also a form of catar v.
+    "eu cato lixo",
+    # VOLP: tático adj. s.m. | táctico adj.; táctico is no noun
+    "o tático do time",
+    # VOLP: coleta s.f. (cf. coleta (ê) s.f. "trança de cabelo") | colecta s.f.
+    "a coleta do cabelo",
+])
+def test_a_c_p_form_for_one_reading_only_leaves_the_token(text):
+    assert convert(text, "br_1971", "ao1990-br") == text
+
+
+def test_an_adjective_form_takes_the_c_p_form_of_the_adjective():
+    """VOLP: elétrico adj. s.m. | eléctrico adj. The feminine elétrica is no form of the
+    noun elétrico s.m., so it is the adjective, which has both forms."""
+    assert convert("a energia elétrica", "br_1971", "ao1990-br") == "a energia eléctrica"
+
+
+@pytest.mark.parametrize("text", [
+    "um fato-macaco e dois fatos-macacos",  # VOLP: fato-macaco s.m.; pl. fatos-macaco e fatos-macacos
+    "a arraia-elétrica e as arraias-elétricas",  # VOLP: arraia-elétrica s.f.; pl. arraias-elétricas
+])
+def test_a_compound_the_volp_lists_keeps_its_elements(text):
+    assert convert(text, "br_1971", "ao1990-br") == text
+
+
 @pytest.mark.parametrize("word", [
     # VOLP: ótica s.f. "ciência da audição"; cf. óptica | óptica s.f. "ciência da visão"; cf. ótica
     "ótica", "óptica",
@@ -158,6 +198,21 @@ def test_a_two_words_row_quotes_cf_both_ways():
         other = row["form"] if row["form"] != row["token"] else row["european"]
         mutual = f"cf. {row['token']}" in row["source"] and f"cf. {other}" in row["source"]
         assert (row["pair"] == "two words") == mutual, row
+
+
+def test_a_c_p_form_for_one_reading_only_is_marked():
+    """A fix row whose quote gives the form with the consonant for one reading of the
+    token only is marked "one reading" and stays out of the converter."""
+    marked = {row["token"] for row in ROWS if row["pair"] == "one reading"}
+    assert marked >= {
+        "fatura", "faturas", "injeto", "cato", "coleta", "coator", "tático", "táticos",
+        "refratário", "manufaturado", "profilático", "radioeletrônico", "fototático",
+        "insurrecionado", "anticético", "eletromotor", "eletrocutor", "tato"}
+    volp = get_lexicon().ao_br_volp
+    for row in ROWS:
+        if row["pair"] == "one reading":
+            assert row["rows"] == "*" and row["form"] != row["token"], row
+            assert row["source"].startswith("VOLP: ") and row["token"] not in volp, row
 
 
 def test_rows_for_every_sentence_agree():
