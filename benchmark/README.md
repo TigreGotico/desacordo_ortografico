@@ -181,13 +181,18 @@ cross-variant pairs are capped below 100% by design, not by a bug.
 
 `confidence_table.py` measures the `_CONFIDENCE` table of `detect.py`: the precision of
 each label for one, and for two or more, distinct evidence tokens, on the cal split of 13
-pre-1911 Gutenberg books, `silver_corpus.jsonl`, the `parallel` config of the Hugging Face
-dataset and a set of relabelled modern sentences. Each cell keeps the lowest precision
-over the sources with at least 15 cal units in it. The script fetches the books. The
-other inputs are paths:
+pre-1911 Gutenberg books, `silver_corpus.jsonl`, `parallel.jsonl` of the Hugging Face
+dataset and 1,721 relabelled modern sentences. Each cell keeps the lowest precision over
+the sources with at least 15 cal units in it. The script fetches the books and prints the
+sha256 of every input. The committed table comes from revision 7049ddd of
+`parallel.jsonl` (sha256 `61f1a10a...5f5026`), which the script reads in its own flat
+schema. The relabelled sentences and the list of their 50 pre-1911 ids are not in this
+repository.
 
 ```bash
-python benchmark/confidence_table.py --books BOOKS_DIR --silver-full silver_full.jsonl \
+curl -L -o parallel.jsonl \
+  https://huggingface.co/datasets/TigreGotico/desacordo_ortografico/resolve/7049ddd/parallel.jsonl
+python benchmark/confidence_table.py --books BOOKS_DIR --silver-full parallel.jsonl \
     --relabel rows.jsonl --pre1911 pre1911-ids.txt --check
 ```
 

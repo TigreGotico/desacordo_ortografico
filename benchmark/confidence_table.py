@@ -14,9 +14,13 @@ Populations, each unit with a gold set of labels:
   book units count only when the label is etymological.
 - pg31347: Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling. No
   label of ``detect()`` fits it, so it counts in no precision and is reported only.
-- silver_corpus, silver_full: every rendering of ``silver_corpus.jsonl`` and of the
-  ``parallel`` config of the Hugging Face dataset TigreGotico/desacordo_ortografico. The
-  gold set is every column that holds the same string.
+- silver_corpus: every rendering of the tracked ``benchmark/silver_corpus.jsonl``.
+- silver_full: every rendering of ``parallel.jsonl`` of the Hugging Face dataset
+  TigreGotico/desacordo_ortografico, in its own flat schema (one column per norm). The
+  committed table comes from revision 7049ddd of that file (sha256 61f1a10a...5f5026):
+  https://huggingface.co/datasets/TigreGotico/desacordo_ortografico/resolve/7049ddd/parallel.jsonl
+- In both silver sets the gold set of a rendering is every norm whose column holds the
+  same string.
 - relabel: modern sentences of the "meio milhão de frases" corpus, gold etymological for
   the rows that ``--pre1911`` lists, else pt_1973, br_1971 or ao1990.
 
@@ -30,10 +34,11 @@ maps. A text with no marker and no AO1990 word keeps 0.34 and is no table cell. 
 takes the lowest precision over the sources that hold at least ``MIN_UNITS`` cal units
 in it, rounded to two decimals and capped at 0.99.
 
-The books are fetched from gutenberg.org into ``--books`` when they are missing.
+The books are fetched from gutenberg.org into ``--books`` when they are missing. The
+script prints the sha256 of every input file.
 
 Usage:
-    python benchmark/confidence_table.py --books DIR --silver-full silver_full.jsonl \\
+    python benchmark/confidence_table.py --books DIR --silver-full parallel.jsonl \\
         --relabel rows.jsonl --pre1911 ids.txt [--labels out.tsv] [--check]
 
 ``--labels`` writes the label of every unit, for a label diff between two trees.
@@ -51,11 +56,11 @@ import urllib.request
 from pathlib import Path
 from typing import Dict, Iterator, List, Tuple
 
-Cell = Tuple[str, int]
-
 from desacordo_ortografico.detect import Orthography, detect
 from desacordo_ortografico.lexicon import get_lexicon
 from desacordo_ortografico.rules import _WORD_RE
+
+Cell = Tuple[str, int]
 
 BENCH = Path(__file__).resolve().parent
 BOOKS = ["pg18220", "pg21406", "pg22044", "pg23145", "pg23203", "pg23400", "pg24401",
@@ -63,6 +68,9 @@ BOOKS = ["pg18220", "pg21406", "pg22044", "pg23145", "pg23203", "pg23400", "pg24
 SENT = re.compile(r"(?<=[.!?…])\s+(?=[\"“«—\-]?[A-ZÀ-Ý])")
 FAMILY = {"etymological": "etymological", "pt_1973": "pt_1973", "br_1971": "br_1971",
           "ao1990-pt": "ao1990", "ao1990-br": "ao1990"}
+# the columns of the Hugging Face parallel.jsonl, as the norm ids of silver_corpus.jsonl
+HF_COLUMNS = {"etymological": "etymological", "pt_1973": "pt_1973", "ao1990_pt": "ao1990-pt",
+              "br_1971": "br_1971", "ao1990_br": "ao1990-br"}
 MODERN = ["ao1990", "br_1971", "pt_1973"]
 MARKERS = {"etymological": ("etym", "etym-pattern"),
            "pt_1973": ("verbal-eem", "capital-month", "pre-ao90-pt"),
@@ -70,6 +78,10 @@ MARKERS = {"etymological": ("etym", "etym-pattern"),
 COMPLETE_GOLD = {"silver_corpus", "silver_full", "relabel"}
 MIN_UNITS = 15
 FEATURELESS = 0.34
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def split(group: str) -> str:
@@ -106,7 +118,10 @@ def units(args) -> Iterator[Tuple[str, str, str, str, str, List[str]]]:
                       ("silver_full", args.silver_full)):
         for line in open(path, encoding="utf-8"):
             row = json.loads(line)
-            cells = row["cells"]
+            if src == "silver_corpus":
+                cells = row["cells"]
+            else:
+                cells = {norm: row[col] for col, norm in HF_COLUMNS.items()}
             for col, text in cells.items():
                 gold = sorted({FAMILY[c] for c, t in cells.items() if t == text})
                 yield src, "row", split(row["id"]), f"{row['id']}:{col}", text, gold
@@ -140,8 +155,8 @@ def featureless(r: dict) -> bool:
 
 
 def build_table(rows: List[dict]) -> Tuple[Dict[Cell, float], Dict[Cell, str]]:
-    ok: Dict[Tuple[str, str, int], int] = collections.Counter()
-    n: Dict[Tuple[str, str, int], int] = collections.Counter()
+    ok: collections.Counter = collections.Counter()
+    n: collections.Counter = collections.Counter()
     for r in rows:
         if r["split"] == "cal" and judged(r) and not featureless(r):
             key = (r["src"], r["label"], min(r["count"], 2))
@@ -186,11 +201,14 @@ def main() -> int:
     args = ap.parse_args()
 
     fetch_books(args.books)
+    inputs = [BENCH / "silver_corpus.jsonl", args.silver_full, args.relabel, args.pre1911]
+    for path in inputs + [args.books / f"{name}.txt" for name in BOOKS]:
+        print(f"input\t{sha256(path)}\t{path}")
     lex = get_lexicon()
     rows: List[dict] = []
-    n_in: Dict[Tuple[str, str], int] = collections.Counter()
-    n_out: Dict[Tuple[str, str], int] = collections.Counter()
-    labels = open(args.labels, "w", encoding="utf-8") if args.labels else None
+    n_in: collections.Counter = collections.Counter()
+    n_out: collections.Counter = collections.Counter()
+    labels: List[str] = []
     for src, grain, sp, uid, text, gold in units(args):
         n_in[src, grain] += 1
         text = unicodedata.normalize("NFC", text)
@@ -205,11 +223,11 @@ def main() -> int:
         r.update(src=src, grain=grain, split=sp, gold=gold)
         rows.append(r)
         n_out[src, grain] += 1
-        if labels:
-            labels.write(f"{src}\t{grain}\t{uid}\t{label_id}\n")
-    if labels:
-        labels.close()
+        labels.append(f"{src}\t{grain}\t{uid}\t{label_id}\n")
+    if args.labels:
+        args.labels.write_text("".join(labels), encoding="utf-8")
 
+    print()
     for key in sorted(n_in):
         print(f"units\t{key[0]}\t{key[1]}\tin {n_in[key]}\tout {n_out[key]}")
     table, source = build_table(rows)

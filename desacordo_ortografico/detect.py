@@ -73,10 +73,10 @@ _CONFIDENCE: Dict[Tuple[Era, int], float] = {
     (Era.ETYMOLOGICAL, 1): 0.89,
     (Era.ETYMOLOGICAL, 2): 0.99,
     (Era.PT_1973, 1): 0.79,
-    (Era.PT_1973, 2): 0.94,
+    (Era.PT_1973, 2): 0.92,
     (Era.BR_1971, 1): 0.95,
     (Era.BR_1971, 2): 0.99,
-    (Era.AO1990, 0): 0.91,
+    (Era.AO1990, 0): 0.86,
     (Era.AO1990, 1): 0.96,
     (Era.AO1990, 2): 0.95,
 }
@@ -163,15 +163,20 @@ _COLUMN_TO_NORM = {
 
 def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     """Deterministic marker-based classifier."""
-    etym = 0
-    old_pt = 0
-    old_br = 0
-    modern = 0
     pt_lean = 0
     br_lean = 0
     markers: List[str] = []
+    score: Dict[Era, int] = defaultdict(int)
     # the distinct words that count as evidence for each era
     evidence: Dict[Era, Set[str]] = defaultdict(set)
+
+    def found(era: Era, weight: int, word: str, marker: str = "") -> None:
+        # an era scores only together with the word that is its evidence
+        score[era] += weight
+        evidence[era].add(word)
+        if marker:
+            markers.append(f"{marker}:{word}")
+
     archaic = lex.tuga.archaic_words
     matches = list(_WORD_RE.finditer(text))
     # a text in capitals throughout gives no case signal
@@ -185,51 +190,36 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
 
         # --- pre-1911 etymological evidence -----------------------------
         if w in lex.reform1911_old2new:
-            etym += 2
-            markers.append(f"etym:{w}")
-            evidence[Era.ETYMOLOGICAL].add(w)
+            found(Era.ETYMOLOGICAL, 2, w, "etym")
         # a capital part inside a sentence is a name (AO1990 Base XXI) and no evidence
         elif any(seg.lower() in archaic
                  and not (cased and mid_sentence and (raw[:1].isupper() or seg[:1].isupper()))
                  for seg in _SEGMENT_SEP.split(raw)):
-            etym += 1
-            markers.append(f"etym-pattern:{w}")
-            evidence[Era.ETYMOLOGICAL].add(w)
+            found(Era.ETYMOLOGICAL, 1, w, "etym-pattern")
 
         # --- pre-AO1990 signals the lexicon misses ----------------------
         if "êem" in w:  # lêem/crêem/vêem: -êem circumflex, dropped only by AO1990
-            old_pt += 1
-            markers.append(f"verbal-eem:{w}")
-            evidence[Era.PT_1973].add(w)
+            found(Era.PT_1973, 1, w, "verbal-eem")
         if i > 0 and raw[:1].isupper() and w in _MONTHS:
             # a month capitalised mid-sentence is pre-AO1990 European (BR lowercased
             # months in 1943; AO1990 lowercased them everywhere)
-            old_pt += 1
-            markers.append(f"capital-month:{w}")
-            evidence[Era.PT_1973].add(w)
+            found(Era.PT_1973, 1, w, "capital-month")
 
         # --- pre-AO1990 PT (silent consonants / dropped differentials) --
         if w in lex.ao_pt_old2new or w in lex.base_iv_drop or w in lex.differential_dropped:
-            old_pt += 1
+            found(Era.PT_1973, 1, w, "pre-ao90-pt")
             pt_lean += 1
-            markers.append(f"pre-ao90-pt:{w}")
-            evidence[Era.PT_1973].add(w)
 
         # --- pre-AO1990 BR (old accent/trema forms) ---------------------
         if w in lex.ao_br_old2new:
-            old_br += 1
-            markers.append(f"pre-ao90-br:{w}")
-            evidence[Era.BR_1971].add(w)
+            found(Era.BR_1971, 1, w, "pre-ao90-br")
         if "ü" in w:
-            old_br += 1
+            found(Era.BR_1971, 1, w, "trema")
             br_lean += 1
-            markers.append(f"trema:{w}")
-            evidence[Era.BR_1971].add(w)
 
         # --- modern AO1990 evidence -------------------------------------
         if w in lex.ao_pt_new2old or w in lex.ao_br_new2old:
-            modern += 1
-            evidence[Era.AO1990].add(w)
+            found(Era.AO1990, 1, w)
 
         # --- variant lean from PT/BR divergent spellings ----------------
         if w in lex.dual_pt2br or w in lex.divergence_pt2br:
@@ -245,6 +235,8 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
         if _RE_NASAL_BR.search(w):
             br_lean += 1
 
+    etym, modern = score[Era.ETYMOLOGICAL], score[Era.AO1990]
+    old_pt, old_br = score[Era.PT_1973], score[Era.BR_1971]
     old_score = old_pt + old_br
 
     # ---- decide the era bucket ----
