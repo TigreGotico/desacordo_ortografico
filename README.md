@@ -17,9 +17,10 @@ nothing else.
 - A deterministic rule engine and curated, **sourced** exception lexicons. The AO1990
   word maps and the pre-1911 archaisms are rows of one spelling table,
   `data/spelling.json`, built from the [`tugalex`](https://github.com/TigreGotico/tugalex)
-  lists. For pt-BR, `data/volp_ao1990_br.json` holds the decisions of the ABL
-  *Vocabulário Ortográfico da Língua Portuguesa* (VOLP), and each row quotes its VOLP
-  entry.
+  lists. For pt-BR, `data/volp_ao1990_br.json` holds 1,796 spelling decisions, and each
+  row cites its source. 1,628 rows quote the ABL *Vocabulário Ortográfico da Língua
+  Portuguesa* (VOLP), 66 rows cite Priberam, and 102 rows record that no source decides
+  the word.
 - A **command-line tool** and a parallel silver benchmark corpus (written by language
   models, not checked by a person), also published on the
   [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
@@ -77,19 +78,21 @@ conv.permitted_spellings("receção", "ao1990-pt")   # ['receção', 'recepção
 ### Names toward pt-BR
 
 AO1990 Base XXI lets a person, a firm or a brand keep the spelling of its name. Toward
-`ao1990-br`, a word inside a sentence that starts with a capital is a name. A name keeps
+`ao1990-br`, a word inside a sentence that starts with a capital, and is not in capitals
+throughout, is a name. A name keeps
 a form that the VOLP lists. The dual rule never gives a name a c or p that the source
 did not write:
 
 ```python
 convert("o setor e a Setor Norte", "ao1990-pt", "ao1990-br")
 # 'o sector e a Setor Norte'
-convert("a recepção do Receptores Lda", "pt_1973", "ao1990-br")
-# 'a recepção do Receptores Lda'
+convert("o coletivo e o Coletivo Farra", "ao1990-pt", "ao1990-br")
+# 'o colectivo e o Coletivo Farra'
 ```
 
 The first word of a sentence and a text with no lowercase word give no case signal, so
-they convert like any other word. See [`docs/api.md`](docs/api.md) for the `volp`
+they convert like any other word. So does a word in capitals: `o SETOR e o setor` gives
+`o SECTOR e o sector`. See [`docs/api.md`](docs/api.md) for the `volp`
 feature.
 
 ### Detection: rules or a learned model
@@ -111,8 +114,11 @@ The guard runs first in every mode. Rule markers attach to a learned result for
 explainability. The learned models have no `reforma_1911` class, so only the rules
 return that label.
 
-A rules `confidence` is a measured number: the held-out precision of the label for one,
-or two or more, evidence tokens. A text with no evidence gets 0.34. A learned
+A rules `confidence` is the held-out precision of the label for one, or two or more,
+evidence tokens, with two exceptions. The `reforma_1911` values are provisional copies of
+the `etymological` values. An `ao1990` result with a PT/BR lean marker and no AO1990 form
+gets 0.86: the Antônio example above returns `ao1990-br` with 0.86. A text with no
+evidence gets 0.34. A learned
 `confidence` comes from the model margin. [`docs/api.md`](docs/api.md) gives the table
 and its sources.
 

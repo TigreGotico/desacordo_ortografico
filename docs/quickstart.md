@@ -31,6 +31,8 @@ When no marker distinguishes the national variant, `variant` is `None`.
 
 With the default rules, `confidence` is the held-out precision of the label for one, or
 two or more, evidence tokens (`etym:pharmacia` and `etym-pattern:theatro` are two). The
+`reforma_1911` values are provisional copies of the `etymological` values. An `ao1990`
+result with a PT/BR lean marker and no AO1990 form gets 0.86. The
 [API reference](api.md) gives the table and the corpora that measure it.
 
 ## Convert
