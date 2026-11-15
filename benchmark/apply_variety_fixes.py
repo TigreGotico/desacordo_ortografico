@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """Write Brazilian spellings in the Brazilian cells of the silver corpus.
 
-Each line of ``variety_fixes.tsv`` gives a cell, a token, the pt_1973 token it stands
-for (``*`` for any), the Brazilian form, the rows it applies to (``*`` for all) and its
-source. The pt_1973 token names the word: the line for fato/facto changes "fato" only
+Each br_1971 line of ``variety_fixes.tsv`` gives a cell, a token, the pt_1973 token it
+stands for (``*`` for any), the Brazilian form, the rows it applies to (``*`` for all)
+and its source. The ao1990-br lines live in the package file
+``desacordo_ortografico/data/volp_ao1990_br.tsv``, which ``convert()`` reads too: token,
+pt_1973 token, form, rows, pair and source, where a row whose form is its token keeps
+the token. The pt_1973 token names the word: the line for fato/facto changes "fato" only
 where the European cell writes "facto", so the noun fato (a suit) stays. A line that
 names rows decides a token whose part of speech changes its spelling, such as the noun
 reta and the adjective reta, or reaches a row whose Brazilian and pt_1973 cells differ in
@@ -55,6 +58,7 @@ assembled into ``silver_full.jsonl``.
 """
 from __future__ import annotations
 
+import csv
 import json
 import os
 import re
@@ -63,9 +67,16 @@ from collections import Counter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TABLE = os.path.join(HERE, "variety_fixes.tsv")
+VOLP = os.path.join(HERE, os.pardir, "desacordo_ortografico", "data", "volp_ao1990_br.tsv")
 DROPS = os.path.join(HERE, "variety_drops.tsv")
 BRAZILIAN = ("br_1971", "ao1990-br")
 _TOK = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'][0-9A-Za-zÀ-ɏ]+)*")
+
+
+def load_volp():
+    """The ao1990-br rows of the package file, as dicts keyed by its header."""
+    with open(VOLP, encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f, delimiter="\t", quoting=csv.QUOTE_NONE))
 
 
 def load_table():
@@ -76,6 +87,10 @@ def load_table():
             cell, token, european, correction, rows, _source = line.rstrip("\n").split("\t")
             for row in rows.split(","):
                 table.setdefault(cell, {})[(token, european, row)] = correction
+    for volp in load_volp():
+        if volp["form"] != volp["token"]:
+            for row in volp["rows"].split(","):
+                table.setdefault("ao1990-br", {})[(volp["token"], volp["european"], row)] = volp["form"]
     return table
 
 
