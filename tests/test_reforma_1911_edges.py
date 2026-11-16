@@ -197,12 +197,12 @@ def test_scetro_row_reads_the_plural(target):
 
 @pytest.mark.parametrize("target", ["pt_1945", "br_1943"])
 def test_only_the_noun_row_takes_a_plural(target):
-    # of the rows out of 1911, scetro, kilo, scena and sciência are the nouns; quási, tam
-    # and quam are adverbs and teem, veem are verb forms
+    # of the rows out of 1911, scetro, scena and sciência are the nouns; quási, tam and
+    # quam are adverbs and teem, veem are verb forms
     rows = json.loads(_TABLE.read_text(encoding="utf-8"))["rows"]
     forms = {r["form"] for r in rows if r["era"] == "reforma_1911" and r["target"] == target}
     plural = {f for f in forms if convert(f + "s", "reforma_1911", target) != f + "s"}
-    nouns = {"kilo", "scena", "sciência"}
+    nouns = {"scena", "sciência"}
     assert plural == (nouns | {"scetro"} if target == "pt_1945" else nouns)
 
 
@@ -256,7 +256,7 @@ def test_every_row_out_of_1911_quotes_its_clause():
     assert {(r["form"], r["target"]) for r in rows} == {
         (form, target) for form in ("quási", "tam", "quam", "teem", "veem")
         for target in ("pt_1945", "br_1943")} | {("scetro", "pt_1945")} | {
-        (form, target) for form in ("kilo", "scena", "sciência") for target in ("pt_1945", "br_1943")}
+        (form, target) for form in ("scena", "sciência") for target in ("pt_1945", "br_1943")}
     for r in rows:
         assert r["source"].startswith(("Acordo Ortográfico de 1945", "Acordo Ortográfico de 1931",
                                        "Formulário Ortográfico de 1943"))

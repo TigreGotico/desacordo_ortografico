@@ -18,7 +18,8 @@ nothing else.
   word maps and the pre-1911 archaisms are rows of one spelling table,
   `data/spelling.json`, built from the [`tugalex`](https://github.com/TigreGotico/tugalex)
   lists. The same table holds the 1911 words that no rule of the 1945 or 1943 edge
-  reaches (`quási` gives `quase`), and each of these rows quotes its clause. For pt-BR,
+  reaches (`quási` gives `quase`), and the 1911 words that the backward pass of those
+  edges restores (`cena` gives `scena`). Each of these rows quotes its clause. For pt-BR,
   `data/volp_ao1990_br.json` holds 1,796 spelling decisions, and each row cites its
   source. 1,628 rows quote the ABL *Vocabulário Ortográfico da Língua
   Portuguesa* (VOLP), 66 rows cite Priberam, and 102 rows record that no source decides
@@ -176,7 +177,9 @@ See [`docs/orthographies.md`](docs/orthographies.md) for the rule sets and sourc
 Forward conversion (toward newer norms) is well defined. Backward conversion is, for
 several edges, **lexical and lossy**. Dropping a silent consonant or an accent discards
 information no rule can recover. `ConversionResult.lossless` and `.warnings` report this
-instead of silently guessing.
+instead of silently guessing. Back from 1945 or 1943 to 1911, only curated table rows
+apply: `cena` gives `scena` and `ciência` gives `sciência` (1911 Base XI), and the rules
+of those edges go one way.
 
 ## Related projects
 

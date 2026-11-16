@@ -110,40 +110,35 @@ ROWS_OUT_OF_1911 = [
                                      f'no Brasil [...]: [...] assumptível, assumptivo, ceptro, '
                                      f'consumpção [...] (p interior geralmente proferido no '
                                      f'Brasil, mas predominantemente mudo em Portugal)")'),
-    # the decree of 1945: the accord of 1931 "foi aprovado e mandado executar, em Portugal
-    # pela portaria n.o 7:117, de 27 de Maio do mesmo ano"
-    ("kilo", "pt_1945", "quilo", f'{ACORDO_1931} (§ 2.º Substituir: "1.º O k e o grupo ch '
-                                 f'(duro), por qu, antes de e e i, e por c, nos outros casos: '
-                                 f'querubim, monarca, quimica, quilo, Cristo, tecnico")'),
     ("quási", "br_1943", "quase", f'{FORMULARIO_1943} (33.: "Assim, pois, devem ser inscritos '
                                    f'vocábulos como: [...] pior, quase, quepe")'),
     ("tam", "br_1943", "tão", f"{FORMULARIO_1943} ({_TAM_1943})"),
     ("quam", "br_1943", "quão", f"{FORMULARIO_1943} ({_TAM_1943})"),
     ("teem", "br_1943", "têm", f"{FORMULARIO_1943} ({_TER_VIR_1943})"),
     ("veem", "br_1943", "vêm", f"{FORMULARIO_1943} ({_TER_VIR_1943})"),
-    ("kilo", "br_1943", "quilo", f'{FORMULARIO_1943} (3.: "O k é substituído por qu antes de e, '
-                                 f'i, e por c antes de outra qualquer letra: breque, caqui, faquir, '
-                                 f'níquel, etc."; 4.: "Emprega-se em abreviaturas e símbolos '
-                                 f'[...]: [...] kg = quilograma")'),
     # an inverted initial-sc rule would give scenoura from cenoura, so the backward pass
-    # reads these rows
+    # reads these rows. The decree of 1945: the accord of 1931 "foi aprovado e mandado
+    # executar, em Portugal pela portaria n.o 7:117, de 27 de Maio do mesmo ano"
     ("scena", "pt_1945", "cena", f"{ACORDO_1931} ({_SC_1931})"),
     ("sciência", "pt_1945", "ciência", f"{ACORDO_1931} ({_SC_1931})"),
     ("scena", "br_1943", "cena", f"{FORMULARIO_1943} ({_SC_1943})"),
     ("sciência", "br_1943", "ciência", f"{FORMULARIO_1943} ({_SC_1943})"),
 ]
-#: The rows on the edges out of 1911 that the backward pass of the edge inverts. Base I
-#: names kilo first ("na forma international kilo, que todavia se poderá escrever quilo"),
-#: so quilo gives kilo. quilo is also the chyle, pre-1911 chylo; the inverse takes the
-#: common sense. Base XI keeps the sc of scena and sciência.
-INVERTED_OUT_OF_1911 = frozenset({"kilo", "scena", "sciência"})
-#: The curated pre-1911 pairs that the Formulário Ortográfico of 1911 decides. kilo and
-#: scena are 1911 spellings, so they leave the pre-1911 map: Base I, Excepção 2.ª, "e tambêm
-#: na forma international kilo, que todavia se poderá escrever quilo", and Base XI. sciencia
-#: gives the 1911 sciência of Base XI. The edges out of 1911 give quilo by the kilo rows of
-#: :data:`ROWS_OUT_OF_1911`, and cena and ciência by :func:`rules.drop_initial_sc` and by
-#: rows that the backward pass reads.
-SPELLINGS_OF_1911 = frozenset({"kilo", "scena"})
+#: The rows on the edges out of 1911 that the backward pass of the edge inverts. Base XI
+#: keeps the sc of scena and sciência.
+INVERTED_OUT_OF_1911 = frozenset({"scena", "sciência"})
+#: The curated pre-1911 pairs that the Formulário Ortográfico of 1911 decides. scena is a
+#: 1911 spelling of Base XI, so it leaves the pre-1911 map, and sciencia gives the 1911
+#: sciência of Base XI. The edges out of 1911 give cena and ciência by
+#: :func:`rules.drop_initial_sc` and by rows that the backward pass reads.
+#:
+#: The pre-1911 row kilo -> quilo stays. Base I, Excepção 2.ª permits kilo and writes quilo
+#: as the better form: "Continuam em uso os símbolos W, para denotar o Oeste, e K como
+#: abreviatura de unidade métrica, e tambêm na forma international kilo, que todavia se
+#: poderá escrever quilo; tanto mais, que o k é um grosseiro êrro nesta palavra, pois o
+#: correspondente termo grego se escreve com χ, e não κ." quilo is also the only 1911
+#: spelling of the chyle (chylo -> quilo).
+SPELLINGS_OF_1911 = frozenset({"scena"})
 DECIDED_1911 = {"sciencia": ("sciência", "initial_sc")}
 GROUPS_1911 = {
     "initial_sc": 'Base XI keeps the initial sc: "É conservado o grupo inicial sc, das seguintes '
