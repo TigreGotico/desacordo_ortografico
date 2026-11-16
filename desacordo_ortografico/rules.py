@@ -2,7 +2,7 @@
 
 These are the transforms that do *not* need a lexicon: Greek-digraph simplification
 (1911), the open/closed nasal-vowel alternation (PT<->BR), the AO1990 accent drops,
-trema abolition, month lowercasing and prefix+r/s doubling.
+trema abolition, month lowercasing and the AO1990 prefix joins.
 
 Each function takes and returns a **lowercase** word; case restoration is handled by
 :func:`apply_to_words`, which also tokenises the text. Functions are grouped by the
@@ -726,23 +726,36 @@ def recase_months(text: str, lowercase: bool) -> str:
     return _MONTH_RE.sub(repl, text)
 
 
-# --------------------------------------------------- AO1990 prefix + r/s doubling
+# --------------------------------------------------- AO1990 prefix joins
 _RS_PREFIXES = {
-    "ante", "anti", "arqui", "auto", "contra", "eletro", "electro", "extra",
+    "ante", "anti", "arqui", "auto", "co", "contra", "eletro", "electro", "extra",
     "hidro", "infra", "intra", "macro", "micro", "mini", "multi", "neo",
     "pluri", "proto", "pseudo", "retro", "semi", "sobre", "supra", "ultra",
     "geo", "tele", "agro", "aero", "euro", "foto", "psico", "socio",
 }
 
 
-def ao1990_hyphen_rs(word: str) -> str:
-    """prefix-ending-in-vowel + r/s base -> drop hyphen, double the r/s.
+def ao1990_hyphen_rs(word: str, co_drops_h: bool = False) -> str:
+    """Join a prefix that ends in a vowel to the second element where AO1990 Base XVI
+    writes no hyphen. Restricted to a known prefix list so genuine noun+noun compounds
+    (guarda-sol) are untouched.
 
-    'anti-religioso'->'antirreligioso', 'auto-retrato'->'autorretrato',
-    'contra-senha'->'contrassenha'. Restricted to a known prefix list so genuine
-    noun+noun compounds (guarda-sol) are untouched. The hyphen goes in every case,
-    but the r/s doubles only before a vowel: Portuguese never writes rr or ss before
-    a consonant ('anti-spam'->'antispam').
+    - Base XVI 2º a: before r or s the hyphen goes and the consonant doubles
+      ('anti-religioso'->'antirreligioso', 'co-seno'->'cosseno'). Portuguese never
+      writes rr or ss before a consonant, so it doubles only before a vowel
+      ('anti-spam'->'antispam').
+    - Base XVI 2º b: before a different vowel the hyphen goes ('auto-estrada'->
+      'autoestrada'). Before the same vowel it stays (1º b: 'micro-onda').
+    - Base XVI 1º b Obs.: "Nas formações com o prefixo co-, este aglutina-se em geral
+      com o segundo elemento mesmo quando iniciado por o: coobrigação, coocupante,
+      coordenar, cooperação, cooperar, etc." So co- joins before o too.
+    - Base XVI 1: "só se emprega o hífen nos seguintes casos", so co- joins before a
+      consonant ('co-fatores'->'cofatores'). The other prefixes keep the hyphen there.
+    - Base XVI 1º a keeps the hyphen before h ('co-herdeiro'). With ``co_drops_h`` co-
+      joins there too and the h goes ('co-herdeiro'->'coerdeiro'), as the ABL VOLP writes.
+
+    A loanword keeps its hyphen ('co-working'), as the VOLP writes it, and so does a
+    second element that does not start with a letter ('co-1').
     """
     if "-" not in word:
         return word
@@ -750,7 +763,16 @@ def ao1990_hyphen_rs(word: str) -> str:
     if len(parts) != 2:
         return word
     pre, base = parts
-    if pre in _RS_PREFIXES and base[:1] in ("r", "s") and pre[-1:] in _VOWELS:
+    if pre not in _RS_PREFIXES or not base[:1].isalpha() or is_foreign_spelling(word):
+        return word
+    first = deaccent(base[0])
+    if first in ("r", "s"):
         doubled = base[0] if base[1:2] and base[1] in _VOWELS else ""
         return pre + doubled + base
+    if first in "aeiou":
+        return pre + base if pre == "co" or first != pre[-1] else word
+    if pre == "co":
+        if first == "h":
+            return pre + base[1:] if co_drops_h else word
+        return pre + base
     return word

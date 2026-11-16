@@ -93,11 +93,11 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `ao-map-locution` | AO1990 map rows whose hyphens become spaces (fim-de-semana -> fim de semana) | ao1990_pt, ao1990_br |
 | `differential` | the AO1990 differential accent list (pára -> para) | ao1990_pt, ao1990_br |
 | `hyphen-lexical` | the AO1990 joined-compound list (manda-chuva -> mandachuva) | ao1990_pt, ao1990_br |
-| `silent-cp` | the regular plural of an AO1990 map word that drops a c/p (actos -> atos), and back (atos -> actos) | ao1990_pt |
+| `silent-cp` | the regular plural of an AO1990 map word that drops a c/p (actos -> atos), and back (atos -> actos); toward ao1990-pt, each element of a compound that the map does not hold, before the prefix join (directores-gerais -> diretores-gerais) | ao1990_pt, and every conversion to ao1990-pt |
 | `diphthong-accent` | éi/ói in a paroxytone (assembléia -> assembleia) | ao1990_pt, ao1990_br |
 | `hiatus-accent` | ôo and êem (vôo -> voo) | ao1990_pt, ao1990_br |
-| `prefix-rs` | prefix + r/s (auto-regulável -> autorregulável) | ao1990_pt, ao1990_br |
-| `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.json` holds (fato -> facto, aceção -> acepção); a name inside a sentence keeps a form the VOLP lists (e Coletivo Farra) | every conversion to ao1990-br |
+| `prefix-rs` | a listed prefix joins its second element (AO1990 Base XVI): r/s doubles (auto-regulável -> autorregulável), a different vowel joins (auto-estradas -> autoestradas), co- joins before a vowel or consonant (co-autores -> coautores); the same vowel and h keep the hyphen, except that pt-BR writes co- before h solid, without the h (co-herdeiro -> coerdeiro). A loanword (co-working) and a second element that does not start with a letter (co-1) keep the hyphen. It runs once on the words of an AO1990 target, after the VOLP and the dual cells decide each element (pt_1973 foto-receptores -> ao1990-br fotorreceptores). A pre-1990 target keeps the hyphen, so pt_1973 <-> br_1971 keeps co-autores | every conversion to ao1990-pt or ao1990-br |
+| `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.json` holds (fato -> facto, aceção -> acepção); a name inside a sentence keeps a form the VOLP lists (e Coletivo Farra); before a prefix joins, the VOLP decides each element (co-director -> codiretor), and after the join it decides the joined word (co-fatores -> cofactores -> cofatores) | every conversion to ao1990-br |
 | `months` | month casing. Toward an older norm a month takes a capital, and so does a season that opens a sentence. Toward AO1990 a month takes lowercase. At the start of a sentence it keeps the case it was written in. An opening quote or bracket does not stop a sentence opening («Janeiro chegou», disse ele) | every conversion |
 
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
