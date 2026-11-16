@@ -264,20 +264,30 @@ def reform_1911_digraphs(word: str) -> str:
     return word
 
 
-# The letters of a foreign name stay in its derivatives. The Bases Analíticas of the
-# Acordo of 1945, 1: "O k, o w e o y mantêm-se nos vocábulos derivados eruditamente de
-# nomes próprios estrangeiros que se escrevam com essas letras: frankliniano, kantismo;
-# darwinismo, wagneriano; byroniano, taylorista"; 2: "mantêm-se [...] quaisquer
-# combinações gráficas não peculiares à nossa escrita que figurem nesses nomes". So the
-# 1911 rule fallbacks leave alone a word with a spelling of a loanword or a foreign name:
-# k or w, zz, ck, sh, y before a vowel at the start, a final consonant other than l, r,
-# s, z, m, n or x, or a ü that follows neither g, q nor a vowel (mülleriano, of Müller;
-# Portuguese writes ü only after g or q or on a hiatus). Final -ie is no such spelling:
-# Portuguese writes it (espécie, série, anuncie). Nor is a y inside or at the end of a
-# word: pre-1911 Portuguese writes it (Bayão, Moreyra, Jayme, Piauhy), and no spelling
-# tells taylorista or byroniano from Baylão or Froylas.
+# The 1911 Formulário reforms the spelling of "todas as palavras portuguesas, ou
+# aportuguesadas": I proscribes k, w and y in them, and II writes them "sómente com umas
+# ou com outras" of its letters. A loanword or a foreign name is neither, so the 1911
+# rule fallbacks leave it alone. Its derivatives keep its letters too: Formulário I,
+# Exceção 1.ª, "Poderão usar-se essas letras em vocábulos derivados de nomes próprios
+# estrangeiros"; the Bases Analíticas of the Acordo of 1945, 1, "byroniano, taylorista",
+# and 2, "quaisquer combinações gráficas não peculiares à nossa escrita".
+# A word carries the spelling of a loanword or a foreign name when it has k or w, zz,
+# sh, y before a vowel at the start, a final pair of consonants other than ch, ph, th
+# and cc (Clifford, Scott, Through), or a ü that follows neither g, q nor a vowel
+# (mülleriano, of Müller; Portuguese writes ü only after g or q or on a hiatus). These
+# are no such spelling:
+# - a single final consonant: AO1990 Base I 5º keeps it in names of the biblical
+#   tradition ("Jacob, Job, Moab, Isaac, David, Gad; Gog, Magog; Bensabat, Josafat"),
+#   and an abbreviation ends in one (Typ., Rhet.);
+# - the final digraphs ch, ph and th: Base I 4º, "Baruch, Loth, Moloch, Ziph" (Math.,
+#   Orth.); and final cc, which pre-1911 Portuguese writes in Occ. (occidental);
+# - final -ie: Portuguese writes it (espécie, série, anuncie);
+# - a y inside or at the end of a word: pre-1911 Portuguese writes it (Bayão, Moreyra,
+#   Jayme, Piauhy), and no spelling tells taylorista or byroniano from Baylão or Froylas.
 _FOREIGN_RE = re.compile(
-    r"[kw]|zz|ck|sh|^y[aeiou]|[^aeiouáàâãéêíóôõúüylrszmnx]$|(?<![gqaeiouáàâãéêíóôõú])ü")
+    r"[kw]|zz|sh|^y[aeiou]"
+    r"|(?!cc$|[cpt]h$)[^aeiouáàâãéêíóôõúüy][^aeiouáàâãéêíóôõúüylrszmnx]$"
+    r"|(?<![gqaeiouáàâãéêíóôõú])ü")
 
 
 def is_foreign_spelling(word: str) -> bool:

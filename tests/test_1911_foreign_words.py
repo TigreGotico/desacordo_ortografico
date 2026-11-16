@@ -1,10 +1,12 @@
 """The 1911 rule fallbacks leave loanwords and foreign names alone.
 
-AO1990 Base I 2º keeps k, w and y in foreign names and their derivatives, and Base I 3º
-keeps the spelling of a foreign name in its derivatives. The Bases Analíticas of the
-Acordo of 1945, 1, keep them too: "frankliniano, kantismo; darwinismo, wagneriano;
-byroniano, taylorista". The examples below are the examples of those clauses. The silver
-rows are rows of the parallel silver corpus.
+The 1911 Formulário reforms "todas as palavras portuguesas, ou aportuguesadas" (I and II),
+so a loanword or a foreign name keeps its spelling. AO1990 Base I 2º keeps k, w and y in
+foreign names and their derivatives, and Base I 3º keeps the spelling of a foreign name in
+its derivatives. The Bases Analíticas of the Acordo of 1945, 1, keep them too:
+"frankliniano, kantismo; darwinismo, wagneriano; byroniano, taylorista". The examples
+below are the examples of those clauses. The silver rows are rows of the parallel silver
+corpus.
 """
 import json
 from pathlib import Path
@@ -21,11 +23,13 @@ BASE_I = ["Franklin", "frankliniano", "Kant", "kantismo", "Darwin", "darwinismo"
           "kuwaitiano", "Malawi", "malawiano", "shakesperiano"]
 
 
-# Names of the review input set that a 1911 rule would change, each marked by one
-# spelling only: a final consonant (Smith, Clifford) or a w (Wellington, Cromwell). AO1990
-# Base I 2º a) keeps the spelling of "antropónimos/antropônimos originários de outras
-# línguas".
-NAMES_IN_TEXT = ["Hollywood", "Smith", "Clifford", "Wellington", "Cromwell"]
+# Words of the review input set that a 1911 rule would change, each marked by one
+# spelling only: w (Hollywood, Wellington, Cromwell), k (rockabilly, with ck), zz (jazz),
+# sh (offshore), y before a vowel at the start (Yates), or a final pair of consonants
+# (Clifford, Garrett, Through). AO1990 Base I 2º a) keeps the spelling of
+# "antropónimos/antropônimos originários de outras línguas".
+NAMES_IN_TEXT = ["Hollywood", "Wellington", "Cromwell", "rockabilly", "jazz", "offshore",
+                 "Yates", "Clifford", "Garrett", "Through"]
 
 
 @pytest.mark.parametrize("word", BASE_I + NAMES_IN_TEXT)
@@ -41,6 +45,58 @@ def test_foreign_name_and_derivative_keep_their_spelling(word, target):
 @pytest.mark.parametrize("target", TARGETS)
 def test_y_inside_a_foreign_name_stays(word, target):
     assert convert(f"o {word}", "etymological", target) == f"o {word}"
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "a final th is also the Hebrew digraph of AO1990 Base I 4º (Loth) and the end of "
+    "Portuguese abbreviations (Math.), so no spelling rule keeps the th of Smith"))
+@pytest.mark.parametrize("target", TARGETS)
+def test_final_th_of_a_foreign_name_stays(target):
+    assert convert("o Smith", "etymological", target) == "o Smith"
+
+
+# Pre-1911 abbreviations of Portuguese words, and a name of the biblical tradition, end in
+# a single consonant, ch, ph, th or cc. They take the 1911 rules: "Porto: Typ. de A. J. da
+# Silva Teixeira", "75.° long. Occ. do meridiano de Paris", "no Valle de Josaphat" in the
+# review input set. AO1990 Base I 5º writes "Bensabat, Josafat", and so do the Bases
+# Analíticas of 1945, 8.
+PORTUGUESE_FINALS = [("Typ.", "Tip."), ("Occ.", "Oc."), ("Lyc.", "Lic."), ("Math.", "Mat."),
+                     ("Rhet.", "Ret."), ("Orth.", "Ort."), ("Josaphat", "Josafat")]
+
+
+@pytest.mark.parametrize("old, new", PORTUGUESE_FINALS)
+@pytest.mark.parametrize("target", TARGETS)
+def test_portuguese_final_consonant_still_converts(old, new, target):
+    assert convert(f"o {old}", "etymological", target) == f"o {new}"
+
+
+# The 1911 Formulário, I: k, w and y are "substituídas [...] y por i" in "todas as palavras
+# portuguesas, ou aportuguesadas"; the Formulário of 1943, 9, too. VOLP and VOP write
+# Iara. An initial y before a vowel marks a foreign word: no spelling tells Yara from
+# Yates, and the input set holds 346 foreign tokens of that shape and no Portuguese one.
+@pytest.mark.xfail(strict=True, reason="an initial y before a vowel marks a foreign word")
+@pytest.mark.parametrize("old, new", [("Yara", "Iara"), ("Yemanjá", "Iemanjá")])
+@pytest.mark.parametrize("target", TARGETS)
+def test_portuguese_initial_y_becomes_i(old, new, target):
+    assert convert(f"a {old}", "etymological", target) == f"a {new}"
+
+
+# The VOP and the VOLP write razia and have no razzia. The zz of jazz, pizza and puzzle
+# marks the word as foreign.
+@pytest.mark.xfail(strict=True, reason="zz marks a foreign word")
+@pytest.mark.parametrize("target", TARGETS)
+def test_razzia_becomes_razia(target):
+    assert convert("a razzia", "etymological", target) == "a razia"
+
+
+# AO1990 Base I 4º: "José, Nazaré, em vez de Joseph, Nazareth", "Judite, em vez de
+# Judith". The 1911 rules drop the h of th and ph, and no rule adds the vowel.
+@pytest.mark.xfail(strict=True, reason="the 1911 rules give Josef, Nazaret and Judit")
+@pytest.mark.parametrize("old, new", [("Joseph", "José"), ("Nazareth", "Nazaré"),
+                                      ("Judith", "Judite")])
+@pytest.mark.parametrize("target", TARGETS)
+def test_biblical_name_takes_its_base_i_form(old, new, target):
+    assert convert(f"de {old}", "etymological", target) == f"de {new}"
 
 
 # pre-1911 Portuguese writes y inside and at the end of a word; 1911 Base I writes i
