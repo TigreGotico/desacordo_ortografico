@@ -585,6 +585,16 @@ class Lexicon:
     def hyphen_dropped_reverse(self) -> Dict[str, str]:
         return _invert(self.hyphen_dropped)
 
+    @cached_property
+    def hyphen_loanwords(self) -> Dict[str, Dict[str, str]]:
+        """The hyphenated loanwords of ``data/hyphen_loanwords.json`` for each variety
+        ("pt" from the VOP, "br" from the VOLP), each mapped to itself so that
+        :func:`rules.lookup_with_plural` reads them."""
+        out: Dict[str, Dict[str, str]] = {"pt": {}, "br": {}}
+        for row in _load("hyphen_loanwords.json")["rows"]:
+            out[row["variety"]][row["form"]] = row["form"]
+        return out
+
     # ----------------------------------------------------- PT<->BR divergence
     @cached_property
     def divergence_pt2br(self) -> Dict[str, str]:

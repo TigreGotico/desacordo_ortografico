@@ -180,7 +180,8 @@ class OrthographyConverter:
         # recetores, which the VOLP rejects). For each word of ``out``, ``written`` holds
         # the word of the source that it comes from.
         written = rules.words(text)
-        named = rules.names(text) if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
+        capital = rules.names(text)
+        named = capital if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
         kept = [n and w.lower() in self.lex.ao_br_volp_listed for w, n in zip(written, named)]
         out = text
         for edge_name, _frm, forward in steps:
@@ -194,7 +195,7 @@ class OrthographyConverter:
             own = pt_words if edge_name == "ptbr_divergence" else {}
             out, sources = rules.map_words(
                 out, lambda i, w, p=step_pass, k=own: None if kept[i] else k.get(w) or p.apply(w, enabled), is_word)
-            written, named, kept = ([x[i] for i in sources] for x in (written, named, kept))
+            written, capital, named, kept = ([x[i] for i in sources] for x in (written, capital, named, kept))
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
@@ -228,8 +229,12 @@ class OrthographyConverter:
             maps = ((self.lex.ao_pt_old2new, self.lex.ao_pt_row_class),
                     (self.lex.ao_br_old2new, self.lex.ao_br_row_class))
 
+            # a loanword that the vocabulary of the target variety lists with its hyphen
+            # keeps it (VOP anti-apartheid, VOLP mini-system)
+            loanwords = self.lex.hyphen_loanwords["br" if br else "pt"]
+
             def join(w: str) -> str:
-                if "prefix-rs" not in enabled or any(
+                if "prefix-rs" not in enabled or rules.lookup_with_plural(w, loanwords) or any(
                         w in table and f"ao-map-{classes[w]}" not in enabled for table, classes in maps):
                     return w
                 return rules.ao1990_hyphen_rs(w, co_drops_h=br)
@@ -264,12 +269,14 @@ class OrthographyConverter:
                 else:
                     form = choose(w) or w
                 # the joined word is one word, and the VOLP or a dual cell decides it
-                # (co-factores -> cofactores -> cofatores, codialetos -> codialectos)
-                if (solid := join(form)) != form:
+                # (co-factores -> cofactores -> cofatores, codialetos -> codialectos). Base
+                # XXI lets a name keep its written spelling, so a name does not join (a
+                # Co-Op Lisboa, a Auto-Europa)
+                if not capital[i] and (solid := join(form)) != form:
                     form = choose(solid) or solid
                 # a name gains no c or p from a dual: it has no more than the source wrote
                 if named[i] and sum(map(form.count, "cp")) > sum(map(written[i].lower().count, "cp")):
-                    form = join(choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-")))
+                    form = choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-"))
                 return form
 
             if volp or duals or "prefix-rs" in enabled:
