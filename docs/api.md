@@ -56,7 +56,8 @@ aliases (see `eras`).
 
 `variant` (`"pt"`/`"br"`) picks the AO1990 sub-norm when the target is an AO1990 norm:
 `convert("a receção", "ao1990-pt", "ao1990", variant="br")` gives `'a recepção'`. It takes the place of the variety in the target id, so `ao1990-pt`
-with `variant="br"` also gives `ao1990-br`. A target outside AO1990 ignores it.
+with `variant="br"` also gives `ao1990-br`. A target outside AO1990 ignores it. A value
+other than `"pt"` or `"br"` raises `ValueError` for every target.
 
 `features` is a collection of names from `FEATURES`. Only those features apply. `None`
 applies all of them. An unknown name raises `ValueError`.
@@ -136,12 +137,13 @@ convert("o whisky e o kiosque", "etymological", "pt_1973")      # 'o whisky e o 
 These letters mark a foreign spelling:
 
 - k or w, zz, sh, or an initial y before a vowel
-- a final pair of consonants other than ch, ph, th and cc (Clifford, Scott)
+- a final pair of consonants whose last letter is not l, m, n, r, s, x, y or z, other
+  than ch, ph, th and cc (Clifford, Scott)
 - a ü that follows neither g, q nor a vowel (mülleriano)
 
 A y inside a word is no such mark, because pre-1911 Portuguese writes it (Moreyra gives
 Moreira). The test reads letters only, so it has known limits. taylorista gives
-tailorista, and Smith gives Smit. Joseph gives Josef, not the José of AO1990 Base I 4º.
+tailorista, Smith gives Smit, and Russell gives Russel. Joseph gives Josef, not the José of AO1990 Base I 4º.
 Yara and razzia stay as written.
 
 The 1911 accent guess gives a bare word the accent of the one accented word that has
