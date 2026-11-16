@@ -20,7 +20,7 @@ Hallmarks: Greek digraphs `ph, th, rh, ch`(=/k/), `y`, geminates `ll, nn, mm, pp
 etymological silent consonants, and medial `h`. Detection is fairly deterministic
 because the digraphs are characteristic. Generating pre-1911 spellings is lexical.
 
-`pharmacia→farmácia · theatro→teatro · elle→ele · anno→ano · lyrio→lírio · sciencia→ciência`
+`pharmacia→farmácia · theatro→teatro · elle→ele · anno→ano · lyrio→lírio · sciencia→sciência`
 
 ## Reforma Ortográfica de 1911 (Portugal)
 
@@ -84,6 +84,9 @@ The 1911 singular `convêm` stays as written, because from 1945 on these letters
 plural. The 1911 words that no rule reaches are rows of the spelling table:
 `quási→quase`, `tam→tão`, `teem→têm`, and `scetro→ceptro` (Base VI, 2.°). The initial
 sc goes in the word families of 1911 Base XI, so English `scientific` loses it too.
+The rows `scena→cena` and `sciência→ciência` also go backward, so `cena` gives `scena`
+in 1911. The rule itself goes one way, because its inverse would give `scenoura` from
+`cenoura`.
 
 Source (official text): [Convenção Ortográfica de 1945 (Priberam)](https://www.priberam.pt/docs/AcOrtog45_73.pdf)
 

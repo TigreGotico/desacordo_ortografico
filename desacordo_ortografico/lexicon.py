@@ -640,6 +640,21 @@ class Lexicon:
         """The 1911 -> br_1943 rows of the spelling table (quási -> quase)."""
         return self._from_1911("br_1943")
 
+    def _back_to_1911(self, target: str) -> Dict[str, str]:
+        return {r["value"]: r["form"] for r in self._spelling
+                if r["era"] == "reforma_1911" and r["target"] == target and r["curated"]}
+
+    @cached_property
+    def reform1911_from_1945(self) -> Dict[str, str]:
+        """The curated 1911 -> pt_1945 rows, inverted: the backward pass of the edge reads
+        them (cena -> scena)."""
+        return self._back_to_1911("pt_1945")
+
+    @cached_property
+    def reform1911_from_1943(self) -> Dict[str, str]:
+        """The curated 1911 -> br_1943 rows, inverted (cena -> scena)."""
+        return self._back_to_1911("br_1943")
+
     # --------------------------------------------------- 1971/73 differential
     @cached_property
     def accent_71_73_old2new(self) -> Dict[str, str]:

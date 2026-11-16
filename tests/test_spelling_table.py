@@ -109,7 +109,8 @@ def test_every_row_cites_an_entry_of_the_sources():
     table = _table()
     sources, groups = table["_sources"], table["_groups"]
     assert [r for r in table["rows"] if not any(_cites(r["source"], s) for s in sources)] == []
-    curated = [r for r in table["rows"] if r["curated"]]
+    # a curated pre-1911 pair names its group; a curated row out of 1911 quotes its clause
+    curated = [r for r in table["rows"] if r["curated"] and r["era"] == "etymological"]
     assert curated
     assert [r for r in curated if r["source"] not in {f"{sources[0]} ({g})" for g in groups}] == []
 

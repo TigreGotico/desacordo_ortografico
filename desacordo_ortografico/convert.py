@@ -333,7 +333,13 @@ class OrthographyConverter:
         )
 
         # -- 1911 -> 1945 (PT) and 1911 -> 1943 (BR): the word rows of the spelling
-        #    table, then the rules; rules.py quotes the clause of each.
+        #    table, then the rules; rules.py quotes the clause of each. The backward pass
+        #    reads the curated rows inverted, as the backward 1911 pass does, and like it
+        #    reads no plural. The rules stay one-way: an inverted initial-sc would give
+        #    scenoura from cenoura.
+        def post_1911_word_map(_w: str) -> str:
+            return "post-1911-word-map"
+
         def from_1911(rows: Mapping[str, str]) -> WordFn:
             # only a form that ends in a, e or o takes the plural -s: the noun scetro
             # (scetros), and not the adverbs quási, tam, quam or the verb forms teem, veem
@@ -357,7 +363,7 @@ class OrthographyConverter:
                 ("differential-1945", lambda w: rules.drop_differential_1945(w, lex.is_listed)),
                 ("trema", rules.ao1990_drop_trema),
             ]),
-            _Pass(),
+            _Pass(table=lex.reform1911_from_1945, table_feature=post_1911_word_map),
             reversible_backward=False,
             note="the trema cannot be reintroduced by rule",
         )
@@ -376,7 +382,7 @@ class OrthographyConverter:
                 ("ptbr-divergence", ptbr_before_ao1990),
                 ("base-iv", get(lex.base_iv_drop_reverse)),
                 ("nasal-vowel", rules.nasal_vowel_to_pt),
-            ]),
+            ], table=lex.reform1911_from_1943, table_feature=post_1911_word_map),
             reversible_backward=False,
             note="silent-consonant restoration is lexical",
         )
