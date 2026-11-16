@@ -228,8 +228,12 @@ class OrthographyConverter:
             maps = ((self.lex.ao_pt_old2new, self.lex.ao_pt_row_class),
                     (self.lex.ao_br_old2new, self.lex.ao_br_row_class))
 
+            # a loanword that the vocabulary of the target variety lists with its hyphen
+            # keeps it (VOP anti-apartheid, VOLP mini-system)
+            loanwords = self.lex.hyphen_loanwords["br" if br else "pt"]
+
             def join(w: str) -> str:
-                if "prefix-rs" not in enabled or any(
+                if "prefix-rs" not in enabled or rules.lookup_with_plural(w, loanwords) or any(
                         w in table and f"ao-map-{classes[w]}" not in enabled for table, classes in maps):
                     return w
                 return rules.ao1990_hyphen_rs(w, co_drops_h=br)

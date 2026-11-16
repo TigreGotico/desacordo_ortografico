@@ -1,0 +1,16 @@
+{
+  "_about": "Hyphenated loanwords that start with a prefix of the AO1990 Base XVI join. Each row is an entry that the vocabulary of its variety marks as foreign, so the prefix join leaves it as written. The rows come from a prefix search of each vocabulary for every prefix of the join list and a hyphen (raw answers in papers/linguistics/pt/volp-silver-br/raw-prefix-loanwords.jsonl and papers/linguistics/pt/vop-pt/raw-prefix-loanwords.jsonl.gz of the TigreGotico workspace).",
+  "_sources": [
+    "ABL, Vocabulário Ortográfico da Língua Portuguesa, Vocabulário de Estrangeirismos: https://www.academia.org.br/nossa-lingua/busca-no-vocabulario",
+    "Portal da Língua Portuguesa, Vocabulário Ortográfico do Português: https://www.portaldalinguaportuguesa.org/"
+  ],
+  "rows": [
+    {"form": "co-worker", "variety": "br", "source": "VOLP: co-worker s.2g. ing. Estrangeira (Vocabulário de Estrangeirismos)"},
+    {"form": "co-working", "variety": "br", "source": "VOLP: co-working s.m. ing. Estrangeira (Vocabulário de Estrangeirismos)"},
+    {"form": "mini-show", "variety": "br", "source": "VOLP: mini-show s.m. ing. Estrangeira (Vocabulário de Estrangeirismos)"},
+    {"form": "mini-system", "variety": "br", "source": "VOLP: mini-system s.m. ing. Estrangeira (Vocabulário de Estrangeirismos)"},
+    {"form": "anti-apartheid", "variety": "pt", "source": "VOP lemma 135666: anti-apartheid adjetivo; estrangeirismo; língua de origem: neerlandês"},
+    {"form": "anti-dumping", "variety": "pt", "source": "VOP lemma 82845: anti-dumping adjetivo; estrangeirismo; língua de origem: inglês"},
+    {"form": "anti-establishment", "variety": "pt", "source": "VOP lemma 97547: anti-establishment adjetivo; estrangeirismo; língua de origem: inglês"}
+  ]
+}
