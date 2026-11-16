@@ -160,6 +160,12 @@ class OrthographyConverter:
             # (so `convert(t, src, "ao1990", variant="br")` lands on ao1990-br)
             if dst.era == Era.AO1990:
                 dst = NORMS[f"ao1990-{variant}"]
+        # The 1945 Acordo (Base XXIX) and the 1943 Formulário (5.º a) write the hyphen that
+        # AO1990 Base XVI drops, so a route between two older norms that passes through
+        # AO1990 does not join a prefix. The VOLP is the AO1990 vocabulary of pt-BR, so it
+        # decides no word there either.
+        if dst.era != Era.AO1990:
+            enabled -= {"prefix-rs", "volp"}
         steps = find_path(src, dst)
         # pt-PT text reaches ao1990-br through the divergence edge; there a VOLP row whose
         # bare form is another pt-PT word (fato, the suit) keeps it

@@ -754,10 +754,14 @@ def ao1990_hyphen_rs(word: str, co_drops_h: bool = False) -> str:
       'autoestrada'). Before the same vowel it stays (1º b: 'micro-onda').
     - Base XVI 1º b Obs.: "Nas formações com o prefixo co-, este aglutina-se em geral
       com o segundo elemento mesmo quando iniciado por o: coobrigação, coocupante,
-      coordenar, cooperação, cooperar, etc." So co- joins before o and before a
-      consonant too ('co-autores'->'coautores', 'co-fatores'->'cofatores').
+      coordenar, cooperação, cooperar, etc." So co- joins before o too.
+    - Base XVI 1: "só se emprega o hífen nos seguintes casos", so co- joins before a
+      consonant ('co-fatores'->'cofatores'). The other prefixes keep the hyphen there.
     - Base XVI 1º a keeps the hyphen before h ('co-herdeiro'). With ``co_drops_h`` co-
       joins there too and the h goes ('co-herdeiro'->'coerdeiro'), as the ABL VOLP writes.
+
+    A loanword keeps its hyphen ('co-working'), as the VOLP writes it, and so does a
+    second element that does not start with a letter ('co-1').
     """
     if "-" not in word:
         return word
@@ -765,7 +769,7 @@ def ao1990_hyphen_rs(word: str, co_drops_h: bool = False) -> str:
     if len(parts) != 2:
         return word
     pre, base = parts
-    if pre not in _RS_PREFIXES or not base:
+    if pre not in _RS_PREFIXES or not base[:1].isalpha() or is_foreign_spelling(word):
         return word
     first = deaccent(base[0])
     if first in ("r", "s"):

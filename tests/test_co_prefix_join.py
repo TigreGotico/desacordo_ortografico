@@ -2,8 +2,8 @@
 
 AO1990 Base XVI (the text of the Portal da Língua Portuguesa):
 
-- 1º a): "Nas formações em que o segundo elemento começa por h: anti-higiénico/
-  anti-higiênico, circum-hospitalar, co-herdeiro, contra-harmónico/contra-harmônico,
+- 1º a): "Nas formações em que o segundo elemento começa por h:
+  anti-higiénico/anti-higiênico, circum-hospitalar, co-herdeiro, contra-harmónico/contra-harmônico,
   extra-humano, pré-história, sub-hepático, super-homem, ultra-hiperbólico; arqui-hipérbole,
   eletro-higrómetro, geo-história, neo-helénico/neo-helênico, pan-helenismo,
   semi-hospitalar."
@@ -24,8 +24,14 @@ AO1990 Base XVI (the text of the Portal da Língua Portuguesa):
   aeroespacial, autoestrada, autoaprendizagem, agroindustrial, hidroelétrico,
   plurianual."
 
-So co- joins before a vowel and a consonant: co-autores gives coautores and co-fatores
-gives cofatores. The joined word then takes the steps of the word map, so pt-PT
+Base XVI 1 sets the cases of the hyphen: "Nas formações com prefixos (como, por exemplo:
+ante-, anti-, circum-, co-, contra-, entre-, extra-, hiper-, infra-, intra-, pós-, pré-,
+pró-, sobre-, sub-, super-, supra-, ultra-, etc.) e em formações por recomposição, isto é,
+com elementos não autónomos ou falsos prefixos, de origem grega e latina (tais como: aero-,
+agro-, arqui-, auto-, bio-, eletro-, geo-, hidro-, inter-, macro-, maxi-, micro-, mini-,
+multi-, neo-, pan-, pluri-, proto, pseudo, retro-, semi-, tele-, etc.), só se emprega o
+hífen nos seguintes casos:". No case names co- before a consonant, so co- joins there:
+co-fatores gives cofatores. The 1º b) Obs. joins co- before o: co-autores gives coautores. The joined word then takes the steps of the word map, so pt-PT
 co-factores gives cofatores (cofactores -> cofatores), and the VOLP pair fator -> factor
 does not reach the second element.
 
@@ -50,7 +56,7 @@ _BOTH = [_PT, _BR]
     ("co-ocupante", "coocupante"), ("co-ocupantes", "coocupantes"),
     ("co-autor", "coautor"), ("co-autores", "coautores"),
     ("co-irmão", "coirmão"), ("co-irmãos", "coirmãos"),
-    # 1º b) Obs.: "aglutina-se em geral": before a consonant too
+    # Base XVI 1: no case of the hyphen names co- before a consonant
     ("co-fator", "cofator"), ("co-fatores", "cofatores"),
     ("co-produção", "coprodução"), ("co-produções", "coproduções"),
     # 2º a)
@@ -142,3 +148,14 @@ def test_pt_pt_drops_the_mute_c_of_each_element(old, new):
 def test_pt_br_drops_the_mute_c_of_each_element_before_the_join(old, new):
     assert convert(old, "etymological", "ao1990-br") == new
     assert convert(old, "br_1971", "ao1990-br") == new
+
+
+@pytest.mark.parametrize("source,target", _BOTH)
+@pytest.mark.parametrize("word", [
+    # VOLP, Vocabulário de Estrangeirismos: "co-worker s.2g. ing.", "co-working s.m. ing."
+    "co-working", "co-worker", "Co-Working", "anti-aging",
+    # no letter after the hyphen
+    "co-1, co-2 e co-3", "co-1a",
+])
+def test_no_join_for_a_loanword_or_a_digit(word, source, target):
+    assert convert(word, source, target) == word
