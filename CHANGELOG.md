@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.2a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.1a2...0.3.2a1)
+
+**Merged pull requests:**
+
+- fix: 1911 rule fallbacks leave loanwords and foreign names alone [\#6](https://github.com/TigreGotico/desacordo_ortografico/pull/6) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.3.1a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.1a2) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.1a1...0.3.1a2)
