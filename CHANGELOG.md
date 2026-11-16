@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.6a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.6a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.5a1...0.3.6a1)
+
+**Merged pull requests:**
+
+- fix: join co- and the other Base XVI prefixes in plurals and before a consonant [\#48](https://github.com/TigreGotico/desacordo_ortografico/pull/48) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.5a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.5a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.4a1...0.3.5a1)
