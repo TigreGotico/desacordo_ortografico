@@ -178,9 +178,13 @@ def test_pt_pt_text_toward_pt_br_keeps_what_the_volp_writes(old, new):
     assert convert(old, "pt_1973", "ao1990-br") == new
 
 
-@pytest.mark.parametrize("word", ["foto-receptores", "tele-receptores", "contra-rupturas", "auto-infecções"])
-def test_pt_pt_text_toward_br_1971_keeps_the_consonant_and_the_hyphen(word):
-    assert convert(word, "pt_1973", "br_1971") == word
+@pytest.mark.parametrize("old,new", [
+    # the 1943 Formulário lists contra and auto (46 5.º a), and not foto or tele
+    ("foto-receptores", "fotorreceptores"), ("tele-receptores", "telerreceptores"),
+    ("contra-rupturas", "contra-rupturas"), ("auto-infecções", "auto-infecções"),
+])
+def test_pt_pt_text_toward_br_1971_keeps_the_consonant(old, new):
+    assert convert(old, "pt_1973", "br_1971") == new
 
 
 @pytest.mark.parametrize("old,new", [
