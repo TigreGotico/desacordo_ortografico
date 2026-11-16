@@ -272,8 +272,10 @@ def reform_1911_digraphs(word: str) -> str:
 # estrangeiros"; the Bases Analíticas of the Acordo of 1945, 1, "byroniano, taylorista",
 # and 2, "quaisquer combinações gráficas não peculiares à nossa escrita".
 # A word carries the spelling of a loanword or a foreign name when it has k or w, zz,
-# sh, y before a vowel at the start, or a final pair of consonants other than ch, ph, th
-# and cc (Clifford, Scott, Through). These are no such spelling:
+# sh, y before a vowel at the start, a final pair of consonants other than ch, ph, th
+# and cc (Clifford, Scott, Through), or a ü that follows neither g, q nor a vowel
+# (mülleriano, of Müller; Portuguese writes ü only after g or q or on a hiatus). These
+# are no such spelling:
 # - a single final consonant: AO1990 Base I 5º keeps it in names of the biblical
 #   tradition ("Jacob, Job, Moab, Isaac, David, Gad; Gog, Magog; Bensabat, Josafat"),
 #   and an abbreviation ends in one (Typ., Rhet.);
@@ -284,7 +286,8 @@ def reform_1911_digraphs(word: str) -> str:
 #   Jayme, Piauhy), and no spelling tells taylorista or byroniano from Baylão or Froylas.
 _FOREIGN_RE = re.compile(
     r"[kw]|zz|sh|^y[aeiou]"
-    r"|(?!cc$|[cpt]h$)[^aeiouáàâãéêíóôõúüy][^aeiouáàâãéêíóôõúüylrszmnx]$")
+    r"|(?!cc$|[cpt]h$)[^aeiouáàâãéêíóôõúüy][^aeiouáàâãéêíóôõúüylrszmnx]$"
+    r"|(?<![gqaeiouáàâãéêíóôõú])ü")
 
 
 def is_foreign_spelling(word: str) -> bool:
@@ -660,9 +663,18 @@ def ao1990_drop_hiatus_accent(word: str) -> str:
 
 
 # ----------------------------------------------------------- AO1990 trema
+# Portuguese writes the trema only after g or q (frequência, linguiça) and on a hiatus
+# (saüdade). AO1990 Base XIV 1º drops it there. Its Obs. keeps it in derivatives of
+# foreign names, where ü follows another consonant: "Conserva-se, no entanto, o trema, de
+# acordo com a Base I, 3º, em palavras derivadas de nomes próprios estrangeiros:
+# hübneriano, de Hübner, mülleriano, de Müller". The Bases Analíticas of the Acordo of
+# 1945, 2, keep it too: "mülleriano, de Müller".
+_TREMA_RE = re.compile(r"(?<=[gqaeiouáàâãéêíóôõú])ü")
+
+
 def ao1990_drop_trema(word: str) -> str:
-    """ü -> u (frequência, linguiça). Brazil-only effect; reversible via lexicon only."""
-    return word.replace("ü", "u")
+    """ü -> u after g, q or a vowel; reversible via lexicon only."""
+    return _TREMA_RE.sub("u", word)
 
 
 # --------------------------------------------------------- AO1990 months/seasons
