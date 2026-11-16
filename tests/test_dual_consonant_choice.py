@@ -172,7 +172,7 @@ def _table_cells(cells):
 
 @pytest.mark.parametrize("table, cells, cell", [
     ("ao_pt_dual_full", _AO_PT, ("setor", "sector")),
-    ("ao_br_dual_full", _AO_BR, ("cofator", "cofactor")),
+    ("ao_br_dual_full", _AO_BR, ("liquefação", "liquefacção")),
 ])
 def test_the_maps_hold_the_dual_cells(table, cells, cell):
     # every dual cell of the table and the plural of each, and nothing else

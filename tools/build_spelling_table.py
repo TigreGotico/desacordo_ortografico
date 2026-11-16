@@ -16,7 +16,8 @@ The table took its rows from four sources, in this order:
    Brazilian edges turn its 1911 form into its pt-BR form. Every other row, and every row
    of :data:`TWO_1911_FORMS`, gets rows for its AO1990 forms only;
 3. the tugalex AO1990 pt-PT list (``acordo_ortografico_pt_PT.csv``), as pt_1973 rows;
-4. the tugalex AO1990 pt-BR list (``acordo_ortografico_pt_BR.csv``), as br_1971 rows;
+4. the tugalex AO1990 pt-BR list (``acordo_ortografico_pt_BR.csv``), as br_1971 rows. A
+   cell of :data:`VOLP_AO_BR` takes the form of the ABL VOLP instead;
 5. the rows on the edges out of 1911, :data:`ROWS_OUT_OF_1911`: the 1911 words that no
    rule of those edges reaches, and the words that the backward pass of those edges reads,
    each with the clause of the Acordo Ortográfico of 1945, the Bases of 1931 or the
@@ -153,6 +154,17 @@ TWO_1911_FORMS = {
     "mallogro": f'{REFORM_1911} (Base XXVIII: "Assim se diferençarão rêgo, substantivo, e rego, '
                 f'verbo"; Base XXXIV: "pois dizemos malograr, malôgro")',
 }
+VOLP_ABL = "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras)"
+#: The pt-BR AO1990 cells whose form the ABL VOLP decides against tugalex. tugalex has the
+#: cell "co-fator, co-factor" -> "cofator, cofactor", and the table holds it as co-factor ->
+#: cofator|cofactor. The VOLP entry is, to its end: "cofator adj. s.m.". It has no entry
+#: for co-fator, cofactor or co-factor (the searches "co-fat", "cofact" and "co-fact" give no
+#: row). So pt-BR writes cofator only, and co-factor gives cofator, as co-fator does.
+#: The pt-PT row cofactor -> cofator agrees with the Vocabulário Ortográfico do Português
+#: (Portal da Língua Portuguesa), whose entry is, to its end: "cofator - nome masculino
+#: co · fa · tor singular cofator plural cofatores Flexiona como : dor variante AO :
+#: cofactor ( Brasil)". For pt-BR the ABL VOLP decides, and it lists no cofactor.
+VOLP_AO_BR = {"co-factor": ("cofator", '"cofator adj. s.m."')}
 Row = Dict[str, Union[str, bool]]
 Curated = Tuple[List[Row], List[str], Dict[str, str]]
 
@@ -263,7 +275,11 @@ def ao_rows(tuga: TugaLexicon) -> List[Row]:
                                      (tuga.ao_br, tuga.ao_br_path, "br_1971", "ao1990-br")):
         for old, news in cells.items():
             assert not any("|" in n for n in news), (old, news)
-            out.append(row(old, era, target, "|".join(news), False, f"tugalex {os.path.basename(path)}"))
+            value, source = "|".join(news), f"tugalex {os.path.basename(path)}"
+            if era == "br_1971" and old in VOLP_AO_BR:
+                value, quote = VOLP_AO_BR[old]
+                source = f"{VOLP_ABL} ({quote})"
+            out.append(row(old, era, target, value, False, source))
     return out
 
 
@@ -299,7 +315,7 @@ def main() -> None:
                                 else curated_from_table(args.out))
     curated = decide_1911(curated)
     groups = {**groups, **GROUPS_1911}
-    sources = sources + [s for s in (ACORDO_1931,) if s not in sources]
+    sources = sources + [s for s in (ACORDO_1931, VOLP_ABL) if s not in sources]
     ao = ao_rows(tuga)
 
     class SourceLexicon(Lexicon):
