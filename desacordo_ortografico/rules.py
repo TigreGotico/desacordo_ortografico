@@ -747,6 +747,40 @@ _RS_PREFIXES = {
 }
 
 
+# The prefixes of _RS_PREFIXES that the 1943 Formulário, 46 5.º, does not list. 46 3.º
+# Observação keeps euro- hyphenated (euro-africano), and the Pequeno Vocabulário of 1943
+# writes co- with the hyphen (co-administrador, co-arrendador, co-diretor).
+_UNLISTED_1943 = _RS_PREFIXES - {
+    "auto", "contra", "extra", "infra", "intra", "neo", "proto", "pseudo", "semi", "ultra",
+    "ante", "anti", "arqui", "sobre", "supra", "euro", "co",
+}
+
+
+def br_1943_prefix_join(word: str) -> str:
+    """Join a prefix that the 1943 Formulário does not list to a second element that
+    starts with r or s, and double the consonant (micro-sistema -> microssistema).
+
+    The Formulário Ortográfico of 1943 (Academia Brasileira de Letras), 45: "Só se ligam
+    por hífen os elementos das palavras compostas em que se mantém a noção da composição,
+    isto é, os elementos das palavras compostas que mantêm a sua independência fonética,
+    conservando cada um a sua própria acentuação, porém formando o conjunto perfeita
+    unidade de sentido." 46 lists the cases of the hyphen, and its 5.º names the prefixes:
+    auto, contra, extra, infra, intra, neo, proto, pseudo, semi and ultra (a), ante, anti,
+    arqui and sôbre (b), supra (c), and super, ab, ad, ob, sob, sub, pan, mal, bem, sem,
+    sota, soto, vice, vizo, ex, pós, pré and pró (d to i). 22: "Duplicam-se
+    o r e o s todas as vezes que a um elemento de composição terminado em vogal se segue,
+    sem interposição do hífen, palavra começada por uma daquelas letras: albirrosado,
+    arritmia, altíssono, derrogar, prerrogativa, pressentir, ressentimento, sacrossanto,
+    etc." The Pequeno Vocabulário of 1943 writes microssismo, microrradiógrafo,
+    hidrorragia, macrorrizo, multissecular, plurissecular, geossinclinal, telessismógrafo
+    and fotossíntese. Before a vowel or h the word stays as written.
+    """
+    pre, _, base = word.partition("-")
+    if pre not in _UNLISTED_1943 or "-" in base or deaccent(base[:1]) not in ("r", "s"):
+        return word
+    return ao1990_hyphen_rs(word)
+
+
 def ao1990_hyphen_rs(word: str, co_drops_h: bool = False) -> str:
     """Join a prefix that ends in a vowel to the second element where AO1990 Base XVI
     writes no hyphen. Restricted to a known prefix list so genuine noun+noun compounds

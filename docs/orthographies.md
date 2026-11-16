@@ -175,7 +175,11 @@ deterministic. They run once, on the
 words of an AO1990 target, after the VOLP and the dual cells decide each element, so pt-PT
 `foto-receptores` gives pt-BR `fotorreceptores`. The 1945 Acordo (Base XXIX) and the 1943
 Formulário (5.º a) write the hyphen, so `pt_1973 → br_1971` keeps `co-autores` although
-the route passes through AO1990.
+the route passes through AO1990. The 1943 Formulário uses the hyphen only for the prefixes
+it lists (45, 46 5.º), so at `br_1971` an unlisted prefix joins before r or s and doubles
+it (`micro-sistema→microssistema`, 22), as the 1943 Pequeno Vocabulário writes
+microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loanword row
+(`mini-system`) keep the hyphen.
 Lexicalized compounds (`pára-quedas→paraquedas`) are lexical.
 
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
