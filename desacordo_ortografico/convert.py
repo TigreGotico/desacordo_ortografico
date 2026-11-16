@@ -69,13 +69,14 @@ class _Pass:
     feature ``table_feature(word)`` is enabled, and stays as written otherwise. Every
     other word runs through ``steps`` in order, each step only when its feature is
     enabled. With ``plurals`` the table also owns the regular plural of each word it
-    holds.
+    holds. A word for which ``skip`` is true runs no step.
     """
 
     steps: List[Tuple[str, WordFn]] = field(default_factory=list)
     table: Optional[Mapping[str, str]] = None
     table_feature: Optional[Callable[[str], str]] = None
     plurals: bool = False
+    skip: Optional[Callable[[str], bool]] = None
 
     def apply(self, word: str, enabled: FrozenSet[str]) -> str:
         if self.table is not None:
@@ -83,6 +84,8 @@ class _Pass:
                     else self.table.get(word))
             if form is not None:
                 return form if self.table_feature(word) in enabled else word
+        if self.skip is not None and self.skip(word):
+            return word
         for feature, fn in self.steps:
             if feature in enabled:
                 word = fn(word)
@@ -311,7 +314,8 @@ class OrthographyConverter:
             pt = lex.divergence_br2pt.get(w, w)
             return w if pt in lex.ao_pt_new2old else pt
 
-        # -- 1911: the word maps first; the rules are a fallback for other words. 1911
+        # -- 1911: the word maps first; the rules are a fallback for other words. They
+        #    leave a loanword or a foreign name alone (rules.is_foreign_spelling). 1911
         #    also introduced graphic accents the rules can't derive; convert() restores
         #    them after this pass, from the word list and the context (fosforo -> fósforo).
         reform_1911 = _Edge(
@@ -321,6 +325,7 @@ class OrthographyConverter:
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
                 ],
                 table=lex.reform1911_forward, table_feature=word_map_1911,
+                skip=rules.is_foreign_spelling,
             ),
             _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
             reversible_backward=False,
