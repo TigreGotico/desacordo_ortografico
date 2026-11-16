@@ -33,6 +33,11 @@ the two orthographies.
 | `ph→f`, `th→t`, `rh→r`, `y→i` | deterministic |
 | `ch`(=/k/)→`c`/`qu`, geminate reduction (keep `rr`, `ss`), drop silent consonants and medial `h` | lexical |
 
+The Formulário reforms "todas as palavras portuguesas, ou aportuguesadas" (I, II). A
+loanword or a foreign name is neither, so `convert()` keeps its letters through the
+1911 rules: `a pharmacia de Hollywood` gives `a farmácia de Hollywood`. The
+[API reference](api.md) lists the letters that mark a foreign spelling, and the limits.
+
 `detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943
 does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù`
 (freqùente). See the detection markers in
@@ -147,7 +152,13 @@ lexical part. It defines four sets:
   (kept: `pôr, pôde, têm, vêm`).
 
 **Trema** is abolished (`freqüência→frequência`): deterministic, with a Brazil-only
-effect. **Months and seasons** are lowercased: deterministic (closed list).
+effect. Base XIV 1º Obs. keeps it in derivatives of foreign names, so `mülleriano` (of
+Müller) stays.
+
+**Months and seasons** are lowercased: deterministic (closed list). A month that opens
+a sentence keeps the case it was written in, also after an opening quote:
+`«Janeiro chegou», disse ele.` stays as written.
+
 **Hyphenation**: a prefix-vowel plus `r/s` drops the hyphen and doubles the consonant
 (`anti-religioso→antirreligioso`), which is deterministic. Lexicalized compounds
 (`pára-quedas→paraquedas`) are lexical.

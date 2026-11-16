@@ -52,7 +52,12 @@ a Brazilian `-êm-` word (epidêm.io).
 ## `convert(text, source, target, variant=None, features=None, pos_tags=None) -> str`
 
 Convenience wrapper returning the converted string. `source`/`target` are norm ids or
-aliases (see `eras`). `variant` (`"pt"`/`"br"`) biases dual-form selection.
+aliases (see `eras`).
+
+`variant` (`"pt"`/`"br"`) picks the AO1990 sub-norm when the target is an AO1990 norm:
+`convert("a receção", "ao1990-pt", "ao1990", variant="br")` gives `'a recepção'`. It takes the place of the variety in the target id, so `ao1990-pt`
+with `variant="br"` also gives `ao1990-br`. A target outside AO1990 ignores it. A value
+other than `"pt"` or `"br"` raises `ValueError` for every target.
 
 `features` is a collection of names from `FEATURES`. Only those features apply. `None`
 applies all of them. An unknown name raises `ValueError`.
@@ -70,7 +75,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `1911-digraphs` | ph, th, rh -> f, t, r; y -> i | reform_1911 |
 | `1911-geminates` | doubled consonants, except rr and ss | reform_1911 |
 | `1911-accent-restore` | the graphic accent of a unique accented form (fosforo -> fósforo), see below | reform_1911 |
-| `trema` | ü -> u | pt_1911_to_1945, ao1990_pt, ao1990_br |
+| `trema` | ü -> u after g, q or a vowel (freqüência -> frequência, saüdade -> saudade). A derivative of a foreign name keeps it (mülleriano, AO1990 Base XIV 1º Obs.) | pt_1911_to_1945, ao1990_pt, ao1990_br |
 | `post-1911-word-map` | the 1911 -> pt_1945 and 1911 -> br_1943 rows of the spelling table (quási -> quase, tam -> tão, teem -> têm, scetro -> ceptro); the noun row reads its plural (scetros -> ceptros), the adverb and verb rows do not (tams stays); a word whose parts repeat (tam-tam, tam-tams) stays | pt_1911_to_1945, br_1911_to_1943 |
 | `oxytone-em` | -êm, -êns -> -ém, -éns in an oxytone of more than one syllable (tambêm -> também); a compound of ter or vir in -têm, -vêm stays | pt_1911_to_1945, br_1911_to_1943 |
 | `grave-u` | qù, gù -> qu, gu toward 1945 and qü, gü toward 1943 (tranqùilo) | pt_1911_to_1945, br_1911_to_1943 |
@@ -93,7 +98,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `hiatus-accent` | ôo and êem (vôo -> voo) | ao1990_pt, ao1990_br |
 | `prefix-rs` | prefix + r/s (auto-regulável -> autorregulável) | ao1990_pt, ao1990_br |
 | `volp` | the ABL VOLP form of each pt-BR word that `data/volp_ao1990_br.json` holds (fato -> facto, aceção -> acepção); a name inside a sentence keeps a form the VOLP lists (e Coletivo Farra) | every conversion to ao1990-br |
-| `months` | month casing | every conversion |
+| `months` | month casing. Toward an older norm a month takes a capital, and so does a season that opens a sentence. Toward AO1990 a month takes lowercase. At the start of a sentence it keeps the case it was written in. An opening quote or bracket does not stop a sentence opening («Janeiro chegou», disse ele) | every conversion |
 
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
 word stays as written, and the rules of that edge do not change it either. The 1911 word
@@ -119,6 +124,27 @@ For the other rows it only shows that the Brazilian edges keep the word, and it 
 nothing about the 1911 form. Where the curated pairs and the tugalex list hold the same
 word, the table holds the curated pair. The backward pass reads the curated pairs only,
 because several archaic forms can share one modern form.
+
+The 1911 Formulário reforms "todas as palavras portuguesas, ou aportuguesadas", so the
+digraph and geminate rules of the 1911 edge leave a loanword or a foreign name as
+written. The 1911 word map still applies first:
+
+```python
+convert("a pharmacia de Hollywood", "etymological", "pt_1973")  # 'a farmácia de Hollywood'
+convert("o whisky e o kiosque", "etymological", "pt_1973")      # 'o whisky e o quiosque'
+```
+
+These letters mark a foreign spelling:
+
+- k or w, zz, sh, or an initial y before a vowel
+- a final pair of consonants whose last letter is not l, m, n, r, s, x, y or z, other
+  than ch, ph, th and cc (Clifford, Scott)
+- a ü that follows neither g, q nor a vowel (mülleriano)
+
+A y inside a word is no such mark, because pre-1911 Portuguese writes it (Moreyra gives
+Moreira). The test reads letters only, so it has known limits. taylorista gives
+tailorista, Smith gives Smit, and Russell gives Russel. Joseph gives Josef, not the José of AO1990 Base I 4º.
+Yara and razzia stay as written.
 
 The 1911 accent guess gives a bare word the accent of the one accented word that has
 the same letters. A bare form that is itself a word stays as written (para, pára). So
@@ -198,13 +224,17 @@ emfim), so a listed pre-1911 form does not outweigh a 1911 form.
 `get_lexicon()` returns the shared `Lexicon`. It exposes `base_iv_keep/drop/dual`,
 `dual_pt2br`, `differential_dropped/kept`, `hyphen_dropped`, `divergence_pt2br/br2pt`,
 `reform1911_old2new` (the curated 1911 pairs), `reform1911_forward` (every pre-1911 ->
-1911 row), `pre1911_forms`, `accent_71_73_old2new`, `sister_markers`, and the AO1990 maps
+1911 row), `reform1911_to_1945` and `reform1911_to_1943` (the 1911 -> pt_1945 and
+1911 -> br_1943 rows: quási -> quase), `pre1911_forms`, `accent_71_73_old2new`,
+`sister_markers`, and the AO1990 maps
 `ao_pt_old2new` / `ao_br_old2new` (with their inverses). These maps read the spelling
 table `data/spelling.json`. `ao_pt_row_class` and
 `ao_br_row_class` give the class of each AO1990 row (`ao_row_class(old, new)`).
 `ao_br_volp` maps a pt-BR word to its form in the ABL VOLP, from `data/volp_ao1990_br.json`.
 `ao_br_volp_listed` holds the forms the VOLP lists, which decide the names toward pt-BR
-(see [orthographies](orthographies.md)). Every map has a reverse. AO1990
+(see [orthographies](orthographies.md)). `is_listed(word)` is true when the word, accents
+and all, is in the word list, or is a regular plural or feminine of a word in it. The
+`differential-1945` feature reads it. Every map has a reverse. AO1990
 reverses come from the spelling table and are authoritative where present.
 
 ## `ml`
@@ -217,7 +247,7 @@ loads the shipped model used by `detect(method=...)`.
 ## CLI
 
 ```
-desacordo detect [-v] TEXT...
+desacordo detect [--method rules|nb|perceptron] [-v] TEXT...
 desacordo convert --from NORM --to NORM [--variant pt|br] [-v] TEXT...
 desacordo norms
 ```
