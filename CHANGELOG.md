@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.5a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.5a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.4a1...0.3.5a1)
+
+**Merged pull requests:**
+
+- fix: give the co-factor row the VOLP form cofator [\#47](https://github.com/TigreGotico/desacordo_ortografico/pull/47) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.4a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.4a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.3a2...0.3.4a1)
