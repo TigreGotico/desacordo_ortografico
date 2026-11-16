@@ -589,10 +589,13 @@ class Lexicon:
     def hyphen_loanwords(self) -> Dict[str, Dict[str, str]]:
         """The hyphenated loanwords of ``data/hyphen_loanwords.json`` for each variety
         ("pt" from the VOP, "br" from the VOLP), each mapped to itself so that
-        :func:`rules.lookup_with_plural` reads them."""
+        :func:`rules.lookup_with_plural` reads them. A row also gives its English plural,
+        the form with a final -s (mini-systems), which the Portuguese plurals of
+        :func:`rules.lookup_with_plural` do not reach."""
         out: Dict[str, Dict[str, str]] = {"pt": {}, "br": {}}
         for row in _load("hyphen_loanwords.json")["rows"]:
-            out[row["variety"]][row["form"]] = row["form"]
+            for form in (row["form"], row["form"] + "s"):
+                out[row["variety"]][form] = form
         return out
 
     # ----------------------------------------------------- PT<->BR divergence

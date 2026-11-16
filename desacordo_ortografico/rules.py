@@ -727,11 +727,23 @@ def recase_months(text: str, lowercase: bool) -> str:
 
 
 # --------------------------------------------------- AO1990 prefix joins
+# euro- is not in the list. In euro-africano it is europeu reduced, the first element of a
+# compound of two adjectives, and AO1990 Base XV 1 writes those with the hyphen: "Emprega-se
+# o hífen nas palavras compostas por justaposição que não contêm formas de ligação e cujos
+# elementos, de natureza nominal, adjetival, numeral ou verbal, constituem uma unidade
+# sintagmática e semântica e mantêm acento próprio, podendo dar-se o caso de o primeiro
+# elemento estar reduzido: ano-luz, arcebispo-bispo, arco-íris, decreto-lei, és-sueste,
+# médico-cirurgião, rainha-cláudia, tenente-coronel, tio-avô, turma-piloto; alcaide-mor,
+# amor-perfeito, guarda-noturno, mato-grossense, norte-americano, porto-alegrense,
+# sul-africano; afro-asiático, afro-luso-brasileiro, azul-escuro, luso-brasileiro,
+# primeiro-ministro, primeiro-sargento, primo-infeção, segunda-feira; conta-gotas,
+# finca-pé, guarda-chuva." The ABL VOLP and the VOP write euro-africano, euro-americano,
+# euro-árabe, euro-asiático, euro-atlântico and euro-siberiano.
 _RS_PREFIXES = {
     "ante", "anti", "arqui", "auto", "co", "contra", "eletro", "electro", "extra",
     "hidro", "infra", "intra", "macro", "micro", "mini", "multi", "neo",
     "pluri", "proto", "pseudo", "retro", "semi", "sobre", "supra", "ultra",
-    "geo", "tele", "agro", "aero", "euro", "foto", "psico", "socio",
+    "geo", "tele", "agro", "aero", "foto", "psico", "socio",
 }
 
 
