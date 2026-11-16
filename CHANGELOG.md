@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.8a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.8a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.7a1...0.3.8a1)
+
+**Merged pull requests:**
+
+- fix: join an unlisted prefix before r or s at br\_1971, as the 1943 Formulário does [\#50](https://github.com/TigreGotico/desacordo_ortografico/pull/50) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.7a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.7a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.6a1...0.3.7a1)
