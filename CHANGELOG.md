@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.1a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.1a2) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.1a1...0.3.1a2)
+
+**Merged pull requests:**
+
+- chore: Configure Renovate [\#3](https://github.com/TigreGotico/desacordo_ortografico/pull/3) ([renovate[bot]](https://github.com/apps/renovate))
+
 ## [0.3.1a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.1a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.0a1...0.3.1a1)
