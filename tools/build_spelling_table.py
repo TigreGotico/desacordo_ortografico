@@ -164,7 +164,19 @@ VOLP_ABL = "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira
 #: (Portal da Língua Portuguesa), whose entry is, to its end: "cofator - nome masculino
 #: co · fa · tor singular cofator plural cofatores Flexiona como : dor variante AO :
 #: cofactor ( Brasil)". For pt-BR the ABL VOLP decides, and it lists no cofactor.
-VOLP_AO_BR = {"co-factor": ("cofator", '"cofator adj. s.m."')}
+#: For bissector, fotelectricidade, idielectricidade and dactilozóide the tugalex list gives
+#: one form, and the VOLP lists both forms as headwords, so the cell holds both. The first
+#: form stays first, so the single-form map does not change.
+VOLP_AO_BR = {
+    "co-factor": ("cofator", '"cofator adj. s.m."'),
+    "bissector": ("bissetor|bissector", '"bissetor (ô) adj. s.m." and "bissector (ô) adj. s.m."'),
+    "fotelectricidade": ("foteletricidade|fotelectricidade",
+                         '"foteletricidade s.f." and "fotelectricidade s.f."'),
+    "idielectricidade": ("idieletricidade|idielectricidade",
+                         '"idieletricidade s.f." and "idielectricidade s.f."'),
+    "dactilozóide": ("dactilozoide|datilozoide",
+                     '"dactilozoide (ó) adj. s.m." and "datilozoide (ó) adj. s.m."'),
+}
 Row = Dict[str, Union[str, bool]]
 Curated = Tuple[List[Row], List[str], Dict[str, str]]
 

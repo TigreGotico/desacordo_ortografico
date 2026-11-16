@@ -295,7 +295,7 @@ _JOINED = {("anti-séptico", "ao1990-pt", "ao1990-br"): "antisséptico"}
 
 def test_pt_pt_dual_toward_pt_br_converts_as_on_dev():
     rows = list(_dev_rows())
-    assert len(rows) == 2825
+    assert len(rows) == 2819
     wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows
              if convert(w, s, d) != _JOINED.get((w, s, d), _volp_form(out, d))]
     assert wrong == []

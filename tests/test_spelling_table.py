@@ -125,8 +125,6 @@ def test_no_row_has_an_empty_value():
 # else its only form. These br_1971 rows give a form whose ABL VOLP form
 # (Lexicon.ao_br_volp, from data/volp_ao1990_br.json) is another form. For the first five
 # the VOLP does not list the form of the cell ("VOLP: intersectar v.; no intersetar").
-# For the next three it lists both forms ("VOLP:
-# bissetor (ô) adj. s.m. | bissector (ô) adj. s.m."), and the cell gives only the bare one.
 # For the last two it writes the hyphen that the cell drops ("VOLP: contra-erva s.f.; pl.
 # contra-ervas"). convert() writes the VOLP form for each of them, because it applies the
 # VOLP last.
@@ -136,9 +134,6 @@ VOLP_CONTRADICTIONS = {
     ("perfeccionismo", "perfecionismo", "perfeccionismo"),
     ("perfeccionista", "perfecionista", "perfeccionista"),
     ("perfeccionístico", "perfecionístico", "perfeccionístico"),
-    ("bissector", "bissetor", "bissector"),
-    ("fotelectricidade", "foteletricidade", "fotelectricidade"),
-    ("idielectricidade", "idieletricidade", "idielectricidade"),
     ("contra-erva", "contraerva", "contra-erva"),
     ("macro-jê", "macrojê", "macro-jê"),
 }
