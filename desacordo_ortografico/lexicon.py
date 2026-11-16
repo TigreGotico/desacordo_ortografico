@@ -382,7 +382,7 @@ class Lexicon:
                 rejected = {w.strip('.,;"').lower() for w in re.findall(r"\bno (\S+)", source)}
                 forms |= {w for w in (row["token"], row["european"]) if w not in rejected
                           and (_one_more_consonant(w, form) or _one_more_consonant(form, w))}
-            plural = re.search(r"\bpl\. (\w+)", source)
+            plural = re.search(r"\bpl\. ([\w-]+)", source)
             listed |= forms
             listed |= {plural.group(1)} if plural else {_plural(w) for w in forms} - {None}
         return frozenset(listed)
