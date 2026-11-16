@@ -288,9 +288,14 @@ def _volp_form(out, dst):
     return _VOLP.get(out) or "-".join(_VOLP.get(p, p) for p in out.split("-"))
 
 
+#: AO1990 Base XVI 2º a joins a prefix before s and doubles it (antissemita); origin/dev
+#: kept the hyphen of this ao1990-pt input on the way to ao1990-br
+_JOINED = {("anti-séptico", "ao1990-pt", "ao1990-br"): "antisséptico"}
+
+
 def test_pt_pt_dual_toward_pt_br_converts_as_on_dev():
     rows = list(_dev_rows())
     assert len(rows) == 2825
     wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows
-             if convert(w, s, d) != _volp_form(out, d)]
+             if convert(w, s, d) != _JOINED.get((w, s, d), _volp_form(out, d))]
     assert wrong == []

@@ -327,16 +327,10 @@ def drop_silent_cp(word: str, table: Mapping[str, str]) -> str:
     where the cultivated pronunciation says it (apto, rapto) and 1º b drops it where it
     is mute (ato, ótimo). So the step drops only the consonant the map drops, and a word
     the map does not hold stays as written: dropping a pronounced consonant gives another
-    word (apta -> ata, copta -> cota). When the map does not drop a c or p from a compound
-    as a whole, each element takes the step on its own (co-directores -> co-diretores,
-    directores-gerais -> diretores-gerais). One-way.
+    word (apta -> ata, copta -> cota). One-way.
     """
     form = lookup_with_plural(word, table)
-    if form is not None and _drops_cp(word, form):
-        return form
-    if "-" in word:
-        return "-".join(drop_silent_cp(part, table) for part in word.split("-"))
-    return word
+    return form if form is not None and _drops_cp(word, form) else word
 
 
 def restore_silent_cp(word: str, table: Mapping[str, str]) -> str:

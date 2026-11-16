@@ -168,9 +168,11 @@ joins (`auto-estradas→autoestradas`), and before the same vowel or h it keeps 
 (`micro-ondas`, `anti-higiénico`). co- joins before any vowel or consonant
 (`co-autores→coautores`, `co-fatores→cofatores`). Before h pt-PT keeps `co-herdeiro`, and
 pt-BR writes `coerdeiro`, as the ABL VOLP does. A loanword keeps its hyphen
-(`co-working`). These rules are deterministic, and they apply only when the target is an
-AO1990 norm: the 1945 Acordo (Base XXIX) and the 1943 Formulário (5.º a) write the hyphen,
-so `pt_1973 → br_1971` keeps `co-autores` although the route passes through AO1990.
+(`co-working`). These rules are deterministic. They run once, on the words of an AO1990
+target, after the VOLP and the dual cells decide each element, so pt-PT
+`foto-receptores` gives pt-BR `fotorreceptores`. The 1945 Acordo (Base XXIX) and the 1943
+Formulário (5.º a) write the hyphen, so `pt_1973 → br_1971` keeps `co-autores` although
+the route passes through AO1990.
 Lexicalized compounds (`pára-quedas→paraquedas`) are lexical.
 
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the

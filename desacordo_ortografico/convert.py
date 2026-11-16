@@ -160,12 +160,6 @@ class OrthographyConverter:
             # (so `convert(t, src, "ao1990", variant="br")` lands on ao1990-br)
             if dst.era == Era.AO1990:
                 dst = NORMS[f"ao1990-{variant}"]
-        # The 1945 Acordo (Base XXIX) and the 1943 Formulário (5.º a) write the hyphen that
-        # AO1990 Base XVI drops, so a route between two older norms that passes through
-        # AO1990 does not join a prefix. The VOLP is the AO1990 vocabulary of pt-BR, so it
-        # decides no word there either.
-        if dst.era != Era.AO1990:
-            enabled -= {"prefix-rs", "volp"}
         steps = find_path(src, dst)
         # pt-PT text reaches ao1990-br through the divergence edge; there a VOLP row whose
         # bare form is another pt-PT word (fato, the suit) keeps it
@@ -224,8 +218,35 @@ class OrthographyConverter:
                      if "silent-cp" in enabled else {})
             volp = self.lex.ao_br_volp if br and "volp" in enabled else {}
 
+            # Base XVI: a listed prefix joins its second element. The join runs here, once,
+            # on the words of the target, so the VOLP and the dual cells decide each element
+            # first (foto-recetores -> foto-receptores -> fotorreceptores). The older norms
+            # keep the hyphen (1945 Base XXIX, 1943 Formulário 5.º a), so only an AO1990
+            # target joins, and a route between two older norms through AO1990 does not.
+            # A row of an AO1990 map whose feature is off stays as written (auto-retrato
+            # without ao-map-join).
+            maps = ((self.lex.ao_pt_old2new, self.lex.ao_pt_row_class),
+                    (self.lex.ao_br_old2new, self.lex.ao_br_row_class))
+
+            def join(w: str) -> str:
+                if "prefix-rs" not in enabled or any(
+                        w in table and f"ao-map-{classes[w]}" not in enabled for table, classes in maps):
+                    return w
+                return rules.ao1990_hyphen_rs(w, co_drops_h=br)
+
             def choose(w: str) -> Optional[str]:
                 return pt_words.get(w) or volp.get(w) or duals.get(w)
+
+            # each element of a compound drops its mute c or p as a word does, by the pt-PT
+            # map (co-directores -> co-diretores) or by the VOLP (peixe-eléctricos ->
+            # peixe-elétricos)
+            def drop(w: str) -> str:
+                if br:
+                    return rules.drop_silent_cp(w, volp) if volp else w
+                return rules.drop_silent_cp(w, self.lex.ao_pt_old2new) if "silent-cp" in enabled else w
+
+            def element(w: str) -> str:
+                return choose(drop(w)) or drop(w)
 
             # a name keeps a form the VOLP lists and takes the VOLP form of any other
             def choose_for_name(w: str) -> Optional[str]:
@@ -234,14 +255,24 @@ class OrthographyConverter:
             def choose_word(i: int, w: str) -> Optional[str]:
                 if kept[i]:
                     return None
-                # each element of a compound too (setor-chave), unless the compound is a cell
-                form = choose(w) or "-".join(choose(p) or p for p in w.split("-"))
+                if "-" in w:
+                    # a compound that the map or the VOLP holds whole drops as one word
+                    # (peixe-eléctricos), any other each element on its own (setor-chave)
+                    whole = drop(w)
+                    form = choose(w) or choose(whole) or (
+                        whole if whole != w else "-".join(map(element, w.split("-"))))
+                else:
+                    form = choose(w) or w
+                # the joined word is one word, and the VOLP or a dual cell decides it
+                # (co-factores -> cofactores -> cofatores, codialetos -> codialectos)
+                if (solid := join(form)) != form:
+                    form = choose(solid) or solid
                 # a name gains no c or p from a dual: it has no more than the source wrote
                 if named[i] and sum(map(form.count, "cp")) > sum(map(written[i].lower().count, "cp")):
-                    return choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-"))
+                    form = join(choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-")))
                 return form
 
-            if volp or duals:
+            if volp or duals or "prefix-rs" in enabled:
                 out = rules.map_words(out, choose_word, is_word)[0]
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
@@ -427,7 +458,6 @@ class OrthographyConverter:
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
-                    ("prefix-rs", rules.ao1990_hyphen_rs),
                 ],
                 table=lex.ao_pt_old2new, table_feature=ao_row(lex.ao_pt_row_class),
             ),
@@ -453,10 +483,6 @@ class OrthographyConverter:
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
-                    # the VOLP drops the mute c or p of each element before the prefix
-                    # joins them (co-director -> co-diretor -> codiretor)
-                    ("volp", lambda w: rules.drop_silent_cp(w, lex.ao_br_volp) if "-" in w else w),
-                    ("prefix-rs", lambda w: rules.ao1990_hyphen_rs(w, co_drops_h=True)),
                 ],
                 table=lex.ao_br_old2new, table_feature=ao_row(lex.ao_br_row_class),
             ),
