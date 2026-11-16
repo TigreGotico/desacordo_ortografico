@@ -80,3 +80,9 @@ def test_a_name_keeps_the_hyphen(source):
 
 def test_the_first_word_joins():
     assert convert("Micro-sistema novo.", "pt_1973", "br_1971") == "Microssistema novo."
+
+
+@pytest.mark.parametrize("source", ["pt_1973", "ao1990-br"])
+def test_a_volp_loanword_keeps_the_hyphen(source):
+    # the ABL VOLP lists mini-system as a foreign word (data/hyphen_loanwords.json)
+    assert convert("um mini-system e dois mini-shows", source, "br_1971") == "um mini-system e dois mini-shows"

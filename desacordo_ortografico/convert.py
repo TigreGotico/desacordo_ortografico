@@ -282,11 +282,14 @@ class OrthographyConverter:
         # the 1943 Formulário joins a prefix that it does not list (46 5.º, 22), so br_1971
         # writes microssistema, as the Pequeno Vocabulário of 1943 writes microssismo. Its
         # 40 lets a firm keep its registered spelling, so a name does not join (a
-        # Micro-Sistemas)
+        # Micro-Sistemas). A loanword that the VOLP lists with its hyphen keeps it
+        # (mini-system)
         if dst.id == "br_1971" and "prefix-rs" in enabled:
             capital = rules.names(out)
+            loanwords = self.lex.hyphen_loanwords["br"]
             out = rules.map_words(
-                out, lambda i, w: None if capital[i] else rules.br_1943_prefix_join(w), is_word)[0]
+                out, lambda i, w: None if capital[i] or rules.lookup_with_plural(w, loanwords)
+                else rules.br_1943_prefix_join(w), is_word)[0]
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.
