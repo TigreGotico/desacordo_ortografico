@@ -275,6 +275,11 @@ class OrthographyConverter:
             if volp or duals or "prefix-rs" in enabled:
                 out = rules.map_words(out, choose_word, is_word)[0]
 
+        # the 1943 Formulário joins a prefix that it does not list (46 5.º, 22), so br_1971
+        # writes microssistema, as the Pequeno Vocabulário of 1943 writes microssismo
+        if dst.id == "br_1971" and "prefix-rs" in enabled:
+            out = rules.map_words(out, lambda _i, w: rules.br_1943_prefix_join(w), is_word)[0]
+
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.
         if "months" in enabled:
