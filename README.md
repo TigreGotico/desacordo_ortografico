@@ -17,8 +17,10 @@ nothing else.
 - A deterministic rule engine and curated, **sourced** exception lexicons. The AO1990
   word maps and the pre-1911 archaisms are rows of one spelling table,
   `data/spelling.json`, built from the [`tugalex`](https://github.com/TigreGotico/tugalex)
-  lists. For pt-BR, `data/volp_ao1990_br.json` holds 1,796 spelling decisions, and each
-  row cites its source. 1,628 rows quote the ABL *Vocabulário Ortográfico da Língua
+  lists. The same table holds the 1911 words that no rule of the 1945 or 1943 edge
+  reaches (`quási` gives `quase`), and each of these rows quotes its clause. For pt-BR,
+  `data/volp_ao1990_br.json` holds 1,796 spelling decisions, and each row cites its
+  source. 1,628 rows quote the ABL *Vocabulário Ortográfico da Língua
   Portuguesa* (VOLP), 66 rows cite Priberam, and 102 rows record that no source decides
   the word.
 - A **command-line tool** and a parallel silver benchmark corpus (written by language
@@ -66,6 +68,10 @@ convert("pharmacia", "etymological", "ao1990-br")          # 'farmácia'
 convert("a acção directa", "pre-ao1990-pt", "ao1990-pt")   # 'a ação direta'
 convert("freqüência", "pre-ao1990-br", "ao1990-br")        # 'frequência'
 convert("húmido", "ao1990-pt", "ao1990-br")                # 'úmido'
+convert("Tambêm êle quási sabia", "reforma_1911", "pt_1945")  # 'Também ele quase sabia'
+convert("Tambêm êle quási sabia", "reforma_1911", "br_1943")  # 'Também êle quase sabia'
+convert("a pharmacia de Hollywood", "etymological", "pt_1973")
+# 'a farmácia de Hollywood'  (the 1911 rules leave a foreign name as written)
 
 # --- the full result: warnings + dual-form alternatives ------------------
 conv = OrthographyConverter()
