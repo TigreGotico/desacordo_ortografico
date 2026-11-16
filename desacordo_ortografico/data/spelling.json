@@ -11,7 +11,8 @@
     "tugalex acordo_ortografico_pt_BR.csv",
     "Acordo Ortográfico de 1945 (Decreto n.º 35 228, de 8 de Dezembro de 1945)",
     "Formulário Ortográfico de 1943 (Academia Brasileira de Letras)",
-    "Acordo Ortográfico de 1931 (Academia das Ciências de Lisboa e Academia Brasileira de Letras, 30 de Abril de 1931)"
+    "Acordo Ortográfico de 1931 (Academia das Ciências de Lisboa e Academia Brasileira de Letras, 30 de Abril de 1931)",
+    "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras)"
   ],
   "_groups": {
     "digraphs": "ph->f, th->t, rh->r, y->i. Modern values carry the accent the 1911 systematic accentuation introduced.",
@@ -10894,7 +10895,7 @@
     {"form": "co-eterno", "era": "br_1971", "target": "ao1990-br", "value": "coeterno", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-evangelista", "era": "br_1971", "target": "ao1990-br", "value": "coevangelista", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-fator", "era": "br_1971", "target": "ao1990-br", "value": "cofator", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
-    {"form": "co-factor", "era": "br_1971", "target": "ao1990-br", "value": "cofator|cofactor", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
+    {"form": "co-factor", "era": "br_1971", "target": "ao1990-br", "value": "cofator", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"cofator adj. s.m.\")"},
     {"form": "co-fiador", "era": "br_1971", "target": "ao1990-br", "value": "cofiador", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-fiadora", "era": "br_1971", "target": "ao1990-br", "value": "cofiadora", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-financiado", "era": "br_1971", "target": "ao1990-br", "value": "cofinanciado", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
