@@ -276,9 +276,13 @@ class OrthographyConverter:
                 out = rules.map_words(out, choose_word, is_word)[0]
 
         # the 1943 Formulário joins a prefix that it does not list (46 5.º, 22), so br_1971
-        # writes microssistema, as the Pequeno Vocabulário of 1943 writes microssismo
+        # writes microssistema, as the Pequeno Vocabulário of 1943 writes microssismo. Its
+        # 40 lets a firm keep its registered spelling, so a name does not join (a
+        # Micro-Sistemas)
         if dst.id == "br_1971" and "prefix-rs" in enabled:
-            out = rules.map_words(out, lambda _i, w: rules.br_1943_prefix_join(w), is_word)[0]
+            capital = rules.names(out)
+            out = rules.map_words(
+                out, lambda i, w: None if capital[i] else rules.br_1943_prefix_join(w), is_word)[0]
 
         # month/season casing is a text-level (sentence-position) concern: AO1990
         # lowercases them mid-sentence, the older norms capitalise them.

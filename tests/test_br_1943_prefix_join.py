@@ -27,6 +27,12 @@ the unlisted prefixes solid before r and s: microssismo, microssísmico, microrr
 microrradiografia, macrorrizo, hidrorragia, electrossiderurgia, multissecular,
 plurissecular, retrosseguir, geossinclinal, telessismógrafo, fotossíntese. It writes co-
 with the hyphen: co-administrador, co-arrendador, co-diretor.
+
+- 40: "Para salvaguardar direitos individuais, quem o quiser manterá em sua assinatura a
+  forma consuetudinária. Poderá também ser mantida a grafia original de quaisquer firmas,
+  sociedades, títulos e marcas que se achem inscritos em registro público." It is a
+  permission ("poderá"). The join leaves a name inside a sentence as written, as the
+  AO1990 join does for Base XXI.
 """
 import pytest
 
@@ -64,3 +70,13 @@ def test_pt_1973_keeps_the_hyphen():
 
 def test_the_join_follows_the_prefix_rs_feature():
     assert convert("micro-sistema", "pt_1973", "br_1971", features={"silent-cp"}) == "micro-sistema"
+
+
+@pytest.mark.parametrize("source", ["pt_1973", "etymological", "ao1990-br"])
+def test_a_name_keeps_the_hyphen(source):
+    text = "A Micro-Sistemas abriu, e o micro-sistema chegou."
+    assert convert(text, source, "br_1971") == "A Micro-Sistemas abriu, e o microssistema chegou."
+
+
+def test_the_first_word_joins():
+    assert convert("Micro-sistema novo.", "pt_1973", "br_1971") == "Microssistema novo."
