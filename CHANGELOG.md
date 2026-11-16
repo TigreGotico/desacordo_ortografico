@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.3a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.3a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.2a1...0.3.3a1)
+
+**Merged pull requests:**
+
+- fix: keep the trema in derivatives of foreign names [\#8](https://github.com/TigreGotico/desacordo_ortografico/pull/8) ([JarbasAl](https://github.com/JarbasAl))
+
 ## [0.3.2a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.2a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.1a2...0.3.2a1)
