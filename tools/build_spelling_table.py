@@ -18,8 +18,10 @@ The table took its rows from four sources, in this order:
 3. the tugalex AO1990 pt-PT list (``acordo_ortografico_pt_PT.csv``), as pt_1973 rows;
 4. the tugalex AO1990 pt-BR list (``acordo_ortografico_pt_BR.csv``), as br_1971 rows;
 5. the rows on the edges out of 1911, :data:`ROWS_OUT_OF_1911`: the 1911 words that no
-   rule of those edges reaches, each with the clause of the Acordo Ortográfico of 1945, the
-   Bases of 1931 or the Formulário Ortográfico of 1943 that gives its later form.
+   rule of those edges reaches, and the words that the backward pass of those edges reads,
+   each with the clause of the Acordo Ortográfico of 1945, the Bases of 1931 or the
+   Formulário Ortográfico of 1943 that gives its later form. The rows of
+   :data:`INVERTED_OUT_OF_1911` are curated.
 
 The script ran once, with the tugalex release that desacordo_ortografico pins as its
 floor. People edit the table by hand from then on, like the other data files.
@@ -46,9 +48,10 @@ COLUMNS = ["form", "era", "target", "value", "curated", "source"]
 ABOUT = (
     "The spelling facts that convert() and detect() read. Each row maps form, written in "
     "the norm era, to value in the norm target. source names the entry of _sources that the "
-    "row comes from, and for a curated row the group of _groups. A dual AO1990 cell joins "
-    "its two forms with '|', in source order. curated is true for the 1911 pairs that the "
-    "backward 1911 pass inverts and that detect() weighs double. A pre-1911 form whose 1911 "
+    "row comes from, and for a curated pre-1911 row the group of _groups. A dual AO1990 cell joins "
+    "its two forms with '|', in source order. curated is true for the pairs that the "
+    "backward pass of their edge inverts. detect() weighs a curated pre-1911 form double. "
+    "A pre-1911 form whose 1911 "
     "form no source decides, or that has two 1911 forms (mallogro gives the noun malôgro and "
     "the verb malogro), has rows for its AO1990 forms only. "
     "The reforma_1911 values do not always have the accents of the 1911 print. A curated "
@@ -60,7 +63,8 @@ ABOUT = (
     "pt-PT map lists the modern form (architecto gives arquitecto). The 1911 reform kept the c and p of -ct- and -pt- words such as acto, óptimo, "
     "director and afecto: affecto gives afecto in 1911, and only the AO1990 edge gives afeto. "
     "A reforma_1911 row gives the pt_1945 or br_1943 form of a 1911 word that no rule of the "
-    "edge reaches (quási gives quase). "
+    "edge reaches (quási gives quase), or of a 1911 word that the backward pass of the edge "
+    "reads (cena gives scena). "
     "tools/build_spelling_table.py built the rows with tugalex 2.4.9a1."
 )
 
@@ -89,6 +93,11 @@ _TAM_1943 = ('28., Observação 2.ª: "Com o ditongo nasal ão se escrevem os mo
 _TER_VIR_1943 = ('7.ª, Observação 2.ª: "A 3.ª pessoa do plural do presente do indicativo dos '
                  'verbos ter, vir e seus compostos recebe acento circunflexo no e da sílaba '
                  'tônica: (êles) contêm, (elas) convêm, (êles) têm, (elas) vêm, etc."')
+_BASE_XI_1911 = ('1911 form, Base XI: "É conservado o grupo inicial sc, das seguintes palavras e '
+                 'seus derivados e afins, em que o s é mudo: scena, sciência"')
+_SC_1931 = f'§ 1.º Eliminar: "4.º O s do grupo inicial: ciência, ciática"; {_BASE_XI_1911}'
+_SC_1943 = (f'19.: "Elimina-se o s do grupo inicial sc: celerado, cena, cenografia, ciência, '
+            f'cientista, cindir, cintilar, ciografia, cisão, etc."; {_BASE_XI_1911}')
 ROWS_OUT_OF_1911 = [
     ("quási", "pt_1945", "quase", f'{ACORDO_1945} (Base IX: "quase (em vez de quási)")'),
     ("tam", "pt_1945", "tão", f'{ACORDO_1945} (Base XIII: "tão (não tam)")'),
@@ -116,12 +125,24 @@ ROWS_OUT_OF_1911 = [
                                  f'i, e por c antes de outra qualquer letra: breque, caqui, faquir, '
                                  f'níquel, etc."; 4.: "Emprega-se em abreviaturas e símbolos '
                                  f'[...]: [...] kg = quilograma")'),
+    # an inverted initial-sc rule would give scenoura from cenoura, so the backward pass
+    # reads these rows
+    ("scena", "pt_1945", "cena", f"{ACORDO_1931} ({_SC_1931})"),
+    ("sciência", "pt_1945", "ciência", f"{ACORDO_1931} ({_SC_1931})"),
+    ("scena", "br_1943", "cena", f"{FORMULARIO_1943} ({_SC_1943})"),
+    ("sciência", "br_1943", "ciência", f"{FORMULARIO_1943} ({_SC_1943})"),
 ]
+#: The rows on the edges out of 1911 that the backward pass of the edge inverts. Base I
+#: names kilo first ("na forma international kilo, que todavia se poderá escrever quilo"),
+#: so quilo gives kilo. quilo is also the chyle, pre-1911 chylo; the inverse takes the
+#: common sense. Base XI keeps the sc of scena and sciência.
+INVERTED_OUT_OF_1911 = frozenset({"kilo", "scena", "sciência"})
 #: The curated pre-1911 pairs that the Formulário Ortográfico of 1911 decides. kilo and
 #: scena are 1911 spellings, so they leave the pre-1911 map: Base I, Excepção 2.ª, "e tambêm
 #: na forma international kilo, que todavia se poderá escrever quilo", and Base XI. sciencia
 #: gives the 1911 sciência of Base XI. The edges out of 1911 give quilo by the kilo rows of
-#: :data:`ROWS_OUT_OF_1911`, and cena and ciência by :func:`rules.drop_initial_sc`.
+#: :data:`ROWS_OUT_OF_1911`, and cena and ciência by :func:`rules.drop_initial_sc` and by
+#: rows that the backward pass reads.
 SPELLINGS_OF_1911 = frozenset({"kilo", "scena"})
 DECIDED_1911 = {"sciencia": ("sciência", "initial_sc")}
 GROUPS_1911 = {
@@ -236,7 +257,8 @@ def curated_from_table(path: str) -> Curated:
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
     sources = data["_sources"] + [s for s in (ACORDO_1945, FORMULARIO_1943) if s not in data["_sources"]]
-    return [r for r in data["rows"] if r["curated"]], sources, data["_groups"]
+    curated = [r for r in data["rows"] if r["curated"] and r["era"] == "etymological"]
+    return curated, sources, data["_groups"]
 
 
 def ao_rows(tuga: TugaLexicon) -> List[Row]:
@@ -322,7 +344,7 @@ def main() -> None:
             if br != modern:
                 modern_only.append(row(archaic, "etymological", "ao1990-br", br, False, source))
 
-    out_of_1911 = [row(form, "reforma_1911", target, value, False, source)
+    out_of_1911 = [row(form, "reforma_1911", target, value, form in INVERTED_OUT_OF_1911, source)
                    for form, target, value, source in ROWS_OUT_OF_1911]
     rows = curated + to_1911 + modern_only + out_of_1911 + ao
     # one row per line, so that a change to a row is a one-line diff
