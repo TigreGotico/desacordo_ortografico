@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.1a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.1a2) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.1a1...0.3.1a2)
+
+**Merged pull requests:**
+
+- chore: Configure Renovate [\#3](https://github.com/TigreGotico/desacordo_ortografico/pull/3) ([renovate[bot]](https://github.com/apps/renovate))
+
+## [0.3.1a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.1a1) (2026-11-15)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.0a1...0.3.1a1)
+
+**Merged pull requests:**
+
+- fix: read the plural only for the noun row out of 1911 [\#43](https://github.com/TigreGotico/desacordo_ortografico/pull/43) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.0a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.0a1) (2026-11-15)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.2.3a2...0.3.0a1)
