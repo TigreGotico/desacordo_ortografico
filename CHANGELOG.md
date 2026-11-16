@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.9a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.9a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.8a1...0.3.9a1)
+
+**Merged pull requests:**
+
+- fix: keep the hyphen of euro- at AO1990, as Base XV 1 does [\#51](https://github.com/TigreGotico/desacordo_ortografico/pull/51) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.8a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.8a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.7a1...0.3.8a1)
