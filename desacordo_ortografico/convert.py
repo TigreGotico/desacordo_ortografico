@@ -447,7 +447,10 @@ class OrthographyConverter:
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
-                    ("prefix-rs", rules.ao1990_hyphen_rs),
+                    # the VOLP drops the mute c or p of each element before the prefix
+                    # joins them (co-director -> co-diretor -> codiretor)
+                    ("volp", lambda w: rules.drop_silent_cp(w, lex.ao_br_volp) if "-" in w else w),
+                    ("prefix-rs", lambda w: rules.ao1990_hyphen_rs(w, co_drops_h=True)),
                 ],
                 table=lex.ao_br_old2new, table_feature=ao_row(lex.ao_br_row_class),
             ),

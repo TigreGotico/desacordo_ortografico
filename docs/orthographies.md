@@ -162,9 +162,13 @@ Müller) stays.
 a sentence keeps the case it was written in, also after an opening quote:
 `«Janeiro chegou», disse ele.` stays as written.
 
-**Hyphenation**: a prefix-vowel plus `r/s` drops the hyphen and doubles the consonant
-(`anti-religioso→antirreligioso`), which is deterministic. Lexicalized compounds
-(`pára-quedas→paraquedas`) are lexical.
+**Hyphenation** (Base XVI): a prefix-vowel plus `r/s` drops the hyphen and doubles the
+consonant (`anti-religioso→antirreligioso`). A prefix-vowel before a different vowel
+joins (`auto-estradas→autoestradas`), and before the same vowel or h it keeps the hyphen
+(`micro-ondas`, `anti-higiénico`). co- joins before any vowel or consonant
+(`co-autores→coautores`, `co-fatores→cofatores`). Before h pt-PT keeps `co-herdeiro`, and
+pt-BR writes `coerdeiro`, as the ABL VOLP does. These rules are deterministic.
+Lexicalized compounds (`pára-quedas→paraquedas`) are lexical.
 
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
 nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.
