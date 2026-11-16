@@ -1,20 +1,52 @@
 #!/usr/bin/env python3
-"""Publish the parallel silver corpus as a Hugging Face dataset.
+"""Publish the desacordo_ortografico datasets on the Hugging Face Hub.
 
-Flattens the nested cells into one column per norm (viewer-friendly), writes a dataset
-card, and uploads to ``TigreGotico/desacordo_ortografico``.
+The parallel silver corpus goes to ``TigreGotico/desacordo_ortografico``. The script
+flattens the nested cells into one column per norm (viewer-friendly), writes a dataset
+card, and uploads the corpus with its card:
 
     python benchmark/publish_hf.py [--repo TigreGotico/desacordo_ortografico] [--private]
+
+``--spelling`` builds the three spelling datasets from the spelling table
+``desacordo_ortografico/data/spelling.json``: ``TigreGotico/archaisms_pt``,
+``TigreGotico/AO1990_pt-PT`` and ``TigreGotico/AO1990_pt-BR``. ``--dry-run DIR`` writes
+the CSV and the dataset card of each one to ``DIR/<dataset>/`` and uploads nothing.
+Only ``--upload`` uploads them:
+
+    python benchmark/publish_hf.py --spelling --dry-run out/
+    python benchmark/publish_hf.py --spelling --upload
 """
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
+import re
 import tempfile
+from collections import defaultdict
+from importlib.resources import files
+
+from desacordo_ortografico import convert
+from desacordo_ortografico.lexicon import Lexicon
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+CARDS = os.path.join(HERE, "hf_cards")
 NORMS = ["etymological", "pt_1973", "ao1990-pt", "br_1971", "ao1990-br"]
+
+#: Each spelling dataset: the era of its table rows, and its file, columns and line ending
+#: as the Hub files have them.
+SPELLING_DATASETS = {
+    "TigreGotico/archaisms_pt": ("etymological", "archaisms.csv",
+                                 ["archaic", "modern", "modern_pt_BR", "notes"], "\n"),
+    "TigreGotico/AO1990_pt-PT": ("pt_1973", "acordo_ortografico_pt_PT.csv",
+                                 ["old_form", "new_form"], "\r\n"),
+    "TigreGotico/AO1990_pt-BR": ("br_1971", "acordo_ortografico_pt_BR.csv",
+                                 ["old_form", "new_form"], "\r\n"),
+}
+
+#: The source of a row that the tugalex archaisms list gave, with the letter changes of the row.
+_ARCHAISM_NOTES = re.compile(r"tugalex archaisms\.csv \((.*)\)")
 
 
 def _load(name):
@@ -149,13 +181,106 @@ library. Apache-2.0.
 """
 
 
-def main():
-    from huggingface_hub import HfApi
+def archaism_rows(table: list[dict], lex: Lexicon) -> list[dict]:
+    """One row for each pre-1911 form of the spelling table, in table order.
 
+    A form with an AO1990 row of its own takes the AO1990 forms of the table, and the VOLP
+    decides its pt-BR form, as convert() does for a pt-BR word. convert() does not read
+    those rows, so every other form takes the forms that convert() gives it.
+    """
+    cells: dict[str, dict[str, dict]] = defaultdict(dict)
+    for r in table:
+        if r["era"] == "etymological":
+            cells[r["form"]][r["target"]] = r
+    out = []
+    for form, cell in cells.items():
+        if "ao1990-pt" in cell:
+            modern = cell["ao1990-pt"]["value"]
+            br = cell["ao1990-br"]["value"] if "ao1990-br" in cell else modern
+            br = lex.ao_br_volp.get(br, br)
+        else:
+            modern = convert(form, "etymological", "ao1990-pt")
+            br = convert(form, "etymological", "ao1990-br")
+        notes = _ARCHAISM_NOTES.fullmatch(next(iter(cell.values()))["source"])
+        out.append({"archaic": form, "modern": modern, "modern_pt_BR": "" if br == modern else br,
+                    "notes": notes.group(1) if notes else ""})
+    return out
+
+
+def ao_rows(table: list[dict], era: str) -> list[dict]:
+    """The AO1990 rows of one variety. A dual cell joins its forms with ", ", in source order."""
+    return [{"old_form": r["form"], "new_form": ", ".join(r["value"].split("|"))}
+            for r in table if r["era"] == era]
+
+
+def write_spelling(out_dir: str) -> dict[str, str]:
+    """Write the CSV and the dataset card of each spelling dataset to ``out_dir/<dataset>/``.
+    Return the folder of each dataset repo."""
+    data = json.loads((files("desacordo_ortografico") / "data" / "spelling.json").read_text("utf-8"))
+    table = data["rows"]
+    folders = {}
+    for repo, (era, filename, columns, newline) in SPELLING_DATASETS.items():
+        rows = archaism_rows(table, Lexicon()) if era == "etymological" else ao_rows(table, era)
+        name = repo.split("/")[1]
+        folder = os.path.join(out_dir, name)
+        os.makedirs(folder, exist_ok=True)
+        with open(os.path.join(folder, filename), "w", encoding="utf-8", newline="") as f:
+            writer = csv.DictWriter(f, columns, lineterminator=newline)
+            writer.writeheader()
+            writer.writerows(rows)
+        cited = [s for s in data["_sources"]
+                 if any(r["era"] == era and r["source"].startswith(s) for r in table)]
+        with open(os.path.join(CARDS, f"{name}.md"), encoding="utf-8") as f:
+            card = f.read()
+        with open(os.path.join(folder, "README.md"), "w", encoding="utf-8") as f:
+            f.write(card.replace("{rows}", f"{len(rows):,}")
+                    .replace("{sources}", "\n".join(f"- {s}" for s in cited)))
+        folders[repo] = folder
+        print(f"{repo}: {len(rows)} rows -> {folder}")
+    return folders
+
+
+def _upload(api, repo: str, folder: str, private: bool, message: str) -> None:
+    # create_repo counts against the account's daily repo-creation limit, even for a repo
+    # that exists, so it runs only for a missing repo
+    if not api.repo_exists(repo, repo_type="dataset"):
+        api.create_repo(repo, repo_type="dataset", private=private, exist_ok=True)
+    api.upload_folder(folder_path=folder, repo_id=repo, repo_type="dataset",
+                      commit_message=message)
+
+
+def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", default="TigreGotico/desacordo_ortografico")
     ap.add_argument("--private", action="store_true")
+    ap.add_argument("--spelling", action="store_true",
+                    help="build the archaisms_pt, AO1990_pt-PT and AO1990_pt-BR datasets "
+                         "from the spelling table")
+    mode = ap.add_mutually_exclusive_group()
+    mode.add_argument("--dry-run", metavar="DIR",
+                      help="with --spelling: write each dataset to DIR/<dataset>/ and upload nothing")
+    mode.add_argument("--upload", action="store_true", help="with --spelling: upload the datasets")
     args = ap.parse_args()
+
+    if args.spelling:
+        if args.dry_run:
+            write_spelling(args.dry_run)
+            return
+        if not args.upload:
+            ap.error("--spelling needs --dry-run DIR or --upload")
+        from huggingface_hub import HfApi
+
+        api = HfApi()
+        with tempfile.TemporaryDirectory() as d:
+            for repo, folder in write_spelling(d).items():
+                _upload(api, repo, folder, args.private,
+                        "Publish from the desacordo_ortografico spelling table")
+                print(f"published https://huggingface.co/datasets/{repo}")
+        return
+    if args.dry_run or args.upload:
+        ap.error("--dry-run and --upload go with --spelling")
+
+    from huggingface_hub import HfApi
 
     parallel = flatten_parallel(_load("silver_full.jsonl"))
     sisters = _load("silver_sisters.jsonl")
@@ -170,11 +295,8 @@ def main():
         with open(os.path.join(d, "README.md"), "w", encoding="utf-8") as f:
             f.write(CARD.replace("{N}", str(len(parallel))))
 
-        api = HfApi()
-        if not api.repo_exists(args.repo, repo_type="dataset"):
-            api.create_repo(args.repo, repo_type="dataset", private=args.private, exist_ok=True)
-        api.upload_folder(folder_path=d, repo_id=args.repo, repo_type="dataset",
-                          commit_message="Publish Portuguese orthographies parallel corpus")
+        _upload(HfApi(), args.repo, d, args.private,
+                "Publish Portuguese orthographies parallel corpus")
     print(f"published {len(parallel)} parallel + {len(sisters)} sister rows to "
           f"https://huggingface.co/datasets/{args.repo}")
 
