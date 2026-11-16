@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.10a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.10a1) (2026-11-16)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.9a1...0.3.10a1)
+
+**Merged pull requests:**
+
+- fix: let the VOLP keep the hyphen of contra-erva and macro-jê at ao1990-br [\#52](https://github.com/TigreGotico/desacordo_ortografico/pull/52) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.9a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.9a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.8a1...0.3.9a1)
