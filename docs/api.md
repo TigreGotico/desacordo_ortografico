@@ -171,6 +171,10 @@ Atlântico, Ministério Público). The city names Coimbra and Roma share their l
 an accented common word (coimbrã, romã), so they stay as written when capitalised:
 "Fui a Roma." stays "Fui a Roma.", and "uma roma madura" gives "uma romã madura".
 
+The 1911 word map writes treno for threno, the lament, so treno is a word and the guess
+leaves it as written: "o threno" gives "o treno", and a bare treno stays treno. Figueiredo
+1913 lists "Treno" (the lament) and "Trenó" (the sled) as two headwords.
+
 ## `class OrthographyConverter`
 
 - `convert(text, source, target, variant=None, features=None, pos_tags=None) -> ConversionResult`
