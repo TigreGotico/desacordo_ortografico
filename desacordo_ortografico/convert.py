@@ -452,7 +452,14 @@ class OrthographyConverter:
         )
 
         # -- 1943 <-> 1971 (BR): differential-circumflex removal (êle->ele,
-        #    govêrno->governo) + subtonic-grave removal. Trema survives until AO1990.
+        #    sôbre->sobre) + subtonic-grave removal. Trema survives until AO1990.
+        #    Lei n.º 5.765, de 18 de dezembro de 1971, Art. 1.º: "fica abolido [...] o
+        #    acento circunflexo diferencial na letra e e na letra o, a sílaba tônica das
+        #    palavras homógrafas de outras em que são abertas a letra e e a letra o,
+        #    exceção feita da forma pôde, que se acentuará por oposição a pode". The
+        #    table lists words with that accent in the 1943 Formulário (14.ª). Its
+        #    inverse is the backward map, so a word whose bare form is the more frequent
+        #    reading (corte, deveras, colher) has no row.
         accent_1971 = _Edge(
             _Pass(steps=[
                 ("differential-1971", get(lex.accent_71_73_old2new)),
