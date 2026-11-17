@@ -1,8 +1,20 @@
 # Changelog
 
+## [0.3.14a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.14a1) (2026-11-17)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.13a1...0.3.14a1)
+
+**Merged pull requests:**
+
+- fix: keep the éi/ói accent outside paroxytones [\#57](https://github.com/TigreGotico/desacordo_ortografico/pull/57) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.13a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.13a1) (2026-11-17)
 
-[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.11a2...0.3.13a1)
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.12a1...0.3.13a1)
+
+## [0.3.12a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.12a1) (2026-11-17)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.11a2...0.3.12a1)
 
 **Merged pull requests:**
 
