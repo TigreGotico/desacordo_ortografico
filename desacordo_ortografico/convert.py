@@ -174,15 +174,17 @@ class OrthographyConverter:
         # throughout converts each token like the same word in lowercase. The test reads
         # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
         is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
-        # A word whose written form the official vocabulary of the target variety gives
-        # stays as written on every edge, whatever features run: a form the VOLP lists
-        # toward pt-BR (facto, cetro, cato, óptica), the form with the consonant of a pt-PT
-        # dual cell toward pt-PT (sector, carácter). Only the dual choice after the edges
-        # rewrites it, to the form with the consonant (ruling for duals).
+        # The c/p form that the official vocabulary of the target variety gives stays as
+        # written on every word edge, whatever features run: toward pt-BR the form with the
+        # consonant of a VOLP dual (facto, contacto) and a bare form whose consonant form
+        # the VOLP rejects (cetro), toward pt-PT the form with the consonant of a pt-PT dual
+        # cell (sector, carácter). The 1911 accent guess still reads it (electrodos ->
+        # eléctrodos, both VOLP forms).
         # AO1990 Base XXI lets a name keep the spelling it is written in. Toward pt-BR a
-        # name whose written form the VOLP lists is held and also skips that choice
-        # (pt_1973 receptores -> ao1990-pt recetores, which the VOLP rejects). For each
-        # word of ``out``, ``written`` holds the word of the source that it comes from.
+        # name whose written form the VOLP lists stays as written, so every edge holds it:
+        # an edge before the VOLP step can change it (pt_1973 receptores -> ao1990-pt
+        # recetores, which the VOLP rejects). For each word of ``out``, ``written`` holds
+        # the word of the source that it comes from.
         valid = (self.lex.ao_br_volp_held if dst.id == "ao1990-br"
                  else self.lex.ao_pt_dual_forms if dst.id == "ao1990-pt" else frozenset())
         written = rules.words(text)
@@ -206,7 +208,7 @@ class OrthographyConverter:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
                                           self.lex.accent_restore_singular, tags, variety,
-                                          {i for i, h in enumerate(held) if h})
+                                          {i for i, k in enumerate(kept) if k})
             if not reversible:
                 result.lossless = False
                 direction = "forward" if forward else "backward"

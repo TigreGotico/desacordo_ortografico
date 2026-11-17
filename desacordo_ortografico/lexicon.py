@@ -394,15 +394,21 @@ class Lexicon:
 
     @cached_property
     def ao_br_volp_held(self) -> FrozenSet[str]:
-        """The forms of :attr:`ao_br_volp_listed` that a conversion to ao1990-br keeps as
-        written. A row that gives its bare token for the European form decides that form
-        and its plural: the VOLP lists the European form for fewer readings ("retângulo
-        adj. s.m. | rectângulo adj.; the noun in every row")."""
-        decided = {w for row in self._volp_br
-                   if row["rows"] == "*" and row["pair"] == "one word"
-                   and row["form"] == row["token"] != row["european"]
-                   for w in (row["european"], _plural(row["european"]))}
-        return self.ao_br_volp_listed - decided
+        """The c/p forms of :attr:`_volp_br` that a conversion to ao1990-br keeps as
+        written: the form with the consonant of a dual ("conjetura s.f. | conjectura
+        s.f."), and the bare form where the VOLP rejects the form with the consonant
+        ("cetro s.m.; no ceptro"), each with the plural that the VOLP lists. A "two
+        words" row (cf.), a
+        "one reading" row and a row for named rows hold nothing."""
+        held = set()
+        for row in self._volp_br:
+            if row["rows"] != "*" or row["pair"] != "one word" or not row["source"].startswith("VOLP: "):
+                continue
+            form, rejected = row["form"], _VOLP_NO_FORM.match(row["source"])
+            if _one_more_consonant(row["token"], form) or (
+                    rejected and _one_more_consonant(form, rejected.group(1).strip('.,;"').lower())):
+                held |= {form, _plural(form)}
+        return frozenset(held & self.ao_br_volp_listed)
 
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent

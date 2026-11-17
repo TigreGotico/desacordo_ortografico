@@ -1,5 +1,4 @@
-"""A word that the official vocabulary of the target variety gives stays as written,
-whatever ``features`` run.
+"""The c/p form of a dual stays as written whatever ``features`` run.
 
 Owner ruling for duals: "Where both forms are valid in the target variety, write the c/p
 form ... 'valid in the target variety' is decided by the official vocabulary: VOLP (ABL)
@@ -7,11 +6,11 @@ for pt-BR, VOP (ILTEC, Portal da Língua Portuguesa, RCM 8/2011) for pt-PT ... A
 joined by 'cf.' with different glosses is two words, not a dual (ótica/óptica,
 seção/secção)."
 
-The c/p form of a dual is written by the dual choice of ``silent-cp`` (pt-PT) and
-``volp`` (pt-BR). Every other feature leaves a valid word as written, so a caller that
-runs a subset of the features never loses the consonant of a dual and never rewrites
-one word into another. Each expected value comes from the vocabulary entry quoted
-beside it.
+The dual choice of ``silent-cp`` (pt-PT) and ``volp`` (pt-BR) writes the c/p form. A
+caller that runs a subset of the features must not lose it: every other feature leaves
+the c/p form of a dual as written. The hold reaches no other word: a cf. pair, a row
+for one reading and a variant that is not c/p convert as before. Each expected value
+comes from the vocabulary entry quoted beside it.
 """
 import pytest
 
@@ -45,51 +44,47 @@ def test_a_pt_pt_dual_keeps_the_consonant_under_any_features(text, source):
     "o facto",  # VOLP: fato s.m. | facto s.m.
     "o contacto",  # VOLP: contato s.m. | contacto s.m.
     "o corrupto",  # VOLP: corruto adj. s.m. | corrupto adj. s.m.
+    "a conjectura",  # VOLP: conjetura s.f. | conjectura s.f.
     "o cetro",  # VOLP: cetro s.m.; no ceptro
-    "a conjetura",  # VOLP: conjetura s.f. | conjectura s.f.
 ])
-def test_a_volp_form_stays_toward_pt_br_without_the_volp_feature(text, source):
+def test_a_volp_c_p_form_stays_toward_pt_br_without_the_volp_feature(text, source):
     assert _rewritten(text, "ao1990-br", BR_STEP, source, without={"volp"}) == []
 
 
-def test_the_volp_feature_still_writes_the_consonant_of_a_dual():
-    # VOLP: conjetura s.f. | conjectura s.f.; epilético adj. s.m. | epiléptico adj. s.m.
-    assert convert("a conjetura epilética", "br_1971", "ao1990-br") == "a conjectura epiléptica"
-    assert convert("a conjetura epilética", "br_1971", "ao1990-br", features=BR_STEP) \
-        == "a conjetura epilética"
+# VOLP: conjetura s.f. | conjectura s.f.; epilético adj. s.m. | epiléptico adj. s.m.;
+# infecioso (ô) adj. ... | infeccioso (ô) adj. Only the c/p form is held, so the bare
+# pt-PT form still takes the consonant on the divergence edge.
+@pytest.mark.parametrize("features", [FEATURES, FEATURES - {"volp"}, BR_STEP])
+def test_a_pt_pt_bare_form_of_a_volp_dual_takes_the_consonant(features):
+    assert convert("a conjetura epilética", "ao1990-pt", "ao1990-br", features=features) \
+        == "a conjectura epiléptica"
+    assert convert("os infeciosos", "ao1990-pt", "ao1990-br", features=features) == "os infecciosos"
 
 
-@pytest.mark.parametrize("source", ["etymological", "br_1971", "ao1990-pt"])
-def test_the_verb_cato_stays(source):
-    # VOLP: cato adj. s.m. | cacto s.m.; cato is also the first person of catar
-    assert _rewritten("Eu cato as folhas.", "ao1990-br", BR_STEP, source) == []
-
-
-@pytest.mark.parametrize("source", ["etymological", "br_1971", "pt_1973"])
-@pytest.mark.parametrize("text", [
-    "a secção",  # VOLP: secção s.f. "parcela"; cf. seção, sessão, ceção e cessão
-    "a seção",  # VOLP: seção s.f. "corte", etc.; cf. ceção, cessão, secção e sessão
-    "a óptica",  # VOLP: óptica s.f. "ciência da visão"; cf. ótica
-    "a ótica",  # VOLP: ótica s.f. "ciência da audição"; cf. óptica
+@pytest.mark.parametrize("features", [FEATURES, BR_STEP])
+@pytest.mark.parametrize("text, expected", [
+    # VOLP: seção s.f. "corte", etc.; cf. secção | secção s.f. "parcela"; cf. seção
+    ("a secção de perdidos e achados", "a seção de perdidos e achados"),
+    # VOLP: oticista s.2g. "pessoa versada em ótica"; cf. opticista | opticista adj. s.2g.
+    # "pessoa versada em óptica"; cf. oticista
+    ("o oticista", "o opticista"),
+    # VOLP: registo s.m.; registro s.m. (not a c/p pair)
+    ("o registo", "o registro"),
 ])
-def test_a_cf_pair_stays_toward_pt_br(text, source):
-    assert _rewritten(text, "ao1990-br", BR_STEP, source) == []
+def test_the_hold_reaches_no_word_outside_a_c_p_dual(text, expected, features):
+    assert convert(text, "pt_1973", "ao1990-br", features=features) == expected
 
 
-@pytest.mark.parametrize("text", [
-    "a amígdala",  # VOLP: amígdala s.f.
-    "o quotidiano",  # VOLP: quotidiano adj. s.m.
-    "o aspeto",  # VOLP: aspeto s.m. | aspecto s.m. (the volp feature writes aspecto)
-    "o subtil",  # VOLP: subtil adj.2g. s.m.
-    "o súbdito",  # VOLP: súbdito adj. s.m.
-    "o registo",  # VOLP: registo s.m.
-])
-def test_a_pt_br_word_the_divergence_table_holds_stays(text):
-    assert convert(text, "ao1990-pt", "ao1990-br", features=BR_STEP) == text
-    expected = "o aspecto" if text == "o aspeto" else text
-    assert convert(text, "ao1990-pt", "ao1990-br") == expected
+def test_a_row_for_one_reading_is_not_held():
+    # VOLP: fatura s.f. | factura s.f.; faturar v., and no row for facturar
+    assert convert("Ele factura muito.", "pt_1973", "ao1990-br") == "Ele fatura muito."
 
 
 def test_a_european_form_the_volp_lists_for_fewer_readings_takes_its_row():
     # VOLP: retângulo adj. s.m. | rectângulo adj.; the noun in every row
     assert convert("o rectângulo", "pt_1973", "ao1990-br") == "o retângulo"
+
+
+def test_the_1911_accent_guess_still_reads_a_held_word():
+    # VOLP: eletrodo (ô) s.m. | electrodo (ô) s.m.; elétrodo s.m. | eléctrodo s.m.
+    assert convert("electrodos", "etymological", "ao1990-br") == "eléctrodos"

@@ -62,11 +62,11 @@ other than `"pt"` or `"br"` raises `ValueError` for every target.
 `features` is a collection of names from `FEATURES`. Only those features apply. `None`
 applies all of them. An unknown name raises `ValueError`.
 
-Toward an AO1990 target, a word that the vocabulary of the target variety gives stays as
-written under every feature: toward ao1990-br a form that `data/volp_ao1990_br.json`
-quotes from the VOLP (facto, cetro, cato, óptica), and toward ao1990-pt the form with the
-consonant of a dual cell of the pt-PT map (sector, carácter). Only `silent-cp` (pt-PT) and
-`volp` (pt-BR) then write the form with the consonant of a dual (setor -> sector). So
+Toward an AO1990 target, the c/p form of a dual that the vocabulary of the target variety
+gives stays as written under every feature. Toward ao1990-br that is the form with the
+consonant of a VOLP dual in `data/volp_ao1990_br.json` (facto, contacto), and a bare form
+whose consonant form the VOLP rejects (cetro). Toward ao1990-pt it is the form with the
+consonant of a dual cell of the pt-PT map (sector, carácter). So
 `convert("o sector", "etymological", "ao1990-pt", features={"ao-map-consonant"})` gives
 `'o sector'`.
 

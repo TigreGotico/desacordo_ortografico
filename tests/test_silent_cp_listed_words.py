@@ -73,10 +73,6 @@ def test_a_pt_pt_dual_keeps_its_consonant_toward_pt_pt():
 ])
 def test_the_plural_of_a_map_word_drops_the_consonant(old, new, target):
     assert old.lower() not in get_lexicon().ao_pt_old2new
-    # the VOLP lists both forms of reto and coleta, so pt-BR writes the consonant:
-    # "reto adj. s.m. | recto adj. s.m.", "coleta s.f. | colecta s.f."
-    if target == "ao1990-br" and old.lower() in ("rectos", "colectas"):
-        new = old
     assert convert(old, "pt_1973", target) == new
 
 
@@ -145,11 +141,11 @@ def test_a_pt_pt_dual_takes_the_brazilian_form_toward_br_1971(pt, br, source):
     assert convert(pt, source, "br_1971") == br
 
 
-# Priberam: "Grafia em Portugal: secção", "Grafia no Brasil: seção" (priberam_seccao.html).
-# The VOLP lists secção as a word of its own, so ao1990-br keeps it (test_volp_ao1990_br.py).
+# Priberam: "Grafia em Portugal: secção", "Grafia no Brasil: seção" (priberam_seccao.html)
+@pytest.mark.parametrize("target", ["ao1990-br", "br_1971"])
 @pytest.mark.parametrize("source", ["pt_1973", "ao1990-pt"])
-def test_seccao_takes_the_brazilian_form(source):
-    assert convert("A secção e as secções.", source, "br_1971") == "A seção e as seções."
+def test_seccao_takes_the_brazilian_form(source, target):
+    assert convert("A secção e as secções.", source, target) == "A seção e as seções."
 
 
 # the tugalex AO1990 pt-PT map has electropunctura -> eletropuntura, and eletropunctura is
