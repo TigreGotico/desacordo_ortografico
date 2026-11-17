@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.12a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.12a1) (2026-11-17)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.11a2...0.3.12a1)
+
+**Merged pull requests:**
+
+- fix: give treno for threno, and the VOLP forms of conceptualmente and proativo [\#55](https://github.com/TigreGotico/desacordo_ortografico/pull/55) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: build the HF spelling datasets from the spelling table [\#54](https://github.com/TigreGotico/desacordo_ortografico/pull/54) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.11a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.11a2) (2026-11-17)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.11a1...0.3.11a2)
