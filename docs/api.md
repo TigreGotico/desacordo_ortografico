@@ -62,6 +62,14 @@ other than `"pt"` or `"br"` raises `ValueError` for every target.
 `features` is a collection of names from `FEATURES`. Only those features apply. `None`
 applies all of them. An unknown name raises `ValueError`.
 
+Toward an AO1990 target, the c/p form of a dual that the vocabulary of the target variety
+gives stays as written under every feature. Toward ao1990-br that is the form with the
+consonant of a VOLP dual in `data/volp_ao1990_br.json` (facto, contacto), and a bare form
+whose consonant form the VOLP rejects (cetro). Toward ao1990-pt it is the form with the
+consonant of a dual cell of the pt-PT map (sector, carácter). So
+`convert("o sector", "etymological", "ao1990-pt", features={"ao-map-consonant"})` gives
+`'o sector'`.
+
 `pos_tags` is a list of `(word, UPOS)` pairs for `text`, in the shape that
 `tugatagger.TugaTagger(...).tag(text)` returns. desacordo does not tag text itself. The
 pairs feed the 1911 accent guess only. They are matched to the words of `text` in order,

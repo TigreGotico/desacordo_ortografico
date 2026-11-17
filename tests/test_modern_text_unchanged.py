@@ -23,10 +23,6 @@ PT_GROUP = frozenset({"1911-word-map", "trema", "ao-map-consonant", "base-iv",
 BR_GROUP = frozenset({"1911-word-map", "base-iv", "initial-sc", "ptbr-divergence",
                       "hyphen-lexical"})
 
-# Words that each group rewrites only because the dual guard sits in the silent-cp feature
-# (pt group) or the volp feature (br group), which the group leaves out.
-PT_DUAL_GUARD = {"sector", "carácter", "acupunctura"}
-BR_DUAL_GUARD = {"contacto", "contactar"}
 # The etymological route to ao1990-br drops the p of óptica, which the repo pins in both
 # Brazilian cells of row p04-013.
 BR_OPTICA = {"óptica"}
@@ -94,8 +90,7 @@ def test_pt_group_keeps_modern_text(cell):
     assert convert(cell, "etymological", "ao1990-pt", features=PT_GROUP) == cell
 
 
-@pytest.mark.parametrize("cell", _params(BR_CELLS, {"desacordo#65": BR_DUAL_GUARD,
-                                                    "desacordo#69": BR_OPTICA}))
+@pytest.mark.parametrize("cell", _params(BR_CELLS, {"desacordo#69": BR_OPTICA}))
 def test_br_group_keeps_modern_text(cell):
     assert convert(cell, "etymological", "ao1990-br", features=BR_GROUP) == cell
 
@@ -127,7 +122,6 @@ def test_pt_pt_word_stays_at_ao1990_pt(word):
     assert convert(word, "pt_1973", "ao1990-pt") == word
 
 
-@pytest.mark.parametrize("word", _params([(w, w) for w in PT_PT_WORDS],
-                                          {"desacordo#65": PT_DUAL_GUARD}))
+@pytest.mark.parametrize("word", PT_PT_WORDS)
 def test_pt_group_keeps_pt_pt_word(word):
     assert convert(word, "etymological", "ao1990-pt", features=PT_GROUP) == word

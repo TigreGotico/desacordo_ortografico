@@ -174,14 +174,23 @@ class OrthographyConverter:
         # throughout converts each token like the same word in lowercase. The test reads
         # the words alone: Python counts º and ª as lowercase letters (ART. 2.º).
         is_word = None if "".join(rules.words(text)).isupper() else self.lex.is_known
+        # The c/p form that the official vocabulary of the target variety gives stays as
+        # written on every word edge, whatever features run: toward pt-BR the form with the
+        # consonant of a VOLP dual (facto, contacto) and a bare form whose consonant form
+        # the VOLP rejects (cetro), toward pt-PT the form with the consonant of a pt-PT dual
+        # cell (sector, carácter). The 1911 accent guess still reads it (electrodos ->
+        # eléctrodos, both VOLP forms).
         # AO1990 Base XXI lets a name keep the spelling it is written in. Toward pt-BR a
         # name whose written form the VOLP lists stays as written, so every edge holds it:
         # an edge before the VOLP step can change it (pt_1973 receptores -> ao1990-pt
         # recetores, which the VOLP rejects). For each word of ``out``, ``written`` holds
         # the word of the source that it comes from.
+        valid = (self.lex.ao_br_volp_held if dst.id == "ao1990-br"
+                 else self.lex.ao_pt_dual_forms if dst.id == "ao1990-pt" else frozenset())
         written = rules.words(text)
         named = rules.names(text) if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
         kept = [n and w.lower() in self.lex.ao_br_volp_listed for w, n in zip(written, named)]
+        held = [k or w.lower() in valid for w, k in zip(written, kept)]
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
@@ -193,8 +202,8 @@ class OrthographyConverter:
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
             own = pt_words if edge_name == "ptbr_divergence" else {}
             out, sources = rules.map_words(
-                out, lambda i, w, p=step_pass, k=own: None if kept[i] else k.get(w) or p.apply(w, enabled), is_word)
-            written, named, kept = ([x[i] for i in sources] for x in (written, named, kept))
+                out, lambda i, w, p=step_pass, k=own: None if held[i] else k.get(w) or p.apply(w, enabled), is_word)
+            written, held, named, kept = ([x[i] for i in sources] for x in (written, held, named, kept))
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
