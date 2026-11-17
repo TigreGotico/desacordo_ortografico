@@ -73,7 +73,11 @@ def test_treno_goes_back_to_threno_and_trenó_stays():
 def test_conceptualmente_keeps_its_consonant_in_pt_br():
     assert convert("conceptualmente", "br_1971", "ao1990-br") == "conceptualmente"
     assert convert("concetualmente", "ao1990-pt", "ao1990-br") == "conceptualmente"
+    # VOLP: conceptual adj.2g.; no concetual. A form the VOLP lists stays as written
+    # under every feature; only the volp feature writes the VOLP form of concetualmente
     assert convert("conceptualmente", "br_1971", "ao1990-br",
+                   features=FEATURES - {"volp"}) == "conceptualmente"
+    assert convert("concetualmente", "br_1971", "ao1990-br",
                    features=FEATURES - {"volp"}) == "concetualmente"
 
 

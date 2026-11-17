@@ -199,8 +199,8 @@ def test_case_and_compounds_follow_the_volp():
 def test_the_volp_rule_is_the_volp_feature():
     without = FEATURES - {"volp"}
     # VOLP: intersectar v.; no intersetar
-    assert convert("intersectar", "br_1971", "ao1990-br", features=without) == "intersetar"
-    assert convert("intersectar", "br_1971", "ao1990-br") == "intersectar"
+    assert convert("intersetar", "br_1971", "ao1990-br", features=without) == "intersetar"
+    assert convert("intersetar", "br_1971", "ao1990-br") == "intersectar"
     assert convert("a aceção", "br_1971", "ao1990-br", features={"volp"}) == "a acepção"
 
 

@@ -281,6 +281,11 @@ class Lexicon:
         return out
 
     @cached_property
+    def ao_pt_dual_forms(self) -> FrozenSet[str]:
+        """The forms with the consonant of :attr:`ao_pt_dual_full` (sector, sectores)."""
+        return frozenset(self.ao_pt_dual_full.values())
+
+    @cached_property
     def ao_br_dual_full(self) -> Dict[str, str]:
         """The dual cells of the pt-BR AO1990 map, as :attr:`ao_pt_dual_full`."""
         return _dual_full(self._ao_cells("br_1971", "ao1990-br"))
@@ -386,6 +391,18 @@ class Lexicon:
             listed |= forms
             listed |= {plural.group(1)} if plural else {_plural(w) for w in forms} - {None}
         return frozenset(listed)
+
+    @cached_property
+    def ao_br_volp_held(self) -> FrozenSet[str]:
+        """The forms of :attr:`ao_br_volp_listed` that a conversion to ao1990-br keeps as
+        written. A row that gives its bare token for the European form decides that form
+        and its plural: the VOLP lists the European form for fewer readings ("retângulo
+        adj. s.m. | rectângulo adj.; the noun in every row")."""
+        decided = {w for row in self._volp_br
+                   if row["rows"] == "*" and row["pair"] == "one word"
+                   and row["form"] == row["token"] != row["european"]
+                   for w in (row["european"], _plural(row["european"]))}
+        return self.ao_br_volp_listed - decided
 
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent
