@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.15a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.15a1) (2026-11-17)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.14a1...0.3.15a1)
+
+**Merged pull requests:**
+
+- fix: drop the 1971 differential circumflex of sôbre and the other 1943 14.ª words [\#66](https://github.com/TigreGotico/desacordo_ortografico/pull/66) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.14a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.14a1) (2026-11-17)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.13a1...0.3.14a1)
