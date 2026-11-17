@@ -123,7 +123,7 @@ def test_no_row_has_an_empty_value():
 
 # A pt-BR AO1990 cell gives desacordo's form: the form with the consonant of a dual cell,
 # else its only form. These br_1971 rows give a form whose ABL VOLP form
-# (Lexicon.ao_br_volp, from data/volp_ao1990_br.json) is another form. For the first five
+# (Lexicon.ao_br_volp, from data/volp_ao1990_br.json) is another form. For the first six
 # the VOLP does not list the form of the cell ("VOLP: intersectar v.; no intersetar").
 # For the last two it writes the hyphen that the cell drops ("VOLP: contra-erva s.f.; pl.
 # contra-ervas"). convert() writes the VOLP form for each of them, because it applies the
@@ -134,6 +134,7 @@ VOLP_CONTRADICTIONS = {
     ("perfeccionismo", "perfecionismo", "perfeccionismo"),
     ("perfeccionista", "perfecionista", "perfeccionista"),
     ("perfeccionístico", "perfecionístico", "perfeccionístico"),
+    ("conceptualmente", "concetualmente", "conceptualmente"),
     ("contra-erva", "contraerva", "contra-erva"),
     ("macro-jê", "macrojê", "macro-jê"),
 }

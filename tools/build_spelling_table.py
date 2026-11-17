@@ -15,7 +15,8 @@ The table took its rows from four sources, in this order:
    the rows. A ``1911`` or ``ao1990-map`` row becomes a pre-1911 -> 1911 row when the
    Brazilian edges turn its 1911 form into its pt-BR form. Every other row, and every row
    of :data:`TWO_1911_FORMS`, gets rows for its AO1990 forms only;
-3. the tugalex AO1990 pt-PT list (``acordo_ortografico_pt_PT.csv``), as pt_1973 rows;
+3. the tugalex AO1990 pt-PT list (``acordo_ortografico_pt_PT.csv``), as pt_1973 rows, then
+   the rows of :data:`AO_PT_ROWS`;
 4. the tugalex AO1990 pt-BR list (``acordo_ortografico_pt_BR.csv``), as br_1971 rows. A
    cell of :data:`VOLP_AO_BR` takes the form of the ABL VOLP instead;
 5. the rows on the edges out of 1911, :data:`ROWS_OUT_OF_1911`: the 1911 words that no
@@ -140,6 +141,13 @@ INVERTED_OUT_OF_1911 = frozenset({"scena", "sciência"})
 #: correspondente termo grego se escreve com χ, e não κ." quilo is also the only 1911
 #: spelling of the chyle (chylo -> quilo).
 SPELLINGS_OF_1911 = frozenset({"scena"})
+#: The tugalex archaisms whose 1911 row is curated, with the group of the row. Priberam
+#: gives "treno |ê| nome masculino. Canto fúnebre, lamentoso. = ELEGIA. Origem: latim
+#: threnus, -i, grego thrênos, -ou", so threno gives treno, and the backward pass gives
+#: threno for treno. Figueiredo 1913 has both headwords: "Treno,¹ m. Canto plangente;
+#: lamentação; elegia. (Lat. threnus)" and "Trenó, m. Espécie de vehículo sem rodas". The
+#: curated row puts treno on the word list, so the 1911 accent guess leaves treno as written.
+CURATED_ARCHAISMS = {"threno": "digraphs"}
 DECIDED_1911 = {"sciencia": ("sciência", "initial_sc")}
 GROUPS_1911 = {
     "initial_sc": 'Base XI keeps the initial sc: "É conservado o grupo inicial sc, das seguintes '
@@ -166,7 +174,9 @@ VOLP_ABL = "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira
 #: cofactor ( Brasil)". For pt-BR the ABL VOLP decides, and it lists no cofactor.
 #: For bissector, fotelectricidade, idielectricidade and dactilozóide the tugalex list gives
 #: one form, and the VOLP lists both forms as headwords, so the cell holds both. The first
-#: form stays first, so the single-form map does not change.
+#: form stays first, so the single-form map does not change. tugalex gives proativo ->
+#: pró-ativo. The VOLP lists "proativo adj." and "pró-ativo adj.", and proativo is the AO1990
+#: form of proactivo (see :data:`AO_PT_ROWS`), so proativo stays as written.
 VOLP_AO_BR = {
     "co-factor": ("cofator", '"cofator adj. s.m."'),
     "bissector": ("bissetor|bissector", '"bissetor (ô) adj. s.m." and "bissector (ô) adj. s.m."'),
@@ -176,6 +186,13 @@ VOLP_AO_BR = {
                          '"idieletricidade s.f." and "idielectricidade s.f."'),
     "dactilozóide": ("dactilozoide|datilozoide",
                      '"dactilozoide (ó) adj. s.m." and "datilozoide (ó) adj. s.m."'),
+    "proativo": ("proativo", '"proativo adj." and "pró-ativo adj."'),
+}
+PRIBERAM = "Dicionário Priberam da Língua Portuguesa"
+#: The pt-PT AO1990 rows that the tugalex list lacks. They come after its rows. Priberam
+#: gives for proativo: "Grafia anterior ao Acordo Ortográfico de 1990: proactivo".
+AO_PT_ROWS = {
+    "proactivo": ("proativo", '"Grafia anterior ao Acordo Ortográfico de 1990: proactivo"'),
 }
 Row = Dict[str, Union[str, bool]]
 Curated = Tuple[List[Row], List[str], Dict[str, str]]
@@ -276,7 +293,9 @@ def curated_from_table(path: str) -> Curated:
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
     sources = data["_sources"] + [s for s in (ACORDO_1945, FORMULARIO_1943) if s not in data["_sources"]]
-    curated = [r for r in data["rows"] if r["curated"] and r["era"] == "etymological"]
+    # the archaisms pass writes the rows of CURATED_ARCHAISMS, in tugalex order
+    curated = [r for r in data["rows"]
+               if r["curated"] and r["era"] == "etymological" and r["form"] not in CURATED_ARCHAISMS]
     return curated, sources, data["_groups"]
 
 
@@ -292,6 +311,9 @@ def ao_rows(tuga: TugaLexicon) -> List[Row]:
                 value, quote = VOLP_AO_BR[old]
                 source = f"{VOLP_ABL} ({quote})"
             out.append(row(old, era, target, value, False, source))
+        if era == "pt_1973":
+            out += [row(old, era, target, value, False, f"{PRIBERAM} ({quote})")
+                    for old, (value, quote) in AO_PT_ROWS.items()]
     return out
 
 
@@ -327,7 +349,7 @@ def main() -> None:
                                 else curated_from_table(args.out))
     curated = decide_1911(curated)
     groups = {**groups, **GROUPS_1911}
-    sources = sources + [s for s in (ACORDO_1931, VOLP_ABL) if s not in sources]
+    sources = sources + [s for s in (ACORDO_1931, VOLP_ABL, PRIBERAM) if s not in sources]
     ao = ao_rows(tuga)
 
     class SourceLexicon(Lexicon):
@@ -358,7 +380,10 @@ def main() -> None:
         if archaic in TWO_1911_FORMS:
             form = None
         if form is not None and brazilian(form) == tuga.archaic_words_br[archaic]:
-            if archaic not in curated_forms:
+            if archaic in CURATED_ARCHAISMS:
+                to_1911.append(row(archaic, "etymological", "reforma_1911", form, True,
+                                   f"{REFORM_1911} ({CURATED_ARCHAISMS[archaic]})"))
+            elif archaic not in curated_forms:
                 to_1911.append(row(archaic, "etymological", "reforma_1911", form, False, notes[archaic]))
         elif archaic not in curated_forms:
             source = TWO_1911_FORMS.get(archaic, notes[archaic])

@@ -12,7 +12,8 @@
     "Acordo Ortográfico de 1945 (Decreto n.º 35 228, de 8 de Dezembro de 1945)",
     "Formulário Ortográfico de 1943 (Academia Brasileira de Letras)",
     "Acordo Ortográfico de 1931 (Academia das Ciências de Lisboa e Academia Brasileira de Letras, 30 de Abril de 1931)",
-    "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras)"
+    "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras)",
+    "Dicionário Priberam da Língua Portuguesa"
   ],
   "_groups": {
     "digraphs": "ph->f, th->t, rh->r, y->i. Modern values carry the accent the 1911 systematic accentuation introduced.",
@@ -4177,7 +4178,7 @@
     {"form": "thisico", "era": "etymological", "target": "reforma_1911", "value": "tísico", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
     {"form": "thomé", "era": "etymological", "target": "reforma_1911", "value": "tomé", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
     {"form": "thorax", "era": "etymological", "target": "reforma_1911", "value": "tórax", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
-    {"form": "threno", "era": "etymological", "target": "reforma_1911", "value": "treno", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
+    {"form": "threno", "era": "etymological", "target": "reforma_1911", "value": "treno", "curated": true, "source": "Reforma Ortográfica de 1911 (Portaria de 1 de setembro de 1911), comissão de Gonçalves Viana (digraphs)"},
     {"form": "thuribulo", "era": "etymological", "target": "reforma_1911", "value": "turíbulo", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
     {"form": "thuribulos", "era": "etymological", "target": "reforma_1911", "value": "turíbulos", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
     {"form": "viriatho", "era": "etymological", "target": "reforma_1911", "value": "viriato", "curated": false, "source": "tugalex archaisms.csv (th→t)"},
@@ -10320,6 +10321,7 @@
     {"form": "amigdalóide", "era": "pt_1973", "target": "ao1990-pt", "value": "amigdaloide", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "pólo", "era": "pt_1973", "target": "ao1990-pt", "value": "polo", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "busca-pólos", "era": "pt_1973", "target": "ao1990-pt", "value": "busca-polos", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
+    {"form": "proactivo", "era": "pt_1973", "target": "ao1990-pt", "value": "proativo", "curated": false, "source": "Dicionário Priberam da Língua Portuguesa (\"Grafia anterior ao Acordo Ortográfico de 1990: proactivo\")"},
     {"form": "abrotanóide", "era": "br_1971", "target": "ao1990-br", "value": "abrotanoide", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "abutilóide", "era": "br_1971", "target": "ao1990-br", "value": "abutiloide", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "acantóide", "era": "br_1971", "target": "ao1990-br", "value": "acantoide", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
@@ -12445,7 +12447,7 @@
     {"form": "zoelectricidade", "era": "br_1971", "target": "ao1990-br", "value": "zoeletricidade", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "fotelectricidade", "era": "br_1971", "target": "ao1990-br", "value": "foteletricidade|fotelectricidade", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"foteletricidade s.f.\" and \"fotelectricidade s.f.\")"},
     {"form": "perfeccionismo", "era": "br_1971", "target": "ao1990-br", "value": "perfecionismo", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
-    {"form": "proativo", "era": "br_1971", "target": "ao1990-br", "value": "pró-ativo", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
+    {"form": "proativo", "era": "br_1971", "target": "ao1990-br", "value": "proativo", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"proativo adj.\" and \"pró-ativo adj.\")"},
     {"form": "idielectricidade", "era": "br_1971", "target": "ao1990-br", "value": "idieletricidade|idielectricidade", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"idieletricidade s.f.\" and \"idielectricidade s.f.\")"},
     {"form": "busca-pólos", "era": "br_1971", "target": "ao1990-br", "value": "busca-polos", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "intersectar", "era": "br_1971", "target": "ao1990-br", "value": "intersetar", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
