@@ -173,14 +173,16 @@ pt-BR writes `coerdeiro`, as the ABL VOLP does. A loanword keeps its hyphen
 reduced, and Base XV 1 writes a compound of two adjectives with the hyphen. These rules are
 deterministic. They run once, on the
 words of an AO1990 target, after the VOLP and the dual cells decide each element, so pt-PT
-`foto-receptores` gives pt-BR `fotorreceptores`. The 1945 Acordo (Base XXIX) and the 1943
+`foto-receptores` gives pt-BR `fotorreceptores`. At `ao1990-br` the VOLP then decides the
+joined word. The VOLP writes `contra-erva` and `macro-jê` with the hyphen, so ao1990-br
+keeps them, and ao1990-pt writes `contraerva` and `macrojê`. The 1945 Acordo (Base XXIX) and the 1943
 Formulário (5.º a) write the hyphen, so `pt_1973 → br_1971` keeps `co-autores` although
 the route passes through AO1990. The 1943 Formulário uses the hyphen only for the prefixes
 it lists (45, 46 5.º), so at `br_1971` an unlisted prefix joins before r or s and doubles
 it (`micro-sistema→microssistema`, 22), as the 1943 Pequeno Vocabulário writes
 microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loanword row
 (`mini-system`) keep the hyphen.
-Lexicalized compounds (`pára-quedas→paraquedas`) are lexical.
+Lexicalized compounds (`manda-chuva→mandachuva`, Base XV 1º Obs.) are lexical.
 
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
 nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.

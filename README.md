@@ -20,10 +20,13 @@ nothing else.
   lists. The same table holds the 1911 words that no rule of the 1945 or 1943 edge
   reaches (`quási` gives `quase`), and the 1911 words that the backward pass of those
   edges restores (`cena` gives `scena`). Each of these rows quotes its clause. For pt-BR,
-  `data/volp_ao1990_br.json` holds 1,796 spelling decisions, and each row cites its
-  source. 1,628 rows quote the ABL *Vocabulário Ortográfico da Língua
+  `data/volp_ao1990_br.json` holds 1,800 spelling decisions, and each row cites its
+  source. 1,632 rows quote the ABL *Vocabulário Ortográfico da Língua
   Portuguesa* (VOLP), 66 rows cite Priberam, and 102 rows record that no source decides
-  the word.
+  the word. `data/hyphen_loanwords.json` lists the hyphenated loanwords that the VOLP
+  (pt-BR) and the *Vocabulário Ortográfico do Português* (VOP, pt-PT) mark as foreign.
+  The prefix join toward each variety leaves the rows of that variety as written
+  (`mini-system` stays at ao1990-br and br_1971).
 - A **command-line tool** and a parallel silver benchmark corpus (written by language
   models, not checked by a person), also published on the
   [Hugging Face Hub](https://huggingface.co/datasets/TigreGotico/desacordo_ortografico).
