@@ -106,6 +106,23 @@ Brasileira de Letras).
   French, and the loans crêpe, cône and contrôle as 1945 writes them (crepe, cone,
   controle). A 1945 word that the list lacks keeps its accent (môo, vêde, tôrvo).
 
+AO1990 drops the acute of the open diphthongs éi and ói in paroxytones only. Base IX 3º:
+"Não se acentuam graficamente os ditongos representados por ei e oi da sílaba
+tónica/tônica das palavras paroxítonas [...]: assembleia, boleia, ideia, [...] heroico,
+introito, jiboia, moina, paranoico, zoina." Base XI 1º keeps it in proparoxytones, real
+and apparent: "a) As palavras proparoxítonas que apresentam na sílaba tónica/tônica as
+vogais abertas grafadas a, e, o e ainda i, u ou ditongo oral começado por vogal aberta"
+and "b) As chamadas proparoxítonas aparentes, [...] que terminam por sequências vocálicas
+pós-tónicas/pós-tônicas praticamente consideradas como ditongos crescentes (-ea, -eo,
+-ia, -ie, -io, -oa, -ua, -uo, etc.)". So the accent goes only when one syllable follows
+the diphthong, and a final -ea, -eo, -ia, -ie, -io, -oa, -ua or -uo counts as two:
+alantóideo (a-lan-tói-de-o) and einstéinio keep it. Each part of a hyphenated word has
+its own stress, Base XV 1º: "cujos elementos [...] constituem uma unidade sintagmática e
+semântica e mantêm acento próprio". The oxytone parts of rói-rói and
+ascídia-de-anéis-brancos keep their accent. Base IX 2º a) gives the acute before -l, -n,
+-r, -x and -ps to "as vogais abertas grafadas a, e, o e ainda i ou u" and names no
+diphthong, so the text has no exception for destróier.
+
 The words that no rule reaches are rows of the spelling table (quási, tam, teem, and
 scetro, which 1945 Base VI writes ceptro), each with its clause. The rows apply to each
 part of a hyphenated word, except in a word whose parts repeat (tam-tam, a gong).
@@ -638,8 +655,8 @@ def ao1990_drop_accents(word: str) -> str:
     """Drop the AO1990-abolished accents that follow a regular pattern.
 
     * open diphthong éi/ói in **paroxytones** (idéia->ideia, heróico->heroico) — but
-      NOT oxytones (herói, anéis, papéis, faróis keep theirs). A word is paroxytone
-      (or longer) iff another vowel follows the diphthong, hence the lookahead;
+      NOT oxytones (herói, anéis, papéis, faróis) or proparoxytones (alantóideo,
+      einstéinio), which keep theirs;
     * circumflex on the hiatus ôo (vôo->voo, enjôo->enjoo);
     * circumflex on the 3rd-person-plural -êem (lêem->leem, vêem->veem).
 
@@ -648,13 +665,26 @@ def ao1990_drop_accents(word: str) -> str:
     return ao1990_drop_hiatus_accent(ao1990_drop_diphthong_accent(word))
 
 
-_FOLLOWS_VOWEL = "(?=[^%s]*[%s])" % (_VOWELS, _VOWELS)
+_RE_OPEN_DIPHTHONG = re.compile("([éó])i")
+_RE_VOWEL_RUN = re.compile("[%s]+" % _VOWELS)
+# the post-tonic endings that Base XI 1º b) reads as two syllables
+_RE_RISING_END = re.compile("(?:ea|eo|ia|ie|io|oa|ua|uo)s?$")
 
 
 def ao1990_drop_diphthong_accent(word: str) -> str:
-    """éi/ói -> ei/oi in paroxytones (idéia->ideia); oxytones keep it (herói)."""
-    word = re.sub("éi%s" % _FOLLOWS_VOWEL, "ei", word)
-    return re.sub("ói%s" % _FOLLOWS_VOWEL, "oi", word)
+    """éi/ói -> ei/oi when exactly one syllable follows in its part of the word
+    (idéia->ideia, jibóias->jiboias). Oxytones (herói, rói-rói) and proparoxytones
+    (alantóideo, einstéinio) keep it."""
+    def drop(part: str) -> str:
+        def bare(m: re.Match) -> str:
+            tail = part[m.end():]
+            if len(_RE_VOWEL_RUN.findall(tail)) != 1 or _RE_RISING_END.search(tail):
+                return m.group(0)
+            return {"é": "e", "ó": "o"}[m.group(1)] + "i"
+
+        return _RE_OPEN_DIPHTHONG.sub(bare, part)
+
+    return per_segment(word, drop)
 
 
 def ao1990_drop_hiatus_accent(word: str) -> str:

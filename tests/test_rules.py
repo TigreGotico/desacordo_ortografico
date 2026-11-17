@@ -92,6 +92,48 @@ class TestAO1990Accents:
         # word-final stressed diphthongs keep their accent under AO1990
         assert rules.ao1990_drop_accents(word) == word
 
+    @pytest.mark.parametrize(
+        "old,new",
+        [
+            # Base IX 3º lists assembleia, ideia and jiboia
+            ("assembléia", "assembleia"),
+            ("idéia", "ideia"),
+            ("jibóia", "jiboia"),
+            ("jibóias", "jiboias"),
+            # Base IX 3º lists alcaloide and paranoico
+            ("alcalóide", "alcaloide"),
+            ("paranóico", "paranoico"),
+            # Base IX 3º with Base XV 1º: the paroxytone part of a compound
+            ("assembléia-geral", "assembleia-geral"),
+        ],
+    )
+    def test_paroxytone_diphthong_dropped(self, old, new):
+        assert rules.ao1990_drop_diphthong_accent(old) == new
+
+    @pytest.mark.parametrize(
+        "word",
+        [
+            # Base XI 1º b): an apparent proparoxytone in -eo or -ea. The VOP lists
+            # alantóideo (a·lan·tói·de·o) with alantóidea, and mastóideo (mas·tói·de·o).
+            "alantóideo",
+            "alantóidea",
+            "alantóideos",
+            "mastóideo",
+            "mastóideas",
+            # Base XI 1º b): -io; the VOP lists einstéinio
+            "einstéinio",
+            # Base XI 1º a): a real proparoxytone, des-trói-e-res, the plural of the
+            # destróier that the ABL VOLP lists
+            "destróieres",
+            # Base XV 1º: each part keeps its own stress, and these parts are oxytones
+            "rói-rói",
+            "ascídia-de-anéis-brancos",
+            "trinta-réis-antártico",
+        ],
+    )
+    def test_non_paroxytone_diphthong_kept(self, word):
+        assert rules.ao1990_drop_diphthong_accent(word) == word
+
 
 class TestTrema:
     @pytest.mark.parametrize(
