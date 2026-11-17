@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.11a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.11a1) (2026-11-17)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.10a1...0.3.11a1)
+
+**Merged pull requests:**
+
+- fix: hold both VOLP forms in four pt-BR AO1990 rows [\#53](https://github.com/TigreGotico/desacordo_ortografico/pull/53) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.10a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.10a1) (2026-11-16)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.9a1...0.3.10a1)
