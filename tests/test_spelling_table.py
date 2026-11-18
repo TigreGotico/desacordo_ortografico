@@ -167,9 +167,9 @@ def test_convert_writes_the_volp_form_of_a_contradicting_row(form, _value, volp_
     ("zeida", "ao1990-pt", "pt_1973"),
 ])
 def test_ao1990_word_without_an_accent_stays_bare_backward(text, source, target):
-    # areia has a closed [e] in Brazil (Michaelis; the ABL VOLP gives no "(é)" mark).
-    # The 1945 norm did not accent the éi diphthong, and reida and zeida have no
-    # accented form in either older norm.
+    # No source gives aréia, réida or zéida. The 1943 ABL vocabulary lists areia and
+    # reida with no accent; the VOLP gives areia, reida and zeida no "(é)" mark, and
+    # Michaelis gives areia a closed [e].
     assert desacordo_ortografico.convert(text, source, target) == text
 
 

@@ -333,6 +333,20 @@ def test_spelling_archaisms_keep_the_hub_order_and_notes(monkeypatch, tmp_path, 
     assert set(by_form) == {r["form"] for r in _table("etymological")} - {"kermesse"}
 
 
+@pytest.mark.parametrize("name, era, withdrawn", [
+    ("AO1990_pt-PT/acordo_ortografico_pt_PT.csv", "pt_1973", ["réida", "reida"]),
+    ("AO1990_pt-BR/acordo_ortografico_pt_BR.csv", "br_1971", ["aréia", "areia"]),
+])
+def test_spelling_drops_the_hub_line_of_a_withdrawn_form(monkeypatch, tmp_path, base, name, era, withdrawn):
+    _dry_run(monkeypatch, base, tmp_path / "without")
+    rows = BASE_PT_PT if era == "pt_1973" else BASE_PT_BR
+    header, newline = HUB_FILES[name]
+    _write(base / name, [header, rows[0], withdrawn, *rows[1:]], newline)
+    _dry_run(monkeypatch, base, tmp_path / "with")
+    # the line goes, and every other line is written as if the Hub file never had it
+    assert _read(tmp_path / "with" / name) == _read(tmp_path / "without" / name)
+
+
 def test_spelling_refuses_a_hub_form_that_the_table_lacks(monkeypatch, tmp_path, base):
     _write(base / "archaisms_pt" / "archaisms.csv",
            [HUB_FILES["archaisms_pt/archaisms.csv"][0], ["phantasma-x", "fantasma-x", "", "ph→f"]], "\n")
