@@ -198,6 +198,8 @@ microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loan
 Lexicalized compounds (`manda-chuva→mandachuva`, `pára-quedas→paraquedas`,
 `pára-quedista→paraquedista`, Base XV 1º Obs.) are lexical. For `pára-quedismo` the VOLP
 writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map.
+Backward, `para-quedas`, `para-quedista` and `para-quedismo` take the accent of `pára` back
+(`pára-quedas`), because the 1945 Acordo and the 1943 Vocabulário write it.
 
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
 nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.
