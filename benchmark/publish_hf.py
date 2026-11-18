@@ -73,9 +73,12 @@ UNSOURCED_PT_BR = frozenset({"recta-pronúncia"})
 #: Old forms of the Hub AO1990 files that no older norm wrote, by era. The table has no row
 #: for them, and the dry run drops their lines. The 1943 ABL vocabulary lists areia and reida
 #: with no accent, and the VOLP and the VOP mark the ei of areia, reida and zeida neither open
-#: nor accented. No source gives aréia, réida or zéida.
+#: nor accented. No source gives aréia, réida or zéida. Brazil wrote no c in co-directora,
+#: zoelectricidade or dielectricidade: the 1943 ABL vocabulary lists "co-diretor, s. m." and
+#: "dielétrico, adj. e s. m.", and the VOLP lists zoeletricidade and dieletricidade only.
 WITHDRAWN = {"pt_1973": frozenset({"réida", "zéida"}),
-             "br_1971": frozenset({"aréia", "réida", "zéida"})}
+             "br_1971": frozenset({"aréia", "réida", "zéida", "co-directora", "zoelectricidade",
+                                   "dielectricidade"})}
 
 #: The letter changes of a pre-1911 form, in the notation of the tugalex archaisms list. Each
 #: rule rewrites the archaic form, without accents, when the modern form has the pattern

@@ -14,7 +14,8 @@
     "Acordo Ortográfico de 1931 (Academia das Ciências de Lisboa e Academia Brasileira de Letras, 30 de Abril de 1931)",
     "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras)",
     "Dicionário Priberam da Língua Portuguesa",
-    "Acordo Ortográfico da Língua Portuguesa de 1990"
+    "Acordo Ortográfico da Língua Portuguesa de 1990",
+    "Pequeno Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras, 1943)"
   ],
   "_groups": {
     "digraphs": "ph->f, th->t, rh->r, y->i. Modern values carry the accent the 1911 systematic accentuation introduced.",
@@ -10880,7 +10881,7 @@
     {"form": "co-dialecto", "era": "br_1971", "target": "ao1990-br", "value": "codialeto|codialecto", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-dialeto", "era": "br_1971", "target": "ao1990-br", "value": "codialeto|codialecto", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-direção", "era": "br_1971", "target": "ao1990-br", "value": "codireção", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
-    {"form": "co-directora", "era": "br_1971", "target": "ao1990-br", "value": "codiretora", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
+    {"form": "co-diretora", "era": "br_1971", "target": "ao1990-br", "value": "codiretora", "curated": false, "source": "Pequeno Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras, 1943) (\"co-diretor, s. m.\")"},
     {"form": "co-diretor", "era": "br_1971", "target": "ao1990-br", "value": "codiretor", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-dirigir", "era": "br_1971", "target": "ao1990-br", "value": "codirigir", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-dominância", "era": "br_1971", "target": "ao1990-br", "value": "codominância", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
@@ -12440,7 +12441,6 @@
     {"form": "contra-reação", "era": "br_1971", "target": "ao1990-br", "value": "contrarreação", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "conceptualmente", "era": "br_1971", "target": "ao1990-br", "value": "concetualmente", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "amigdalóide", "era": "br_1971", "target": "ao1990-br", "value": "amigdaloide", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
-    {"form": "zoelectricidade", "era": "br_1971", "target": "ao1990-br", "value": "zoeletricidade", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "fotelectricidade", "era": "br_1971", "target": "ao1990-br", "value": "foteletricidade|fotelectricidade", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"foteletricidade s.f.\" and \"fotelectricidade s.f.\")"},
     {"form": "perfeccionismo", "era": "br_1971", "target": "ao1990-br", "value": "perfecionismo", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "proativo", "era": "br_1971", "target": "ao1990-br", "value": "proativo", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"proativo adj.\" and \"pró-ativo adj.\")"},
@@ -12448,7 +12448,6 @@
     {"form": "busca-pólos", "era": "br_1971", "target": "ao1990-br", "value": "busca-polos", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "intersectar", "era": "br_1971", "target": "ao1990-br", "value": "intersetar", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "perfeccionista", "era": "br_1971", "target": "ao1990-br", "value": "perfecionista", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
-    {"form": "dielectricidade", "era": "br_1971", "target": "ao1990-br", "value": "dieletricidade", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "bissector", "era": "br_1971", "target": "ao1990-br", "value": "bissetor|bissector", "curated": false, "source": "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras) (\"bissetor (ô) adj. s.m.\" and \"bissector (ô) adj. s.m.\")"},
     {"form": "perfeccional", "era": "br_1971", "target": "ao1990-br", "value": "perfecional", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "recta-pronúncia", "era": "br_1971", "target": "ao1990-br", "value": "reta-pronúncia", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
