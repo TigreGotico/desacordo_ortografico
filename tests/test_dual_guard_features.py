@@ -43,6 +43,7 @@ def test_a_pt_pt_dual_keeps_the_consonant_under_any_features(text, source):
 @pytest.mark.parametrize("text", [
     "o facto",  # VOLP: fato s.m. | facto s.m.
     "o contacto",  # VOLP: contato s.m. | contacto s.m.
+    "os contactos",  # the regular plural of the contacto row
     "o corrupto",  # VOLP: corruto adj. s.m. | corrupto adj. s.m.
     "a conjectura",  # VOLP: conjetura s.f. | conjectura s.f.
     "o cetro",  # VOLP: cetro s.m.; no ceptro
