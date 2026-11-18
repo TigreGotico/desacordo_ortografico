@@ -70,6 +70,13 @@ FOREIGN_SPELLINGS = frozenset({"kermesse"})
 #: Formulário Ortográfico of 1943.
 UNSOURCED_PT_BR = frozenset({"recta-pronúncia"})
 
+#: Old forms of the Hub AO1990 files that no older norm wrote, by era. The table has no row
+#: for them, and the dry run drops their lines. The 1943 ABL vocabulary lists areia and reida
+#: with no accent, and the VOLP and the VOP mark the ei of areia, reida and zeida neither open
+#: nor accented. No source gives aréia, réida or zéida.
+WITHDRAWN = {"pt_1973": frozenset({"réida", "zéida"}),
+             "br_1971": frozenset({"aréia", "réida", "zéida"})}
+
 #: The letter changes of a pre-1911 form, in the notation of the tugalex archaisms list. Each
 #: rule rewrites the archaic form, without accents, when the modern form has the pattern
 #: fewer times, gains the letters that the rule writes, and is nearer to the rewritten form.
@@ -371,7 +378,8 @@ def ao_rows(table: list[dict], era: str, lines: list[list[str]],
 
     cells = {r["form"]: forms(r["value"]) for r in table
              if r["era"] == era and not (era == "br_1971" and r["form"] in UNSOURCED_PT_BR)}
-    lines = lines[1:]
+    withdrawn = WITHDRAWN.get(era, frozenset())
+    lines = [line for line in lines[1:] if not set(_forms(line[0])) <= withdrawn]
     last = {old: i for i, (olds, _new) in enumerate(lines) for old in _forms(olds)}
     missing = set(last) - set(cells)
     if missing:
