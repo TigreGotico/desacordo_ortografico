@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.17a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.17a1) (2026-11-18)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.16a1...0.3.17a1)
+
+**Merged pull requests:**
+
+- fix: join paraquedas and paraquedista at AO1990 [\#80](https://github.com/TigreGotico/desacordo_ortografico/pull/80) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.16a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.16a1) (2026-11-17)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.15a2...0.3.16a1)
