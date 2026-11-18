@@ -93,7 +93,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `base-iv` | the curated Base IV drop list | br_1911_to_1943, ao1990_pt |
 | `ptbr-divergence` | the PT/BR divergence pairs (connosco -> conosco) | br_1911_to_1943, ptbr_divergence |
 | `nasal-vowel` | é/ó -> ê/ô before a nasal | br_1911_to_1943, ptbr_divergence |
-| `differential-1971` | the 1971 differential circumflex list, from 1943 Formulário 14.ª (êle -> ele, sôbre -> sobre) | accent_1971 |
+| `differential-1971` | the 1971 differential circumflex list, from 1943 Formulário 14.ª (êle -> ele, sôbre -> sobre), in each part of a hyphenated word too (fêz-se -> fez-se) | accent_1971 |
 | `ao-map-consonant` | AO1990 map rows that change letters (acção -> ação) | ao1990_pt, ao1990_br |
 | `ao-map-diacritic` | AO1990 map rows that change only accents (pêlo -> pelo) | ao1990_pt, ao1990_br |
 | `ao-map-trema` | AO1990 map rows that drop only the trema | ao1990_pt, ao1990_br |
