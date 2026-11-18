@@ -157,3 +157,21 @@ def test_br_1971_rows_against_the_volp_decisions():
 @pytest.mark.parametrize("form,_value,volp_form", sorted(VOLP_CONTRADICTIONS))
 def test_convert_writes_the_volp_form_of_a_contradicting_row(form, _value, volp_form):
     assert desacordo_ortografico.convert(form, "br_1971", "ao1990-br") == volp_form
+
+
+@pytest.mark.parametrize("text,source,target", [
+    ("areia", "ao1990-br", "br_1971"),
+    ("reida", "ao1990-br", "br_1971"),
+    ("zeida", "ao1990-br", "br_1971"),
+    ("reida", "ao1990-pt", "pt_1973"),
+    ("zeida", "ao1990-pt", "pt_1973"),
+])
+def test_ao1990_word_without_an_accent_stays_bare_backward(text, source, target):
+    # areia has a closed [e] in Brazil (Michaelis; the ABL VOLP gives no "(é)" mark).
+    # The 1945 norm did not accent the éi diphthong, and reida and zeida have no
+    # accented form in either older norm.
+    assert desacordo_ortografico.convert(text, source, target) == text
+
+
+def test_ideia_still_restores_its_accent_backward():
+    assert desacordo_ortografico.convert("ideia", "ao1990-br", "br_1971") == "idéia"
