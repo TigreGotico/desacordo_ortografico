@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.18a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.18a1) (2026-11-18)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.17a1...0.3.18a1)
+
+**Merged pull requests:**
+
+- fix: drop the false accent rows of areia, reida and zeida [\#83](https://github.com/TigreGotico/desacordo_ortografico/pull/83) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.17a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.17a1) (2026-11-18)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.16a1...0.3.17a1)
