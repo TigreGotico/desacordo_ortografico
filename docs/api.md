@@ -93,7 +93,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `base-iv` | the curated Base IV drop list | br_1911_to_1943, ao1990_pt |
 | `ptbr-divergence` | the PT/BR divergence pairs (connosco -> conosco) | br_1911_to_1943, ptbr_divergence |
 | `nasal-vowel` | é/ó -> ê/ô before a nasal | br_1911_to_1943, ptbr_divergence |
-| `differential-1971` | the 1971 differential circumflex list, from 1943 Formulário 14.ª (êle -> ele, sôbre -> sobre) | accent_1971 |
+| `differential-1971` | the 1971 differential circumflex list, from 1943 Formulário 14.ª (êle -> ele, sôbre -> sobre), in each part of a hyphenated word too (fêz-se -> fez-se) | accent_1971 |
 | `ao-map-consonant` | AO1990 map rows that change letters (acção -> ação) | ao1990_pt, ao1990_br |
 | `ao-map-diacritic` | AO1990 map rows that change only accents (pêlo -> pelo) | ao1990_pt, ao1990_br |
 | `ao-map-trema` | AO1990 map rows that drop only the trema | ao1990_pt, ao1990_br |
@@ -175,9 +175,11 @@ pronoun.
 
 A capitalised word takes the accent of the common word with the same letters, anywhere
 in a sentence, so names whose 1973 spelling carries an accent come back right (Árctico,
-Atlântico, Ministério Público). The city names Coimbra and Roma share their letters with
-an accented common word (coimbrã, romã), so they stay as written when capitalised:
-"Fui a Roma." stays "Fui a Roma.", and "uma roma madura" gives "uma romã madura".
+Atlântico, Ministério Público). The city names Coimbra and Roma and the given name Ester
+share their letters with an accented common word (coimbrã, romã, éster), so they stay as
+written when capitalised: "Fui a Roma." stays "Fui a Roma.", and "uma roma madura" gives
+"uma romã madura". Pre-1911 Esther gives Ester, the name that the 1943 Vocabulário lists
+beside the chemical éster.
 
 The 1911 word map writes treno for threno, the lament, so treno is a word and the guess
 leaves it as written: "o threno" gives "o treno", and a bare treno stays treno. Figueiredo

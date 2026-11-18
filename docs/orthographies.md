@@ -198,6 +198,9 @@ microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loan
 Lexicalized compounds (`manda-chuva→mandachuva`, `pára-quedas→paraquedas`,
 `pára-quedista→paraquedista`, Base XV 1º Obs.) are lexical. For `pára-quedismo` the VOLP
 writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map.
+Base XVII 2.º drops the hyphen between de and a monosyllabic present form of haver:
+`hei-de→hei de`, and the same for `hás-de`, `há-de`, `heis-de` and `hão-de`.
+
 Backward, `para-quedas`, `para-quedista` and `para-quedismo` take the accent of `pára` back
 (`pára-quedas`), because the 1945 Acordo and the 1943 Vocabulário write it.
 

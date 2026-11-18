@@ -406,9 +406,10 @@ _SINGULAR_DETERMINERS = frozenset({
 })
 #: The universal POS tags of a noun or an adjective.
 _NOMINAL_TAGS = frozenset({"NOUN", "ADJ"})
-# city names written without an accent whose letters spell an accented common word
-# (Coimbra, coimbrã; Roma, romã)
-_UNACCENTED_NAMES = frozenset({"coimbra", "roma"})
+# names written without an accent whose letters spell an accented common word: the cities
+# Coimbra (coimbrã) and Roma (romã), and the given name Ester (éster). ABL Pequeno
+# Vocabulário Ortográfico 1943: "éster, s. m./Cf. Ester, antr., e hester."
+_UNACCENTED_NAMES = frozenset({"coimbra", "roma", "ester"})
 # a sentence end or a clause pause; the word before it does not introduce the next word
 _PAUSE = re.compile(r"[.!?…,;:()—–]|\s-\s")
 #: How many tags past the last match a word may look for its own. A tagger can split

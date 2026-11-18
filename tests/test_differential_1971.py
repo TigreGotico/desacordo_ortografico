@@ -83,3 +83,19 @@ def test_pode_keeps_the_circumflex(src, dst):
 @pytest.mark.parametrize("dst", TARGETS)
 def test_sentence(dst):
     assert convert("Sôbre êles, fêz o que pôde.", "br_1943", dst) == "Sobre eles, fez o que pôde."
+
+
+# The law abolishes the accent on the word, so a word inside a hyphenated form loses it too.
+HYPHENATED = [
+    ("fêz-se", "fez-se"),
+    ("fôr-lhe", "for-lhe"),
+    ("sôbre-humano", "sobre-humano"),
+    ("côr-de-rosa", "cor-de-rosa"),
+]
+
+
+@pytest.mark.parametrize("dst", TARGETS)
+@pytest.mark.parametrize("src", SOURCES)
+@pytest.mark.parametrize("word,bare", HYPHENATED)
+def test_circumflex_dropped_in_hyphenated_form(word, bare, src, dst):
+    assert convert(word, src, dst) == bare

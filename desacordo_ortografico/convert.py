@@ -468,10 +468,12 @@ class OrthographyConverter:
         #    exceção feita da forma pôde, que se acentuará por oposição a pode". The
         #    table lists words with that accent in the 1943 Formulário (14.ª). Its
         #    inverse is the backward map, so a word whose bare form is the more frequent
-        #    reading (corte, deveras, colher) has no row.
+        #    reading (corte, deveras, colher) has no row. The law abolishes the accent on
+        #    the word, so each part of a hyphenated form loses it (fêz-se -> fez-se).
         accent_1971 = _Edge(
             _Pass(steps=[
-                ("differential-1971", get(lex.accent_71_73_old2new)),
+                ("differential-1971",
+                 lambda w: rules.per_segment(w, get(lex.accent_71_73_old2new))),
                 ("subtonic-grave", rules.strip_subtonic_grave),
             ]),
             _Pass(steps=[("differential-1971", get(lex.accent_71_73_new2old))]),

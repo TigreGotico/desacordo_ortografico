@@ -23,10 +23,6 @@ PT_GROUP = frozenset({"1911-word-map", "trema", "ao-map-consonant", "base-iv",
 BR_GROUP = frozenset({"1911-word-map", "base-iv", "initial-sc", "ptbr-divergence",
                       "hyphen-lexical"})
 
-# The etymological route to ao1990-br drops the p of óptica, which the repo pins in both
-# Brazilian cells of row p04-013.
-BR_OPTICA = {"óptica"}
-
 
 # Row p12-064 writes "decepcionou" in its pt_1973 and ao1990-pt cells, but AO1990 pt-PT
 # writes dececionou: VOP lemma 54366 "decepcionar - verbo ... Brasil ... variante AO de :
@@ -90,7 +86,7 @@ def test_pt_group_keeps_modern_text(cell):
     assert convert(cell, "etymological", "ao1990-pt", features=PT_GROUP) == cell
 
 
-@pytest.mark.parametrize("cell", _params(BR_CELLS, {"desacordo#69": BR_OPTICA}))
+@pytest.mark.parametrize("cell", _params(BR_CELLS))
 def test_br_group_keeps_modern_text(cell):
     assert convert(cell, "etymological", "ao1990-br", features=BR_GROUP) == cell
 

@@ -141,6 +141,9 @@ _ACCENTS = frozenset("\u0300\u0301\u0302")
 
 #: A VOLP quote that ends with a form the VOLP does not list ("abstrato adj. s.m.; no abstracto").
 _VOLP_NO_FORM = re.compile(r"^VOLP: [^|]*; no (\S+)$")
+#: A plural that a VOLP quote names ("caráter s.m.; pl. caracteres"). "pl. (ó)" names no
+#: plural: it gives the open vowel of the plural ("afetuoso (ô) adj.; f. (ó); pl. (ó)").
+_VOLP_PLURAL = re.compile(r"\bpl\. [\w-]")
 
 
 def _one_more_consonant(bare: str, full: str) -> bool:
@@ -327,7 +330,7 @@ class Lexicon:
             for word, target in pairs:
                 decided.setdefault(word, target)
                 plural = _plural(word), _plural(target)
-                if None not in plural and "pl. " not in row["source"]:
+                if None not in plural and not _VOLP_PLURAL.search(row["source"]):
                     plurals.setdefault(*plural)
         return {**plurals, **decided}
 
