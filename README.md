@@ -29,8 +29,9 @@ nothing else.
   (`mini-system` stays at ao1990-br and br_1971).
 - `benchmark/publish_hf.py --spelling` builds the Hugging Face datasets
   `TigreGotico/archaisms_pt`, `TigreGotico/AO1990_pt-PT` and `TigreGotico/AO1990_pt-BR`
-  from the spelling table of the checkout. Each CSV keeps the lines and the line order of
-  the file on the Hub and takes its spellings from the table. `--dry-run DIR` writes each
+  from the spelling table of the checkout. Each CSV keeps the line order of the file on
+  the Hub and takes its spellings from the table. The AO1990 files drop the line of an old
+  form that no older norm wrote (aréia, réida, zéida). `--dry-run DIR` writes each
   CSV and its dataset card to `DIR/<dataset>/` and uploads nothing. `--upload --base DIR`
   uploads a reviewed dry run. A change to the table reaches the Hub only after an upload.
   The script needs `huggingface_hub`, which the package does not install.
