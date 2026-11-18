@@ -124,5 +124,7 @@ def test_paraquedas_joins_at_ao1990(era, target):
     # girassol, madressilva, mandachuva, pontapé, paraquedas, paraquedista, etc."
     assert convert("pára-quedas", era, target) == "paraquedas"
     assert convert("pára-quedista", era, target) == "paraquedista"
-    assert convert("pára-quedismo", era, target) == "paraquedismo"
+    # The clause names only paraquedas and paraquedista. The VOP lists only
+    # para-quedismo; the ABL VOLP lists only paraquedismo.
+    assert convert("pára-quedismo", era, target) == ("para-quedismo" if era == "pt_1973" else "paraquedismo")
     assert convert("Pára-quedas", era, target) == "Paraquedas"
