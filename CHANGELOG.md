@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.19a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.19a1) (2026-11-18)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.18a2...0.3.19a1)
+
+**Merged pull requests:**
+
+- test: cover the backward 1971 map and the plural of the br hold [\#92](https://github.com/TigreGotico/desacordo_ortografico/pull/92) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: derive the plural of a VOLP row whose quote notes the plural vowel [\#91](https://github.com/TigreGotico/desacordo_ortografico/pull/91) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: give the name Ester for pre-1911 Esther [\#90](https://github.com/TigreGotico/desacordo_ortografico/pull/90) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: give the VOLP forms of the concept\* words at ao1990-br [\#88](https://github.com/TigreGotico/desacordo_ortografico/pull/88) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: keep the p of óptica in Brazilian spelling [\#87](https://github.com/TigreGotico/desacordo_ortografico/pull/87) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: drop the hyphen of hei-de, hás-de and heis-de at AO1990 [\#86](https://github.com/TigreGotico/desacordo_ortografico/pull/86) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: drop the 1971 circumflex in each part of a hyphenated word [\#85](https://github.com/TigreGotico/desacordo_ortografico/pull/85) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.18a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.18a2) (2026-11-18)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.18a1...0.3.18a2)
