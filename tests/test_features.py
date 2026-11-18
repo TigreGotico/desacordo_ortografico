@@ -116,3 +116,15 @@ def test_default_applies_every_feature(path):
     text = " , ".join(old for p, old, _ in CASES.values() if p == path)
     expected = " , ".join(new for p, _, new in CASES.values() if p == path)
     assert convert(text, *path) == expected
+
+
+@pytest.mark.parametrize("era,target", [("pt_1973", "ao1990-pt"), ("br_1971", "ao1990-br")])
+def test_paraquedas_joins_at_ao1990(era, target):
+    # AO1990 Base XV 1.º Obs.: "Certos compostos ... grafam-se aglutinadamente:
+    # girassol, madressilva, mandachuva, pontapé, paraquedas, paraquedista, etc."
+    assert convert("pára-quedas", era, target) == "paraquedas"
+    assert convert("pára-quedista", era, target) == "paraquedista"
+    # The clause names only paraquedas and paraquedista. The VOP lists only
+    # para-quedismo; the ABL VOLP lists only paraquedismo.
+    assert convert("pára-quedismo", era, target) == ("para-quedismo" if era == "pt_1973" else "paraquedismo")
+    assert convert("Pára-quedas", era, target) == "Paraquedas"
