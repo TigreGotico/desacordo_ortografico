@@ -201,6 +201,9 @@ writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-P
 Base XVII 2.º drops the hyphen between de and a monosyllabic present form of haver:
 `hei-de→hei de`, and the same for `hás-de`, `há-de`, `heis-de` and `hão-de`.
 
+Backward, `para-quedas`, `para-quedista` and `para-quedismo` take the accent of `pára` back
+(`pára-quedas`), because the 1945 Acordo and the 1943 Vocabulário write it.
+
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
 nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.
 
