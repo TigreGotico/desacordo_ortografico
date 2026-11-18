@@ -97,8 +97,14 @@ and mostly deterministic. The base PT/BR differences are untouched.
 
 - Abolition of the **differential circumflex** on a closed homograph list
   (`êle→ele, govêrno→governo, sêca→seca`): deterministic (list).
+  Article 1 of Lei 5.765/1971 abolishes it on the closed e or o of a homograph, except in `pôde`.
+  The list holds the words that the 1943 Formulário (14.ª) writes with it (`sôbre`, `fêz`).
+
 - Abolition of the **grave/circumflex on subtonic syllables** of derived words
   (`sòmente→somente, cafèzinho→cafezinho`): deterministic (strip the grave accent).
+
+Portugal had dropped the differential circumflex in 1945 (Base XXII), so the 1945 → 1973
+edge does not apply the list.
 
 Source: [Convenção Ortográfica de 1945 / 1973 accent reform (Priberam)](https://www.priberam.pt/docs/AcOrtog45_73.pdf)
 
@@ -148,8 +154,15 @@ lexical part. It defines four sets:
   D. or S. end no sentence.
 
 **Accentuation** is mostly deterministic:
-- Drop the acute on open `éi/ói` in **paroxytones**: `idéia→ideia, heróico→heroico`
-  (oxytones keep theirs: `herói, papéis`).
+
+- Drop the acute on open `éi/ói` in **paroxytones** (Base IX 3º): `idéia→ideia,
+  heróico→heroico, jibóias→jiboias`. Oxytones keep it (`herói, papéis`), also as a part of
+  a hyphenated word (`rói-rói`, Base XV 1º).
+
+- Proparoxytones keep the acute too (Base XI 1º). A final `-ea`, `-eo`, `-ia`, `-ie`,
+  `-io`, `-oa`, `-ua` or `-uo` counts as two syllables, so `alantóideo` and `einstéinio`
+  keep it.
+
 - Drop the circumflex on `ôo` and `-êem`: `vôo→voo, lêem→leem`.
 - Drop differential accents (closed list): `pára→para, pêlo→pelo, pólo→polo, pêra→pera`
   (kept: `pôr, pôde, têm, vêm`).
@@ -182,7 +195,9 @@ it lists (45, 46 5.º), so at `br_1971` an unlisted prefix joins before r or s a
 it (`micro-sistema→microssistema`, 22), as the 1943 Pequeno Vocabulário writes
 microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loanword row
 (`mini-system`) keep the hyphen.
-Lexicalized compounds (`manda-chuva→mandachuva`, Base XV 1º Obs.) are lexical.
+Lexicalized compounds (`manda-chuva→mandachuva`, `pára-quedas→paraquedas`,
+`pára-quedista→paraquedista`, Base XV 1º Obs.) are lexical. For `pára-quedismo` the VOLP
+writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map.
 
 **AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
 nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.
