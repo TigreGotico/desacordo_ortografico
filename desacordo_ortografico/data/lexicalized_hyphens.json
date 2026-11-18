@@ -2,6 +2,7 @@
   "_about": "AO1990 Bases XV-XVII: compounds that lost their hyphen(s) because they are felt as a single lexical unit. This is lexical (not derivable from the prefix+r/s doubling rule, which is handled deterministically in rules.py). Forward (old->new) removes the hyphen; backward restores it for these lemmas.",
   "_sources": [
     "Acordo Ortografico de 1990, Bases XV, XVI, XVII",
+    "Base XVII, 2.º (hei de, hás de, há de, heis de, hão de): 'Não se emprega o hífen nas ligações da preposição de às formas monossilábicas do presente do indicativo do verbo haver: hei de, hás de, hão de, etc.'",
     "https://www.flip.pt/Acordo-Ortografico/"
   ],
   "dropped": {
@@ -13,7 +14,10 @@
     "fim-de-semana": "fim de semana",
     "cor-de-rosa": "cor-de-rosa",
     "dia-a-dia": "dia a dia",
+    "hei-de": "hei de",
+    "hás-de": "hás de",
     "há-de": "há de",
+    "heis-de": "heis de",
     "hão-de": "hão de"
   },
   "_kept_note": "'cor-de-rosa' explicitly KEEPS its hyphens under Base XV (consecrated colour locution); listed here as an identity to document the exception."
