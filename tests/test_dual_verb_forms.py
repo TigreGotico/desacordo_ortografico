@@ -32,6 +32,11 @@ def test_pre_ao1990_verb_form_drops_the_c():
     assert convert("Eu infecto a ferida.", "pt_1973", "ao1990-pt") == "Eu infeto a ferida."
 
 
+def test_pre_ao1990_verb_form_drops_the_p():
+    """VOP lemma 191891: intercetar is the pt-PT form, "variante AO : interceptar ( Brasil)"."""
+    assert convert("Eu intercepto a bola.", "pt_1973", "ao1990-pt") == "Eu interceto a bola."
+
+
 def test_singular_adjective_takes_the_bare_form():
     """VOP lemma 12090: "infeto - adjetivo ... variante AO : infecto". Both forms are pt-PT,
     so the bare form of the frequent verb reading is a valid adjective too."""
@@ -55,8 +60,31 @@ def test_adjective_plural_still_takes_the_consonant(src, text, out):
     ("Eu infeto a ferida.", "Eu infecto a ferida."),
     ("O material infeto.", "O material infecto."),
     ("Os tecidos infetos.", "Os tecidos infectos."),
+    ("Eu interceto a bola.", "Eu intercepto a bola."),
+    ("O sinal interceto.", "O sinal intercepto."),
+    ("Os sinais intercetos.", "Os sinais interceptos."),
 ])
 def test_route_out_of_ao1990_pt_restores_the_c(dst, text, out):
     """Priberam, infeto: "Grafia anterior ao Acordo Ortográfico de 1990: infecto", the
-    pre-AO1990 pt-PT form of the verb form and of the adjective."""
+    pre-AO1990 pt-PT form of the verb form and of the adjective. Priberam, interceto:
+    "Grafia anterior ao Acordo Ortográfico de 1990: intercepto"."""
     assert convert(text, "ao1990-pt", dst) == out
+
+
+@pytest.mark.parametrize("src, text", [
+    ("pt_1973", "Eu intercepto a bola."),
+    ("ao1990-pt", "Eu interceto a bola."),
+    ("br_1971", "Eu intercepto a bola."),
+])
+def test_pt_br_writes_intercepto(src, text):
+    """VOLP: "intercepto adj." and "interceptar v.", and no intercet* form."""
+    assert convert(text, src, "ao1990-br") == "Eu intercepto a bola."
+
+
+@pytest.mark.parametrize("src, text", [
+    ("pt_1973", "Eu intercepto a bola."),
+    ("ao1990-pt", "Eu interceto a bola."),
+])
+def test_br_1971_writes_intercepto(src, text):
+    """ABL, Pequeno Vocabulário Ortográfico (1943): "intercepto, adj." and "interceptar, v."."""
+    assert convert(text, src, "br_1971") == "Eu intercepto a bola."

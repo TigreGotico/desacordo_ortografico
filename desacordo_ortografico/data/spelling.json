@@ -14,7 +14,8 @@
     "Acordo Ortográfico de 1931 (Academia das Ciências de Lisboa e Academia Brasileira de Letras, 30 de Abril de 1931)",
     "Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras)",
     "Dicionário Priberam da Língua Portuguesa",
-    "Acordo Ortográfico da Língua Portuguesa de 1990"
+    "Acordo Ortográfico da Língua Portuguesa de 1990",
+    "Vocabulário Ortográfico do Português (ILTEC, Portal da Língua Portuguesa)"
   ],
   "_groups": {
     "digraphs": "ph->f, th->t, rh->r, y->i. Modern values carry the accent the 1911 systematic accentuation introduced.",
@@ -8455,7 +8456,7 @@
     {"form": "interceptáveis", "era": "pt_1973", "target": "ao1990-pt", "value": "intercetáveis", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "interceptável", "era": "pt_1973", "target": "ao1990-pt", "value": "intercetável", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "interceptivo", "era": "pt_1973", "target": "ao1990-pt", "value": "intercetivo", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
-    {"form": "intercepto", "era": "pt_1973", "target": "ao1990-pt", "value": "intercepto|interceto", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
+    {"form": "intercepto", "era": "pt_1973", "target": "ao1990-pt", "value": "interceto|intercepto", "curated": false, "source": "Vocabulário Ortográfico do Português (ILTEC, Portal da Língua Portuguesa) (lemma 191893 \"interceto - adjetivo\", Portugal, \"variante AO de : intercepto\"; lemma 5209 \"intercepto - adjetivo\", with no region)"},
     {"form": "interceptor", "era": "pt_1973", "target": "ao1990-pt", "value": "intercetor", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "interceptora", "era": "pt_1973", "target": "ao1990-pt", "value": "intercetora", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "interceptoras", "era": "pt_1973", "target": "ao1990-pt", "value": "intercetoras", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
