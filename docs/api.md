@@ -175,9 +175,11 @@ pronoun.
 
 A capitalised word takes the accent of the common word with the same letters, anywhere
 in a sentence, so names whose 1973 spelling carries an accent come back right (Árctico,
-Atlântico, Ministério Público). The city names Coimbra and Roma share their letters with
-an accented common word (coimbrã, romã), so they stay as written when capitalised:
-"Fui a Roma." stays "Fui a Roma.", and "uma roma madura" gives "uma romã madura".
+Atlântico, Ministério Público). The city names Coimbra and Roma and the given name Ester
+share their letters with an accented common word (coimbrã, romã, éster), so they stay as
+written when capitalised: "Fui a Roma." stays "Fui a Roma.", and "uma roma madura" gives
+"uma romã madura". Pre-1911 Esther gives Ester, the name that the 1943 Vocabulário lists
+beside the chemical éster.
 
 The 1911 word map writes treno for threno, the lament, so treno is a word and the guess
 leaves it as written: "o threno" gives "o treno", and a bare treno stays treno. Figueiredo
