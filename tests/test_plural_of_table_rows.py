@@ -52,6 +52,10 @@ def test_the_plural_of_a_row_goes_forward_with_its_singular(word, expected):
     ("peras", PT), ("peras", BR),
     # pelo, polo, trato: the bare form is another word, so no row gives the old form
     ("pelos", PT), ("tratos", PT), ("contratos", PT), ("retratos", PT),
+    # corretor (a broker), edital and retor (a teacher of rhetoric) are words of their own
+    # with one spelling (Priberam)
+    ("corretores", PT), ("editais", PT), ("retores", PT),
+    ("os corretores de seguros", PT),
     # no row holds the singular
     ("cadeiras", PT), ("cadeiras", BR), ("casas", PT), ("pares", PT),
 ])

@@ -78,8 +78,10 @@ def _letters(word: str) -> str:
 #: The form without the consonant of these pt-PT map rows is also a more frequent word of
 #: its own, so it never gains the consonant: contrato (a contract) beside contracto
 #: (contracted), retrato (a portrait) beside retracto (a retraction), trato (from tratar,
-#: maus tratos) beside tracto (a tract).
-_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato"})
+#: maus tratos) beside tracto (a tract). Priberam gives corretor (a broker) as its own word
+#: beside corrector (one who corrects), edital and retor (a teacher of rhetoric) with one
+#: spelling, and rector as the old form of reitor.
+_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato", "corretor", "edital", "retor"})
 
 #: The bare forms of pt-PT dual cells that are also a verb form of a verb with one pt-PT
 #: spelling (see the module docstring). The dual step leaves these forms as written. Their
