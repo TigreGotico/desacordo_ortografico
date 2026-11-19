@@ -267,6 +267,7 @@ class Lexicon:
         out = self._ao_new2old(self.ao_pt_old2new)
         for word in _CP_HOMOGRAPHS:
             out.pop(word, None)
+            out.pop(_plural(word), None)
         return out
 
     @cached_property
@@ -416,10 +417,16 @@ class Lexicon:
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent
         is also a proclitic (para, pelo: Base IX 9.o), so only the forms in
-        ``differential_restore`` get their accent back."""
+        ``differential_restore`` get their accent back, and their plurals stay (peras: Acordo
+        de 1945, Base XXII). Every other row also maps the regular plural of its new form to
+        the plural of its old form (:func:`_plural`)."""
         out = _invert(old2new)
         for bare in self.differential_dropped.values():
             out.pop(bare, None)
+        for new, old in list(out.items()):
+            plural = _plural(new), _plural(old)
+            if None not in plural:
+                out.setdefault(*plural)
         out.update(self.differential_restore)
         return out
 

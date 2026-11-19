@@ -10886,8 +10886,6 @@
     {"form": "co-direção", "era": "br_1971", "target": "ao1990-br", "value": "codireção", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-diretora", "era": "br_1971", "target": "ao1990-br", "value": "codiretora", "curated": false, "source": "Pequeno Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras, 1943) (\"co-diretor, s. m.\")"},
     {"form": "co-diretor", "era": "br_1971", "target": "ao1990-br", "value": "codiretor", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
-    {"form": "co-diretores", "era": "br_1971", "target": "ao1990-br", "value": "codiretores", "curated": false, "source": "Pequeno Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras, 1943) (\"co-diretor, s. m.\"; the plural is regular)"},
-    {"form": "co-diretoras", "era": "br_1971", "target": "ao1990-br", "value": "codiretoras", "curated": false, "source": "Pequeno Vocabulário Ortográfico da Língua Portuguesa (Academia Brasileira de Letras, 1943) (\"co-diretor, s. m.\"; the plural is regular)"},
     {"form": "co-dirigir", "era": "br_1971", "target": "ao1990-br", "value": "codirigir", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-dominância", "era": "br_1971", "target": "ao1990-br", "value": "codominância", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
     {"form": "co-dominante", "era": "br_1971", "target": "ao1990-br", "value": "codominante", "curated": false, "source": "tugalex acordo_ortografico_pt_BR.csv"},
