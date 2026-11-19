@@ -277,9 +277,10 @@ class OrthographyConverter:
                 else:
                     form = choose(w) or w
                 # the joined word is one word, and the VOLP or a dual cell decides it
-                # (co-factores -> cofactores -> cofatores, codialetos -> codialectos)
+                # (co-factores -> cofactores -> cofatores, codialetos -> codialectos, electro-acústica ->
+                # electroacústica -> eletroacústica)
                 if (solid := join(form)) != form:
-                    form = choose(solid) or solid
+                    form = choose(solid) or element(solid)
                 # a name gains no c or p from a dual: it has no more than the source wrote
                 if named[i] and sum(map(form.count, "cp")) > sum(map(written[i].lower().count, "cp")):
                     form = join(choose_for_name(w) or "-".join(choose_for_name(p) or p for p in w.split("-")))
