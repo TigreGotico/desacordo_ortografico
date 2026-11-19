@@ -11,6 +11,9 @@
 - proativo: the VOLP lists "proativo adj." and "pró-ativo adj.", so the pt-BR row keeps
   proativo. Priberam gives "Grafia anterior ao Acordo Ortográfico de 1990: proactivo", so
   the pt_1973 row proactivo -> proativo holds the pt-PT spelling before 1990.
+- phlegmão: Figueiredo 1913 has "Phlegmão, m. (V. fleimão)" and "Flegmão, m. (V. fleimão)",
+  and no entry for phlegmon, the French and English spelling. The VOP lists "flegmão - nome
+  masculino". The 1911 row is phlegmão -> flegmão.
 """
 import json
 from pathlib import Path
@@ -94,3 +97,10 @@ def test_proativo_was_proactivo_in_pt_pt():
     assert convert("proativo", "br_1971", "pt_1973") == "proactivo"
     assert convert("proativo", "ao1990-pt", "pt_1973") == "proactivo"
     assert convert("proactivo", "pt_1973", "ao1990-pt") == "proativo"
+
+
+def test_phlegmao_is_the_pre_1911_form_of_flegmao():
+    (row,) = _rows("phlegmão", "etymological")
+    assert (row["target"], row["value"]) == ("reforma_1911", "flegmão")
+    assert '"Phlegmão, m. (V. fleimão)"' in row["source"]
+    assert _rows("phlegmon", "etymological") == []

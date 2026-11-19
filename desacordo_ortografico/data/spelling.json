@@ -256,7 +256,7 @@
     {"form": "philosophico", "era": "etymological", "target": "reforma_1911", "value": "filosófico", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
     {"form": "philosopho", "era": "etymological", "target": "reforma_1911", "value": "filósofo", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
     {"form": "phlegma", "era": "etymological", "target": "reforma_1911", "value": "fleuma", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
-    {"form": "phlegmon", "era": "etymological", "target": "reforma_1911", "value": "flegmão", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
+    {"form": "phlegmão", "era": "etymological", "target": "reforma_1911", "value": "flegmão", "curated": false, "source": "Cândido de Figueiredo, Novo Diccionário da Língua Portuguesa (1913) (\"Phlegmão, m. (V. fleimão)\")"},
     {"form": "phleugma", "era": "etymological", "target": "reforma_1911", "value": "fleuma", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
     {"form": "phosphorico", "era": "etymological", "target": "reforma_1911", "value": "fosfórico", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
     {"form": "photographico", "era": "etymological", "target": "reforma_1911", "value": "fotográfico", "curated": false, "source": "tugalex archaisms.csv (ph→f)"},
