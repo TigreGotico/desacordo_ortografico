@@ -78,8 +78,10 @@ def _letters(word: str) -> str:
 #: The form without the consonant of these pt-PT map rows is also a more frequent word of
 #: its own, so it never gains the consonant: contrato (a contract) beside contracto
 #: (contracted), retrato (a portrait) beside retracto (a retraction), trato (from tratar,
-#: maus tratos) beside tracto (a tract).
-_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato"})
+#: maus tratos) beside tracto (a tract). Priberam gives corretor (a broker) as its own word
+#: beside corrector (one who corrects), edital and retor (a teacher of rhetoric) with one
+#: spelling, and rector as the old form of reitor.
+_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato", "corretor", "edital", "retor"})
 
 #: The bare forms of pt-PT dual cells that are also a verb form of a verb with one pt-PT
 #: spelling (see the module docstring). The dual step leaves these forms as written. Their
@@ -274,6 +276,7 @@ class Lexicon:
         out = self._ao_new2old(self.ao_pt_old2new)
         for word in _CP_HOMOGRAPHS:
             out.pop(word, None)
+            out.pop(_plural(word), None)
         return out
 
     @cached_property
@@ -423,10 +426,16 @@ class Lexicon:
     def _ao_new2old(self, old2new: Dict[str, str]) -> Dict[str, str]:
         """Invert an AO1990 word map. The bare form of a dropped differential accent
         is also a proclitic (para, pelo: Base IX 9.o), so only the forms in
-        ``differential_restore`` get their accent back."""
+        ``differential_restore`` get their accent back, and their plurals stay (peras: Acordo
+        de 1945, Base XXII). Every other row also maps the regular plural of its new form to
+        the plural of its old form (:func:`_plural`)."""
         out = _invert(old2new)
         for bare in self.differential_dropped.values():
             out.pop(bare, None)
+        for new, old in list(out.items()):
+            plural = _plural(new), _plural(old)
+            if None not in plural:
+                out.setdefault(*plural)
         out.update(self.differential_restore)
         return out
 

@@ -6572,6 +6572,8 @@
     {"form": "co-direcção", "era": "pt_1973", "target": "ao1990-pt", "value": "codireção", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "co-director", "era": "pt_1973", "target": "ao1990-pt", "value": "codiretor", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "co-directora", "era": "pt_1973", "target": "ao1990-pt", "value": "codiretora", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
+    {"form": "co-directores", "era": "pt_1973", "target": "ao1990-pt", "value": "codiretores", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv (regular plural of co-director)"},
+    {"form": "co-directoras", "era": "pt_1973", "target": "ao1990-pt", "value": "codiretoras", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv (regular plural of co-directora)"},
     {"form": "co-dirigir", "era": "pt_1973", "target": "ao1990-pt", "value": "codirigir", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "co-dominância", "era": "pt_1973", "target": "ao1990-pt", "value": "codominância", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},
     {"form": "co-dominante", "era": "pt_1973", "target": "ao1990-pt", "value": "codominante", "curated": false, "source": "tugalex acordo_ortografico_pt_PT.csv"},

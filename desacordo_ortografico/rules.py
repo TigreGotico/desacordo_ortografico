@@ -225,13 +225,16 @@ def names(text: str) -> List[bool]:
 
 def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
     """``table[word]``, or the plural of the table form when ``word`` is the regular
-    plural of a table word (aspetos from aspeto, receções from receção); else ``None``."""
+    plural of a table word (aspetos from aspeto, receções from receção, diretores from
+    diretor); else ``None``."""
     if word in table:
         return table[word]
     if word.endswith("ões") and word[:-3] + "ão" in table and table[word[:-3] + "ão"].endswith("ão"):
         return table[word[:-3] + "ão"][:-2] + "ões"
     if word.endswith("s") and word[:-1] in table and table[word[:-1]][-1:] in "aeo":
         return table[word[:-1]] + "s"
+    if word.endswith("es") and word[:-2] in table and table[word[:-2]].endswith(("or", "z")):
+        return table[word[:-2]] + "es"
     return None
 
 
