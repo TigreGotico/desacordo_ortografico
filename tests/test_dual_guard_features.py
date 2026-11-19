@@ -82,18 +82,20 @@ def test_the_hold_reaches_no_word_outside_a_c_p_dual(text, expected, features):
 # respetivamente, nc, nç e nt: assumpcionista e assuncionista; assumpção e assunção; [...]
 # peremptório e perentório, sumptuoso e suntuoso, sumptuosidade e suntuosidade."
 # VOLP: suntuoso (ô) adj.; f. (ó); pl. (ó) | sumptuoso (ô) adj.; f. (ó); pl. (ó)
-# Both forms are valid, so the c/p form is the one written toward pt-BR. The hold misses it:
-# `_one_more_consonant` in lexicon.py tests only for one inserted c or p and ignores the
-# m to n change of Base IV 1.º d).
+# Both forms are valid, so the c/p form is the one written toward pt-BR.
 def test_the_mpt_dual_keeps_its_p_toward_pt_br_with_all_features():
     assert convert("o sumptuoso", "pt_1973", "ao1990-br", features=FEATURES) == "o sumptuoso"
 
 
-@pytest.mark.xfail(strict=True, reason="#77: _one_more_consonant misses the m to n change of "
-                   "AO1990 Base IV 1.º d), so the hold does not reach sumptuoso")
 @pytest.mark.parametrize("features", [FEATURES - {"volp"}, BR_STEP])
 def test_the_mpt_dual_keeps_its_p_toward_pt_br_without_the_volp_feature(features):
     assert convert("o sumptuoso", "pt_1973", "ao1990-br", features=features) == "o sumptuoso"
+
+
+# VOLP: perempto adj.; no perento (desacordo's own row, data/volp_ao1990_br.json)
+@pytest.mark.parametrize("features", [FEATURES, FEATURES - {"volp"}, BR_STEP])
+def test_the_mpt_form_the_volp_lists_without_its_nt_form_keeps_its_p(features):
+    assert convert("o perempto", "pt_1973", "ao1990-br", features=features) == "o perempto"
 
 
 def test_a_row_for_one_reading_is_not_held():
@@ -109,3 +111,20 @@ def test_a_european_form_the_volp_lists_for_fewer_readings_takes_its_row():
 def test_the_1911_accent_guess_still_reads_a_held_word():
     # VOLP: eletrodo (ô) s.m. | electrodo (ô) s.m.; elétrodo s.m. | eléctrodo s.m.
     assert convert("electrodos", "etymological", "ao1990-br") == "eléctrodos"
+
+
+# Base IV 1.º d) drops the p of mpc, mpç and mpt and writes nc, nç and nt. A m to n change
+# elsewhere, or without the dropped p, is no dual: campo and cano, sumtuoso and suntuoso.
+@pytest.mark.parametrize("bare, full, expected", [
+    ("suntuoso", "sumptuoso", True),
+    ("perento", "perempto", True),
+    ("assunção", "assumpção", True),
+    ("assuncionista", "assumpcionista", True),
+    ("abstrato", "abstracto", True),
+    ("cano", "campo", False),
+    ("suntuoso", "sumtuoso", False),
+    ("suntuoso", "sumpetuoso", False),
+])
+def test_the_consonant_check_reads_the_base_iv_mp_dual_only(bare, full, expected):
+    from desacordo_ortografico.lexicon import _one_more_consonant
+    assert _one_more_consonant(bare, full) is expected

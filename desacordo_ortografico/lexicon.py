@@ -146,9 +146,16 @@ _VOLP_NO_FORM = re.compile(r"^VOLP: [^|]*; no (\S+)$")
 _VOLP_PLURAL = re.compile(r"\bpl\. [\w-]")
 
 
+#: The p that AO1990 Base IV 1.º d) drops from mpc, mpç and mpt, with the m that becomes n.
+_MP_BEFORE_C_T = re.compile(r"mp(?=[cçt])")
+
+
 def _one_more_consonant(bare: str, full: str) -> bool:
-    """True when ``full`` is ``bare`` with one c or p inserted (abstrato, abstracto)."""
-    return any(full[:i] + full[i + 1:] == bare for i, c in enumerate(full) if c in "cp")
+    """True when ``full`` is ``bare`` with one c or p inserted (abstrato, abstracto), or
+    with the p of an mpc, mpç or mpt that ``bare`` writes as nc, nç or nt (sumptuoso,
+    suntuoso)."""
+    return any(full[:i] + full[i + 1:] == bare for i, c in enumerate(full) if c in "cp") \
+        or any(full[:m.start()] + "n" + full[m.end():] == bare for m in _MP_BEFORE_C_T.finditer(full))
 
 
 #: The classes of an AO1990 word-map row, see :func:`ao_row_class`.
