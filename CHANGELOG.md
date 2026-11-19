@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.31a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.31a2) (2026-11-19)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.31a1...0.3.31a2)
+
+**Merged pull requests:**
+
+- fix: drop the mute c of an electro- compound after the AO1990 pt-PT join [\#99](https://github.com/TigreGotico/desacordo_ortografico/pull/99) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- test: pin the plural and the c/p boundary of the pt-BR dual hold [\#98](https://github.com/TigreGotico/desacordo_ortografico/pull/98) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.31a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.31a1) (2026-11-19)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.30a1...0.3.31a1)
