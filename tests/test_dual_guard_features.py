@@ -47,6 +47,8 @@ def test_a_pt_pt_dual_keeps_the_consonant_under_any_features(text, source):
     "o corrupto",  # VOLP: corruto adj. s.m. | corrupto adj. s.m.
     "a conjectura",  # VOLP: conjetura s.f. | conjectura s.f.
     "o cetro",  # VOLP: cetro s.m.; no ceptro
+    "os corruptos",  # the regular plural of the corrupto row
+    "os cetros",  # the regular plural of the cetro row
 ])
 def test_a_volp_c_p_form_stays_toward_pt_br_without_the_volp_feature(text, source):
     assert _rewritten(text, "ao1990-br", BR_STEP, source, without={"volp"}) == []
@@ -74,6 +76,14 @@ def test_a_pt_pt_bare_form_of_a_volp_dual_takes_the_consonant(features):
 ])
 def test_the_hold_reaches_no_word_outside_a_c_p_dual(text, expected, features):
     assert convert(text, "pt_1973", "ao1990-br", features=features) == expected
+
+
+# VOLP: suntuoso (ô) adj. | sumptuoso (ô) adj. Both forms are listed, but they differ by an
+# m or an n, not by a c or a p, so the hold does not reach them and the VOLP-free
+# conversion takes the bare form.
+@pytest.mark.parametrize("features", [FEATURES - {"volp"}, BR_STEP])
+def test_a_dual_that_does_not_differ_by_a_c_or_p_is_not_held(features):
+    assert convert("o sumptuoso", "pt_1973", "ao1990-br", features=features) == "o suntuoso"
 
 
 def test_a_row_for_one_reading_is_not_held():
