@@ -52,3 +52,25 @@ def test_base_xvi_examples_still_double(old, new):
 def test_one_letter_base_does_not_double():
     # no vowel follows the s, so it stays single (Base XVI 2º a examples all have one)
     assert rules.ao1990_hyphen_rs("anti-s") == "antis"
+
+
+@pytest.mark.parametrize("era", ["pt_1973", "br_1971"])
+def test_no_ao_row_joins_r_or_s_without_doubling(era):
+    # a prefix that ends in a vowel, a hyphen, then r or s and a vowel
+    checked, joins = 0, []
+    with open(_TABLE, encoding="utf-8") as f:
+        for row in json.load(f)["rows"]:
+            m = re.fullmatch(r"(\w*[aeiou])-([rs][aeiouáéíóúâêô]\w*)", row["form"])
+            if row["era"] == era and m:
+                checked += 1
+                joins += [v for v in row["value"].split("|") if v == m[1] + m[2]]
+    assert checked > 200
+    assert joins == []
+
+
+@pytest.mark.parametrize("source,target", [("pt_1973", "ao1990-pt"), ("br_1971", "ao1990-br")])
+def test_neo_republicano_doubles_the_r(source, target):
+    # The VOP (Portal da Língua Portuguesa) lists "neorrepublicano - nome masculino" (lemma
+    # 174210) and "neorrepublicano - adjetivo" (lemma 177767), and has no neorepublicano.
+    assert convert("o partido neo-republicano", source, target) == "o partido neorrepublicano"
+    assert convert("o partido neorrepublicano", target, source) == "o partido neo-republicano"
