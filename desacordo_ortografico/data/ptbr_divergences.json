@@ -1,5 +1,5 @@
 {
-  "_about": "PT vs BR spelling divergences that remain VALID under AO1990 because they reflect a real difference in pronunciation between the European and Brazilian norms. These are NOT spelling errors to be 'fixed' — both members of each pair are correct, one per norm. The library treats them as a variant-conversion layer (ao1990-pt <-> ao1990-br), never as old->new normalisation.",
+  "_about": "PT vs BR spelling divergences that remain VALID under AO1990 because they reflect a real difference in pronunciation between the European and Brazilian norms, or because the official vocabularies of the two varieties list different forms (the VOP lists para-quedismo, the ABL VOLP paraquedismo). These are NOT spelling errors to be 'fixed' — both members of each pair are correct, one per norm. The library treats them as a variant-conversion layer (ao1990-pt <-> ao1990-br), never as old->new normalisation.",
   "_sources": [
     "Acordo Ortografico de 1990, Base I (open/closed stressed vowels) and Base IV (dual consonants, see base_iv.json)",
     "https://vocabulario.acad-ciencias.pt/index.php/ortografia/nota-explicativa-do-ao90"
@@ -28,6 +28,7 @@
     {"pt": "comummente", "br": "comumente"},
     {"pt": "quotidiano", "br": "cotidiano"},
     {"pt": "indemnização", "br": "indenização"},
-    {"pt": "registo", "br": "registro"}
+    {"pt": "registo", "br": "registro"},
+    {"pt": "para-quedismo", "br": "paraquedismo", "source": "Vocabulário Ortográfico do Português, Portal da Língua Portuguesa (\"para-quedismo\", nome masculino; \"A palavra paraquedismo não se encontra no VOP\"); Vocabulário Ortográfico da Língua Portuguesa, Academia Brasileira de Letras (\"paraquedismo s.m.\")"}
   ]
 }
