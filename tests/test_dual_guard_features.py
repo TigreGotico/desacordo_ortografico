@@ -93,7 +93,7 @@ def test_the_mpt_dual_keeps_its_p_toward_pt_br_without_the_volp_feature(features
 
 
 # VOLP: perempto adj.; no perento (desacordo's own row, data/volp_ao1990_br.json)
-@pytest.mark.parametrize("features", [FEATURES, FEATURES - {"volp"}, BR_STEP])
+@pytest.mark.parametrize("features", [FEATURES, FEATURES - {"volp"}, PT_STEP, BR_STEP])
 def test_the_mpt_form_the_volp_lists_without_its_nt_form_keeps_its_p(features):
     assert convert("o perempto", "pt_1973", "ao1990-br", features=features) == "o perempto"
 
