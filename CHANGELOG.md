@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.28a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.28a1) (2026-11-19)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.26a1...0.3.28a1)
+
+**Merged pull requests:**
+
+- fix: double the r of neorrepublicano in the AO1990 rows [\#97](https://github.com/TigreGotico/desacordo_ortografico/pull/97) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: key the flegmão archaism by phlegmão, not phlegmon [\#96](https://github.com/TigreGotico/desacordo_ortografico/pull/96) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: give the 1943 forms of co-diretora and the eletricidade words at br\_1971 [\#94](https://github.com/TigreGotico/desacordo_ortografico/pull/94) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: convert paraquedismo between the pt-PT and pt-BR AO1990 forms [\#93](https://github.com/TigreGotico/desacordo_ortografico/pull/93) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.26a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.26a1) (2026-11-18)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.25a1...0.3.26a1)
