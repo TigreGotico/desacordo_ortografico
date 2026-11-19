@@ -197,7 +197,9 @@ microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loan
 (`mini-system`) keep the hyphen.
 Lexicalized compounds (`manda-chuva→mandachuva`, `pára-quedas→paraquedas`,
 `pára-quedista→paraquedista`, Base XV 1º Obs.) are lexical. For `pára-quedismo` the VOLP
-writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map.
+writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map. A conversion
+between ao1990-pt and ao1990-br changes one form into the other, as for `registo` and
+`registro`.
 Base XVII 2.º drops the hyphen between de and a monosyllabic present form of haver:
 `hei-de→hei de`, and the same for `hás-de`, `há-de`, `heis-de` and `hão-de`.
 

@@ -333,13 +333,13 @@ def test_spelling_archaisms_keep_the_hub_order_and_notes(monkeypatch, tmp_path, 
     assert set(by_form) == {r["form"] for r in _table("etymological")} - {"kermesse"}
 
 
-@pytest.mark.parametrize("name, era, withdrawn", [
-    ("AO1990_pt-PT/acordo_ortografico_pt_PT.csv", "pt_1973", ["réida", "reida"]),
-    ("AO1990_pt-BR/acordo_ortografico_pt_BR.csv", "br_1971", ["aréia", "areia"]),
+@pytest.mark.parametrize("name, rows, withdrawn", [
+    ("archaisms_pt/archaisms.csv", BASE_ARCHAISMS, ["phlegmon", "flegmão", "", "ph→f"]),
+    ("AO1990_pt-PT/acordo_ortografico_pt_PT.csv", BASE_PT_PT, ["réida", "reida"]),
+    ("AO1990_pt-BR/acordo_ortografico_pt_BR.csv", BASE_PT_BR, ["aréia", "areia"]),
 ])
-def test_spelling_drops_the_hub_line_of_a_withdrawn_form(monkeypatch, tmp_path, base, name, era, withdrawn):
+def test_spelling_drops_the_hub_line_of_a_withdrawn_form(monkeypatch, tmp_path, base, name, rows, withdrawn):
     _dry_run(monkeypatch, base, tmp_path / "without")
-    rows = BASE_PT_PT if era == "pt_1973" else BASE_PT_BR
     header, newline = HUB_FILES[name]
     _write(base / name, [header, rows[0], withdrawn, *rows[1:]], newline)
     _dry_run(monkeypatch, base, tmp_path / "with")
@@ -372,6 +372,7 @@ def test_spelling_refuses_a_hub_form_that_the_table_lacks(monkeypatch, tmp_path,
     ("symphonia", "symph→sinf"),
     ("prompto", "mp→n"),
     ("triumpho", "ph→f + m→n"),
+    ("phlegmão", "ph→f"),
 ])
 def test_spelling_archaisms_note_the_letter_changes(monkeypatch, tmp_path, base, form, notes):
     _dry_run(monkeypatch, base, tmp_path / "out")

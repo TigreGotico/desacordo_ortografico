@@ -70,13 +70,16 @@ FOREIGN_SPELLINGS = frozenset({"kermesse"})
 #: Formulário Ortográfico of 1943.
 UNSOURCED_PT_BR = frozenset({"recta-pronúncia"})
 
-#: Old forms of the Hub AO1990 files that no older norm wrote, by era. The table has no row
-#: for them, and the dry run drops their lines. The 1943 ABL vocabulary lists areia and reida
+#: Old forms of the Hub files that no older norm wrote, by era. The table has no row for
+#: them, and the dry run drops their lines. The 1943 ABL vocabulary lists areia and reida
 #: with no accent, and the VOLP and the VOP mark the ei of areia, reida and zeida neither open
 #: nor accented. No source gives aréia, réida or zéida. Brazil wrote no c in co-directora,
 #: zoelectricidade or dielectricidade: the 1943 ABL vocabulary lists "co-diretor, s. m." and
 #: "dielétrico, adj. e s. m.", and the VOLP lists zoeletricidade and dieletricidade only.
-WITHDRAWN = {"pt_1973": frozenset({"réida", "zéida"}),
+#: phlegmon is the French and English spelling: Figueiredo (1913) has "Phlegmão, m. (V.
+#: fleimão)" and no phlegmon.
+WITHDRAWN = {"etymological": frozenset({"phlegmon"}),
+             "pt_1973": frozenset({"réida", "zéida"}),
              "br_1971": frozenset({"aréia", "réida", "zéida", "co-directora", "zoelectricidade",
                                    "dielectricidade"})}
 
@@ -337,7 +340,7 @@ def archaism_rows(table: list[dict], lex: Lexicon, lines: list[list[str]]) -> li
     for r in table:
         if r["era"] == "etymological":
             cells[r["form"]][r["target"]] = r
-    listed = {line[0]: line[3] for line in lines[1:]}
+    listed = {line[0]: line[3] for line in lines[1:] if line[0] not in WITHDRAWN["etymological"]}
     missing = set(listed) - set(cells)
     if missing:
         raise ValueError(f"the spelling table lacks the pre-1911 forms {sorted(missing)}")
