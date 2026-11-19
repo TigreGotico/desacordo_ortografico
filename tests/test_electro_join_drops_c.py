@@ -4,11 +4,15 @@ The VOP (Portal da Língua Portuguesa, Vocabulário Ortográfico do Português) 
 eletroacústico, eletroíman and eletrossiderurgia without the c, and marks the form with
 the c as the Brazilian variant. Lemma 144952: "eletroacústico - adjetivo ... Singular
 eletroacústico eletroacústica; Plural eletroacústicos eletroacústicas ... variante AO:
-electroacústico (Brasil)". Lemma 113640: "eletroíman - nome masculino ... singular
-eletroíman, plural eletroímanes ... variante AO: electroíman". Lemma 48061:
+electroacústico (Brasil)". Lemma 113640: "eletroíman - nome masculino ... Portugal
+singular eletroíman plural eletroímanes ... variante AO : electroímã ( Brasil)". Lemma 48061:
 "eletrossiderurgia - nome feminino ... variante AO: electrossiderurgia (Brasil)". The VOP
 does not list electro-acústica, electro-íman or electro-siderurgia with a hyphen, so Base
 XVI joins them, and the joined word takes the VOP form.
+
+The joined word drops a c or p only as the solid word does. The VOP lists both
+multissetorial (lemma 191908, "variante AO : multissectorial") and multissectorial
+(lemma 133902), so the dual keeps the c. intacto keeps its c in pt-PT.
 """
 import pytest
 
@@ -29,3 +33,13 @@ def test_a_joined_electro_compound_drops_the_c_at_ao1990_pt(hyphenated, joined):
 def test_the_joined_form_matches_the_solid_word():
     assert convert("electro-acústica", "pt_1973", "ao1990-pt") == convert(
         "electroacústica", "pt_1973", "ao1990-pt")
+
+
+@pytest.mark.parametrize("hyphenated, joined", [
+    ("multi-sectorial", "multissectorial"),
+    ("multi-setorial", "multissectorial"),
+    ("auto-intacto", "autointacto"),
+])
+def test_a_joined_compound_keeps_a_c_the_solid_word_keeps(hyphenated, joined):
+    assert convert(hyphenated, "pt_1973", "ao1990-pt") == joined
+    assert convert(joined, "pt_1973", "ao1990-pt") == joined
