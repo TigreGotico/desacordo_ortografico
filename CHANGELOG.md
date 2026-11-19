@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.34a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.34a1) (2026-11-19)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.33a1...0.3.34a1)
+
+**Merged pull requests:**
+
+- fix: hold the mpc, mpç and mpt duals of AO1990 Base IV 1.º d\) [\#101](https://github.com/TigreGotico/desacordo_ortografico/pull/101) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
+## [0.3.33a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.33a1) (2026-11-19)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.32a1...0.3.33a1)
+
+**Merged pull requests:**
+
+- fix: read the plural of a table row on the backward passes [\#100](https://github.com/TigreGotico/desacordo_ortografico/pull/100) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.32a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.32a1) (2026-11-19)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.31a2...0.3.32a1)
