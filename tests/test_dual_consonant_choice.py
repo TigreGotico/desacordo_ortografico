@@ -54,9 +54,10 @@ PT_CELLS = [c for c in _cells(_AO_PT) if c[2] not in HOMOGRAPHS]
 BR_CELLS = sorted({(full, bare) for _old, full, bare in _cells(_AO_BR)})
 
 
-# infeto is also a form of infetar, which has one pt-PT spelling (VOP lemma 37066), so
-# infecto converts to infeto (tests/test_dual_verb_forms.py).
-VERB_FORMS = {"infeto"}
+# infeto and interceto are also forms of infetar and intercetar, which have one pt-PT
+# spelling (VOP lemmas 37066 and 191891), so infecto and intercepto convert to infeto and
+# interceto (tests/test_dual_verb_forms.py).
+VERB_FORMS = {"infeto", "interceto"}
 
 
 def test_every_pt_pt_dual_cell_takes_the_consonant_toward_pt_pt():
@@ -266,7 +267,9 @@ def test_pt_br_dual_toward_pt_pt_converts_as_on_dev():
 # then decides each word of the origin/dev output that it holds, or each element of a
 # compound. The file leaves out the
 # rows where the Brazilian form that Priberam gives differs from the origin/dev output
-# (tests/test_silent_cp_listed_words.py), and the rows of contracto and retracto toward
+# (tests/test_silent_cp_listed_words.py), the rows of interceto toward br_1971 (the 1943
+# vocabulary lists intercepto only, tests/test_dual_verb_forms.py), and the rows of
+# contracto and retracto toward
 # pt-BR: Priberam gives contrato and retrato, but these are also the words contract and
 # portrait, so no pt -> br row can hold them.
 _FIXTURE = Path(__file__).parent / "data" / "ptbr_dual_dev_outputs.tsv"
@@ -295,7 +298,7 @@ _JOINED = {("anti-séptico", "ao1990-pt", "ao1990-br"): "antisséptico"}
 
 def test_pt_pt_dual_toward_pt_br_converts_as_on_dev():
     rows = list(_dev_rows())
-    assert len(rows) == 2819
+    assert len(rows) == 2816
     wrong = [(w, s, d, out, convert(w, s, d)) for w, s, d, out in rows
              if convert(w, s, d) != _JOINED.get((w, s, d), _volp_form(out, d))]
     assert wrong == []

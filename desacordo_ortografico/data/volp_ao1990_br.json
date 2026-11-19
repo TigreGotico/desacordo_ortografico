@@ -1103,6 +1103,7 @@
   {"token": "interatuar", "european": "interactuar", "form": "interatuar", "rows": "*", "pair": "one word", "source": "VOLP: interatuar v.; no interactuar"},
   {"token": "interação", "european": "interacção", "form": "interação", "rows": "*", "pair": "one word", "source": "VOLP: interação s.f. \"ação recíproca\"; cf. inteiração; no interacção"},
   {"token": "interações", "european": "interacções", "form": "interações", "rows": "*", "pair": "one word", "source": "VOLP: interação s.f. \"ação recíproca\"; cf. inteiração; no interacção"},
+  {"token": "interceto", "european": "intercepto", "form": "intercepto", "rows": "*", "pair": "one word", "source": "VOLP: intercepto adj.; no interceto"},
   {"token": "intercetada", "european": "interceptada", "form": "interceptada", "rows": "*", "pair": "one word", "source": "VOLP: interceptado adj.; no intercetado"},
   {"token": "intercetadas", "european": "interceptadas", "form": "interceptadas", "rows": "*", "pair": "one word", "source": "VOLP: interceptado adj.; no intercetado"},
   {"token": "intercetado", "european": "interceptado", "form": "interceptado", "rows": "*", "pair": "one word", "source": "VOLP: interceptado adj.; no intercetado"},
