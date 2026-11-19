@@ -1,8 +1,20 @@
 # Changelog
 
+## [0.3.31a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.31a1) (2026-11-19)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.30a1...0.3.31a1)
+
+**Merged pull requests:**
+
+- fix: give intercepto for interceto toward the older norms [\#95](https://github.com/TigreGotico/desacordo_ortografico/pull/95) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.30a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.30a1) (2026-11-19)
 
-[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.28a1...0.3.30a1)
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.29a1...0.3.30a1)
+
+## [0.3.29a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.29a1) (2026-11-19)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.28a1...0.3.29a1)
 
 **Merged pull requests:**
 
