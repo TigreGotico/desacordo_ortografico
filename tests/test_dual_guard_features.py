@@ -47,6 +47,7 @@ def test_a_pt_pt_dual_keeps_the_consonant_under_any_features(text, source):
     "o corrupto",  # VOLP: corruto adj. s.m. | corrupto adj. s.m.
     "a conjectura",  # VOLP: conjetura s.f. | conjectura s.f.
     "o cetro",  # VOLP: cetro s.m.; no ceptro
+    "os cetros",  # the regular plural of the cetro row
 ])
 def test_a_volp_c_p_form_stays_toward_pt_br_without_the_volp_feature(text, source):
     assert _rewritten(text, "ao1990-br", BR_STEP, source, without={"volp"}) == []
@@ -74,6 +75,25 @@ def test_a_pt_pt_bare_form_of_a_volp_dual_takes_the_consonant(features):
 ])
 def test_the_hold_reaches_no_word_outside_a_c_p_dual(text, expected, features):
     assert convert(text, "pt_1973", "ao1990-br", features=features) == expected
+
+
+# AO1990 Base IV 1.º d): "Quando, nas sequências interiores mpc, mpç e mpt se eliminar o p de
+# acordo com o determinado nos parágrafos precedentes, o m passa a n, escrevendo-se,
+# respetivamente, nc, nç e nt: assumpcionista e assuncionista; assumpção e assunção; [...]
+# peremptório e perentório, sumptuoso e suntuoso, sumptuosidade e suntuosidade."
+# VOLP: suntuoso (ô) adj.; f. (ó); pl. (ó) | sumptuoso (ô) adj.; f. (ó); pl. (ó)
+# Both forms are valid, so the c/p form is the one written toward pt-BR. The hold misses it:
+# `_one_more_consonant` in lexicon.py tests only for one inserted c or p and ignores the
+# m to n change of Base IV 1.º d).
+def test_the_mpt_dual_keeps_its_p_toward_pt_br_with_all_features():
+    assert convert("o sumptuoso", "pt_1973", "ao1990-br", features=FEATURES) == "o sumptuoso"
+
+
+@pytest.mark.xfail(strict=True, reason="#77: _one_more_consonant misses the m to n change of "
+                   "AO1990 Base IV 1.º d), so the hold does not reach sumptuoso")
+@pytest.mark.parametrize("features", [FEATURES - {"volp"}, BR_STEP])
+def test_the_mpt_dual_keeps_its_p_toward_pt_br_without_the_volp_feature(features):
+    assert convert("o sumptuoso", "pt_1973", "ao1990-br", features=features) == "o sumptuoso"
 
 
 def test_a_row_for_one_reading_is_not_held():
