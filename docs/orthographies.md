@@ -99,6 +99,7 @@ and mostly deterministic. The base PT/BR differences are untouched.
   (`êle→ele, govêrno→governo, sêca→seca`): deterministic (list).
   Article 1 of Lei 5.765/1971 abolishes it on the closed e or o of a homograph, except in `pôde`.
   The list holds the words that the 1943 Formulário (14.ª) writes with it (`sôbre`, `fêz`).
+  Each part of a hyphenated word loses it too (`fêz-se→fez-se`).
 
 - Abolition of the **grave/circumflex on subtonic syllables** of derived words
   (`sòmente→somente, cafèzinho→cafezinho`): deterministic (strip the grave accent).
@@ -115,7 +116,8 @@ force from 2006 (2nd Protocol), and became mandatory in Brazil in 2016 and Portu
 in 2015.
 
 **Base IV, consonant sequences `cc, cç, ct, pc, pç, pt`**, is the hardest, irreducibly
-lexical part. It defines four sets:
+lexical part. Base IV 1.º d) treats the p of `mpc, mpç, mpt` the same way, and the m
+becomes n when the p goes (`sumptuoso`/`suntuoso`). It defines four sets:
 - **keep** (pronounced everywhere): `pacto, ficção, apto, egípcio, rapto`.
 - **drop** (mute everywhere): `acção→ação, óptimo→ótimo, director→diretor`.
 - **dual** (pronounced in one norm only, one spelling per norm):
@@ -188,7 +190,8 @@ deterministic. They run once, on the
 words of an AO1990 target, after the VOLP and the dual cells decide each element, so pt-PT
 `foto-receptores` gives pt-BR `fotorreceptores`. At `ao1990-br` the VOLP then decides the
 joined word. The VOLP writes `contra-erva` and `macro-jê` with the hyphen, so ao1990-br
-keeps them, and ao1990-pt writes `contraerva` and `macrojê`. The 1945 Acordo (Base XXIX) and the 1943
+keeps them, and ao1990-pt writes `contraerva` and `macrojê`. At `ao1990-pt` the joined word
+drops a mute c or p by the pt-PT map, as any word does (`electro-acústica→eletroacústica`). The 1945 Acordo (Base XXIX) and the 1943
 Formulário (5.º a) write the hyphen, so `pt_1973 → br_1971` keeps `co-autores` although
 the route passes through AO1990. The 1943 Formulário uses the hyphen only for the prefixes
 it lists (45, 46 5.º), so at `br_1971` an unlisted prefix joins before r or s and doubles

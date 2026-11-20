@@ -65,7 +65,9 @@ applies all of them. An unknown name raises `ValueError`.
 Toward an AO1990 target, the c/p form of a dual that the vocabulary of the target variety
 gives stays as written under every feature. Toward ao1990-br that is the form with the
 consonant of a VOLP dual in `data/volp_ao1990_br.json` (facto, contacto), and a bare form
-whose consonant form the VOLP rejects (cetro). Toward ao1990-pt it is the form with the
+whose consonant form the VOLP rejects (cetro). The p of mpc, mpç and mpt counts as such a
+consonant, because AO1990 Base IV 1.º d) writes nc, nç and nt without it: sumptuoso
+beside suntuoso stays sumptuoso. Toward ao1990-pt it is the form with the
 consonant of a dual cell of the pt-PT map (sector, carácter). So
 `convert("o sector", "etymological", "ao1990-pt", features={"ao-map-consonant"})` gives
 `'o sector'`.
@@ -101,7 +103,7 @@ Each edge of the norm graph is an ordered list of feature steps:
 | `ao-map-locution` | AO1990 map rows whose hyphens become spaces (fim-de-semana -> fim de semana) | ao1990_pt, ao1990_br |
 | `differential` | the AO1990 differential accent list (pára -> para) | ao1990_pt, ao1990_br |
 | `hyphen-lexical` | the AO1990 joined-compound list (manda-chuva -> mandachuva) | ao1990_pt, ao1990_br |
-| `silent-cp` | the regular plural of an AO1990 map word that drops a c/p (actos -> atos), and back (atos -> actos); toward ao1990-pt, each element of a compound that the map does not hold, before the prefix join (directores-gerais -> diretores-gerais) | ao1990_pt, and every conversion to ao1990-pt |
+| `silent-cp` | the regular plural of an AO1990 map word that drops a c/p (actos -> atos), and back (atos -> actos); toward ao1990-pt, each element of a compound that the map does not hold, before the prefix join (directores-gerais -> diretores-gerais), and the joined word after it (electro-acústica -> eletroacústica, and the dual multissectorial keeps its c) | ao1990_pt, and every conversion to ao1990-pt |
 | `diphthong-accent` | éi/ói in a paroxytone (jibóias -> jiboias). Oxytones (herói, rói-rói) and proparoxytones (alantóideo) keep it | ao1990_pt, ao1990_br |
 | `hiatus-accent` | ôo and êem (vôo -> voo) | ao1990_pt, ao1990_br |
 | `prefix-rs` | a listed prefix joins its second element (AO1990 Base XVI): r/s doubles (auto-regulável -> autorregulável), a different vowel joins (auto-estradas -> autoestradas), co- joins before a vowel or consonant (co-autores -> coautores); the same vowel and h keep the hyphen, except that pt-BR writes co- before h solid, without the h (co-herdeiro -> coerdeiro). A loanword (co-working), a hyphenated loanword that the vocabulary of the target variety lists (VOLP mini-system, VOP anti-apartheid, in `data/hyphen_loanwords.json`) with its English plural (mini-systems), and a second element that does not start with a letter (co-1) keep the hyphen. euro- is no prefix of the join: it is europeu reduced, and AO1990 Base XV 1 writes a compound of two adjectives with the hyphen (euro-africano stays). It runs once on the words of an AO1990 target, after the VOLP and the dual cells decide each element (pt_1973 foto-receptores -> ao1990-br fotorreceptores). A pre-1990 target keeps the hyphen, so pt_1973 <-> br_1971 keeps co-autores. At br_1971, a prefix that the 1943 Formulário does not list (46 5.º) joins before r or s and doubles it (micro-sistema -> microssistema, 22); euro-, co-, a name inside a sentence (40) and a VOLP loanword row (mini-system) keep the hyphen | every conversion to ao1990-pt, ao1990-br or br_1971 |
@@ -111,6 +113,14 @@ Each edge of the norm graph is an ordered list of feature steps:
 The AO1990 word map owns the words it holds. When the class of a word's row is off, the
 word stays as written, and the rules of that edge do not change it either. The 1911 word
 map owns its words in the same way.
+
+Backward, each AO1990 map row also maps the regular plural of its new form to the plural
+of its old form: br_1971 gets `co-diretores` from `codiretores` and `idéias` from
+`ideias`. A bare form whose differential accent comes back keeps its plural bare (`pera`
+gives `pêra`, and `peras` stays: Acordo de 1945, Base XXII).
+
+The bare form of contrato, retrato, trato, corretor, edital and retor is a word of its
+own, so it gains no consonant backward (`os corretores` stays).
 
 The 1911 word map is the pre-1911 -> 1911 rows of the spelling table
 `data/spelling.json`: the curated 1911 pairs and rows of the tugalex archaisms list. A
