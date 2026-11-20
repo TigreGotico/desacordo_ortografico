@@ -20,8 +20,8 @@ nothing else.
   lists. The same table holds the 1911 words that no rule of the 1945 or 1943 edge
   reaches (`quási` gives `quase`), and the 1911 words that the backward pass of those
   edges restores (`cena` gives `scena`). Each of these rows quotes its clause. For pt-BR,
-  `data/volp_ao1990_br.json` holds 1,801 spelling decisions, and each row cites its
-  source. 1,633 rows quote the ABL *Vocabulário Ortográfico da Língua
+  `data/volp_ao1990_br.json` holds 1,821 spelling decisions, and each row cites its
+  source. 1,653 rows quote the ABL *Vocabulário Ortográfico da Língua
   Portuguesa* (VOLP), 66 rows cite Priberam, and 102 rows record that no source decides
   the word. `data/hyphen_loanwords.json` lists the hyphenated loanwords that the VOLP
   (pt-BR) and the *Vocabulário Ortográfico do Português* (VOP, pt-PT) mark as foreign.
@@ -30,8 +30,9 @@ nothing else.
 - `benchmark/publish_hf.py --spelling` builds the Hugging Face datasets
   `TigreGotico/archaisms_pt`, `TigreGotico/AO1990_pt-PT` and `TigreGotico/AO1990_pt-BR`
   from the spelling table of the checkout. Each CSV keeps the line order of the file on
-  the Hub and takes its spellings from the table. The AO1990 files drop the line of an old
-  form that no older norm wrote (aréia, réida, zéida). `--dry-run DIR` writes each
+  the Hub and takes its spellings from the table. Each file drops the line of an old form
+  that no older norm wrote: aréia, réida and zéida, the pt-BR co-directora,
+  zoelectricidade and dielectricidade, and the pre-1911 phlegmon. `--dry-run DIR` writes each
   CSV and its dataset card to `DIR/<dataset>/` and uploads nothing. `--upload --base DIR`
   uploads a reviewed dry run. A change to the table reaches the Hub only after an upload.
   The script needs `huggingface_hub`, which the package does not install.
