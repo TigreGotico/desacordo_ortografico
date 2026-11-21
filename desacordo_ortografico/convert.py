@@ -365,6 +365,9 @@ class OrthographyConverter:
                 return lambda w: f"ao-map-{classes[w]}"
             return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
 
+        def ao_plural_row(table: Mapping[str, str]):
+            return lambda w: f"ao-map-{ao_row_class(w, table[w])}"
+
         def word_map_1911(_w: str) -> str:
             return "1911-word-map"
 
@@ -487,14 +490,15 @@ class OrthographyConverter:
             _Pass(
                 steps=[
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
-                    ("hyphen-lexical", get(lex.hyphen_dropped)),
+                    ("hyphen-lexical", get(lex.hyphen_dropped_plural)),
                     ("base-iv", get(lex.base_iv_drop)),
                     ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.ao_pt_old2new)),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
                 ],
-                table=lex.ao_pt_old2new, table_feature=ao_row(lex.ao_pt_row_class),
+                table=lex.ao_pt_old2new_plural,
+                table_feature=ao_plural_row(lex.ao_pt_old2new_plural),
             ),
             _Pass(
                 steps=[
@@ -514,12 +518,13 @@ class OrthographyConverter:
             _Pass(
                 steps=[
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
-                    ("hyphen-lexical", get(lex.hyphen_dropped)),
+                    ("hyphen-lexical", get(lex.hyphen_dropped_plural)),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
                 ],
-                table=lex.ao_br_old2new, table_feature=ao_row(lex.ao_br_row_class),
+                table=lex.ao_br_old2new_plural,
+                table_feature=ao_plural_row(lex.ao_br_old2new_plural),
             ),
             _Pass(
                 steps=[("hyphen-lexical", get(lex.hyphen_dropped_reverse))],
