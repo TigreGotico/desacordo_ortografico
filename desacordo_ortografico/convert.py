@@ -388,7 +388,7 @@ class OrthographyConverter:
                     ("1911-digraphs", rules.reform_1911_digraphs),
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
                 ],
-                table=lex.reform1911_forward, table_feature=word_map_1911,
+                table=lex.reform1911_forward, table_feature=word_map_1911, plurals=True,
                 skip=rules.is_foreign_spelling,
             ),
             _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
