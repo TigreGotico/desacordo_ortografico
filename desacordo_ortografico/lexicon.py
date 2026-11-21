@@ -262,6 +262,14 @@ class Lexicon:
         return _clean_ao_map(self._ao_cells("br_1971", "ao1990-br"))
 
     @cached_property
+    def ao_pt_old2new_plural(self) -> Dict[str, str]:
+        return _with_plurals(self.ao_pt_old2new)
+
+    @cached_property
+    def ao_br_old2new_plural(self) -> Dict[str, str]:
+        return _with_plurals(self.ao_br_old2new)
+
+    @cached_property
     def ao_pt_row_class(self) -> Dict[str, str]:
         """The :func:`ao_row_class` of each ``ao_pt_old2new`` row, keyed by old form."""
         return {old: ao_row_class(old, new) for old, new in self.ao_pt_old2new.items()}
@@ -624,8 +632,12 @@ class Lexicon:
         return {k.lower(): v.lower() for k, v in self._hyphens.get("dropped", {}).items()}
 
     @cached_property
+    def hyphen_dropped_plural(self) -> Dict[str, str]:
+        return _with_plurals(self.hyphen_dropped)
+
+    @cached_property
     def hyphen_dropped_reverse(self) -> Dict[str, str]:
-        return _invert(self.hyphen_dropped)
+        return _invert(self.hyphen_dropped_plural)
 
     @cached_property
     def hyphen_loanwords(self) -> Dict[str, Dict[str, str]]:
@@ -779,6 +791,20 @@ def _plural(word: str) -> Optional[str]:
     if word.endswith(("vel", "til")):
         return word[:-2] + "eis"
     return None
+
+
+def _with_plurals(rows: Dict[str, str]) -> Dict[str, str]:
+    """``rows`` and the plural (``_plural``) of each row that only joins a hyphenated
+    compound or drops an accent (pára-quedista -> paraquedista, pêra -> pera). A row
+    that drops a consonant is left out: a dual spelling is valid in the other variety,
+    and the dual cells decide its plural. A locution (fim de semana) is left out too."""
+    out = dict(rows)
+    for old, new in rows.items():
+        plural = _plural(old), _plural(new)
+        if (None not in plural and old != new
+                and deaccent(old).replace("-", "") == deaccent(new).replace("-", "")):
+            out.setdefault(*plural)
+    return out
 
 
 def _invert(mapping: Dict[str, str]) -> Dict[str, str]:
