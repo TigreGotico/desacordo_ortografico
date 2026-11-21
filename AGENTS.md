@@ -33,16 +33,18 @@ uv pip install --python .venv/bin/python --prerelease=allow -e '.[test]'
 .venv/bin/python -m pytest tests
 ```
 
-Use uv, never pip. The `benchmark` extra adds `matplotlib` for the plot script.
+Use uv, never pip. The `benchmark` extra adds `matplotlib` for the plot script. Each `verify` command calls `python`, so run `source .venv/bin/activate` first.
 
 ## Hard rules
 
 1. Every row of `data/spelling.json` names its edge and its source, and its `curated` flag is a boolean. A test enforces both ([data.md](docs/data.md)).
 2. Data files are JSON, and the wheel ships `data/*.json` ([data.md](docs/data.md#files-in-the-wheel)).
-3. Each rule file lists its `_sources`, and each word row of the spelling table and the VOLP table cites its source ([orthographies.md](docs/orthographies.md)).
+3. Each rule file lists its `_sources`, and each word row of the spelling table cites its source. A VOLP row with no source says so ([orthographies.md](docs/orthographies.md)).
 4. `convert()` reads the spelling table, not the tugalex lists. `tugalex` supplies the word list, and its floor is `>=2.4.9a1` in `pyproject.toml`.
 5. The package supports Python 3.11 and later.
-6. Issue #107 lists conversions of -ar verb forms that are wrong. Documentation never presents them as working ([api.md](docs/api.md#known-limits)).
+6. Mirandese, Galician and Barranquenho are flagged, never converted: `guard.py` returns a `NotPortuguese` flag for them ([quickstart.md](docs/quickstart.md)).
+7. An edge that drops a silent consonant or an accent is lossy, and its `reversible_forward` or `reversible_backward` flag says so (`convert.py`).
+8. Issue #107 lists conversions of -ar verb forms that are wrong. Documentation never presents them as working ([api.md](docs/api.md#known-limits)).
 
 ## Before you push
 

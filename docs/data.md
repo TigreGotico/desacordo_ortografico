@@ -26,7 +26,7 @@ This page lists the data files that ship in the wheel, says what each one holds,
 | `detector_nb.json` | The shipped Naive Bayes model of `detect(method="nb")`. |
 | `detector_perceptron.json` | The shipped averaged perceptron of `detect(method="perceptron")`. |
 
-`get_lexicon()` loads these files and exposes them as maps. [The API reference](api.md#lexicon) lists the maps.
+`get_lexicon()` loads these files, except the two detector models, and exposes them as maps. `ml.get_detector_model()` loads the detector models. [The API reference](api.md#lexicon) lists the maps.
 
 ## Check a row
 
