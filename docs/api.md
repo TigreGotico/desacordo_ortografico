@@ -1,5 +1,15 @@
 # API reference
 
+<!-- agent-hint
+covers: every public name of the package with its signature and default, the conversion features, and the detection markers and confidence table
+source: `desacordo_ortografico/__init__.py`, `desacordo_ortografico/convert.py:FEATURES`, `desacordo_ortografico/detect.py:_CONFIDENCE`, `desacordo_ortografico/lexicon.py`, `desacordo_ortografico/cli.py`
+generated: no
+verify: d=$(mktemp -d) && sed '/^```/d' docs/api.md > $d/a.txt && python -I -m doctest $d/a.txt
+see: `quickstart.md`, `orthographies.md`, `index.md`
+-->
+
+This page lists the public names of `desacordo_ortografico` with their signatures and defaults, and it explains each conversion feature.
+
 ## `detect(text, method="rules") -> Orthography | NotPortuguese`
 
 Classify a text. Calls the sister-language guard first, then classifies. `method` is
@@ -158,8 +168,11 @@ digraph and geminate rules of the 1911 edge leave a loanword or a foreign name a
 written. The 1911 word map still applies first:
 
 ```python
-convert("a pharmacia de Hollywood", "etymological", "pt_1973")  # 'a farmácia de Hollywood'
-convert("o whisky e o kiosque", "etymological", "pt_1973")      # 'o whisky e o quiosque'
+>>> from desacordo_ortografico import convert
+>>> convert("a pharmacia de Hollywood", "etymological", "pt_1973")
+'a farmácia de Hollywood'
+>>> convert("o whisky e o kiosque", "etymological", "pt_1973")
+'o whisky e o quiosque'
 ```
 
 These letters mark a foreign spelling:
@@ -292,5 +305,24 @@ desacordo norms
 `--stdin` reads the text from standard input. `-v` prints markers (detect) or
 warnings/alternatives (convert).
 
+## Known limits
+
+Four conversions of -ar verb forms give a wrong result, and the issue
+[#107](https://github.com/TigreGotico/desacordo_ortografico/issues/107) tracks them. The European first-person plural preterite in -ámos does not convert (`adoptámos` stays, where `adotámos` is right). The infinitives `retratar` and `coletar` convert where they must not: `retratar` gives `retractar` toward pt_1973, and `coletar` gives `colectar` toward ao1990-br. `decepcionada` gives `dececionada` toward ao1990-br, where the pt-BR norm keeps the consonant.
+
+```python
+>>> from desacordo_ortografico import convert
+>>> convert("adoptámos", "pt_1973", "ao1990-pt")
+'adoptámos'
+>>> convert("retratar", "ao1990-pt", "pt_1973")
+'retractar'
+>>> convert("coletar", "ao1990-pt", "ao1990-br")
+'colectar'
+>>> convert("decepcionada", "pt_1973", "ao1990-br")
+'dececionada'
+```
+
+The outputs above are wrong. They show what the code returns, so that a reader does not rely on them.
+
 ---
-[← Quickstart](quickstart.md) · [Home](../README.md) · [Orthographies →](orthographies.md)
+[← Quickstart](quickstart.md) · [Home](index.md) · [Orthographies →](orthographies.md)
