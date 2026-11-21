@@ -76,7 +76,7 @@ def test_the_plural_of_a_map_word_drops_the_consonant(old, new, target):
     assert convert(old, "pt_1973", target) == new
 
 
-@pytest.mark.parametrize("word", ["desactiva", "detectou"])
+@pytest.mark.parametrize("word", ["captou", "contactou"])
 def test_a_word_the_map_does_not_hold_stays_as_written(word):
     lex = get_lexicon()
     assert word not in lex.ao_pt_old2new
