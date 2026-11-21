@@ -125,8 +125,9 @@ conjugation model, cantar (Cunha & Cintra, cap. 13). So `adoptar -> adotar` give
 `adoptou -> adotou`, `projectaram -> projetaram` and `detecta -> deteta`, and the base-iv
 and silent-cp steps read the same forms. A stem in c, g or ç changes before e on both sides
 (`electrifiquei -> eletrifiquei`). A word of the modern word list stays as written
-(`retracto`, the noun, against `retractar -> retratar`). The forms of -er and -ir verbs
-(`reflectir -> refletir`) are not derived.
+(`retracto`, the noun, against `retractar -> retratar`), and so does an element of a compound
+that is listed. The verbs `coletar` and `retratar` give no forms, because `colete` and
+`retrato` are nouns. The forms of -er and -ir verbs (`reflectir -> refletir`) are not derived.
 
 The bare form of contrato, retrato, trato, corretor, edital and retor is a word of its
 own, so it gains no consonant backward (`os corretores` stays).

@@ -2,7 +2,7 @@
 
 Cunha & Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed., Lexikon 2017, cap. 13
 "Verbo": "todos os verbos regulares da 1.ª conjugação formam os seus tempos pelo modelo de
-cantar" (p. 403). So an infinitive that a table converts (adoptar -> adotar, Base IV 1º b:
+cantar" (p. 419). So an infinitive that a table converts (adoptar -> adotar, Base IV 1º b:
 "adoção, adotar") has its present, preterite, imperfect, pluperfect, future, conditional,
 subjunctive, imperative, gerund and participle converted by the same rule: the stem stays and
 the ending is the same on both sides.
@@ -57,7 +57,7 @@ def test_every_ending_of_the_model_verb(ending):
 
 
 @pytest.mark.parametrize("old, new", [
-    # ficar - fiquei (cap. 13, p. 429): both rows end in -c, so both take -qu before e
+    # ficar - fiquei (cap. 13, p. 428): both rows end in -c, so both take -qu before e
     ("electrifiquei", "eletrifiquei"),
     ("electrifique", "eletrifique"),
     ("rectifiquem", "retifiquem"),
@@ -141,6 +141,55 @@ def test_an_er_or_ir_verb_form_stays_as_written(word):
     assert convert(word, "pt_1973", PT) == word
 
 
+@pytest.mark.parametrize("src", ["ao1990-pt", "pt_1973", "br_1971"])
+@pytest.mark.parametrize("text", [
+    "Os coletes amarelos saíram à rua.",
+    "A coleta-chave do projeto.",
+])
+def test_a_noun_listed_in_its_plural_stays_toward_pt_br(src, text):
+    """coletes is the plural of colete (Priberam: "Peça de vestuário, sem mangas, que se veste
+    geralmente por cima da camisa"), a word of the list; the VOLP row coletar -> colectar gives
+    it no verb form, whole or as an element of a compound."""
+    assert convert(text, src, BR) == text
+
+
+@pytest.mark.parametrize("text", ["Puseram-lhe um colete-de-forças.", "o acupunturo-chave", "o coato-chave"])
+def test_an_element_of_a_compound_that_is_listed_stays_toward_pt_br(text):
+    assert convert(text, PT, BR) == text
+
+
+@pytest.mark.parametrize("text", [
+    "Ele vestiu o colete e saiu.",
+    "O retrato da avó está na sala.",
+    "O pintor retratou a cidade.",
+    "O filme retrata a época.",
+    "Os coletes e os retratos.",
+])
+def test_a_noun_or_the_verb_of_a_noun_does_not_gain_the_consonant_going_back(text):
+    """retrato never gains the consonant (Priberam: "Imagem de pessoa reproduzida pela pintura,
+    pelo desenho ou pela fotografia"), and no form of retratar or coletar does either."""
+    assert convert(text, PT, "pt_1973") == text
+
+
+def test_other_verb_forms_still_gain_the_consonant_going_back():
+    assert convert("Ele projeta e batiza.", PT, "pt_1973") == "Ele projecta e baptiza."
+
+
+@pytest.mark.parametrize("word, pt", [
+    ("decepcionada", "dececionada"), ("decepcionadas", "dececionadas"),
+    ("adoptados", "adotados"), ("projectada", "projetada"),
+])
+def test_a_feminine_or_plural_participle_of_a_row_verb_converts(word, pt):
+    """decepcionado is a listed word, and its feminine and plural come from the row of
+    decepcionar, not from a noun of their own."""
+    assert convert(word, "pt_1973", PT) == pt
+
+
+def test_a_held_dual_adjective_plural_keeps_its_consonant_toward_pt_br():
+    """The VOLP keeps insurreccionar with its c, so insurreccionáveis does too."""
+    assert convert("insurreccionáveis", "pt_1973", BR) == "insurreccionáveis"
+
+
 class TestLookupWithArForms:
     TABLE = {"adoptar": "adotar", "electrificar": "eletrificar", "ficar": "fiçar",
              "pedra-de-afiar": "pedra de afiar", "agir": "agir"}
@@ -164,6 +213,12 @@ class TestLookupWithArForms:
     ])
     def test_no_form(self, word):
         assert rules.lookup_with_ar_forms(word, self.TABLE) is None
+
+    @pytest.mark.parametrize("word", ["colete", "coleto", "coletes"])
+    def test_a_verb_of_a_noun_gives_no_form(self, word):
+        table = {"coletar": "colectar"}
+        assert rules.lookup_with_ar_forms(word, table) is None
+        assert rules.lookup_with_ar_forms("coletar", table) == "colectar"
 
     def test_a_word_of_the_modern_list_gives_no_form(self):
         assert rules.lookup_with_ar_forms("adoptou", self.TABLE, {"adoptou"}) is None

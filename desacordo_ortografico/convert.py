@@ -199,9 +199,6 @@ class OrthographyConverter:
         written = rules.words(text)
         named = rules.names(text) if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
         kept = [n and w.lower() in self.lex.ao_br_volp_listed for w, n in zip(written, named)]
-        if dst.id not in self._valid_verbs:
-            self._valid_verbs[dst.id] = {w: w for w in valid if w.endswith("ar")}
-        valid_verbs = self._valid_verbs[dst.id]
         # A word of the modern list (when the target is AO1990), and a word that a row of an
         # AO1990 map converts (colecta, colectas), is decided as it is: only a word that
         # neither decides gets the verb forms of a row (decepcionada, from decepcionar).
@@ -209,6 +206,9 @@ class OrthographyConverter:
         decided = [(dst.era == Era.AO1990 and w.lower() in wordset)
                    or any(rules.lookup_with_plural(w.lower(), t) is not None for t in rows)
                    for w in written]
+        if dst.id not in self._valid_verbs:
+            self._valid_verbs[dst.id] = {w: w for w in valid if w.endswith("ar")}
+        valid_verbs = self._valid_verbs[dst.id]
         held = [k or w.lower() in valid
                 or (not d and rules.lookup_with_ar_forms(w.lower(), valid_verbs) is not None)
                 for w, k, d in zip(written, kept, decided)]
@@ -270,7 +270,9 @@ class OrthographyConverter:
                     return w
                 return rules.ao1990_hyphen_rs(w, co_drops_h=br)
 
-            def choose(w: str, verbs: bool = True) -> Optional[str]:
+            def choose(w: str, verbs: Optional[bool] = None) -> Optional[str]:
+                if verbs is None:
+                    verbs = not self.lex.is_listed(w)
                 lookup = rules.lookup_with_ar_forms if verbs else lambda word, table: table.get(word)
                 return pt_words.get(w) or lookup(w, volp) or lookup(w, duals)
 
@@ -388,9 +390,8 @@ class OrthographyConverter:
         def ar_forms(table: Mapping[str, str]) -> Callable[[str], Optional[str]]:
             return lambda w: rules.lookup_with_ar_forms(w, table)
 
-        # toward a newer spelling a word of the modern list is a word of its own and stays
-        def ar_step(table: Mapping[str, str], to_newer: bool = False) -> WordFn:
-            return lambda w: rules.lookup_with_ar_forms(w, table, lex.wordset if to_newer else ()) or w
+        def ar_step(table: Mapping[str, str]) -> WordFn:
+            return lambda w: rules.lookup_with_ar_forms(w, table) or w
 
         def ao_row(to_old: Mapping[str, str]):
             return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
@@ -470,7 +471,7 @@ class OrthographyConverter:
                 ("initial-sc", rules.drop_initial_sc),
                 ("oxytone-em", rules.oxytone_em_acute),
                 ("grave-u", rules.grave_u_to_trema),
-                ("base-iv", ar_step(lex.base_iv_drop, to_newer=True)),
+                ("base-iv", ar_step(lex.base_iv_drop)),
                 ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
@@ -521,7 +522,7 @@ class OrthographyConverter:
                 steps=[
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
                     ("hyphen-lexical", get(lex.hyphen_dropped_plural)),
-                    ("base-iv", ar_step(lex.base_iv_drop, to_newer=True)),
+                    ("base-iv", ar_step(lex.base_iv_drop)),
                     ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.ao_pt_old2new, lex.wordset)),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),

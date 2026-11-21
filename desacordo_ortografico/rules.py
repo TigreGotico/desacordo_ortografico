@@ -242,15 +242,16 @@ def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
 
 #: What follows the infinitive's -ar in the first-conjugation model verb, cantar. Cunha &
 #: Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed., Lexikon 2017, cap. 13
-#: "Verbo": present canto, cantas, canta, cantamos, cantais, cantam (p. 402); preterite
-#: cantei, cantaste, cantou (p. 403), whose stem is canta- ("canta(ste)", "canta(mos)",
-#: p. 406); imperfect -ava, -avas, -ava, -ávamos, -áveis, -avam, present subjunctive -e,
-#: -es, -e, -emos, -eis, -em and imperative canta, cantai (p. 404); pluperfect -ra, -ras,
-#: -ra, -ramos, -reis, -ram and imperfect subjunctive -sse, -sses, -sse, -ssemos, -sseis,
-#: -ssem (p. 405); future subjunctive and personal infinitive -r, -res, -r, -rmos, -rdes,
+#: "Verbo": "todos os verbos regulares da 1.ª conjugação formam os seus tempos pelo modelo
+#: de cantar" (p. 419). Present canto, cantas, canta, cantamos, cantais, cantam (p. 402);
+#: preterite cantei, cantaste, cantou (p. 403), whose stem is canta- ("canta(ste)",
+#: "canta(mos)", p. 406); imperfect -ava, -avas, -ava, -ávamos, -áveis, -avam and present
+#: subjunctive -e, -es, -e, -emos, -eis, -em (p. 404); imperative canta, cantai and
+#: pluperfect -ra, -ras, -ra, -ramos, -reis, -ram (p. 405); imperfect subjunctive -sse,
+#: -sses, -sse, -ssemos, -sseis, -ssem, and future subjunctive -r, -res, -r, -rmos, -rdes,
 #: -rem (p. 406); future cantarei, cantarás, cantará, cantaremos, cantareis, cantarão and
 #: conditional cantaria, cantarias, cantaria, cantaríamos, cantaríeis, cantariam (p. 407);
-#: gerund canta-ndo and participle canta-do (p. 408).
+#: personal infinitive (pp. 407-408); gerund canta-ndo and participle canta-do (p. 408).
 _AR_ENDINGS = frozenset({
     "o", "as", "a", "amos", "ais", "am",
     "ei", "aste", "ou", "astes", "aram",
@@ -266,8 +267,14 @@ _AR_ENDINGS = frozenset({
 #: The stem of a first-conjugation verb before e and elsewhere: "os verbos da 1.ª
 #: conjugação cujos radicais terminem em -c, -ç e -g mudam tais letras, respectivamente,
 #: em -qu, -c e -gu sempre que se lhes segue um -e: ficar - fiquei, justiçar - justicei,
-#: chegar - cheguei" (Cunha & Cintra, cap. 13, p. 429).
+#: chegar - cheguei" (Cunha & Cintra, cap. 13, p. 428).
 _STEM_BEFORE_E = (("qu", "c"), ("c", "ç"), ("gu", "g"))
+#: Verbs whose forms are also a frequent noun, so the forms stay as written: colete and
+#: coleto (Priberam, colete: "Peça de vestuário, sem mangas, que se veste geralmente por
+#: cima da camisa", nome masculino) beside the verb coletar, and retrato (Priberam: "Imagem
+#: de pessoa reproduzida pela pintura, pelo desenho ou pela fotografia", nome masculino)
+#: beside retratar. The infinitive row still converts.
+_NOUN_HOMOGRAPH_VERBS = frozenset({"coletar", "retratar"})
 
 
 def lookup_with_ar_forms(word: str, table: Mapping[str, str],
@@ -280,7 +287,8 @@ def lookup_with_ar_forms(word: str, table: Mapping[str, str],
     ends in c, ç or g changes before e (:data:`_STEM_BEFORE_E`) only if both forms of the row
     end in the same letter. A word of ``wordset``, the modern word list, stays as written:
     it is a word of its own (colecta, the noun), so no row decides it. A row whose new form
-    is a locution (pedra-de-afiar -> pedra de afiar) gives no verb form.
+    is a locution (pedra-de-afiar -> pedra de afiar) gives no verb form, and neither does a
+    verb of :data:`_NOUN_HOMOGRAPH_VERBS`.
     """
     if word in table:
         return table[word]
@@ -294,8 +302,9 @@ def lookup_with_ar_forms(word: str, table: Mapping[str, str],
         if ending[0] == "e":
             spellings += [pair for pair in _STEM_BEFORE_E if stem.endswith(pair[0])]
         for before_e, base in spellings:
-            new = table.get(stem[:len(stem) - len(before_e)] + base + "ar")
-            if new is None or not new.endswith("ar") or " " in new:
+            lemma = stem[:len(stem) - len(before_e)] + base + "ar"
+            new = table.get(lemma)
+            if new is None or lemma in _NOUN_HOMOGRAPH_VERBS or not new.endswith("ar") or " " in new:
                 continue
             new_stem = new[:-2]
             if before_e:
