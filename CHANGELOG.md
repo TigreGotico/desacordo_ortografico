@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.37a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.37a1) (2026-11-21)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.36a1...0.3.37a1)
+
+**Merged pull requests:**
+
+- fix: derive the plural of a word map value in -i or -u [\#105](https://github.com/TigreGotico/desacordo_ortografico/pull/105) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.36a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.36a1) (2026-11-21)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.35a1...0.3.36a1)
