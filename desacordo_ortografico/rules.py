@@ -226,12 +226,14 @@ def names(text: str) -> List[bool]:
 def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
     """``table[word]``, or the plural of the table form when ``word`` is the regular
     plural of a table word (aspetos from aspeto, receções from receção, diretores from
-    diretor); else ``None``."""
+    diretor); else ``None``. A form in a vowel or an oral diphthong (-a, -e, -i, -o, -u, -eu,
+    -ai, -ói) takes -s: museu -> museus, papai -> papais (Cunha & Cintra, Nova Gramática do
+    Português Contemporâneo, 7.ª ed., Formação do plural)."""
     if word in table:
         return table[word]
     if word.endswith("ões") and word[:-3] + "ão" in table and table[word[:-3] + "ão"].endswith("ão"):
         return table[word[:-3] + "ão"][:-2] + "ões"
-    if word.endswith("s") and word[:-1] in table and table[word[:-1]][-1:] in "aeo":
+    if word.endswith("s") and word[:-1] in table and table[word[:-1]][-1:] in "aeiou":
         return table[word[:-1]] + "s"
     if word.endswith("es") and word[:-2] in table and table[word[:-2]].endswith(("or", "z")):
         return table[word[:-2]] + "es"
