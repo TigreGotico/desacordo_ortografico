@@ -36,9 +36,22 @@ def test_the_plural_keeps_the_case_of_the_input(word, expected):
     assert to_1911(word) == expected
 
 
-@pytest.mark.parametrize("word", ["museos", "paos", "papaes", "casas", "amigas"])
-def test_a_word_with_no_row_or_with_a_value_outside_a_e_o_stays(word):
+@pytest.mark.parametrize("word", ["casas", "amigas"])
+def test_a_word_with_no_row_stays(word):
     assert to_1911(word) == word
+
+
+def test_wagons_takes_the_plural_of_vagao():
+    # wagon -> vagão; the plural of vagão is vagões, not vagão + s
+    assert to_1911("wagons") == "vagões"
+
+
+# A value in -u or -i takes -s as well: museo -> museu gives museus, pao -> pau gives
+# paus, papae -> papai gives papais. lookup_with_plural derives no plural for these.
+@pytest.mark.xfail(strict=True, reason="no derived plural for a value in -u or -i (#81)")
+@pytest.mark.parametrize("word, expected", [("museos", "museus"), ("paos", "paus"), ("papaes", "papais")])
+def test_a_value_in_u_or_i_takes_s(word, expected):
+    assert to_1911(word) == expected
 
 
 def test_the_plural_reaches_the_later_edges():

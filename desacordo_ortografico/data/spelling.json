@@ -222,6 +222,7 @@
     {"form": "kiosque", "era": "etymological", "target": "reforma_1911", "value": "quiosque", "curated": true, "source": "Reforma Ortográfica de 1911 (Portaria de 1 de setembro de 1911), comissão de Gonçalves Viana (k_w)"},
     {"form": "kermesse", "era": "etymological", "target": "reforma_1911", "value": "quermesse", "curated": true, "source": "Reforma Ortográfica de 1911 (Portaria de 1 de setembro de 1911), comissão de Gonçalves Viana (k_w)"},
     {"form": "wagon", "era": "etymological", "target": "reforma_1911", "value": "vagão", "curated": true, "source": "Reforma Ortográfica de 1911 (Portaria de 1 de setembro de 1911), comissão de Gonçalves Viana (k_w)"},
+    {"form": "wagons", "era": "etymological", "target": "reforma_1911", "value": "vagões", "curated": true, "source": "Reforma Ortográfica de 1911 (Portaria de 1 de setembro de 1911), comissão de Gonçalves Viana (k_w)"},
     {"form": "architecto", "era": "etymological", "target": "reforma_1911", "value": "arquitecto", "curated": false, "source": "tugalex archaisms.csv (ch→qu)"},
     {"form": "architectura", "era": "etymological", "target": "reforma_1911", "value": "arquitectura", "curated": false, "source": "tugalex archaisms.csv (ch→qu)"},
     {"form": "caravella", "era": "etymological", "target": "reforma_1911", "value": "caravela", "curated": false, "source": "tugalex archaisms.csv (ll→l)"},
