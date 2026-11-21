@@ -1,5 +1,13 @@
 # The Portuguese orthographies
 
+<!-- agent-hint
+covers: the norms the library models, the rules that separate them and the official source of each rule
+source: `desacordo_ortografico/eras.py`, `desacordo_ortografico/rules.py`, `desacordo_ortografico/convert.py`, `desacordo_ortografico/data/spelling.json`
+generated: no
+verify: d=$(mktemp -d) && sed '/^```/d' docs/orthographies.md > $d/o.txt && python -I -m doctest $d/o.txt
+see: `api.md`, `quickstart.md`, `index.md`
+-->
+
 A reference for the norms this library models, the rules that separate them, and the
 official sources. The central fact: Portuguese orthography is a **(variant × era)
 matrix**. From 1911 to the late 2000s two official standards ran in parallel: a
@@ -8,6 +16,26 @@ European/PALOP line and a Brazilian line. AO1990 still permits divergent forms.
 ```
 European / PALOP:  etymological → 1911 → 1945 → 1973 → AO1990 (PT)
 Brazilian:         etymological → 1911 → 1943 → 1971 → AO1990 (BR)
+```
+
+One conversion per edge shows the range:
+
+```python
+>>> from desacordo_ortografico import convert
+>>> convert("pharmacia", "etymological", "reforma_1911")
+'farmácia'
+>>> convert("Tambêm êle quási sabia", "reforma_1911", "pt_1945")
+'Também ele quase sabia'
+>>> convert("Tambêm êle quási sabia", "reforma_1911", "br_1943")
+'Também êle quase sabia'
+>>> convert("êle sôbre", "br_1943", "br_1971")
+'ele sobre'
+>>> convert("a acção do director", "pt_1973", "ao1990-pt")
+'a ação do diretor'
+>>> convert("a freqüência da idéia", "br_1971", "ao1990-br")
+'a frequência da ideia'
+>>> convert("o facto", "ao1990-pt", "ao1990-br")
+'o facto'
 ```
 
 Each transform is flagged **deterministic** (a clean, reversible regex) or **lexical**
@@ -221,12 +249,12 @@ Sources: [Base IV, das sequências consonânticas (FLiP)](https://www.flip.pt/Ac
 These are recognized in the Iberian/Lusophone space but are **not** Portuguese
 orthographies. The library flags them (`NotPortuguese`) instead of mangling them.
 
-- **Mirandese** (`mwl`) — an Astur-Leonese language, co-official in the Terra de
+- **Mirandese** (`mwl`), an Astur-Leonese language, co-official in the Terra de
   Miranda (Lei 7/99). Markers: word-initial `lh-`, the article `l/ls`, `you`, `bós`.
-- **Galician** (`gl`) — the closest relative of Portuguese. The standard (RAG/ILG)
+- **Galician** (`gl`), the closest relative of Portuguese. The standard (RAG/ILG)
   uses `ñ, ll`, and the reintegrationist standard uses near-Portuguese spelling
   (`-çom, nom, umha`).
-- **Barranquenho** — a Portuguese-Spanish contact variety of Barrancos, recognized and
+- **Barranquenho**, a Portuguese-Spanish contact variety of Barrancos, recognized and
   protected as intangible cultural heritage by **Lei 97/2021** (not co-official). Its
   orthography (Univ. de Évora and CM Barrancos, June 2025) is a **draft in public
   consultation**, not a legally adopted norm, so it is flag-only. Markers: the
@@ -238,4 +266,4 @@ Lei 7/99 · [Língua mirandesa (Wikipedia)](https://pt.wikipedia.org/wiki/L%C3%A
 [Reintegrationism (Wikipedia)](https://en.wikipedia.org/wiki/Reintegrationism)
 
 ---
-[← API reference](api.md) · [Home](../README.md)
+[← API reference](api.md) · [Home](index.md) · [Data files →](data.md)
