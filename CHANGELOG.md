@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.35a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.35a1) (2026-11-21)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.34a2...0.3.35a1)
+
+**Merged pull requests:**
+
+- fix: join the plural of a compound that AO1990 joins [\#103](https://github.com/TigreGotico/desacordo_ortografico/pull/103) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.34a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.34a2) (2026-11-20)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.34a1...0.3.34a2)
