@@ -360,9 +360,7 @@ class OrthographyConverter:
         def get(table: Mapping[str, str]) -> WordFn:
             return lambda w: table.get(w, w)
 
-        def ao_row(classes: Mapping[str, str], to_old: Optional[Mapping[str, str]] = None):
-            if to_old is None:
-                return lambda w: f"ao-map-{classes[w]}"
+        def ao_row(to_old: Mapping[str, str]):
             return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
 
         def ao_plural_row(table: Mapping[str, str]):
@@ -507,7 +505,7 @@ class OrthographyConverter:
                     ("silent-cp", lambda w: rules.restore_silent_cp(w, lex.ao_pt_new2old)),
                 ],
                 table=lex.ao_pt_new2old,
-                table_feature=ao_row(lex.ao_pt_row_class, lex.ao_pt_new2old),
+                table_feature=ao_row(lex.ao_pt_new2old),
             ),
             reversible_backward=False,
             note="dropped accents/consonants are restored from a lexicon, not a rule",
@@ -529,7 +527,7 @@ class OrthographyConverter:
             _Pass(
                 steps=[("hyphen-lexical", get(lex.hyphen_dropped_reverse))],
                 table=lex.ao_br_new2old,
-                table_feature=ao_row(lex.ao_br_row_class, lex.ao_br_new2old),
+                table_feature=ao_row(lex.ao_br_new2old),
             ),
             reversible_backward=False,
             note="dropped accents/trema are restored from a lexicon, not a rule",

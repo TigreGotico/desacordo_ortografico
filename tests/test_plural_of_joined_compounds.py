@@ -8,6 +8,7 @@ plural -s of a word in -a, so mandachuva gives mandachuvas and paraquedista give
 import pytest
 
 from desacordo_ortografico import convert
+from desacordo_ortografico.lexicon import _with_plurals
 
 PT = ("pt_1973", "ao1990-pt")
 BR = ("br_1971", "ao1990-br")
@@ -55,6 +56,12 @@ def test_a_plural_follows_the_row_of_its_singular_per_variety():
     assert convert("pára-quedismos", *BR) == "paraquedismos"
 
 
-def test_a_plural_row_that_drops_a_consonant_is_left_to_the_dual_cells():
+def test_foto_receptores_keeps_its_p_toward_pt_br():
     # foto-receptor drops the p toward pt-PT only; the VOLP keeps it in pt-BR
     assert convert("foto-receptores", "pt_1973", "ao1990-br") == "fotorreceptores"
+
+
+def test_only_a_row_that_joins_or_drops_an_accent_gets_a_plural_row():
+    rows = {"manda-chuva": "mandachuva", "pêra": "pera", "recta": "reta",
+            "fim-de-semana": "fim de semana"}
+    assert _with_plurals(rows) == {**rows, "manda-chuvas": "mandachuvas", "pêras": "peras"}

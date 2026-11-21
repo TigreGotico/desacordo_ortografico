@@ -794,16 +794,16 @@ def _plural(word: str) -> Optional[str]:
 
 
 def _with_plurals(rows: Dict[str, str]) -> Dict[str, str]:
-    """``rows`` and the plural -s of each row that only joins a hyphenated compound or drops
-    an accent (pára-quedista -> paraquedista, pêra -> pera). A row that drops a consonant
-    is left out: a dual spelling is valid in the other variety, and the dual cells decide
-    its plural. A locution (fim de semana) has no plural in -s."""
+    """``rows`` and the plural (``_plural``) of each row that only joins a hyphenated
+    compound or drops an accent (pára-quedista -> paraquedista, pêra -> pera). A row
+    that drops a consonant is left out: a dual spelling is valid in the other variety,
+    and the dual cells decide its plural. A locution (fim de semana) is left out too."""
     out = dict(rows)
     for old, new in rows.items():
-        if (new[-1:] in ("a", "e", "o") and not new.endswith("ão") and old[-1:] in ("a", "e", "o")
-                and old != new
+        plural = _plural(old), _plural(new)
+        if (None not in plural and old != new
                 and deaccent(old).replace("-", "") == deaccent(new).replace("-", "")):
-            out.setdefault(old + "s", new + "s")
+            out.setdefault(*plural)
     return out
 
 
