@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.38a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.38a2) (2026-11-21)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.38a1...0.3.38a2)
+
+**Merged pull requests:**
+
+- docs: README, docs index, navigation and agent hints [\#108](https://github.com/TigreGotico/desacordo_ortografico/pull/108) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.38a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.38a1) (2026-11-21)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.37a1...0.3.38a1)
