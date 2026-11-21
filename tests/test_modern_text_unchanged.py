@@ -24,13 +24,6 @@ BR_GROUP = frozenset({"1911-word-map", "base-iv", "initial-sc", "ptbr-divergence
                       "hyphen-lexical"})
 
 
-# Row p12-064 writes "decepcionou" in its pt_1973 and ao1990-pt cells, but AO1990 pt-PT
-# writes dececionou: VOP lemma 54366 "decepcionar - verbo ... Brasil ... variante AO de :
-# dececionar ( Portugal)", lemma 191820 "dececionar - verbo ... Portugal", conjugated
-# "dececionou". The cell is not modern pt-PT text, so the row stays out of the selection.
-NOT_AO1990_PT = {"p12-064"}
-
-
 def _unchanged_cells(old, new):
     """(row id, cell) of each distinct silver cell that ``old`` and ``new`` write alike."""
     path = Path(__file__).parent.parent / "benchmark" / "silver_corpus.jsonl"
@@ -38,7 +31,7 @@ def _unchanged_cells(old, new):
     for line in path.open(encoding="utf-8"):
         row = json.loads(line)
         cells = row["cells"]
-        if cells[old] == cells[new] and not (new == "ao1990-pt" and row["id"] in NOT_AO1990_PT):
+        if cells[old] == cells[new]:
             seen.setdefault(cells[new], row["id"])
     return [(row_id, cell) for cell, row_id in seen.items()]
 
@@ -63,7 +56,6 @@ def test_silver_selection_counts():
     assert (len(PT_CELLS), len(BR_CELLS)) == (758, 788)
 
 
-@pytest.mark.xfail(strict=True, reason="desacordo#74")
 @pytest.mark.parametrize("source, features", [("pt_1973", None), ("etymological", PT_GROUP)])
 def test_pt_routes_write_dececionou(source, features):
     text = "O ténue crescimento decepcionou os economistas."
