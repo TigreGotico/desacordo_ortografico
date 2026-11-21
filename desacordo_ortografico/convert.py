@@ -69,21 +69,28 @@ class _Pass:
     feature ``table_feature(word)`` is enabled, and stays as written otherwise. Every
     other word runs through ``steps`` in order, each step only when its feature is
     enabled. With ``plurals`` the table also owns the regular plural of each word it
-    holds. A word for which ``skip`` is true runs no step.
+    holds. ``verbs`` gives the new form of a regular form of an -ar verb that the table
+    holds, and ``verb_feature(word, form)`` the feature of that row. A word for which
+    ``skip`` is true runs no step. A word that is ``decided`` as written gets no verb form
+    from ``verbs``.
     """
 
     steps: List[Tuple[str, WordFn]] = field(default_factory=list)
     table: Optional[Mapping[str, str]] = None
     table_feature: Optional[Callable[[str], str]] = None
     plurals: bool = False
+    verbs: Optional[Callable[[str], Optional[str]]] = None
+    verb_feature: Optional[Callable[[str, str], str]] = None
     skip: Optional[Callable[[str], bool]] = None
 
-    def apply(self, word: str, enabled: FrozenSet[str]) -> str:
+    def apply(self, word: str, enabled: FrozenSet[str], decided: bool = False) -> str:
         if self.table is not None:
             form = (rules.lookup_with_plural(word, self.table) if self.plurals
                     else self.table.get(word))
             if form is not None:
                 return form if self.table_feature(word) in enabled else word
+            if self.verbs is not None and not decided and (form := self.verbs(word)) is not None:
+                return form if self.verb_feature(word, form) in enabled else word
         if self.skip is not None and self.skip(word):
             return word
         for feature, fn in self.steps:
@@ -124,6 +131,7 @@ class OrthographyConverter:
     def __init__(self, lexicon: Optional[Lexicon] = None) -> None:
         self.lex = lexicon or get_lexicon()
         self._edges = self._build_edges()
+        self._valid_verbs: Dict[str, Dict[str, str]] = {}
 
     # -------------------------------------------------------------- public API
     def convert(
@@ -185,12 +193,25 @@ class OrthographyConverter:
         # an edge before the VOLP step can change it (pt_1973 receptores -> ao1990-pt
         # recetores, which the VOLP rejects). For each word of ``out``, ``written`` holds
         # the word of the source that it comes from.
+        wordset = self.lex.wordset
         valid = (self.lex.ao_br_volp_held if dst.id == "ao1990-br"
                  else self.lex.ao_pt_dual_forms if dst.id == "ao1990-pt" else frozenset())
         written = rules.words(text)
         named = rules.names(text) if dst.id == "ao1990-br" and "volp" in enabled else [False] * len(written)
         kept = [n and w.lower() in self.lex.ao_br_volp_listed for w, n in zip(written, named)]
-        held = [k or w.lower() in valid for w, k in zip(written, kept)]
+        # A word of the modern list (when the target is AO1990), and a word that a row of an
+        # AO1990 map converts (colecta, colectas), is decided as it is: only a word that
+        # neither decides gets the verb forms of a row (decepcionada, from decepcionar).
+        rows = (self.lex.ao_pt_old2new, self.lex.ao_br_old2new)
+        decided = [(dst.era == Era.AO1990 and w.lower() in wordset)
+                   or any(rules.lookup_with_plural(w.lower(), t) is not None for t in rows)
+                   for w in written]
+        if dst.id not in self._valid_verbs:
+            self._valid_verbs[dst.id] = {w: w for w in valid if w.endswith("ar")}
+        valid_verbs = self._valid_verbs[dst.id]
+        held = [k or w.lower() in valid
+                or (not d and rules.lookup_with_ar_forms(w.lower(), valid_verbs) is not None)
+                for w, k, d in zip(written, kept, decided)]
         out = text
         for edge_name, _frm, forward in steps:
             edge = self._edges[edge_name]
@@ -202,8 +223,10 @@ class OrthographyConverter:
             tags = rules.align_tags(rules.words(out), pos_tags or []) if guess else []
             own = pt_words if edge_name == "ptbr_divergence" else {}
             out, sources = rules.map_words(
-                out, lambda i, w, p=step_pass, k=own: None if held[i] else k.get(w) or p.apply(w, enabled), is_word)
-            written, held, named, kept = ([x[i] for i in sources] for x in (written, held, named, kept))
+                out, lambda i, w, p=step_pass, k=own: None if held[i] else k.get(w) or p.apply(
+                    w, enabled, decided[i]), is_word)
+            written, held, named, kept, decided = (
+                [x[i] for i in sources] for x in (written, held, named, kept, decided))
             if guess:
                 variety = "br" if dst.variant == Variant.BR else "pt"
                 out = rules.guess_accents(out, self.lex.accent_restore, self.lex.accent_restore_nominal,
@@ -247,16 +270,20 @@ class OrthographyConverter:
                     return w
                 return rules.ao1990_hyphen_rs(w, co_drops_h=br)
 
-            def choose(w: str) -> Optional[str]:
-                return pt_words.get(w) or volp.get(w) or duals.get(w)
+            def choose(w: str, verbs: Optional[bool] = None) -> Optional[str]:
+                if verbs is None:
+                    verbs = not self.lex.is_listed(w)
+                lookup = rules.lookup_with_ar_forms if verbs else lambda word, table: table.get(word)
+                return pt_words.get(w) or lookup(w, volp) or lookup(w, duals)
 
             # each element of a compound drops its mute c or p as a word does, by the pt-PT
             # map (co-directores -> co-diretores) or by the VOLP (peixe-eléctricos ->
             # peixe-elétricos)
             def drop(w: str) -> str:
                 if br:
-                    return rules.drop_silent_cp(w, volp) if volp else w
-                return rules.drop_silent_cp(w, self.lex.ao_pt_old2new) if "silent-cp" in enabled else w
+                    return rules.drop_silent_cp(w, volp, wordset) if volp else w
+                return (rules.drop_silent_cp(w, self.lex.ao_pt_old2new, wordset)
+                        if "silent-cp" in enabled else w)
 
             def element(w: str) -> str:
                 return choose(drop(w)) or drop(w)
@@ -275,7 +302,7 @@ class OrthographyConverter:
                     form = choose(w) or choose(whole) or (
                         whole if whole != w else "-".join(map(element, w.split("-"))))
                 else:
-                    form = choose(w) or w
+                    form = choose(w, not decided[i]) or w
                 # the joined word is one word, and the VOLP or a dual cell decides it
                 # (co-factores -> cofactores -> cofatores, codialetos -> codialectos, electro-acústica ->
                 # electroacústica -> eletroacústica)
@@ -360,6 +387,12 @@ class OrthographyConverter:
         def get(table: Mapping[str, str]) -> WordFn:
             return lambda w: table.get(w, w)
 
+        def ar_forms(table: Mapping[str, str]) -> Callable[[str], Optional[str]]:
+            return lambda w: rules.lookup_with_ar_forms(w, table)
+
+        def ar_step(table: Mapping[str, str]) -> WordFn:
+            return lambda w: rules.lookup_with_ar_forms(w, table) or w
+
         def ao_row(to_old: Mapping[str, str]):
             return lambda w: f"ao-map-{ao_row_class(to_old[w], w)}"
 
@@ -438,13 +471,13 @@ class OrthographyConverter:
                 ("initial-sc", rules.drop_initial_sc),
                 ("oxytone-em", rules.oxytone_em_acute),
                 ("grave-u", rules.grave_u_to_trema),
-                ("base-iv", get(lex.base_iv_drop)),
+                ("base-iv", ar_step(lex.base_iv_drop)),
                 ("ptbr-divergence", get(lex.divergence_pt2br)),  # connosco->conosco
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
             _Pass(steps=[
                 ("ptbr-divergence", ptbr_before_ao1990),
-                ("base-iv", get(lex.base_iv_drop_reverse)),
+                ("base-iv", ar_step(lex.base_iv_drop_reverse)),
                 ("nasal-vowel", rules.nasal_vowel_to_pt),
             ], table=lex.reform1911_from_1943, table_feature=post_1911_word_map),
             reversible_backward=False,
@@ -489,23 +522,27 @@ class OrthographyConverter:
                 steps=[
                     ("differential", lambda w: rules.drop_differential(w, lex.differential_dropped)),
                     ("hyphen-lexical", get(lex.hyphen_dropped_plural)),
-                    ("base-iv", get(lex.base_iv_drop)),
-                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.ao_pt_old2new)),
+                    ("base-iv", ar_step(lex.base_iv_drop)),
+                    ("silent-cp", lambda w: rules.drop_silent_cp(w, lex.ao_pt_old2new, lex.wordset)),
                     ("trema", rules.ao1990_drop_trema),
                     ("diphthong-accent", rules.ao1990_drop_diphthong_accent),
                     ("hiatus-accent", rules.ao1990_drop_hiatus_accent),
                 ],
                 table=lex.ao_pt_old2new_plural,
                 table_feature=ao_plural_row(lex.ao_pt_old2new_plural),
+                verbs=ar_forms(lex.ao_pt_old2new),
+                verb_feature=lambda old, new: f"ao-map-{ao_row_class(old, new)}",
             ),
             _Pass(
                 steps=[
                     ("hyphen-lexical", get(lex.hyphen_dropped_reverse)),
-                    ("base-iv", get(lex.base_iv_drop_reverse)),
+                    ("base-iv", ar_step(lex.base_iv_drop_reverse)),
                     ("silent-cp", lambda w: rules.restore_silent_cp(w, lex.ao_pt_new2old)),
                 ],
                 table=lex.ao_pt_new2old,
                 table_feature=ao_row(lex.ao_pt_new2old),
+                verbs=ar_forms(lex.ao_pt_new2old),
+                verb_feature=lambda new, old: f"ao-map-{ao_row_class(old, new)}",
             ),
             reversible_backward=False,
             note="dropped accents/consonants are restored from a lexicon, not a rule",
@@ -523,11 +560,15 @@ class OrthographyConverter:
                 ],
                 table=lex.ao_br_old2new_plural,
                 table_feature=ao_plural_row(lex.ao_br_old2new_plural),
+                verbs=ar_forms(lex.ao_br_old2new),
+                verb_feature=lambda old, new: f"ao-map-{ao_row_class(old, new)}",
             ),
             _Pass(
                 steps=[("hyphen-lexical", get(lex.hyphen_dropped_reverse))],
                 table=lex.ao_br_new2old,
                 table_feature=ao_row(lex.ao_br_new2old),
+                verbs=ar_forms(lex.ao_br_new2old),
+                verb_feature=lambda new, old: f"ao-map-{ao_row_class(old, new)}",
             ),
             reversible_backward=False,
             note="dropped accents/trema are restored from a lexicon, not a rule",
@@ -536,9 +577,11 @@ class OrthographyConverter:
         # -- AO1990 PT <-> AO1990 BR (lateral divergence) --------------------
         ptbr = _Edge(
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_br)],
-                  table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True),
+                  table=lex.divergence_pt2br, table_feature=ptbr_divergence, plurals=True,
+                  verbs=ar_forms(lex.divergence_pt2br), verb_feature=lambda _w, _form: "ptbr-divergence"),
             _Pass(steps=[("nasal-vowel", rules.nasal_vowel_to_pt)],
-                  table=lex.divergence_br2pt, table_feature=ptbr_divergence, plurals=True),
+                  table=lex.divergence_br2pt, table_feature=ptbr_divergence, plurals=True,
+                  verbs=ar_forms(lex.divergence_br2pt), verb_feature=lambda _w, _form: "ptbr-divergence"),
         )
 
         return {

@@ -240,6 +240,81 @@ def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
     return None
 
 
+#: What follows the infinitive's -ar in the first-conjugation model verb, cantar. Cunha &
+#: Cintra, *Nova Gramática do Português Contemporâneo*, 7.ª ed., Lexikon 2017, cap. 13
+#: "Verbo": "todos os verbos regulares da 1.ª conjugação formam os seus tempos pelo modelo
+#: de cantar" (p. 419). Present canto, cantas, canta, cantamos, cantais, cantam (p. 402);
+#: preterite cantei, cantaste, cantou (p. 403), whose stem is canta- ("canta(ste)",
+#: "canta(mos)", p. 406); imperfect -ava, -avas, -ava, -ávamos, -áveis, -avam and present
+#: subjunctive -e, -es, -e, -emos, -eis, -em (p. 404); imperative canta, cantai and
+#: pluperfect -ra, -ras, -ra, -ramos, -reis, -ram (p. 405); imperfect subjunctive -sse,
+#: -sses, -sse, -ssemos, -sseis, -ssem, and future subjunctive -r, -res, -r, -rmos, -rdes,
+#: -rem (p. 406); future cantarei, cantarás, cantará, cantaremos, cantareis, cantarão and
+#: conditional cantaria, cantarias, cantaria, cantaríamos, cantaríeis, cantariam (p. 407);
+#: personal infinitive (pp. 407-408); gerund canta-ndo and participle canta-do (p. 408).
+_AR_ENDINGS = frozenset({
+    "o", "as", "a", "amos", "ais", "am",
+    "ei", "aste", "ou", "astes", "aram",
+    "ava", "avas", "ávamos", "áveis", "avam",
+    "ara", "aras", "áramos", "áreis",
+    "arei", "arás", "ará", "aremos", "areis", "arão",
+    "aria", "arias", "aríamos", "aríeis", "ariam",
+    "e", "es", "emos", "eis", "em",
+    "asse", "asses", "ássemos", "ásseis", "assem",
+    "ares", "armos", "ardes", "arem",
+    "ai", "ando", "ado", "ada", "ados", "adas",
+})
+#: The stem of a first-conjugation verb before e and elsewhere: "os verbos da 1.ª
+#: conjugação cujos radicais terminem em -c, -ç e -g mudam tais letras, respectivamente,
+#: em -qu, -c e -gu sempre que se lhes segue um -e: ficar - fiquei, justiçar - justicei,
+#: chegar - cheguei" (Cunha & Cintra, cap. 13, p. 428).
+_STEM_BEFORE_E = (("qu", "c"), ("c", "ç"), ("gu", "g"))
+#: Verbs whose forms are also a frequent noun, so the forms stay as written: colete and
+#: coleto (Priberam, colete: "Peça de vestuário, sem mangas, que se veste geralmente por
+#: cima da camisa", nome masculino) beside the verb coletar, and retrato (Priberam: "Imagem
+#: de pessoa reproduzida pela pintura, pelo desenho ou pela fotografia", nome masculino)
+#: beside retratar. The infinitive row still converts.
+_NOUN_HOMOGRAPH_VERBS = frozenset({"coletar", "retratar"})
+
+
+def lookup_with_ar_forms(word: str, table: Mapping[str, str],
+                         wordset: Collection[str] = frozenset()) -> Optional[str]:
+    """``table[word]``, or the regular form of an -ar verb that a table row lists, with
+    the same ending on the old and the new form (adoptou from adoptar -> adotar, projectaram,
+    decepciona); else ``None``. The endings are those of the model verb in :data:`_AR_ENDINGS`.
+
+    The stem stays as the row writes it, so the change of the row carries over. A stem that
+    ends in c, ç or g changes before e (:data:`_STEM_BEFORE_E`) only if both forms of the row
+    end in the same letter. A word of ``wordset``, the modern word list, stays as written:
+    it is a word of its own (colecta, the noun), so no row decides it. A row whose new form
+    is a locution (pedra-de-afiar -> pedra de afiar) gives no verb form, and neither does a
+    verb of :data:`_NOUN_HOMOGRAPH_VERBS`.
+    """
+    if word in table:
+        return table[word]
+    if word in wordset:
+        return None
+    for ending in _AR_ENDINGS:
+        if not word.endswith(ending):
+            continue
+        stem = word[:-len(ending)]
+        spellings = [("", "")]
+        if ending[0] == "e":
+            spellings += [pair for pair in _STEM_BEFORE_E if stem.endswith(pair[0])]
+        for before_e, base in spellings:
+            lemma = stem[:len(stem) - len(before_e)] + base + "ar"
+            new = table.get(lemma)
+            if new is None or lemma in _NOUN_HOMOGRAPH_VERBS or not new.endswith("ar") or " " in new:
+                continue
+            new_stem = new[:-2]
+            if before_e:
+                if not new_stem.endswith(base):
+                    continue
+                new_stem = new_stem[:len(new_stem) - len(base)] + before_e
+            return new_stem + ending
+    return None
+
+
 def words(text: str) -> List[str]:
     """Return the list of word tokens in ``text`` (original case)."""
     return _WORD_RE.findall(text)
@@ -341,9 +416,10 @@ def reform_1911_geminates(word: str, wordset=None) -> str:
 _CP_DROP = [("cc", "c"), ("cç", "ç"), ("ct", "t"), ("pc", "c"), ("pç", "ç"), ("pt", "t")]
 
 
-def drop_silent_cp(word: str, table: Mapping[str, str]) -> str:
+def drop_silent_cp(word: str, table: Mapping[str, str], wordset: Collection[str] = frozenset()) -> str:
     """Drop a silent c/p from a Base IV 1º sequence (AO1990, European), for the regular
-    plural of a word the AO1990 map ``table`` lists (actos -> atos).
+    plural of a word the AO1990 map ``table`` lists (actos -> atos) and the regular forms
+    of an -ar verb that it lists (:func:`lookup_with_ar_forms`: adoptou -> adotou).
 
     Whether the consonant is silent is a fact about each word: Base IV 1º a keeps it
     where the cultivated pronunciation says it (apto, rapto) and 1º b drops it where it
@@ -352,13 +428,18 @@ def drop_silent_cp(word: str, table: Mapping[str, str]) -> str:
     word (apta -> ata, copta -> cota). One-way.
     """
     form = lookup_with_plural(word, table)
+    if form is None:
+        form = lookup_with_ar_forms(word, table, wordset)
     return form if form is not None and _drops_cp(word, form) else word
 
 
 def restore_silent_cp(word: str, table: Mapping[str, str]) -> str:
     """The inverse of :func:`drop_silent_cp`, for the regular plural of a word the
-    reverse AO1990 map ``table`` lists (atos -> actos). One-way."""
+    reverse AO1990 map ``table`` lists (atos -> actos) and the regular forms of an -ar
+    verb that it lists (adotou -> adoptou). One-way."""
     form = lookup_with_plural(word, table)
+    if form is None:
+        form = lookup_with_ar_forms(word, table)
     return form if form is not None and _drops_cp(form, word) else word
 
 
