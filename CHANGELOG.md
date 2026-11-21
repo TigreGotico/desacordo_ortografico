@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.36a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.36a1) (2026-11-21)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.35a1...0.3.36a1)
+
+**Merged pull requests:**
+
+- fix: read the plural of a row in the forward 1911 word map [\#104](https://github.com/TigreGotico/desacordo_ortografico/pull/104) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.35a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.35a1) (2026-11-21)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.34a2...0.3.35a1)
