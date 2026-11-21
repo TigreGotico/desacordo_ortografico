@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.38a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.38a1) (2026-11-21)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.37a1...0.3.38a1)
+
+**Merged pull requests:**
+
+- fix: convert the regular forms of an -ar verb like its infinitive [\#106](https://github.com/TigreGotico/desacordo_ortografico/pull/106) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.37a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.37a1) (2026-11-21)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.36a1...0.3.37a1)
