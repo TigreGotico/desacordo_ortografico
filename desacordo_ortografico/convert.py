@@ -355,14 +355,7 @@ class OrthographyConverter:
                 forms = [low, lex.divergence_pt2br[low]]
             elif low in lex.divergence_br2pt:
                 forms = [lex.divergence_br2pt[low], low]
-        # de-duplicate, keep order
-        seen = set()
-        uniq = []
-        for f in forms:
-            if f not in seen:
-                seen.add(f)
-                uniq.append(f)
-        return uniq
+        return list(dict.fromkeys(forms))
 
     # ----------------------------------------------------------- alternatives
     def _collect_alternatives(self, text: str, dst: Norm) -> Dict[str, List[str]]:

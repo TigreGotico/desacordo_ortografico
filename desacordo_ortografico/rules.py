@@ -140,6 +140,13 @@ _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
 _VOWELS = "aeiouáàâãéêíóôõúü"
 # the joints of a compound word: hyphen and apostrophes
 _SEGMENT_SEP = re.compile(r"[-'’]")
+_SEGMENT_PARTS = re.compile(r"([-'’])")
+
+
+def _is_symbol(word: str) -> bool:
+    """True for a word with a capital inside a segment that is not in capitals throughout
+    (pH, kW, McDonald): a symbol or a name, not a lowercase word."""
+    return not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
 
 
 # ----------------------------------------------------------------- tokenising
@@ -180,9 +187,8 @@ def map_words(
     last = 0
     for i, match in enumerate(_WORD_RE.finditer(text)):
         word = new = match.group(0)
-        symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
         acronym = is_word is not None and word.isupper() and not is_word(word.lower())
-        if not symbol and not acronym:
+        if not _is_symbol(word) and not acronym:
             form = fn(i, word.lower())
             new = word if form is None else _match_case(word, form)
         out += [text[last:match.start()], new]
@@ -331,7 +337,7 @@ def _match_case(original: str, transformed: str) -> str:
         return transformed.upper()
     segments = _SEGMENT_SEP.split(original)
     if any(s[:1].isupper() for s in segments[1:]):
-        parts = re.split(r"([-'’])", transformed)
+        parts = _SEGMENT_PARTS.split(transformed)
         if len(parts[::2]) != len(segments):
             return _match_case(segments[0], transformed)
         parts[::2] = [_match_case(s, p) for s, p in zip(segments, parts[::2])]
@@ -579,11 +585,9 @@ def guess_accents(
         before = None if starts[i] or starts[i - 1] else matches[i - 2].group(0).lower()
         # the tilde and the cedilla are no accents (cap. 4 p. 78-79): orgão, açucar
         accented = not _ACCENTS.isdisjoint(unicodedata.normalize("NFD", low))
-        # a capital inside a segment marks a symbol or a name (McDonald, pH)
-        symbol = not word.isupper() and any(s[1:] != s[1:].lower() for s in _SEGMENT_SEP.split(word))
         name = word[:1].isupper() and low in _UNACCENTED_NAMES
         form = None
-        if not accented and not symbol and not name and i not in hold:
+        if not accented and not _is_symbol(word) and not name and i not in hold:
             form = restore.get(low)
             noun = _starts_noun_phrase(prev, before, variety)
             if form is None and (noun if noun is not None else tag in _NOMINAL_TAGS):
@@ -600,18 +604,18 @@ def guess_accents(
 # Restricted to m/n FOLLOWED BY A VOWEL so oxytones in -em/-om (tambem, parabens)
 # are left untouched.
 _NASAL_FOLLOW = "[mn][%s]" % _VOWELS
+_RE_OPEN_NASAL = re.compile("([éó])(?=%s)" % _NASAL_FOLLOW)
+_RE_CLOSED_NASAL = re.compile("([êô])(?=%s)" % _NASAL_FOLLOW)
+_CLOSED = {"é": "ê", "ó": "ô"}
+_OPEN = {"ê": "é", "ô": "ó"}
 
 
 def nasal_vowel_to_br(word: str) -> str:
-    word = re.sub("é(?=%s)" % _NASAL_FOLLOW, "ê", word)  # é -> ê
-    word = re.sub("ó(?=%s)" % _NASAL_FOLLOW, "ô", word)  # ó -> ô
-    return word
+    return _RE_OPEN_NASAL.sub(lambda m: _CLOSED[m.group(1)], word)
 
 
 def nasal_vowel_to_pt(word: str) -> str:
-    word = re.sub("ê(?=%s)" % _NASAL_FOLLOW, "é", word)  # ê -> é
-    word = re.sub("ô(?=%s)" % _NASAL_FOLLOW, "ó", word)  # ô -> ó
-    return word
+    return _RE_CLOSED_NASAL.sub(lambda m: _OPEN[m.group(1)], word)
 
 
 # ---------------------------------------- the edges out of 1911 (BR 1943, PT 1945)
@@ -640,7 +644,7 @@ _OAR_ENDINGS = frozenset({"a", "as", "am", "e", "es", "em", "o"})
 
 def per_segment(word: str, fn: Callable[[str], str]) -> str:
     """Apply ``fn`` to each part of a hyphenated or elided word (além-rio, sobr'ôlho)."""
-    parts = re.split(r"([-'’])", word)
+    parts = _SEGMENT_PARTS.split(word)
     parts[::2] = [fn(p) for p in parts[::2]]
     return "".join(parts)
 
@@ -712,18 +716,16 @@ def drop_differential_1945(word: str, is_word: Callable[[str], bool]) -> str:
 
 
 # ----------------------------------------------- 1971/73 grave subtonic removal
+_SUBTONIC_GRAVE = str.maketrans("èìòù", "eiou")
+
+
 def strip_subtonic_grave(word: str) -> str:
     """Remove the grave/diaeretic accent of pre-1971 subtonic vowels.
 
     'sòmente'->'somente', 'cafèzinho'->'cafezinho'. The crasis 'à'/'às' is preserved.
     Reversible? No — it cannot be reintroduced by rule.
     """
-    return (
-        word.replace("è", "e")  # è
-        .replace("ì", "i")  # ì
-        .replace("ò", "o")  # ò
-        .replace("ù", "u")  # ù
-    )
+    return word.translate(_SUBTONIC_GRAVE)
 
 
 # --------------------------------------------------------- AO1990 accent drops
@@ -733,7 +735,7 @@ def drop_differential(word: str, dmap: dict) -> str:
     accented differential forms are keys, so splitting never touches an unrelated part."""
     if word in dmap:
         return dmap[word]
-    if "-" in word and any(p in dmap for p in word.split("-")):
+    if "-" in word:
         return "-".join(dmap.get(p, p) for p in word.split("-"))
     return word
 
@@ -920,12 +922,9 @@ def ao1990_hyphen_rs(word: str, co_drops_h: bool = False) -> str:
     A loanword keeps its hyphen ('co-working'), as the VOLP writes it, and so does a
     second element that does not start with a letter ('co-1').
     """
-    if "-" not in word:
+    pre, hyphen, base = word.partition("-")
+    if not hyphen or "-" in base:
         return word
-    parts = word.split("-")
-    if len(parts) != 2:
-        return word
-    pre, base = parts
     if pre not in _RS_PREFIXES or not base[:1].isalpha() or is_foreign_spelling(word):
         return word
     first = deaccent(base[0])

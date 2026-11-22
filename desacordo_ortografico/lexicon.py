@@ -1,4 +1,4 @@
-"""Curated exception lexicons + a thin, defensive wrapper over :mod:`tugalex`.
+"""Curated exception lexicons and a wrapper over :mod:`tugalex`.
 
 The deterministic rules in :mod:`desacordo_ortografico.rules` cover the regular,
 reversible transforms. Everything that is *irreducibly lexical* lives here:
@@ -19,9 +19,8 @@ form no source decides has rows for its AO1990 forms only: detect() reads it as
 evidence, and convert() does not read it. ``tools/build_spelling_table.py`` built the
 table from the tugalex archaisms and AO1990 lists.
 
-``tugalex`` supplies the word list. It is a hard dependency, but every access to it is
-defensive: if it is unavailable the word set holds only the forms of the word maps and
-the deterministic rule engine still works on its own.
+``tugalex`` supplies the word list. It is a hard dependency: without it, :attr:`Lexicon.wordset`
+and so every ``convert()`` raise.
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
@@ -187,17 +186,8 @@ def _load(name: str) -> Any:
         return json.load(f)
 
 
-def _strip_meta(d: dict) -> dict:
-    """Drop ``_underscored`` documentation keys from a loaded JSON object."""
-    return {k: v for k, v in d.items() if not k.startswith("_")}
-
-
 class Lexicon:
     """Loads the curated data files and exposes ready-to-use lookup maps."""
-
-    def __init__(self) -> None:
-        self._tuga = None
-        self._tuga_tried = False
 
     # ------------------------------------------------------- raw data files
     @cached_property
@@ -233,19 +223,12 @@ class Lexicon:
         return _load("sister_markers.json").get("languages", {})
 
     # ------------------------------------------------------------ tugalex
-    @property
+    @cached_property
     def tuga(self):
-        """The shared :class:`tugalex.TugaLexicon`, or ``None`` if unavailable. Only
-        :attr:`wordset` reads it, for the word list."""
-        if not self._tuga_tried:
-            self._tuga_tried = True
-            try:
-                from tugalex import TugaLexicon
+        """The :class:`tugalex.TugaLexicon` that supplies the word list."""
+        from tugalex import TugaLexicon
 
-                self._tuga = TugaLexicon()
-            except Exception:  # pragma: no cover - optional at runtime
-                self._tuga = None
-        return self._tuga
+        return TugaLexicon()
 
     # ---------------------------------------------------- the spelling table
     def _ao_cells(self, era: str, target: str) -> Dict[str, List[str]]:
@@ -459,13 +442,8 @@ class Lexicon:
         words.update(self.ao_pt_old2new.values())
         words.update(self.ao_br_old2new.values())
         words.update(self.reform1911_old2new.values())
-        t = self.tuga
-        if t:
-            for region in ("lbx", "rjx"):
-                try:
-                    words.update(w.lower() for w in t.get_wordlist(region))
-                except Exception:  # pragma: no cover - optional/heavy
-                    pass
+        for region in ("lbx", "rjx"):
+            words.update(w.lower() for w in self.tuga.get_wordlist(region))
         out = {w.lower() for w in words if w and " " not in w}
         # enrich with regular gender/number variants of the modern (consonant-dropped)
         # forms, so the silent-c/p rule generalises to inflections the source list omits
@@ -739,13 +717,10 @@ def _clean_ao_map(cells: Dict[str, List[str]]) -> Dict[str, str]:
         if not v:
             continue
         kl, vl = k.lower().strip(), v[0].lower().strip()
-        if not kl:
-            continue
-        if kl == vl:
-            continue  # capitalisation-only change (Janeiro->janeiro); after
-            # casefolding it is a no-op that would otherwise pollute the
-            # "old form" set and mislabel modern words as pre-AO1990
-        out[kl] = vl
+        # A capitalisation-only change (Janeiro -> janeiro) is no row: casefolded, it
+        # would mark the modern word as pre-AO1990.
+        if kl and kl != vl:
+            out[kl] = vl
     return out
 
 
