@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.39a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a1) (2026-11-22)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.38a2...0.3.39a1)
+
+**Merged pull requests:**
+
+- fix\(lexicon\): threads reading a fresh Lexicon see the whole word set; simplify rules, lexicon and convert [\#109](https://github.com/TigreGotico/desacordo_ortografico/pull/109) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.38a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.38a2) (2026-11-21)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.38a1...0.3.38a2)
