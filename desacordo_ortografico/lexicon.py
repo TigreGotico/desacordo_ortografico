@@ -19,7 +19,8 @@ form no source decides has rows for its AO1990 forms only: detect() reads it as
 evidence, and convert() does not read it. ``tools/build_spelling_table.py`` built the
 table from the tugalex archaisms and AO1990 lists.
 
-``tugalex`` supplies the word list.
+``tugalex`` supplies the word list. It is a hard dependency: without it, :attr:`Lexicon.wordset`
+and so every ``convert()`` raise.
 
 The 1911 accent restore keeps a bare form as written when a regular inflection makes
 it a word (:func:`_inflection_kinds`). The verb forms follow the Dicionário Priberam
@@ -716,7 +717,9 @@ def _clean_ao_map(cells: Dict[str, List[str]]) -> Dict[str, str]:
         if not v:
             continue
         kl, vl = k.lower().strip(), v[0].lower().strip()
-        if kl and kl != vl:  # a capitalisation-only change (Janeiro -> janeiro) is no row
+        # A capitalisation-only change (Janeiro -> janeiro) is no row: casefolded, it
+        # would mark the modern word as pre-AO1990.
+        if kl and kl != vl:
             out[kl] = vl
     return out
 
