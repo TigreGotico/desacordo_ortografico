@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.39a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a2) (2026-11-24)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a1...0.3.39a2)
+
+**Merged pull requests:**
+
+- refactor: share regexes between detect and rules, drop dead code [\#110](https://github.com/TigreGotico/desacordo_ortografico/pull/110) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.39a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a1) (2026-11-22)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.38a2...0.3.39a1)
