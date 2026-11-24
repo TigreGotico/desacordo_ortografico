@@ -11,9 +11,10 @@ is therefore a *path* through this graph of norms, applied edge by edge.
 """
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import dataclass
 from enum import Enum
-from typing import ClassVar, Dict, List, Tuple
+from typing import Dict, List, Tuple
 
 
 class Era(str, Enum):
@@ -66,9 +67,6 @@ class Norm:
 
     def __str__(self) -> str:  # pragma: no cover - trivial
         return self.id
-
-    # ------------------------------------------------------------------ parse
-    _ALIASES: ClassVar[Dict[str, "Norm"]] = {}  # filled after class body
 
     @classmethod
     def parse(cls, value: "str | Norm") -> "Norm":
@@ -136,9 +134,6 @@ def find_path(src: "str | Norm", dst: "str | Norm") -> List[Tuple[str, str, bool
     d = Norm.parse(dst)
     if s.id == d.id:
         return []
-    # BFS
-    from collections import deque
-
     queue = deque([s.id])
     prev: Dict[str, Tuple[str, str, bool]] = {}  # node -> (from_node, edge, forward)
     seen = {s.id}
@@ -155,7 +150,6 @@ def find_path(src: "str | Norm", dst: "str | Norm") -> List[Tuple[str, str, bool
             queue.append(nb)
     if d.id not in prev:  # pragma: no cover - graph is connected
         raise ValueError(f"No conversion path from {s.id} to {d.id}")
-    # reconstruct
     steps: List[Tuple[str, str, bool]] = []
     node = d.id
     while node != s.id:
@@ -169,11 +163,10 @@ def find_path(src: "str | Norm", dst: "str | Norm") -> List[Tuple[str, str, bool
 # ---------------------------------------------------------------- aliases
 _ALIASES = {
     # canonical ids
-    **{nid: norm for nid, norm in NORMS.items()},
+    **NORMS,
     **{nid.replace("_", "-"): norm for nid, norm in NORMS.items()},
     # years
     "1911": NORMS["reforma_1911"],
-    "reforma-1911": NORMS["reforma_1911"],
     "1943": NORMS["br_1943"],
     "formulario-1943": NORMS["br_1943"],
     "1945": NORMS["pt_1945"],
@@ -182,8 +175,6 @@ _ALIASES = {
     "1973": NORMS["pt_1973"],
     "1990": NORMS["ao1990-pt"],
     "ao1990": NORMS["ao1990-pt"],
-    "ao1990-pt": NORMS["ao1990-pt"],
-    "ao1990-br": NORMS["ao1990-br"],
     # pre-1911 synonyms
     "pre-1911": NORMS["etymological"],
     "etimologica": NORMS["etymological"],
@@ -196,4 +187,3 @@ _ALIASES = {
     "brazil-pre-90": NORMS["br_1971"],
     "brasil-pre-90": NORMS["br_1971"],
 }
-Norm._ALIASES = _ALIASES

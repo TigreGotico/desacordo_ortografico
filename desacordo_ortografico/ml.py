@@ -61,18 +61,15 @@ class LinearModel:
         return out
 
     def predict(self, text: str) -> Optional[str]:
-        if not self.classes:
-            return None
-        sc = self.scores(text)
-        return max(sorted(sc), key=lambda c: sc[c])  # deterministic tie-break
+        return self.predict_with_margin(text)[0]
 
     def predict_with_margin(self, text: str) -> Tuple[Optional[str], float]:
         if not self.classes:
             return None, 0.0
-        ranked = sorted(self.scores(text).values(), reverse=True)
-        pred = self.predict(text)
+        sc = self.scores(text)
+        ranked = sorted(sc.values(), reverse=True)
         margin = ranked[0] - ranked[1] if len(ranked) > 1 else float("inf")
-        return pred, margin
+        return max(sorted(sc), key=lambda c: sc[c]), margin  # deterministic tie-break
 
     # ------------------------------------------------------------ serialisation
     def to_dict(self) -> dict:
@@ -191,7 +188,7 @@ def get_detector_model(kind: str = "nb") -> Optional[LinearModel]:
         if path and os.path.exists(path):
             try:
                 model = LinearModel.load(path)
-            except Exception:  # pragma: no cover
+            except Exception:  # pragma: no cover - a damaged model file falls back to the rules
                 model = None
         _CACHE[kind] = model
     return _CACHE[kind]

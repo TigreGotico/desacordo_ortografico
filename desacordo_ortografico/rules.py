@@ -18,17 +18,17 @@ Lexikon 2017, and the AO1990 text.
   p. 289), and a preposition relates a term to its consequent (cap. 15 "Preposição",
   pp. 569-570). The contractions with the indefinite article (num, duma; cap. 9,
   pp. 223-224) and the classical polo, pola (p. 223) count as determiners. After one
-  of them, a bare form that is otherwise only a verb form is
-  the noun: "a sua historia" is "a sua história".
+  of them, a bare form that is otherwise only a verb form is the noun: "a sua historia"
+  is "a sua história".
 - The bare articles o, a, os and as are also the clitic pronouns. In Portugal the
   clitic follows the verb unless a word such as não, que, já or quando comes before
   it (cap. 11, "Colocação dos pronomes átonos", pp. 323-327): a negative word
   (não, nunca, jamais, ninguém, nada), an interrogative, one of the adverbs bem, mal,
-  ainda, já, sempre, só, talvez, or the subject alguém. So a bare article
-  counts unless such a word stands right before it. In Brazil the clitic comes before the verb
-  in main clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil",
-  pp. 330-331), so a bare article counts only at the start of a sentence or clause or after a
-  preposition. A pause ends the context, because these words put the clitic first only
+  ainda, já, sempre, só, talvez, or the subject alguém. So a bare article counts unless
+  such a word stands right before it. In Brazil the clitic comes before the verb in main
+  clauses too (cap. 11, "A colocação dos pronomes átonos no Brasil", pp. 330-331), so a
+  bare article counts only at the start of a sentence or clause or after a preposition.
+  A pause ends the context, because these words put the clitic first only
   "quando entre ela e o verbo não há pausa" (p. 324): the word before a comma, a
   colon, a parenthesis or a dash decides nothing about the word after it. Brackets are
   no pause: they hold remarks an author adds inside a transcribed text ("Pontuação",
@@ -135,7 +135,7 @@ from typing import Callable, Collection, List, Mapping, Optional, Sequence, Tupl
 
 from .lexicon import _ACCENTS, deaccent
 
-# letters that count as part of a word (ASCII + Latin-1 accented range)
+# a word: ASCII letters and digits and U+00C0-U+024F, joined by a hyphen or an apostrophe
 _WORD_RE = re.compile(r"[0-9A-Za-zÀ-ɏ]+(?:[-'’][0-9A-Za-zÀ-ɏ]+)*")
 _VOWELS = "aeiouáàâãéêíóôõúü"
 # the joints of a compound word: hyphen and apostrophes
@@ -212,8 +212,8 @@ def names(text: str) -> List[bool]:
     A word opens a sentence when no word comes before it or a sentence end (. ! ? … or
     a line break) comes between it and the word before it. The period of Sr., Sra., Dr.,
     Dra., Av., D. (Dom, Dona) or S. (São) is no sentence end; a colon or an opening
-    quote is none either. A text with
-    no word in lowercase gives no case signal, so it has no names.
+    quote is none either. A text with no word in lowercase gives no case signal, so it
+    has no names.
     """
     matches = list(_WORD_RE.finditer(text))
     if not any(m.group(0).islower() for m in matches):
@@ -359,8 +359,8 @@ _CH_K_RE = re.compile(r"(?<!s)ch(?=[rln]|th)")
 
 
 def reform_1911_digraphs(word: str) -> str:
-    """ch->c before r, l, n or th, then ph->f, th->t, rh->r, y->i. Reversible? No — the
-    inverse is ambiguous."""
+    """ch->c before r, l, n or th, then ph->f, th->t, rh->r, y->i. One-way: the inverse
+    is ambiguous."""
     word = _CH_K_RE.sub("c", word)
     word = word.replace("ph", "f").replace("th", "t").replace("rh", "r")
     word = word.replace("y", "i")
@@ -535,8 +535,8 @@ def _starts_noun_phrase(prev: Optional[str], before: Optional[str], variety: str
     ``True``: a determiner, a preposition, or a bare article that counts as the article.
     ``False``: a bare article that is a clitic pronoun, so the next word is a verb.
     ``None``: any other word, or no word; the context does not decide. ``prev`` and
-    ``before`` are lowercase and ``None`` past the start of the sentence or clause. ``variety`` is
-    "pt" or "br"; see the module docstring.
+    ``before`` are lowercase and ``None`` past the start of the sentence or clause.
+    ``variety`` is "pt" or "br"; see the module docstring.
     """
     if prev is None:
         return None
@@ -564,9 +564,9 @@ def guess_accents(
     from ``nominal`` when the word before it introduces a noun phrase in ``variety``
     ("pt" or "br"): a sua historia -> a sua história. When the word before it is a clitic
     pronoun, the form is a verb and stays. When the word before it decides neither, a
-    NOUN or ADJ tag gives the accent. It
-    takes it from ``singular`` after a singular determiner (o pais -> o país). ``tags``
-    holds one tag or ``None`` per word of ``text``. The words whose index in
+    NOUN or ADJ tag gives the accent. It takes it from ``singular`` after a singular
+    determiner (o pais -> o país). ``tags`` holds one tag or ``None`` per word of
+    ``text``; another length raises ``ValueError``. The words whose index in
     :func:`words` is in ``hold`` stay as written. Case-preserving.
     """
     matches = list(_WORD_RE.finditer(text))
@@ -611,10 +611,12 @@ _OPEN = {"ê": "é", "ô": "ó"}
 
 
 def nasal_vowel_to_br(word: str) -> str:
+    """é/ó -> ê/ô before m or n and a vowel (académico -> acadêmico)."""
     return _RE_OPEN_NASAL.sub(lambda m: _CLOSED[m.group(1)], word)
 
 
 def nasal_vowel_to_pt(word: str) -> str:
+    """ê/ô -> é/ó before m or n and a vowel (acadêmico -> académico)."""
     return _RE_CLOSED_NASAL.sub(lambda m: _OPEN[m.group(1)], word)
 
 
@@ -628,10 +630,10 @@ _RE_GRAVE_U = re.compile("([gq])ù(?=[eiéíê])")
 # scisma, scisão, sciático, scintilar, scelerado
 _RE_INITIAL_SC = re.compile(
     "^sc(?=en[aáéo]|iênc|ient|etr|ept|épt|ism|isã|isõ|iát|iat|intil|eler)")
-# a closed e or o in the last-but-one syllable before a final -a, -e, -o (with -s), -am,
-# -em or -ens, or in the last syllable before a final r, z or l
 # a pre-1911 enclitic (fêl-o, vêl-a): 1911 Base XXXIV writes devê-lo
 _RE_PRE_1911_ENCLITIC = re.compile(r"l-(?:o|a|os|as)(?=$|-)")
+# a closed e or o in the last-but-one syllable before a final -a, -e, -o (with -s), -am,
+# -em or -ens, or in the last syllable before a final r, z or l
 _RE_CIRCUMFLEX = re.compile("(.*)([êô])((?:[^%s]*(?:[aeo]s?|[ae]m|ens))|[rzl])" % _VOWELS)
 _KEPT_CIRCUMFLEX_1945 = frozenset({
     "côa", "côas", "pêlo", "pêlos", "pêra", "pêro", "pôlo", "pôlos", "pôr", "pôde", "dêmos"})
@@ -720,11 +722,9 @@ _SUBTONIC_GRAVE = str.maketrans("èìòù", "eiou")
 
 
 def strip_subtonic_grave(word: str) -> str:
-    """Remove the grave/diaeretic accent of pre-1971 subtonic vowels.
-
-    'sòmente'->'somente', 'cafèzinho'->'cafezinho'. The crasis 'à'/'às' is preserved.
-    Reversible? No — it cannot be reintroduced by rule.
-    """
+    """Remove the grave of a pre-1971 subtonic vowel: 'sòmente'->'somente',
+    'cafèzinho'->'cafezinho'. The crasis 'à'/'às' stays. One-way: no rule can put the
+    grave back."""
     return word.translate(_SUBTONIC_GRAVE)
 
 
@@ -749,7 +749,7 @@ def ao1990_drop_accents(word: str) -> str:
     * circumflex on the hiatus ôo (vôo->voo, enjôo->enjoo);
     * circumflex on the 3rd-person-plural -êem (lêem->leem, vêem->veem).
 
-    Reversible? No — eia/oi/oo also occur in words that never had an accent (meia).
+    One-way: eia/oi/oo also occur in words that never had an accent (meia).
     """
     return ao1990_drop_hiatus_accent(ao1990_drop_diphthong_accent(word))
 
@@ -836,7 +836,7 @@ def recase_months(text: str, lowercase: bool) -> str:
         low = word.lower()
         cap = low[:1].upper() + low[1:]
         prefix = text[: m.start()].rstrip().rstrip(_OPENERS).rstrip()
-        if prefix == "" or prefix[-1] in ".!?:—":
+        if not prefix or prefix[-1] in ".!?:—":
             return word if lowercase else cap
         if low in _SEASONS:
             return low  # seasons are always lowercase mid-sentence

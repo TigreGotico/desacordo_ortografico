@@ -286,7 +286,8 @@ class OrthographyConverter:
                         if "silent-cp" in enabled else w)
 
             def element(w: str) -> str:
-                return choose(drop(w)) or drop(w)
+                dropped = drop(w)
+                return choose(dropped) or dropped
 
             # a name keeps a form the VOLP lists and takes the VOLP form of any other
             def choose_for_name(w: str) -> Optional[str]:
@@ -328,8 +329,7 @@ class OrthographyConverter:
                 out, lambda i, w: None if capital[i] or rules.lookup_with_plural(w, loanwords)
                 else rules.br_1943_prefix_join(w), is_word)[0]
 
-        # month/season casing is a text-level (sentence-position) concern: AO1990
-        # lowercases them mid-sentence, the older norms capitalise them.
+        # month and season casing depends on the position in the sentence, so it runs on the text
         if "months" in enabled:
             out = rules.recase_months(out, lowercase=(dst.era == Era.AO1990))
         result.text = out
@@ -345,7 +345,7 @@ class OrthographyConverter:
         n = Norm.parse(norm)
         low = word.lower()
         forms = [low]
-        if n.era.value == "ao1990":
+        if n.era == Era.AO1990:
             lex = self.lex
             if low in lex.dual_pt2br:
                 forms = [low, lex.dual_pt2br[low]]
@@ -359,18 +359,13 @@ class OrthographyConverter:
 
     # ----------------------------------------------------------- alternatives
     def _collect_alternatives(self, text: str, dst: Norm) -> Dict[str, List[str]]:
-        if dst.era.value != "ao1990":
+        if dst.era != Era.AO1990:
             return {}
         alts: Dict[str, List[str]] = {}
         for w in rules.words(text):
-            low = w.lower()
-            for table in (self.lex.dual_pt2br, self.lex.dual_br2pt,
-                          self.lex.divergence_pt2br, self.lex.divergence_br2pt):
-                if low in table:
-                    forms = self.permitted_spellings(low, dst)
-                    if len(forms) > 1:
-                        alts[low] = forms
-                    break
+            forms = self.permitted_spellings(w, dst)
+            if len(forms) > 1:
+                alts[w.lower()] = forms
         return alts
 
     # --------------------------------------------------------------- the edges

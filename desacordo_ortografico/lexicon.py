@@ -100,8 +100,8 @@ def _inflection_kinds(word: str, words: Set[str]) -> FrozenSet[str]:
     unattested. ``"verb"``: an irregular form, the -eu/-ou/-iu preterite (correr ->
     correu), the -ia imperfect and the -e present of -er/-ir verbs (servir -> servia,
     correr -> corre), the -a/-as/-amos/-am present and the -e/-es/-emos/-em subjunctive of
-    -ar verbs (historiar -> historia, parar -> paramos), and the conditional, a stem + -ar/-er/-ir + ia
-    (ler -> leria; the noun ar does not count, so aria is no verb form).
+    -ar verbs (historiar -> historia, parar -> paramos), and the conditional, a stem +
+    -ar/-er/-ir + ia (ler -> leria; the noun ar does not count, so aria is no verb form).
     ``"plural"``: a vowel + s plural (pai -> pais). ``"nominal"``: the -es plural
     after r, z or s (mar -> mares), the feminine plural (antigo -> antigas) and the
     feminine singular (tanto -> tanta). The sources are in the module docstring.
@@ -402,8 +402,7 @@ class Lexicon:
         written: the form with the consonant of a dual ("conjetura s.f. | conjectura
         s.f."), and the bare form where the VOLP rejects the form with the consonant
         ("cetro s.m.; no ceptro"), each with the plural that the VOLP lists. A "two
-        words" row (cf.), a
-        "one reading" row and a row for named rows hold nothing."""
+        words" row (cf.), a "one reading" row and a row for named rows hold nothing."""
         held = set()
         for row in self._volp_br:
             if row["rows"] != "*" or row["pair"] != "one word" or not row["source"].startswith("VOLP: "):
@@ -494,12 +493,11 @@ class Lexicon:
         (see :func:`_inflection_kinds`) that also make the bare form a word.
 
         A word with a tilde has two bare forms: one without the accents and the tilde
-        (orgao, bençao) and one that keeps the tilde (orgão, benção). A bare form of under four letters, a bare form
-        that is itself on the word list, and a bare form that deaccents from two
-        accented words are left out. The plural
-        in -s of each vowel-final candidate except an oxytone in -ão is added, unless
-        its letters spell a word or deaccent from one, and it keeps the verb kind of
-        its singular.
+        (orgao, bençao) and one that keeps the tilde (orgão, benção). A bare form of under
+        four letters, a bare form that is itself on the word list, and a bare form that
+        deaccents from two accented words are left out. The plural in -s of each
+        vowel-final candidate except an oxytone in -ão is added, unless its letters spell
+        a word or deaccent from one, and it keeps the verb kind of its singular.
         """
         by_bare: Dict[str, Set[str]] = {}
         bare_words: Set[str] = set()
