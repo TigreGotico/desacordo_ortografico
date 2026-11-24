@@ -329,7 +329,7 @@ class OrthographyConverter:
                 out, lambda i, w: None if capital[i] or rules.lookup_with_plural(w, loanwords)
                 else rules.br_1943_prefix_join(w), is_word)[0]
 
-        # month casing depends on the position in the sentence, so it runs on the text
+        # month and season casing depends on the position in the sentence, so it runs on the text
         if "months" in enabled:
             out = rules.recase_months(out, lowercase=(dst.era == Era.AO1990))
         result.text = out
