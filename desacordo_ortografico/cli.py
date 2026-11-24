@@ -15,7 +15,7 @@ def _read_text(args: argparse.Namespace) -> str:
     if args.text:
         return " ".join(args.text)
     stdin = sys.stdin
-    if stdin is not None and (getattr(args, "stdin", False) or not stdin.isatty()):
+    if stdin is not None and (args.stdin or not stdin.isatty()):
         return stdin.read().strip()
     raise ValueError("no text provided: pass it as arguments or pipe it in with --stdin")
 

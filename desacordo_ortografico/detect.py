@@ -98,13 +98,16 @@ from .eras import Era, Variant
 from .guard import NotPortuguese, detect_sister
 from .lexicon import Lexicon, get_lexicon
 from .ml import features, get_detector_model
-from .rules import _MONTHS, _SEGMENT_SEP, _WORD_RE
+from .rules import (
+    _MONTHS,
+    _RE_CLOSED_NASAL,
+    _RE_OPEN_NASAL,
+    _SEGMENT_SEP,
+    _SENTENCE_END,
+    _VOWELS,
+    _WORD_RE,
+)
 
-_VOWELS = "aeiouáàâãéêíóôõúü"
-_NASAL = "[mn][%s]" % _VOWELS
-_RE_NASAL_PT = re.compile("[éó](?=%s)" % _NASAL)
-_RE_NASAL_BR = re.compile("[êô](?=%s)" % _NASAL)
-_SENTENCE_END = re.compile(r"[.!?…\n]")
 # 1911 forms, as the module docstring quotes them
 _RE_1911_OXYTONE = re.compile(".*[%s].*(?:[^%s]|[gq]u)ê(?:m|ns)" % (_VOWELS, _VOWELS))
 _TER_VIR_PLURAL = re.compile(
@@ -196,7 +199,7 @@ def _orth_from_column(col: str, margin: float, rule: "Orthography") -> "Orthogra
     era, variant = _COLUMN_TO_NORM.get(col, (Era.AO1990, None))
     conf = round(min(0.99, 0.5 + 0.1 * margin), 2)
     return Orthography(era=era, variant=variant, confidence=conf,
-                       markers=rule.markers, note=_ERA_NOTES.get(era, ""))
+                       markers=rule.markers, note=_ERA_NOTES[era])
 
 
 _COLUMN_TO_NORM = {
@@ -210,8 +213,7 @@ _COLUMN_TO_NORM = {
 
 def _detect_rules(text: str, lex: Lexicon) -> Orthography:
     """Deterministic marker-based classifier."""
-    pt_lean = 0
-    br_lean = 0
+    pt_lean = br_lean = 0
     markers: List[str] = []
     score: Dict[Era, int] = defaultdict(int)
     # the distinct words that count as evidence for each era
@@ -281,22 +283,19 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
             markers.append(f"br-form:{w}")
 
         # --- variant lean from the nasal-vowel alternation --------------
-        if _RE_NASAL_PT.search(w):
+        if _RE_OPEN_NASAL.search(w):
             pt_lean += 1
-        if _RE_NASAL_BR.search(w):
+        if _RE_CLOSED_NASAL.search(w):
             br_lean += 1
 
     etym, modern = score[Era.ETYMOLOGICAL], score[Era.AO1990]
     old_pt, old_br = score[Era.PT_1973], score[Era.BR_1971]
     old_score = old_pt + old_br
 
-    # ---- decide the era bucket ----
     if evidence[Era.REFORMA_1911]:
-        era = Era.REFORMA_1911
-        variant = None
+        era, variant = Era.REFORMA_1911, None
     elif etym >= 1 and etym >= old_score and etym >= modern:
-        era = Era.ETYMOLOGICAL
-        variant = None
+        era, variant = Era.ETYMOLOGICAL, None
     elif old_score > 0 and old_score >= modern:
         if old_pt >= old_br:
             era, variant = Era.PT_1973, Variant.PT
@@ -304,20 +303,12 @@ def _detect_rules(text: str, lex: Lexicon) -> Orthography:
             era, variant = Era.BR_1971, Variant.BR
     else:
         era = Era.AO1990
-        variant = _decide_variant(pt_lean, br_lean)
+        variant = Variant.PT if pt_lean > br_lean else Variant.BR if br_lean > pt_lean else None
 
     tokens = min(len(evidence[era]), 2)
     # a text with no evidence at all gets the default label, not a finding
     conf = _CONFIDENCE[era, tokens] if markers or tokens else 0.34
-
-    note = _ERA_NOTES.get(era, "")
-    return Orthography(
-        era=era,
-        variant=variant,
-        confidence=conf,
-        markers=markers,
-        note=note,
-    )
+    return Orthography(era=era, variant=variant, confidence=conf, markers=markers, note=_ERA_NOTES[era])
 
 
 def _is_1911_form(w: str) -> bool:
@@ -325,14 +316,6 @@ def _is_1911_form(w: str) -> bool:
         return False
     return (w == "quási" or "qù" in w or "gù" in w
             or bool(_RE_1911_OXYTONE.fullmatch(w)) and not _TER_VIR_PLURAL.fullmatch(w))
-
-
-def _decide_variant(pt_lean: int, br_lean: int) -> Optional[Variant]:
-    if pt_lean > br_lean:
-        return Variant.PT
-    if br_lean > pt_lean:
-        return Variant.BR
-    return None
 
 
 _ERA_NOTES = {
