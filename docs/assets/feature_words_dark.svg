@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="484" viewBox="0 0 760 484" role="img" aria-labelledby="t d">
 <title id="t">Words changed by each conversion feature</title>
-<desc id="d">Stacked bars give, for each feature, the words of the spelling table that convert differently when the feature is off, split by route.</desc>
+<desc id="d">Stacked bars give, for each feature, the distinct words of the silver corpus that convert differently when the feature is off, split by route.</desc>
 <rect width="760" height="484" fill="#161514"/>
 <text x="20" y="22" font-family="DejaVu Sans, Verdana, sans-serif" font-size="14" font-weight="bold" fill="#f0efec">Distinct words of the silver corpus that change when a feature is off</text>
 <rect x="20" y="36" width="12" height="12" fill="#3987e5"/>

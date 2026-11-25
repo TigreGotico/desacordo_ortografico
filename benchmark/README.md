@@ -236,8 +236,8 @@ python benchmark/diagnose.py           # attribute failures (rule vs silver, whe
 - **Conversion:** 94% sentence-level exact-match and 99% token accuracy over 9,303
   directed conversions. The same-line conversions are strongest (`br_1971→ao1990-br` 99.6%,
   `pt_1973→ao1990-pt` 98.3%). The cross-variant PT↔BR pairs score 90.9% toward pt-BR and
-  81.5% toward pt-PT, where lexical divergence caps them. The pre-1911 directions score
-  between 91.1% and 99.4%, and accent restoration limits them (see limitations).
+  81.5% toward pt-PT. Of the 246 sentences that fail toward pt-PT, 130 keep a c or p that
+  the silver cell drops. The pre-1911 directions score between 91.1% and 99.4%.
 - **Detection:** 92.6% compatible accuracy (rules) across 6,645 renderings. The learned
   models reach 95.4% to 96.4% (below).
 - **Guard:** flags Mirandese / Galician / Barranquenho correctly and leaves Portuguese
@@ -272,7 +272,7 @@ default for explainability and robustness on short inputs.
   systematic accents, so the deterministic `ph→f`/`y→i` rules cannot supply them. The
   library guesses the accent from the word list (`fosforo→fósforo`). A bare form that is
   itself a word, or a regular inflection of one, stays as written unless the word before
-  it or the caller's part-of-speech tags settle it (see `docs/api.md`). A pre-1911 word
+  it or the caller's part-of-speech tags settle it (see `docs/features.md#the-1911-accent-guess`). A pre-1911 word
   absent from the list keeps a bare vowel. This benchmark cannot score the guess:
   `clean_silver.py` writes the pt_1973 accents into the etymological cells, so the silver
   corpus holds almost no bare pre-1911 word that needs an accent.

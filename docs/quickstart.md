@@ -152,8 +152,8 @@ a recepção
 $ desacordo convert --from pre-ao1990-pt --to ao1990 --variant pt "a recepção"
 a receção
 $ desacordo convert -v --from ao1990-pt --to ao1990-br "o facto"
-  alt: facto -> facto | fato
 o facto
+  alt: facto -> facto | fato
 $ desacordo norms
 ao1990-br
 ao1990-pt

@@ -76,7 +76,7 @@ def draw(data: dict, theme: str) -> str:
     o = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{WIDTH}" height="{height}" '
          f'viewBox="0 0 {WIDTH} {height}" role="img" aria-labelledby="t d">',
          '<title id="t">Words changed by each conversion feature</title>',
-         '<desc id="d">Stacked bars give, for each feature, the words of the spelling table that '
+         '<desc id="d">Stacked bars give, for each feature, the distinct words of the silver corpus that '
          'convert differently when the feature is off, split by route.</desc>',
          f'<rect width="{WIDTH}" height="{height}" fill="{t["bg"]}"/>',
          f'<text x="{LEFT - 150}" y="22" {FONT} font-size="14" font-weight="bold" fill="{t["ink"]}">'

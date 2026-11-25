@@ -31,7 +31,7 @@ flowchart TD
     J --> K[ConversionResult: text, lossless, warnings, alternatives]
 ```
 
-An edge that drops a silent consonant or an accent is lossy. The result sets `lossless` to `False` and adds a warning for each such edge.
+Only the backward pass of an edge is lossy, and every edge except `ptbr_divergence` has a lossy backward pass. A forward conversion always gives `lossless` as `True`. A backward conversion sets `lossless` to `False` and adds one warning for each lossy edge. `convert("a acção do director", "pt_1973", "ao1990-pt")` drops two consonants and stays lossless. The reverse conversion is lossy.
 
 ## Try a feature
 
@@ -63,7 +63,16 @@ The chart counts, for each feature, the distinct words of the silver corpus that
   <source media="(prefers-color-scheme: dark)" srcset="assets/feature_words_dark.svg"> <img src="assets/feature_words_light.svg" alt="Stacked bars of the distinct silver-corpus words that each conversion feature changes. The 1911 word map leads with 137 words, then ao-map-consonant with 107 and 1911-digraphs with 56." width="760">
 </picture>
 
-The word maps do most of the work, and the rules reach the words that no map holds. A feature that is absent from the chart changes no word of this corpus alone: `ao-map-locution`, `base-iv`, `differential-1945`, `differential-1971`, `grave-u`, `hyphen-lexical`, `initial-sc`, `nasal-vowel`, `oxytone-em`, `post-1911-word-map`, `ptbr-divergence` and `subtonic-grave`. The corpus has no 1911 spelling and no multiword locution, and its words convert alone, so these features have nothing to change in it. The tests under `tests/` exercise each of them.
+The word maps do most of the work, and the rules reach the words that no map holds. Twelve features are absent from the chart because turning each one off changes no word. The reasons differ:
+
+- `initial-sc` and `post-1911-word-map` both convert the word sciência. Each one makes the other redundant, so the count is 0 when one of them is off. Each one changes the word when it runs alone.
+- `differential-1971`, `nasal-vowel` and `ptbr-divergence` run on edges that none of the three routes crosses.
+- `base-iv` runs on the route to ao1990-pt, but the AO1990 word map already owns every listed word of the corpus, and the map decides first.
+- `differential-1945`, `grave-u` and `oxytone-em` run on the first route. The only candidate in the etymological words is pêlo, which the 1945 Acordo keeps. The words have no -êm or -êns oxytone and no qù or gù.
+- `subtonic-grave` runs on the first route, and the etymological words have no grave accent.
+- `ao-map-locution` and `hyphen-lexical` find no hyphenated locution or compound in the corpus words, and each word converts alone.
+
+The tests under `tests/` exercise each of them.
 
 ## The features by edge
 

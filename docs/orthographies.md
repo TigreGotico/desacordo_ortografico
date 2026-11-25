@@ -67,7 +67,7 @@ First official orthography (Portaria of 1 Sept 1911, commission of Gonçalves Vi
 | `ph→f`, `th→t`, `rh→r`, `y→i` | deterministic |
 | `ch`(=/k/)→`c`/`qu`, geminate reduction (keep `rr`, `ss`), drop silent consonants and medial `h` | lexical |
 
-The Formulário reforms "todas as palavras portuguesas, ou aportuguesadas" (I, II). A loanword or a foreign name is neither, so `convert()` keeps its letters through the 1911 rules: `a pharmacia de Hollywood` gives `a farmácia de Hollywood`. The [API reference](api.md) lists the letters that mark a foreign spelling, and the limits.
+The Formulário reforms "todas as palavras portuguesas, ou aportuguesadas" (I, II). A loanword or a foreign name is neither, so `convert()` keeps its letters through the 1911 rules: `a pharmacia de Hollywood` gives `a farmácia de Hollywood`. [The features page](features.md#foreign-words-in-the-1911-edge) lists the letters that mark a foreign spelling, and the limits.
 
 `detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943 does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù` (freqùente). See the detection markers in [`api.md`](api.md).
 

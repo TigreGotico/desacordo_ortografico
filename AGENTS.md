@@ -16,7 +16,7 @@ The documentation starts at [docs/index.md](docs/index.md).
 
 | Path | Holds |
 |---|---|
-| `desacordo_ortografico/convert.py`, `rules.py`, `eras.py` | The conversion graph, its feature steps and the rules ([api.md](docs/api.md)) |
+| `desacordo_ortografico/convert.py`, `rules.py`, `eras.py` | The conversion graph, its feature steps and the rules ([api.md](docs/api.md), [features.md](docs/features.md)) |
 | `desacordo_ortografico/detect.py`, `guard.py`, `ml.py` | Detection, the sister-language guard and the learned models |
 | `desacordo_ortografico/lexicon.py`, `data/*.json` | The loader and every data file ([data.md](docs/data.md)) |
 | `desacordo_ortografico/cli.py` | The `desacordo` command |
