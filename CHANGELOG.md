@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.39a4](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a4) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a3...0.3.39a4)
+
+**Merged pull requests:**
+
+- docs: add a features page, a feature chart and real command output [\#112](https://github.com/TigreGotico/desacordo_ortografico/pull/112) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.39a3](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a3) (2026-11-25)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a2...0.3.39a3)
