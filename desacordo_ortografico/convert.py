@@ -490,9 +490,10 @@ class OrthographyConverter:
         #    palavras homógrafas de outras em que são abertas a letra e e a letra o,
         #    exceção feita da forma pôde, que se acentuará por oposição a pode". The
         #    table lists words with that accent in the 1943 Formulário (14.ª). Its
-        #    inverse is the backward map, so a word whose bare form is the more frequent
-        #    reading (corte, deveras, colher) has no row. The law abolishes the accent on
-        #    the word, so each part of a hyphenated form loses it (fêz-se -> fez-se).
+        #    inverse is the backward map, except for the forward-only rows of a word whose
+        #    bare form is the more frequent reading (corte, deveras, colher): they drop the
+        #    accent and never restore it. The law abolishes the accent on the word, so each
+        #    part of a hyphenated form loses it (fêz-se -> fez-se).
         accent_1971 = _Edge(
             _Pass(steps=[
                 ("differential-1971",
