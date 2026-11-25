@@ -1,8 +1,8 @@
 # Changelog
 
-## [0.3.40a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.40a2) (2026-11-25)
+## [0.3.40a3](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.40a3) (2026-11-25)
 
-[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a1...0.3.40a2)
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a1...0.3.40a3)
 
 **Merged pull requests:**
 
