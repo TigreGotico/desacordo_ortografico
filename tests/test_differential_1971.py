@@ -37,7 +37,6 @@ DROPPED = [
     ("êstes", "estes"),
     ("fêz", "fez"),
     ("fôr", "for"),
-    ("fôra", "fora"),
     ("fôsse", "fosse"),
     ("nêle", "nele"),
     ("nêles", "neles"),
@@ -47,31 +46,46 @@ DROPPED = [
 ]
 
 # The bare form of each of these words is the more frequent reading of the pair (o corte,
-# deveras, a colher), and the 1971 table is also the backward map: a row for one of them
-# would put the circumflex on that reading at br_1943.
-NOT_LISTED = [
+# deveras, a colher; fora is an adverb 45 times and a preposition twice against 7 uses as the
+# verb, in UD Bosque). They are forward-only rows: the accent goes toward br_1971 and
+# ao1990-br, and the bare form stays bare going back.
+FORWARD_ONLY = [
     ("acêrto", "acerto"),
     ("côrte", "corte"),
     ("côrtes", "cortes"),
     ("devêras", "deveras"),
     ("colhêr", "colher"),
     ("colhêres", "colheres"),
+    ("fôra", "fora"),
 ]
 
 
 @pytest.mark.parametrize("dst", TARGETS)
 @pytest.mark.parametrize("src", SOURCES)
-@pytest.mark.parametrize("word,bare", DROPPED)
+@pytest.mark.parametrize("word,bare", DROPPED + FORWARD_ONLY)
 def test_circumflex_dropped(word, bare, src, dst):
     assert convert(word, src, dst) == bare
 
 
-@pytest.mark.xfail(strict=True, reason="desacordo#70")
-@pytest.mark.parametrize("dst", TARGETS)
-@pytest.mark.parametrize("src", SOURCES)
-@pytest.mark.parametrize("word,bare", NOT_LISTED)
-def test_circumflex_dropped_not_listed(word, bare, src, dst):
-    assert convert(word, src, dst) == bare
+@pytest.mark.parametrize("dst", ("br_1943", "reforma_1911", "etymological"))
+@pytest.mark.parametrize("src", TARGETS)
+@pytest.mark.parametrize("word,bare", FORWARD_ONLY)
+def test_a_forward_only_word_stays_bare_going_back(word, bare, src, dst):
+    assert convert(bare, src, dst) == bare
+
+
+@pytest.mark.parametrize("old, new", [
+    ("Êle está lá fôra.", "Ele está lá fora."),
+    ("O acêrto da côrte devêras agradou.", "O acerto da corte deveras agradou."),
+    ("Vou colhêr as flores e dois colhêres.", "Vou colher as flores e dois colheres."),
+])
+def test_forward_only_words_in_a_sentence(old, new):
+    assert convert(old, "br_1943", "br_1971") == new
+
+
+def test_the_bare_sentence_keeps_its_readings_going_back():
+    assert convert("Ele está lá fora.", "ao1990-br", "br_1943") == "Êle está lá fora."
+    assert convert("Foi ao corte e deveras gostou.", "br_1971", "br_1943") == "Foi ao corte e deveras gostou."
 
 
 @pytest.mark.parametrize("dst", TARGETS)

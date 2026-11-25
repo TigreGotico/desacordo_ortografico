@@ -21,7 +21,6 @@
     "aquêle": "aquele",
     "dêle": "dele",
     "nêle": "nele",
-    "fôra": "fora",
     "almôço": "almoço",
     "bôlo": "bolo",
     "môço": "moço",
@@ -39,6 +38,16 @@
     "enfêrmo": "enfermo",
     "enfêrma": "enferma",
     "enfêrmas": "enfermas"
+  },
+  "_forward_only_note": "The bare form of each word below is the more frequent reading of its pair: in UD Bosque, fora is an adverb 45 times and a preposition twice, against 7 uses as the verb; o corte, deveras and a colher are the common readings of corte, deveras and colher. Lei 5.765/1971, Art. 1.º abolishes the circumflex on all of them (only pôde stays), so the forward pass drops it. The backward pass does not read this map, so the bare form stays bare at br_1943. Formulário Ortográfico de 1943, 14.ª: \"acêrto (s.m.) e acerto (v.); [...] côrte, côrtes (s.f.) e corte, cortes (v.); [...] devêras (v.) e deveras (adv.); [...] fôra (v.) e fora (adv. interj. ou s.m.)\"; OBSERVAÇÃO 2.ª: \"colhêr e colhêres, formas do infinito e do futuro do conjuntivo do verbo colhêr, recebem acento circunflexo para se diferençarem dos homógrafos heterofônicos colher e colheres, substantivos femininos que se proferem com e aberto\".",
+  "forward_only": {
+    "acêrto": "acerto",
+    "côrte": "corte",
+    "côrtes": "cortes",
+    "devêras": "deveras",
+    "colhêr": "colher",
+    "colhêres": "colheres",
+    "fôra": "fora"
   },
   "_subtonic_note": "Grave-accented subtonic vowels existed in pre-1971 spellings such as 'somente'<-'sòmente', 'sozinho'<-'sòzinho', 'cafezinho'<-'cafèzinho', 'unicamente'<-'ùnicamente'. Removal is a clean rule (strip grave accent on e/i/o/u, never on crasis 'a'/'as'), so no exhaustive list is stored.",
   "_kept_differential": ["pôde", "pôr", "pélo", "pêlo", "pólo", "pára"],

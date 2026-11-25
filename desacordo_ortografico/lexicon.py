@@ -701,11 +701,16 @@ class Lexicon:
     # --------------------------------------------------- 1971/73 differential
     @cached_property
     def accent_71_73_old2new(self) -> Dict[str, str]:
-        return {k.lower(): v.lower() for k, v in self._accent_71_73.get("differential", {}).items()}
+        """The differential circumflex that 1971 drops: the rows of ``differential`` and of
+        ``forward_only``. The backward pass reads :attr:`accent_71_73_new2old`."""
+        rows = {**self._accent_71_73.get("differential", {}), **self._accent_71_73.get("forward_only", {})}
+        return {k.lower(): v.lower() for k, v in rows.items()}
 
     @cached_property
     def accent_71_73_new2old(self) -> Dict[str, str]:
-        return _invert(self.accent_71_73_old2new)
+        """The ``differential`` rows inverted. A ``forward_only`` row has no inverse: its bare
+        form is the more frequent reading (o corte, deveras, a colher, fora)."""
+        return _invert({k.lower(): v.lower() for k, v in self._accent_71_73.get("differential", {}).items()})
 
 
 def _clean_ao_map(cells: Dict[str, List[str]]) -> Dict[str, str]:
