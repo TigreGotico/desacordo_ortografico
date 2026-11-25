@@ -458,6 +458,7 @@
   {"token": "datilográfico", "european": "dactilográfico", "form": "dactilográfico", "rows": "*", "pair": "one word", "source": "VOLP: datilográfico adj. | dactilográfico adj."},
   {"token": "datilógrafa", "european": "dactilógrafa", "form": "dactilógrafa", "rows": "*", "pair": "one word", "source": "VOLP: datilógrafo adj. s.m.; cf.datilografo, fl. do v. datilografar | dactilógrafo adj. s.m.; cf. dactilografo, fl. do v. dactilografar"},
   {"token": "deadjetival", "european": "deadjectival", "form": "deadjetival", "rows": "*", "pair": "one word", "source": "Priberam deadjectival (Brazil after the AO1990: deadjetival)"},
+  {"token": "dececionada", "european": "decepcionada", "form": "decepcionada", "rows": "*", "pair": "one word", "source": "VOLP: decepcionado adj.; no dececionado"},
   {"token": "dececionado", "european": "decepcionado", "form": "decepcionado", "rows": "*", "pair": "one word", "source": "VOLP: decepcionado adj.; no dececionado"},
   {"token": "dececionante", "european": "decepcionante", "form": "decepcionante", "rows": "*", "pair": "one word", "source": "VOLP: decepcionante adj.2g.; no dececionante"},
   {"token": "dececionar", "european": "decepcionar", "form": "decepcionar", "rows": "*", "pair": "one word", "source": "VOLP: decepcionar v.; no dececionar"},

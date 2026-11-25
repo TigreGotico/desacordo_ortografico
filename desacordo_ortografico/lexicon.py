@@ -79,8 +79,11 @@ def _letters(word: str) -> str:
 #: (contracted), retrato (a portrait) beside retracto (a retraction), trato (from tratar,
 #: maus tratos) beside tracto (a tract). Priberam gives corretor (a broker) as its own word
 #: beside corrector (one who corrects), edital and retor (a teacher of rhetoric) with one
-#: spelling, and rector as the old form of reitor.
-_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "trato", "corretor", "edital", "retor"})
+#: spelling, and rector as the old form of reitor. The verb retratar (Priberam: "Fazer o
+#: retrato de", beside retratar "Tornar a tratar" and the retract sense, "Grafia anterior ao
+#: Acordo Ortográfico de 1990: retractar") is the portray sense in the frequent reading, and
+#: the VOP lists it with one spelling (lemma 2254), so it never gains the consonant.
+_CP_HOMOGRAPHS = frozenset({"contrato", "retrato", "retratar", "trato", "corretor", "edital", "retor"})
 
 #: The bare forms of pt-PT dual cells that are also a verb form of a verb with one pt-PT
 #: spelling (see the module docstring). The dual step leaves these forms as written. Their
