@@ -668,6 +668,21 @@ class Lexicon:
     def reform1911_new2old(self) -> Dict[str, str]:
         return _invert(self.reform1911_old2new)
 
+    def _bare_backward(self, target: str) -> Dict[str, str]:
+        return {r["form"]: r["value"] for r in _load("circumflex_backward.json")[target]}
+
+    @cached_property
+    def reform1911_bare_backward(self) -> Dict[str, str]:
+        """The words that a backward pass toward reforma_1911 writes without the circumflex
+        (tôda -> toda), from ``data/circumflex_backward.json``. Each row quotes its counts."""
+        return self._bare_backward("reforma_1911")
+
+    @cached_property
+    def etymological_bare_backward(self) -> Dict[str, str]:
+        """The words that a backward pass toward etymological writes without the circumflex
+        (êste -> este), from ``data/circumflex_backward.json``."""
+        return self._bare_backward("etymological")
+
     def _from_1911(self, target: str) -> Dict[str, str]:
         return {r["form"]: r["value"] for r in self._spelling
                 if r["era"] == "reforma_1911" and r["target"] == target}

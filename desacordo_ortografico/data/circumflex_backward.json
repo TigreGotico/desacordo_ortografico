@@ -1,0 +1,23 @@
+{
+  "_about": "Words that the backward pass writes without the circumflex that a later norm added. Each list holds the rows of one backward edge, and no forward pass reads it. The 1911 and 1943 norms write the differential circumflex (êste, sôbre), and so does the table of the 1971 reform, which is also the backward map from br_1971 and ao1990-br. Pre-1911 print writes the bare form, and the 1913 print in the 1911 spelling writes toda, todo and fez bare. No orthographic norm governs pre-1911 print, so usage decides: each row quotes the counts of the bare and accented form. The list for reforma_1911 holds the words that the 1913 print writes bare. The list for etymological holds those words and the ones that the 1913 print still accents, which pre-1911 print writes bare. côr keeps its circumflex (côr 310, cor 5 in the 13 books; 12 of 13 write the accent more often), pôde stays as the table gives it, and the contraction pelo and the preposition por are bare in every norm, so neither has a row.",
+  "_sources": [
+    "13 pre-1911 Project Gutenberg books, paragraph text: counts of each bare and accented form",
+    "Eça de Queirós, Contos (Chardron, 1913), printed in the 1911 spelling: Project Gutenberg pg31347"
+  ],
+  "reforma_1911": [
+    {"form": "tôda", "value": "toda", "source": "13 pre-1911 Project Gutenberg books (paragraph text): toda 1270, tôda 1; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): toda 124, tôda 0; books that write the accent more often: 0 of 13"},
+    {"form": "tôdo", "value": "todo", "source": "13 pre-1911 Project Gutenberg books (paragraph text): todo 1064, tôdo 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): todo 116, tôdo 0; books that write the accent more often: 0 of 13"},
+    {"form": "fêz", "value": "fez", "source": "13 pre-1911 Project Gutenberg books (paragraph text): fez 669, fêz 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): fez 10, fêz 0; books that write the accent more often: 0 of 13"}
+  ],
+  "etymological": [
+    {"form": "êste", "value": "este", "source": "13 pre-1911 Project Gutenberg books (paragraph text): este 1293, êste 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): este 3, êste 48; books that write the accent more often: 0 of 13"},
+    {"form": "êstes", "value": "estes", "source": "13 pre-1911 Project Gutenberg books (paragraph text): estes 325, êstes 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): estes 2, êstes 13; books that write the accent more often: 0 of 13"},
+    {"form": "êsse", "value": "esse", "source": "13 pre-1911 Project Gutenberg books (paragraph text): esse 1262, êsse 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): esse 2, êsse 55; books that write the accent more often: 0 of 13"},
+    {"form": "êsses", "value": "esses", "source": "13 pre-1911 Project Gutenberg books (paragraph text): esses 461, êsses 1; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): esses 0, êsses 20; books that write the accent more often: 0 of 13"},
+    {"form": "tôda", "value": "toda", "source": "13 pre-1911 Project Gutenberg books (paragraph text): toda 1270, tôda 1; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): toda 124, tôda 0; books that write the accent more often: 0 of 13"},
+    {"form": "tôdo", "value": "todo", "source": "13 pre-1911 Project Gutenberg books (paragraph text): todo 1064, tôdo 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): todo 116, tôdo 0; books that write the accent more often: 0 of 13"},
+    {"form": "fêz", "value": "fez", "source": "13 pre-1911 Project Gutenberg books (paragraph text): fez 669, fêz 0; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): fez 10, fêz 0; books that write the accent more often: 0 of 13"},
+    {"form": "sôbre", "value": "sobre", "source": "13 pre-1911 Project Gutenberg books (paragraph text): sobre 1958, sôbre 82; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): sobre 5, sôbre 233; books that write the accent more often: 1 of 13 (Garrett)"},
+    {"form": "govêrno", "value": "governo", "source": "13 pre-1911 Project Gutenberg books (paragraph text): governo 211, govêrno 15; pg31347 (Eça de Queirós, Contos, Chardron 1913, printed in the 1911 spelling): governo 1, govêrno 3; books that write the accent more often: 1 of 13 (one book)"}
+  ]
+}
