@@ -732,8 +732,8 @@ class Lexicon:
 
     @cached_property
     def accent_71_73_new2old(self) -> Dict[str, str]:
-        """The ``differential`` rows inverted. A ``forward_only`` row has no inverse: its bare
-        form is the more frequent reading (o corte, deveras, a colher, fora)."""
+        """The ``differential`` rows inverted. A ``forward_only`` row has no inverse
+        (corte, deveras, colher, fora)."""
         return _invert({k.lower(): v.lower() for k, v in self._accent_71_73.get("differential", {}).items()})
 
 
