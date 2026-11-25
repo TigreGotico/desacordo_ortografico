@@ -1,8 +1,32 @@
 # Changelog
 
+## [0.3.46a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.46a1) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.45a1...0.3.46a1)
+
+**Merged pull requests:**
+
+- fix: cite corpus counts in the forward-only note \(\#129\) [\#131](https://github.com/TigreGotico/desacordo_ortografico/pull/131) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.45a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.45a1) (2026-11-25)
 
-[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a3...0.3.45a1)
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.44a1...0.3.45a1)
+
+## [0.3.44a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.44a1) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.43a1...0.3.44a1)
+
+## [0.3.43a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.43a1) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.42a1...0.3.43a1)
+
+## [0.3.42a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.42a1) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.41a1...0.3.42a1)
+
+## [0.3.41a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.41a1) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a3...0.3.41a1)
 
 **Merged pull requests:**
 
