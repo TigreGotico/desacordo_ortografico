@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.40a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.40a1) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a4...0.3.40a1)
+
+**Merged pull requests:**
+
+- test: strict xfail for \#114 \(1911-geminates drops the mute c of accionistas\) [\#119](https://github.com/TigreGotico/desacordo_ortografico/pull/119) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- test: strict xfail for \#113 \(ao1990-br to ao1990-pt keeps mute c/p\) [\#118](https://github.com/TigreGotico/desacordo_ortografico/pull/118) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- fix: convert the -ámos preterite, keep retratar, keep decepcionada toward pt-BR [\#117](https://github.com/TigreGotico/desacordo_ortografico/pull/117) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.39a4](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a4) (2026-11-25)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a3...0.3.39a4)
