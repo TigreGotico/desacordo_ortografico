@@ -8,7 +8,7 @@ verify: d=$(mktemp -d) && sed '/^```/d' docs/quickstart.md > $d/q.txt && python 
 see: `api.md`, `orthographies.md`, `index.md`
 -->
 
-This page walks through the three things the package does: detect a norm, convert a text, and read the full result with its warnings.
+This page walks through the three things the package does: detect a norm, convert a text, and read the full result with its warnings. Run each Python example in a shell. Each one prints what the page shows.
 
 ## Install
 
@@ -132,16 +132,67 @@ True
 
 ## Command line
 
-```bash
-desacordo detect "a pharmacia do theatro"
-desacordo convert --from pre-ao1990-pt --to ao1990-pt "a acção directa"
-desacordo convert --from pre-ao1990-pt --to ao1990 --variant br "a recepção"
-desacordo convert -v --from ao1990-pt --to ao1990-br "o facto"
-desacordo detect --method nb "a idéia do vôo"
-desacordo norms
+The `desacordo` command wraps the same calls. Each line below shows a command and what it prints.
+
+```console
+$ desacordo detect "a pharmacia do theatro"
+etymological	confidence=0.99
+  note: pre-1911 pseudo-etymological spelling (Greek digraphs, geminates)
+$ desacordo detect -v "a pharmacia do theatro"
+etymological	confidence=0.99
+  note: pre-1911 pseudo-etymological spelling (Greek digraphs, geminates)
+  markers: etym:pharmacia, etym-pattern:theatro
+$ desacordo detect --method nb "a idéia do vôo"
+br_1971	confidence=0.99
+  note: pre-AO1990 Brazilian norm (trema and old accents: freqüência, idéia)
+$ desacordo convert --from pre-ao1990-pt --to ao1990-pt "a acção directa"
+a ação direta
+$ desacordo convert --from pre-ao1990-pt --to ao1990 --variant br "a recepção"
+a recepção
+$ desacordo convert --from pre-ao1990-pt --to ao1990 --variant pt "a recepção"
+a receção
+$ desacordo convert -v --from ao1990-pt --to ao1990-br "o facto"
+  alt: facto -> facto | fato
+o facto
+$ desacordo norms
+ao1990-br
+ao1990-pt
+br_1943
+br_1971
+etymological
+pt_1945
+pt_1973
+reforma_1911
 ```
 
-`--variant` picks the European or the Brazilian AO1990 target. The third line prints `a recepção`, and `--variant pt` prints `a receção`. `-v` prints the lossy-edge warnings and the dual-form alternatives (`alt: facto -> facto | fato`) to stderr. `--stdin` reads the text from standard input.
+`--variant` picks the European or the Brazilian AO1990 target. With `detect`, `-v` adds the markers to the output. With `convert`, `-v` prints the lossy-edge warnings and the dual-form alternatives to stderr. `--stdin` reads the text from standard input.
+
+## Run the example scripts
+
+The `examples/` folder holds five short scripts. Each one prints its result and needs no arguments.
+
+| Script | It shows |
+|---|---|
+| `examples/01_detect.py` | detection of a sample from each norm |
+| `examples/02_convert_ao90.py` | conversion between the pre-AO1990 norms and AO1990, with the lossy-edge warning |
+| `examples/03_historical_1911.py` | one sentence carried along the European line |
+| `examples/04_dual_forms.py` | the dual forms that AO1990 keeps apart |
+| `examples/05_language_guard.py` | the guard that flags Mirandese, Galician and Barranquenho |
+
+The third script prints this:
+
+```console
+$ python examples/03_historical_1911.py
+Forward through the European line:
+  (start)        A pharmacia tinha orthographia antiga.
+  reforma_1911   A farmácia tinha ortografia antiga.
+  pt_1945        A farmácia tinha ortografia antiga.
+  pt_1973        A farmácia tinha ortografia antiga.
+  ao1990-pt      A farmácia tinha ortografia antiga.
+
+Single hop, etymological -> AO1990 (Brazilian):
+  A farmácia tinha ortografia antiga.
+```
 
 ## Reversibility
 

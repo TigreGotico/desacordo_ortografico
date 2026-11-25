@@ -2,61 +2,61 @@
   "corpus": "silver_corpus.jsonl",
   "n": 1329,
   "conversion": {
-    "overall_exact": 0.9142212189616253,
-    "overall_token": 0.9873126103535657,
+    "overall_exact": 0.9410942706653768,
+    "overall_token": 0.9909690966527477,
     "n_conversions": 9303,
     "by_pair": {
       "etymological->pt_1973": {
-        "exact": 1301,
+        "exact": 1321,
         "n": 1329,
-        "token_acc": 0.9978110343798832
+        "token_acc": 0.999321026352629
       },
       "etymological->ao1990-pt": {
-        "exact": 1258,
+        "exact": 1302,
         "n": 1329,
-        "token_acc": 0.9940027429305088
+        "token_acc": 0.9978811193822482
       },
       "etymological->ao1990-br": {
-        "exact": 976,
+        "exact": 1211,
         "n": 1329,
-        "token_acc": 0.9605226915046347
+        "token_acc": 0.9844868971844151
       },
       "pt_1973->ao1990-pt": {
-        "exact": 1278,
+        "exact": 1306,
         "n": 1329,
-        "token_acc": 0.9956053247813976
+        "token_acc": 0.9981752571481693
       },
       "br_1971->ao1990-br": {
-        "exact": 1319,
+        "exact": 1324,
         "n": 1329,
-        "token_acc": 0.9992466044949115
+        "token_acc": 0.9995643579729359
       },
       "ao1990-pt->ao1990-br": {
-        "exact": 1187,
+        "exact": 1208,
         "n": 1329,
-        "token_acc": 0.9820375594641971
+        "token_acc": 0.9842555174947963
       },
       "ao1990-br->ao1990-pt": {
-        "exact": 1186,
+        "exact": 1083,
         "n": 1329,
-        "token_acc": 0.9819623149194265
+        "token_acc": 0.9730995010340402
       }
     },
     "by_feature": {
-      "ch_k": 0.9241622574955908,
-      "differential": 0.9432485322896281,
-      "digraph": 0.9411764705882353,
-      "diphthong": 0.9694581280788177,
-      "divergence": 0.9076773566569485,
-      "dual": 0.9248895434462445,
-      "geminate": 0.9503105590062112,
-      "hyphen_rs": 0.6987012987012987,
-      "mn_ps": 0.9910714285714286,
-      "months": 0.9103641456582633,
-      "nasal": 0.9137309292649098,
-      "silent_ct": 0.8537946428571429,
-      "silent_pt": 0.8306878306878307,
-      "trema": 0.9743589743589743
+      "ch_k": 0.9770723104056437,
+      "differential": 0.958904109589041,
+      "digraph": 0.9599604547701434,
+      "diphthong": 0.9763546798029556,
+      "divergence": 0.924198250728863,
+      "dual": 0.9396170839469808,
+      "geminate": 0.9683229813664597,
+      "hyphen_rs": 0.8207792207792208,
+      "mn_ps": 1.0,
+      "months": 0.9355742296918768,
+      "nasal": 0.9395284327323162,
+      "silent_ct": 0.9166666666666666,
+      "silent_pt": 0.8333333333333334,
+      "trema": 0.9816849816849816
     },
     "by_feature_n": {
       "ch_k": 567,
@@ -75,41 +75,6 @@
       "trema": 819
     },
     "examples": [
-      {
-        "pair": "etymological->pt_1973",
-        "id": "s21",
-        "in": "A philosophia do author reflectia sobre a sciência.",
-        "got": "A filosofia do autor reflectia sobre a sciência.",
-        "silver": "A filosofia do autor reflectia sobre a ciência."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p01-003",
-        "in": "A philosophia da sciencia influencia a theoria physica moderna.",
-        "got": "A filosofia da ciência influência a teoria física moderna.",
-        "silver": "A filosofia da ciência influencia a teoria física moderna."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p01-076",
-        "in": "A estética do design influencia a percepção do utilizador.",
-        "got": "A estética do design influência a percepção do utilizador.",
-        "silver": "A estética do design influencia a percepção do utilizador."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p02-036",
-        "in": "O aspecto do céu anunciava tempestade sobre os montes.",
-        "got": "O aspecto do céu anunciava tempestade sobre os montês.",
-        "silver": "O aspecto do céu anunciava tempestade sobre os montes."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p02-105",
-        "in": "O cordeiro pára e bale à procura da ovelha perdida.",
-        "got": "O cordeiro pára e balé à procura da ovelha perdida.",
-        "silver": "O cordeiro pára e bale à procura da ovelha perdida."
-      },
       {
         "pair": "etymological->pt_1973",
         "id": "p04-018",
@@ -140,34 +105,6 @@
       },
       {
         "pair": "etymological->pt_1973",
-        "id": "p05-034",
-        "in": "O cão correu atrás do gato pelo corredor até à cozinha.",
-        "got": "O cão corréu atrás do gato pelo corredor até à cozinha.",
-        "silver": "O cão correu atrás do gato pelo corredor até à cozinha."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p05-039",
-        "in": "A poltrona velha continua a ser a mais cómoda de toda a sala.",
-        "got": "A poltrona velha contínua a ser a mais cómoda de toda a sala.",
-        "silver": "A poltrona velha continua a ser a mais cómoda de toda a sala."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p05-078",
-        "in": "A geleia ferveu com tanta frequência que a panela quase transbordou.",
-        "got": "A geleia ferveu com tantã frequência que a panela quase transbordou.",
-        "silver": "A geleia ferveu com tanta frequência que a panela quase transbordou."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p05-079",
-        "in": "Connosco o quotidiano corre devagar entre o jardim e a varanda.",
-        "got": "Connosco o quotidiano corré devagar entre o jardim e a varanda.",
-        "silver": "Connosco o quotidiano corre devagar entre o jardim e a varanda."
-      },
-      {
-        "pair": "etymological->pt_1973",
         "id": "p06-045",
         "in": "Junto ao pólo, o sol não se punha durante longas semanas de Verão.",
         "got": "Junto ao pólo, o sol não se punha durante longas semanas de verão.",
@@ -175,87 +112,10 @@
       },
       {
         "pair": "etymological->pt_1973",
-        "id": "p06-049",
-        "in": "Em Abril daquelle ano, o facto correu de aldeia em aldeia.",
-        "got": "Em Abril daquele ano, o facto corréu de aldeia em aldeia.",
-        "silver": "Em Abril daquele ano, o facto correu de aldeia em aldeia."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p06-075",
-        "in": "Para nós, o facto continua a ser uma porta aberta sobre o passado.",
-        "got": "Para nós, o facto contínua a ser uma porta aberta sobre o passado.",
-        "silver": "Para nós, o facto continua a ser uma porta aberta sobre o passado."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p06-083",
-        "in": "A monarchia perdera força, mas o povo guardava a memória dos antigos reis.",
-        "got": "A monarquia perdera força, mas o povo guardava a memória dos antigos réis.",
-        "silver": "A monarquia perdera força, mas o povo guardava a memória dos antigos reis."
-      },
-      {
-        "pair": "etymological->pt_1973",
         "id": "p07-109",
         "in": "A estreia da exposição reuniu artistas e coleccionadores.",
         "got": "A estreia da exposição reuniu artistas e colecionadores.",
         "silver": "A estreia da exposição reuniu artistas e coleccionadores."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p09-009",
-        "in": "O cozinheiro disse que o molho era tranquilo de fazer.",
-        "got": "O cozinheiro dissê que o molho era tranquilo de fazer.",
-        "silver": "O cozinheiro disse que o molho era tranquilo de fazer."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p09-024",
-        "in": "Elle disse que o facto não estragava a sobremesa.",
-        "got": "Ele dissê que o facto não estragava a sobremesa.",
-        "silver": "Ele disse que o facto não estragava a sobremesa."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p11-009",
-        "in": "O peccado original é central na doutrina christã.",
-        "got": "O pecado original é central na doutrina christã.",
-        "silver": "O pecado original é central na doutrina cristã."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p11-011",
-        "in": "A ética christã e a esthética grega dialogam há séculos.",
-        "got": "A ética christã e a estética grega dialogam há séculos.",
-        "silver": "A ética cristã e a estética grega dialogam há séculos."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p11-026",
-        "in": "O christianismo e a gnose competiram pela alma do mundo antigo.",
-        "got": "O christianismo e a gnose competiram pela alma do mundo antigo.",
-        "silver": "O cristianismo e a gnose competiram pela alma do mundo antigo."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p11-042",
-        "in": "A escatologia christã promete um cosmos renovado no fim dos tempos.",
-        "got": "A escatologia christã promete um cosmos renovado no fim dos tempos.",
-        "silver": "A escatologia cristã promete um cosmos renovado no fim dos tempos."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p11-067",
-        "in": "A patrologia estuda os theólogos christãos dos primeiros séculos.",
-        "got": "A patrologia estuda os teólogos christãos dos primeiros séculos.",
-        "silver": "A patrologia estuda os teólogos cristãos dos primeiros séculos."
-      },
-      {
-        "pair": "etymological->pt_1973",
-        "id": "p11-070",
-        "in": "A apologética christã respondia às objecções dos pagãos.",
-        "got": "A apologética christã respondia às objecções dos pagãos.",
-        "silver": "A apologética cristã respondia às objecções dos pagãos."
       },
       {
         "pair": "etymological->pt_1973",
@@ -275,36 +135,15 @@
         "pair": "etymological->ao1990-pt",
         "id": "s21",
         "in": "A philosophia do author reflectia sobre a sciência.",
-        "got": "A filosofia do autor reflectia sobre a sciência.",
+        "got": "A filosofia do autor reflectia sobre a ciência.",
         "silver": "A filosofia do autor refletia sobre a ciência."
       },
       {
         "pair": "etymological->ao1990-pt",
-        "id": "p01-003",
-        "in": "A philosophia da sciencia influencia a theoria physica moderna.",
-        "got": "A filosofia da ciência influência a teoria física moderna.",
-        "silver": "A filosofia da ciência influencia a teoria física moderna."
-      },
-      {
-        "pair": "etymological->ao1990-pt",
-        "id": "p01-076",
-        "in": "A estética do design influencia a percepção do utilizador.",
-        "got": "A estética do design influência a perceção do utilizador.",
-        "silver": "A estética do design influencia a perceção do utilizador."
-      },
-      {
-        "pair": "etymological->ao1990-pt",
-        "id": "p02-036",
-        "in": "O aspecto do céu anunciava tempestade sobre os montes.",
-        "got": "O aspeto do céu anunciava tempestade sobre os montês.",
-        "silver": "O aspeto do céu anunciava tempestade sobre os montes."
-      },
-      {
-        "pair": "etymological->ao1990-pt",
-        "id": "p02-105",
-        "in": "O cordeiro pára e bale à procura da ovelha perdida.",
-        "got": "O cordeiro para e balé à procura da ovelha perdida.",
-        "silver": "O cordeiro para e bale à procura da ovelha perdida."
+        "id": "p02-005",
+        "in": "O dono da quinta era um homem de bello carácter.",
+        "got": "O dono da quinta era um homem de belo carácter.",
+        "silver": "O dono da quinta era um homem de belo caráter."
       },
       {
         "pair": "etymological->ao1990-pt",
@@ -315,38 +154,52 @@
       },
       {
         "pair": "etymological->ao1990-pt",
-        "id": "p03-020",
-        "in": "A inspecção do estabelecimento detectou irregularidades graves.",
-        "got": "A inspeção do estabelecimento detectou irregularidades graves.",
-        "silver": "A inspeção do estabelecimento detetou irregularidades graves."
+        "id": "p03-007",
+        "in": "O aspecto formal do contracto exacto foi analysado pelo advogado.",
+        "got": "O aspeto formal do contracto exato foi analisado pelo advogado.",
+        "silver": "O aspeto formal do contrato exato foi analisado pelo advogado."
       },
       {
         "pair": "etymological->ao1990-pt",
-        "id": "p03-030",
-        "in": "O género das infracções foi catalogado pelo gabinete de estatística.",
-        "got": "O género das infracções foi catalogado pelo gabinete de estatística.",
-        "silver": "O género das infrações foi catalogado pelo gabinete de estatística."
+        "id": "p03-034",
+        "in": "O sector da justiça enfrenta difficuldades na execução das penas.",
+        "got": "O sector da justiça enfrenta dificuldades na execução das penas.",
+        "silver": "O setor da justiça enfrenta dificuldades na execução das penas."
       },
       {
         "pair": "etymological->ao1990-pt",
-        "id": "p03-039",
-        "in": "O facto consummado affectou a credibilidade do governo.",
-        "got": "O facto consumado afectou a credibilidade do governo.",
-        "silver": "O facto consumado afetou a credibilidade do governo."
+        "id": "p03-047",
+        "in": "O carácter collectivo da greve foi reconhecido pelo tribunal do trabalho.",
+        "got": "O carácter coletivo da greve foi reconhecido pelo tribunal do trabalho.",
+        "silver": "O caráter coletivo da greve foi reconhecido pelo tribunal do trabalho."
       },
       {
         "pair": "etymological->ao1990-pt",
-        "id": "p03-046",
-        "in": "A inspecção tributária detectou uma fraude fiscal de grande dimensão.",
-        "got": "A inspeção tributária detectou uma fraude fiscal de grande dimensão.",
-        "silver": "A inspeção tributária detetou uma fraude fiscal de grande dimensão."
+        "id": "p03-049",
+        "in": "O dictador exerceu um acto de repressão contra a opposição democrática.",
+        "got": "O dictador exerceu um ato de repressão contra a oposição democrática.",
+        "silver": "O ditador exerceu um ato de repressão contra a oposição democrática."
       },
       {
         "pair": "etymological->ao1990-pt",
-        "id": "p04-013",
-        "in": "A óptica do oftalmologista detectou uma infecção na córnea.",
-        "got": "A ótica do oftalmologista detectou uma infeção na córnea.",
-        "silver": "A ótica do oftalmologista detetou uma infeção na córnea."
+        "id": "p03-072",
+        "in": "O carácter vinculativo do acórdão obriga as instâncias inferiores.",
+        "got": "O carácter vinculativo do acórdão obriga as instâncias inferiores.",
+        "silver": "O caráter vinculativo do acórdão obriga as instâncias inferiores."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p03-082",
+        "in": "O sector público enfrenta uma reforma estrutural da administração.",
+        "got": "O sector público enfrenta uma reforma estrutural da administração.",
+        "silver": "O setor público enfrenta uma reforma estrutural da administração."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p03-097",
+        "in": "O carácter público da audiência assegura a transparência da justiça.",
+        "got": "O carácter público da audiência assegura a transparência da justiça.",
+        "silver": "O caráter público da audiência assegura a transparência da justiça."
       },
       {
         "pair": "etymological->ao1990-pt",
@@ -354,45 +207,189 @@
         "in": "O psychólogo e o pharmacêutico discutiram o tratamento do doente.",
         "got": "O psichólogo e o farmacêutico discutiram o tratamento do doente.",
         "silver": "O psicólogo e o farmacêutico discutiram o tratamento do doente."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p04-030",
+        "in": "De facto, o aspecto óptimo da pele reflecte uma boa nutrição.",
+        "got": "De facto, o aspeto ótimo da pele reflecte uma boa nutrição.",
+        "silver": "De facto, o aspeto ótimo da pele reflete uma boa nutrição."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p04-078",
+        "in": "O lymphócito combateu a infecção de modo óptimo no doente.",
+        "got": "O limfócito combateu a infeção de modo ótimo no doente.",
+        "silver": "O linfócito combateu a infeção de modo ótimo no doente."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p04-094",
+        "in": "O biochímico e o pharmacêutico isolaram a molécula contra a infecção.",
+        "got": "O biochímico e o farmacêutico isolaram a molécula contra a infeção.",
+        "silver": "O bioquímico e o farmacêutico isolaram a molécula contra a infeção."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p04-105",
+        "in": "O lymphoma exigiu um tratamento óptimo e prolongado no doente.",
+        "got": "O limfoma exigiu um tratamento ótimo e prolongado no doente.",
+        "silver": "O linfoma exigiu um tratamento ótimo e prolongado no doente."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p07-009",
+        "in": "O espectáculo de dança emocionou os espectadores.",
+        "got": "O espetáculo de dança emocionou os espectadores.",
+        "silver": "O espetáculo de dança emocionou os espetadores."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p07-048",
+        "in": "O espectador anónimo escreveu uma carta ao maestro.",
+        "got": "O espectador anónimo escreveu uma carta ao maestro.",
+        "silver": "O espetador anónimo escreveu uma carta ao maestro."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p07-104",
+        "in": "A selecção de poemas reflectia o gosto do antologista.",
+        "got": "A seleção de poemas reflectia o gosto do antologista.",
+        "silver": "A seleção de poemas refletia o gosto do antologista."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p08-007",
+        "in": "A colecção de livros do professor reflecte annos de estudo dedicado.",
+        "got": "A coleção de livros do professor reflecte anos de estudo dedicado.",
+        "silver": "A coleção de livros do professor reflete anos de estudo dedicado."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p08-041",
+        "in": "A lição prática reflecte o esforço collectivo da turma.",
+        "got": "A lição prática reflecte o esforço coletivo da turma.",
+        "silver": "A lição prática reflete o esforço coletivo da turma."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p08-061",
+        "in": "O ensaio de philosophia reflecte o esforço collectivo dos alunos.",
+        "got": "O ensaio de filosofia reflecte o esforço coletivo dos alunos.",
+        "silver": "O ensaio de filosofia reflete o esforço coletivo dos alunos."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p08-099",
+        "in": "O resultado do exame reflecte o esforço collectivo da turma.",
+        "got": "O resultado do exame reflecte o esforço coletivo da turma.",
+        "silver": "O resultado do exame reflete o esforço coletivo da turma."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p11-010",
+        "in": "O director espiritual aconselhou a alma aflicta com paciência.",
+        "got": "O diretor espiritual aconselhou a alma aflicta com paciência.",
+        "silver": "O diretor espiritual aconselhou a alma aflita com paciência."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p11-062",
+        "in": "O cónego afirmou que o facto era de carácter milagroso.",
+        "got": "O cónego afirmou que o facto era de carácter milagroso.",
+        "silver": "O cónego afirmou que o facto era de caráter milagroso."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p12-019",
+        "in": "O sector exportador beneficiou da queda do euro.",
+        "got": "O sector exportador beneficiou da queda do euro.",
+        "silver": "O setor exportador beneficiou da queda do euro."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p12-083",
+        "in": "Em Dezembro, o económico aumento das vendas animou o sector.",
+        "got": "Em dezembro, o económico aumento das vendas animou o sector.",
+        "silver": "Em dezembro, o económico aumento das vendas animou o setor."
+      },
+      {
+        "pair": "etymological->ao1990-pt",
+        "id": "p12-092",
+        "in": "O cone de incerteza pairou sobre o sector bancário.",
+        "got": "O cone de incerteza pairou sobre o sector bancário.",
+        "silver": "O cone de incerteza pairou sobre o setor bancário."
+      },
+      {
+        "pair": "etymological->ao1990-br",
+        "id": "p01-011",
+        "in": "A machina do archivo digital guardava milhares de ficheiros.",
+        "got": "A máquina do arquivo digital guardava milhares de ficheiros.",
+        "silver": "A máquina do arquivo digital guardava milhares de arquivos."
+      },
+      {
+        "pair": "etymological->ao1990-br",
+        "id": "p01-022",
+        "in": "A pressão atmosférica foi registada pelo barómetro.",
+        "got": "A pressão atmosférica foi registada pelo barômetro.",
+        "silver": "A pressão atmosférica foi registrada pelo barômetro."
+      },
+      {
+        "pair": "etymological->ao1990-br",
+        "id": "p01-024",
+        "in": "O eletrão tem uma energia cinética mensurável.",
+        "got": "O eletrão tem uma energia cinética mensurável.",
+        "silver": "O eléctron tem uma energia cinética mensurável."
+      },
+      {
+        "pair": "etymological->ao1990-br",
+        "id": "p01-059",
+        "in": "O rhythmo do systema respiratório foi monitorizado.",
+        "got": "O ritmo do sistema respiratório foi monitorizado.",
+        "silver": "O ritmo do sistema respiratório foi monitorado."
+      },
+      {
+        "pair": "etymological->ao1990-br",
+        "id": "p01-076",
+        "in": "A estética do design influencia a percepção do utilizador.",
+        "got": "A estética do design influencia a percepção do utilizador.",
+        "silver": "A estética do design influencia a percepção do usuário."
       }
     ]
   },
   "detection": {
-    "compatible_acc": 0.9613243039879609,
+    "compatible_acc": 0.9259593679458239,
     "n": 6645,
     "confusion": {
       "etymological": {
-        "etymological": 459,
-        "pt_1973": 423,
-        "ao1990-pt": 232,
-        "ao1990": 215
+        "etymological": 403,
+        "pt_1973": 454,
+        "ao1990-pt": 246,
+        "ao1990": 226
       },
       "pt_1973": {
-        "ao1990": 478,
-        "pt_1973": 523,
-        "ao1990-pt": 325,
-        "br_1971": 1,
-        "etymological": 2
+        "ao1990": 462,
+        "pt_1973": 547,
+        "ao1990-pt": 319,
+        "etymological": 1
       },
       "ao1990-pt": {
-        "ao1990": 821,
-        "ao1990-pt": 505,
-        "br_1971": 2,
+        "ao1990": 804,
+        "ao1990-pt": 524,
         "ao1990-br": 1
       },
       "br_1971": {
         "ao1990": 555,
-        "ao1990-br": 419,
+        "ao1990-br": 397,
         "br_1971": 224,
-        "pt_1973": 127,
-        "ao1990-pt": 4
+        "pt_1973": 138,
+        "ao1990-pt": 15
       },
       "ao1990-br": {
-        "ao1990": 808,
-        "ao1990-br": 487,
-        "pt_1973": 29,
-        "br_1971": 2,
-        "ao1990-pt": 3
+        "ao1990": 783,
+        "ao1990-pt": 112,
+        "ao1990-br": 325,
+        "pt_1973": 109
       }
     }
   },

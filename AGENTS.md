@@ -22,7 +22,8 @@ The documentation starts at [docs/index.md](docs/index.md).
 | `desacordo_ortografico/cli.py` | The `desacordo` command |
 | `tests/`, `examples/` | The test suite and five usage scripts |
 | `benchmark/`, `tools/` | The silver corpus, scoring scripts and data-building scripts ([benchmark](benchmark/README.md), [tools](tools/README.md)) |
-| `docs/` | The documentation |
+| `docs/` | The documentation: six pages and the `assets/` folder of the feature chart ([index](docs/index.md)) |
+| `tools/build_docs_plots.py` | Counts the words each feature changes and draws the chart of [features.md](docs/features.md) |
 
 ## Setup and tests
 
@@ -51,3 +52,7 @@ Use uv, never pip. The `benchmark` extra adds `matplotlib` for the plot script. 
 1. Run the full test suite.
 2. If you changed a page, run its `verify` command from the `agent-hint` comment after its H1.
 3. A page you add goes in the table of `docs/index.md` and gets an `agent-hint` comment and a footer whose Home link points to the index.
+4. If you change a feature or a spelling table, run `python tools/build_docs_plots.py --count`, then `--write`, to redraw the chart. `tests/test_docs_plots.py` fails when a committed SVG differs from its drawing.
+
+---
+[Home](docs/index.md)

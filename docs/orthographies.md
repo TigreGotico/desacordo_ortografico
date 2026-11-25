@@ -8,14 +8,26 @@ verify: d=$(mktemp -d) && sed '/^```/d' docs/orthographies.md > $d/o.txt && pyth
 see: `api.md`, `quickstart.md`, `index.md`
 -->
 
-A reference for the norms this library models, the rules that separate them, and the
-official sources. The central fact: Portuguese orthography is a **(variant × era)
-matrix**. From 1911 to the late 2000s two official standards ran in parallel: a
-European/PALOP line and a Brazilian line. AO1990 still permits divergent forms.
+A reference for the norms this library models, the rules that separate them, and the official sources. The central fact: Portuguese orthography is a **(variant × era) matrix**. From 1911 to the late 2000s two official standards ran in parallel: a European/PALOP line and a Brazilian line. AO1990 permits divergent forms.
 
+```mermaid
+flowchart LR
+    E[etymological] -->|reform_1911| R[reforma_1911]
+    R -->|pt_1911_to_1945| P45[pt_1945]
+    P45 -->|accent_1973| P73[pt_1973]
+    P73 -->|ao1990_pt| APT[ao1990-pt]
+    R -->|br_1911_to_1943| B43[br_1943]
+    B43 -->|accent_1971| B71[br_1971]
+    B71 -->|ao1990_br| ABR[ao1990-br]
+    APT <-->|ptbr_divergence| ABR
 ```
-European / PALOP:  etymological → 1911 → 1945 → 1973 → AO1990 (PT)
-Brazilian:         etymological → 1911 → 1943 → 1971 → AO1990 (BR)
+
+The European and PALOP line runs etymological, 1911, 1945, 1973, AO1990 (PT). The Brazilian line runs etymological, 1911, 1943, 1971, AO1990 (BR). The two AO1990 norms connect through the PT/BR divergence edge. The graph has eight norms and eight edges. `convert()` runs the edges of the path with the fewest edges. A conversion between the two pre-1990 lines passes through AO1990:
+
+```python
+>>> from desacordo_ortografico.eras import find_path
+>>> [name for name, _, _ in find_path("pt_1973", "br_1971")]
+['ao1990_pt', 'ptbr_divergence', 'ao1990_br']
 ```
 
 One conversion per edge shows the range:
@@ -38,62 +50,40 @@ One conversion per edge shows the range:
 'o facto'
 ```
 
-Each transform is flagged **deterministic** (a clean, reversible regex) or **lexical**
-(needs an exception list, usually one-way).
+Each transform is flagged **deterministic** (a clean, reversible regex) or **lexical** (needs an exception list, usually one-way).
 
 ## Pre-1911: etymological / pseudo-etymological
 
-No official norm existed. Spelling displayed real or imagined Greek/Latin ancestry.
-Hallmarks: Greek digraphs `ph, th, rh, ch`(=/k/), `y`, geminates `ll, nn, mm, pp, tt`,
-etymological silent consonants, and medial `h`. Detection is fairly deterministic
-because the digraphs are characteristic. Generating pre-1911 spellings is lexical.
+No official norm existed. Spelling displayed real or imagined Greek/Latin ancestry. Hallmarks: Greek digraphs `ph, th, rh, ch`(=/k/), `y`, geminates `ll, nn, mm, pp, tt`, etymological silent consonants, and medial `h`. Detection is fairly deterministic because the digraphs are characteristic. Generating pre-1911 spellings is lexical.
 
 `pharmacia→farmácia · theatro→teatro · elle→ele · anno→ano · lyrio→lírio · sciencia→sciência`
 
 ## Reforma Ortográfica de 1911 (Portugal)
 
-First official orthography (Portaria of 1 Sept 1911, commission of Gonçalves Viana).
-It applied to Portugal and its colonies. **Brazil did not take part**, and this split
-the two orthographies.
+First official orthography (Portaria of 1 Sept 1911, commission of Gonçalves Viana). It applied to Portugal and its colonies. **Brazil did not take part**, and this split the two orthographies.
 
 | rule | type |
 |------|------|
 | `ph→f`, `th→t`, `rh→r`, `y→i` | deterministic |
 | `ch`(=/k/)→`c`/`qu`, geminate reduction (keep `rr`, `ss`), drop silent consonants and medial `h` | lexical |
 
-The Formulário reforms "todas as palavras portuguesas, ou aportuguesadas" (I, II). A
-loanword or a foreign name is neither, so `convert()` keeps its letters through the
-1911 rules: `a pharmacia de Hollywood` gives `a farmácia de Hollywood`. The
-[API reference](api.md) lists the letters that mark a foreign spelling, and the limits.
+The Formulário reforms "todas as palavras portuguesas, ou aportuguesadas" (I, II). A loanword or a foreign name is neither, so `convert()` keeps its letters through the 1911 rules: `a pharmacia de Hollywood` gives `a farmácia de Hollywood`. The [API reference](api.md) lists the letters that mark a foreign spelling, and the limits.
 
-`detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943
-does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù`
-(freqùente). See the detection markers in
-[`api.md`](api.md).
+`detect()` labels a text `reforma_1911` from the 1911 forms that Brazilian print of 1943 does not have: `-êm` and `-êns` oxytones (tambêm, armazêns), `quási` and `qù`/`gù` (freqùente). See the detection markers in [`api.md`](api.md).
 
-Sources: [Reforma Ortográfica de 1911](https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1911) ·
-[A ortografia antes de 1911 (Ciberdúvidas)](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-ortografia-antes-de-1911/33429)
+Sources: [Reforma Ortográfica de 1911](https://pt.wikipedia.org/wiki/Reforma_Ortogr%C3%A1fica_de_1911) · [A ortografia antes de 1911 (Ciberdúvidas)](https://ciberduvidas.iscte-iul.pt/consultorio/perguntas/a-ortografia-antes-de-1911/33429)
 
 ## Formulário Ortográfico de 1943 (Brazil)
 
-ABL, 12 Aug 1943. This was Brazil's governing norm (with the 1971 amendments) until
-AO1990. Defining traits versus the European line: Brazil **dropped the silent c/p**
-(`ação`, `ótimo`, `diretor`) and used the **acute** on stressed open vowels before a
-nasal where Portugal used the circumflex/closed vowel (`Antônio`, `gênero`).
+ABL, 12 Aug 1943. This was Brazil's governing norm (with the 1971 amendments) until AO1990. Defining traits versus the European line: Brazil **dropped the silent c/p** (`ação`, `ótimo`, `diretor`) and used the **acute** on stressed open vowels before a nasal where Portugal used the circumflex/closed vowel (`Antônio`, `gênero`).
 
-From the 1911 spelling, `convert()` writes `também` (rule 7.ª), `tranqüilo` (12.ª) and
-`ciência` (19.). It keeps the differential circumflex of `êle` and `sôbre` (14.ª). It
-leaves `convêm` and `contêm` as written, because from 1943 on these letters spell the
-plural. The 1911 words that no rule reaches are rows of the spelling table: `quási→quase`,
-`tam→tão`, `teem→têm`.
+From the 1911 spelling, `convert()` writes `também` (rule 7.ª), `tranqüilo` (12.ª) and `ciência` (19.). It keeps the differential circumflex of `êle` and `sôbre` (14.ª). It leaves `convêm` and `contêm` as written, because from 1943 on these letters spell the plural. The 1911 words that no rule reaches are rows of the spelling table: `quási→quase`, `tam→tão`, `teem→têm`.
 
 Source: [Formulário Ortográfico (Academia Brasileira de Letras)](https://www.academia.org.br/nossa-lingua/formulario-ortografico)
 
 ## Convenção Ortográfica Luso-Brasileira de 1945 (Portugal + PALOP)
 
-ACL + ABL, 6 Oct 1945, Decreto 35.228. It was in force in Portugal and all PALOP until
-AO1990. **Brazil signed but never ratified it**, keeping the 1943 Formulário instead.
-This froze the two-standard system. It codified the PT/BR differences:
+ACL + ABL, 6 Oct 1945, Decreto 35.228. It was in force in Portugal and all PALOP until AO1990. **Brazil signed but never ratified it**, keeping the 1943 Formulário instead. This froze the two-standard system. It codified the PT/BR differences:
 
 | phenomenon | PT-1945 | BR-1943 | type |
 |---|---|---|---|
@@ -101,169 +91,63 @@ This froze the two-standard system. It codified the PT/BR differences:
 | open vowel before nasal | `António, fenómeno, génio` | `Antônio, fenômeno, gênio` | **deterministic** (é/ó ↔ ê/ô) |
 | pronunciation divergences | `facto, húmido` | `fato, úmido` | lexical |
 
-From the 1911 spelling, `convert()` writes `também` (Base XIII), `tranquilo` (Base
-XXVII) and `ciência` (the 1931 Bases, § 1.º 4.º, which Portugal adopted). The circumflex
-of 1911 Base XXVIII goes, except on the forms that Base XXII keeps: `êle→ele` and
-`côr→cor`, but `pêlo` and `pôde` stay. The accent goes only when the bare letters
-spell a listed Portuguese word. French `prêtres` and `être` stay, but a French word whose
-bare letters are listed loses the accent: `Côte` becomes `Cote`. A 1945 word that the list
-lacks keeps it (`môo`, `vêde`).
-The 1911 singular `convêm` stays as written, because from 1945 on these letters spell the
-plural. The 1911 words that no rule reaches are rows of the spelling table:
-`quási→quase`, `tam→tão`, `teem→têm`, and `scetro→ceptro` (Base VI, 2.°). The initial
-sc goes in the word families of 1911 Base XI, so English `scientific` loses it too.
-The rows `scena→cena` and `sciência→ciência` also go backward, so `cena` gives `scena`
-in 1911. The rule itself goes one way, because its inverse would give `scenoura` from
-`cenoura`.
+From the 1911 spelling, `convert()` writes `também` (Base XIII), `tranquilo` (Base XXVII) and `ciência` (the 1931 Bases, § 1.º 4.º, which Portugal adopted). The circumflex of 1911 Base XXVIII goes, except on the forms that Base XXII keeps: `êle→ele` and `côr→cor`, but `pêlo` and `pôde` stay. The accent goes only when the bare letters spell a listed Portuguese word. French `prêtres` and `être` stay, but a French word whose bare letters are listed loses the accent: `Côte` becomes `Cote`. A 1945 word that the list lacks keeps it (`môo`, `vêde`). The 1911 singular `convêm` stays as written, because from 1945 on these letters spell the plural. The 1911 words that no rule reaches are rows of the spelling table: `quási→quase`, `tam→tão`, `teem→têm`, and `scetro→ceptro` (Base VI, 2.°). The initial sc goes in the word families of 1911 Base XI, so English `scientific` loses it too. The rows `scena→cena` and `sciência→ciência` also go backward, so `cena` gives `scena` in 1911. The rule itself goes one way, because its inverse would give `scenoura` from `cenoura`.
 
 Source (official text): [Convenção Ortográfica de 1945 (Priberam)](https://www.priberam.pt/docs/AcOrtog45_73.pdf)
 
 ## Mini-reform of 1971 (BR) / 1973 (PT)
 
-Lei 5.765/1971 (Brazil) and Decreto-Lei 32/73 (Portugal). This reform is accent-only
-and mostly deterministic. The base PT/BR differences are untouched.
+Lei 5.765/1971 (Brazil) and Decreto-Lei 32/73 (Portugal). This reform is accent-only and mostly deterministic. The base PT/BR differences are untouched.
 
-- Abolition of the **differential circumflex** on a closed homograph list
-  (`êle→ele, govêrno→governo, sêca→seca`): deterministic (list).
-  Article 1 of Lei 5.765/1971 abolishes it on the closed e or o of a homograph, except in `pôde`.
-  The list holds the words that the 1943 Formulário (14.ª) writes with it (`sôbre`, `fêz`).
-  Each part of a hyphenated word loses it too (`fêz-se→fez-se`).
+- Abolition of the **differential circumflex** on a closed homograph list (`êle→ele, govêrno→governo, sêca→seca`): deterministic (list). Article 1 of Lei 5.765/1971 abolishes it on the closed e or o of a homograph, except in `pôde`. The list holds the words that the 1943 Formulário (14.ª) writes with it (`sôbre`, `fêz`). Each part of a hyphenated word loses it too (`fêz-se→fez-se`).
 
-- Abolition of the **grave/circumflex on subtonic syllables** of derived words
-  (`sòmente→somente, cafèzinho→cafezinho`): deterministic (strip the grave accent).
+- Abolition of the **grave/circumflex on subtonic syllables** of derived words (`sòmente→somente, cafèzinho→cafezinho`): deterministic (strip the grave accent).
 
-Portugal had dropped the differential circumflex in 1945 (Base XXII), so the 1945 → 1973
-edge does not apply the list.
+Portugal had dropped the differential circumflex in 1945 (Base XXII), so the 1945 → 1973 edge does not apply the list.
 
 Source: [Convenção Ortográfica de 1945 / 1973 accent reform (Priberam)](https://www.priberam.pt/docs/AcOrtog45_73.pdf)
 
 ## Acordo Ortográfico de 1990
 
-Signed 16 Dec 1990 by the seven (then eight, with Timor-Leste) CPLP states. It took
-force from 2006 (2nd Protocol), and became mandatory in Brazil in 2016 and Portugal
-in 2015.
+Signed 16 Dec 1990 by the seven (then eight, with Timor-Leste) CPLP states. It took force from 2006 (2nd Protocol), and became mandatory in Brazil in 2016 and Portugal in 2015.
 
-**Base IV, consonant sequences `cc, cç, ct, pc, pç, pt`**, is the hardest, irreducibly
-lexical part. Base IV 1.º d) treats the p of `mpc, mpç, mpt` the same way, and the m
-becomes n when the p goes (`sumptuoso`/`suntuoso`). It defines four sets:
+**Base IV, consonant sequences `cc, cç, ct, pc, pç, pt`**, is the hardest, irreducibly lexical part. Base IV 1.º d) treats the p of `mpc, mpç, mpt` the same way, and the m becomes n when the p goes (`sumptuoso`/`suntuoso`). It defines four sets:
 - **keep** (pronounced everywhere): `pacto, ficção, apto, egípcio, rapto`.
 - **drop** (mute everywhere): `acção→ação, óptimo→ótimo, director→diretor`.
-- **dual** (pronounced in one norm only, one spelling per norm):
-  `facto`(PT)/`fato`(BR), `receção`(PT)/`recepção`(BR), `aspeto`(PT)/`aspecto`(BR).
-- **optional** (two valid spellings in one norm, Base IV 1º c): `sector`/`setor`,
-  `carácter`/`caráter`. Where both forms are valid in the target variety (a dual cell of
-  that variety's AO1990 map), an AO1990 target writes the form with the
-  consonant, in the plural too. A word with one valid form takes that form. contrato
-  and retrato stay: each is a word of its own beside contracto and retracto. For pt-BR,
-  the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) decides each word that
-  `data/volp_ao1990_br.json` holds, before the AO1990 map: the VOLP lists fato and
-  facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator.
-  Two VOLP entries that point to each other with "cf." are two words (ótica, óptica),
-  and neither becomes the other. Where the VOLP gives the form with the consonant for
-  one reading of a word only, the word stays as written, because the bare form is valid
-  for every reading: the VOLP lists coator adj. s.m. and coactor s.m., so "o ato coator"
-  stays, and it lists faturar and no facturar, so "a empresa fatura" stays. A past
-  participle is a reading too: the VOLP lists refletido adj. and reflectido adj., and
-  refletir v. with no reflectir, so "o relatório foi refletido" stays. Such a row is
-  marked "one reading" in the data file. From a pt-PT source, a bare form that pt-PT
-  itself does not write for the word is another word: pt-PT writes facto for the fact,
-  so a pt-PT fato is the suit and stays fato.
-- **names** toward pt-BR (AO1990 Base XXI: a person, a firm, a society, a brand or a
-  registered title can keep the spelling it was written in). A word that starts with a
-  capital inside a sentence is a name. When the VOLP lists the form as written, the name
-  stays as written through every edge: "e Coletivo Farra" stays, and pt_1973 "o filme
-  Receptores" stays. When the VOLP does not list it, the name takes the form the VOLP
-  lists: "a Correcção Fraterna" becomes "a Correção Fraterna", and ao1990-pt "Recetores"
-  becomes "Receptores". A dual never gives a name a c or p that the source did not
-  write. The forms the VOLP lists are the form of each VOLP row, each headword of a quote
-  with two entries, the twin with one c or p more or fewer unless the quote rejects
-  it, and their plurals (`Lexicon.ao_br_volp_listed`). A word with no VOLP row converts as before, except
-  that no dual adds a consonant to it. The first word of a sentence, a word in capitals
-  throughout, and every word of a text with no word in lowercase follow the rule for
-  other words. A colon, an opening quote, and the period of Sr., Sra., Dr., Dra., Av.,
-  D. or S. end no sentence.
+- **dual** (pronounced in one norm only, one spelling per norm): `facto`(PT)/`fato`(BR), `receção`(PT)/`recepção`(BR), `aspeto`(PT)/`aspecto`(BR).
+- **optional** (two valid spellings in one norm, Base IV 1º c): `sector`/`setor`, `carácter`/`caráter`. Where both forms are valid in the target variety (a dual cell of that variety's AO1990 map), an AO1990 target writes the form with the consonant, in the plural too. A word with one valid form takes that form. contrato and retrato stay: each is a word of its own beside contracto and retracto. For pt-BR, the ABL Vocabulário Ortográfico da Língua Portuguesa (VOLP) decides each word that `data/volp_ao1990_br.json` holds, before the AO1990 map: the VOLP lists fato and facto, so ao1990-br writes facto; it lists only cofator, so ao1990-br writes cofator. Two VOLP entries that point to each other with "cf." are two words (ótica, óptica), and neither becomes the other. Where the VOLP gives the form with the consonant for one reading of a word only, the word stays as written, because the bare form is valid for every reading: the VOLP lists coator adj. s.m. and coactor s.m., so "o ato coator" stays, and it lists faturar and no facturar, so "a empresa fatura" stays. A past participle is a reading too: the VOLP lists refletido adj. and reflectido adj., and refletir v. with no reflectir, so "o relatório foi refletido" stays. Such a row is marked "one reading" in the data file. From a pt-PT source, a bare form that pt-PT itself does not write for the word is another word: pt-PT writes facto for the fact, so a pt-PT fato is the suit and stays fato.
+- **names** toward pt-BR (AO1990 Base XXI: a person, a firm, a society, a brand or a registered title can keep the spelling it was written in). A word that starts with a capital inside a sentence is a name. When the VOLP lists the form as written, the name stays as written through every edge: "e Coletivo Farra" stays, and pt_1973 "o filme Receptores" stays. When the VOLP does not list it, the name takes the form the VOLP lists: "a Correcção Fraterna" becomes "a Correção Fraterna", and ao1990-pt "Recetores" becomes "Receptores". A dual never gives a name a c or p that the source did not write. The forms the VOLP lists are the form of each VOLP row, each headword of a quote with two entries, the twin with one c or p more or fewer unless the quote rejects it, and their plurals (`Lexicon.ao_br_volp_listed`). A word with no VOLP row converts as before, except that no dual adds a consonant to it. The first word of a sentence, a word in capitals throughout, and every word of a text with no word in lowercase follow the rule for other words. A colon, an opening quote, and the period of Sr., Sra., Dr., Dra., Av., D. or S. end no sentence.
 
 **Accentuation** is mostly deterministic:
 
-- Drop the acute on open `éi/ói` in **paroxytones** (Base IX 3º): `idéia→ideia,
-  heróico→heroico, jibóias→jiboias`. Oxytones keep it (`herói, papéis`), also as a part of
-  a hyphenated word (`rói-rói`, Base XV 1º).
+- Drop the acute on open `éi/ói` in **paroxytones** (Base IX 3º): `idéia→ideia, heróico→heroico, jibóias→jiboias`. Oxytones keep it (`herói, papéis`), also as a part of a hyphenated word (`rói-rói`, Base XV 1º).
 
-- Proparoxytones keep the acute too (Base XI 1º). A final `-ea`, `-eo`, `-ia`, `-ie`,
-  `-io`, `-oa`, `-ua` or `-uo` counts as two syllables, so `alantóideo` and `einstéinio`
-  keep it.
+- Proparoxytones keep the acute too (Base XI 1º). A final `-ea`, `-eo`, `-ia`, `-ie`, `-io`, `-oa`, `-ua` or `-uo` counts as two syllables, so `alantóideo` and `einstéinio` keep it.
 
 - Drop the circumflex on `ôo` and `-êem`: `vôo→voo, lêem→leem`.
-- Drop differential accents (closed list): `pára→para, pêlo→pelo, pólo→polo, pêra→pera`
-  (kept: `pôr, pôde, têm, vêm`).
+- Drop differential accents (closed list): `pára→para, pêlo→pelo, pólo→polo, pêra→pera` (kept: `pôr, pôde, têm, vêm`).
 
-**Trema** is abolished (`freqüência→frequência`): deterministic, with a Brazil-only
-effect. Base XIV 1º Obs. keeps it in derivatives of foreign names, so `mülleriano` (of
-Müller) stays.
+**Trema** is abolished (`freqüência→frequência`): deterministic, with a Brazil-only effect. Base XIV 1º Obs. keeps it in derivatives of foreign names, so `mülleriano` (of Müller) stays.
 
-**Months and seasons** are lowercased: deterministic (closed list). A month that opens
-a sentence keeps the case it was written in, also after an opening quote:
-`«Janeiro chegou», disse ele.` stays as written.
+**Months and seasons** are lowercased: deterministic (closed list). A month that opens a sentence keeps the case it was written in, also after an opening quote: `«Janeiro chegou», disse ele.` stays as written.
 
-**Hyphenation** (Base XVI): a prefix-vowel plus `r/s` drops the hyphen and doubles the
-consonant (`anti-religioso→antirreligioso`). A prefix-vowel before a different vowel
-joins (`auto-estradas→autoestradas`), and before the same vowel or h it keeps the hyphen
-(`micro-ondas`, `anti-higiénico`). co- joins before any vowel or consonant
-(`co-autores→coautores`, `co-fatores→cofatores`). Before h pt-PT keeps `co-herdeiro`, and
-pt-BR writes `coerdeiro`, as the ABL VOLP does. A loanword keeps its hyphen
-(`co-working`), and so does a hyphenated loanword that the VOLP or the VOP lists
-(`mini-system`, `anti-apartheid`), with its English plural (`mini-systems`). euro- keeps its hyphen (`euro-africano`): it is europeu
-reduced, and Base XV 1 writes a compound of two adjectives with the hyphen. These rules are
-deterministic. They run once, on the
-words of an AO1990 target, after the VOLP and the dual cells decide each element, so pt-PT
-`foto-receptores` gives pt-BR `fotorreceptores`. At `ao1990-br` the VOLP then decides the
-joined word. The VOLP writes `contra-erva` and `macro-jê` with the hyphen, so ao1990-br
-keeps them, and ao1990-pt writes `contraerva` and `macrojê`. At `ao1990-pt` the joined word
-drops a mute c or p by the pt-PT map, as any word does (`electro-acústica→eletroacústica`). The 1945 Acordo (Base XXIX) and the 1943
-Formulário (5.º a) write the hyphen, so `pt_1973 → br_1971` keeps `co-autores` although
-the route passes through AO1990. The 1943 Formulário uses the hyphen only for the prefixes
-it lists (45, 46 5.º), so at `br_1971` an unlisted prefix joins before r or s and doubles
-it (`micro-sistema→microssistema`, 22), as the 1943 Pequeno Vocabulário writes
-microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loanword row
-(`mini-system`) keep the hyphen.
-Lexicalized compounds (`manda-chuva→mandachuva`, `pára-quedas→paraquedas`,
-`pára-quedista→paraquedista`, Base XV 1º Obs.) are lexical. For `pára-quedismo` the VOLP
-writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map. A conversion
-between ao1990-pt and ao1990-br changes one form into the other, as for `registo` and
-`registro`.
-Base XVII 2.º drops the hyphen between de and a monosyllabic present form of haver:
-`hei-de→hei de`, and the same for `hás-de`, `há-de`, `heis-de` and `hão-de`.
+**Hyphenation** (Base XVI): a prefix-vowel plus `r/s` drops the hyphen and doubles the consonant (`anti-religioso→antirreligioso`). A prefix-vowel before a different vowel joins (`auto-estradas→autoestradas`), and before the same vowel or h it keeps the hyphen (`micro-ondas`, `anti-higiénico`). co- joins before any vowel or consonant (`co-autores→coautores`, `co-fatores→cofatores`). Before h pt-PT keeps `co-herdeiro`, and pt-BR writes `coerdeiro`, as the ABL VOLP does. A loanword keeps its hyphen (`co-working`), and so does a hyphenated loanword that the VOLP or the VOP lists (`mini-system`, `anti-apartheid`), with its English plural (`mini-systems`). euro- keeps its hyphen (`euro-africano`): it is europeu reduced, and Base XV 1 writes a compound of two adjectives with the hyphen. These rules are deterministic. They run once, on the words of an AO1990 target, after the VOLP and the dual cells decide each element, so pt-PT `foto-receptores` gives pt-BR `fotorreceptores`. At `ao1990-br` the VOLP then decides the joined word. The VOLP writes `contra-erva` and `macro-jê` with the hyphen, so ao1990-br keeps them, and ao1990-pt writes `contraerva` and `macrojê`. At `ao1990-pt` the joined word drops a mute c or p by the pt-PT map, as any word does (`electro-acústica→eletroacústica`). The 1945 Acordo (Base XXIX) and the 1943 Formulário (5.º a) write the hyphen, so `pt_1973 → br_1971` keeps `co-autores` although the route passes through AO1990. The 1943 Formulário uses the hyphen only for the prefixes it lists (45, 46 5.º), so at `br_1971` an unlisted prefix joins before r or s and doubles it (`micro-sistema→microssistema`, 22), as the 1943 Pequeno Vocabulário writes microssismo. euro- (46 3.º), co-, a name inside a sentence (40) and a VOLP loanword row (`mini-system`) keep the hyphen. Lexicalized compounds (`manda-chuva→mandachuva`, `pára-quedas→paraquedas`, `pára-quedista→paraquedista`, Base XV 1º Obs.) are lexical. For `pára-quedismo` the VOLP writes `paraquedismo`, and ao1990-pt keeps `para-quedismo`, the form of the pt-PT map. A conversion between ao1990-pt and ao1990-br changes one form into the other, as for `registo` and `registro`. Base XVII 2.º drops the hyphen between de and a monosyllabic present form of haver: `hei-de→hei de`, and the same for `hás-de`, `há-de`, `heis-de` and `hão-de`.
 
-Backward, `para-quedas`, `para-quedista` and `para-quedismo` take the accent of `pára` back
-(`pára-quedas`), because the 1945 Acordo and the 1943 Vocabulário write it.
+Backward, `para-quedas`, `para-quedista` and `para-quedismo` take the accent of `pára` back (`pára-quedas`), because the 1945 Acordo and the 1943 Vocabulário write it.
 
-**AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the
-nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.
+**AO1990 is two targets.** It sanctions divergent PT/BR forms (Base IV §1c and the nasal-vowel alternation), so the library models `ao1990-pt` and `ao1990-br` separately.
 
-Sources: [Base IV, das sequências consonânticas (FLiP)](https://www.flip.pt/Acordo-Ortografico/Texto/Base-IV-Das-sequencias-consonanticas/) ·
-[Nota explicativa do AO90 (Academia das Ciências de Lisboa)](https://vocabulario.acad-ciencias.pt/index.php/ortografia/nota-explicativa-do-ao90) ·
-[Acordo Ortográfico de 1990, texto oficial (Priberam)](https://www.priberam.pt/docs/AcOrtog90.pdf)
+Sources: [Base IV, das sequências consonânticas (FLiP)](https://www.flip.pt/Acordo-Ortografico/Texto/Base-IV-Das-sequencias-consonanticas/) · [Nota explicativa do AO90 (Academia das Ciências de Lisboa)](https://vocabulario.acad-ciencias.pt/index.php/ortografia/nota-explicativa-do-ao90) · [Acordo Ortográfico de 1990, texto oficial (Priberam)](https://www.priberam.pt/docs/AcOrtog90.pdf)
 
 ## Sister varieties (detected, never converted)
 
-These are recognized in the Iberian/Lusophone space but are **not** Portuguese
-orthographies. The library flags them (`NotPortuguese`) instead of mangling them.
+These are recognized in the Iberian/Lusophone space but are **not** Portuguese orthographies. The library flags them (`NotPortuguese`) instead of mangling them.
 
-- **Mirandese** (`mwl`), an Astur-Leonese language, co-official in the Terra de
-  Miranda (Lei 7/99). Markers: word-initial `lh-`, the article `l/ls`, `you`, `bós`.
-- **Galician** (`gl`), the closest relative of Portuguese. The standard (RAG/ILG)
-  uses `ñ, ll`, and the reintegrationist standard uses near-Portuguese spelling
-  (`-çom, nom, umha`).
-- **Barranquenho**, a Portuguese-Spanish contact variety of Barrancos, recognized and
-  protected as intangible cultural heritage by **Lei 97/2021** (not co-official). Its
-  orthography (Univ. de Évora and CM Barrancos, June 2025) is a **draft in public
-  consultation**, not a legally adopted norm, so it is flag-only. Markers: the
-  aspiration grapheme `h` (`maih, ehtá`), betacism (`bê, labá`), and dropped
-  infinitive `-r`.
+- **Mirandese** (`mwl`), an Astur-Leonese language, co-official in the Terra de Miranda (Lei 7/99). Markers: word-initial `lh-`, the article `l/ls`, `you`, `bós`.
+- **Galician** (`gl`), the closest relative of Portuguese. The standard (RAG/ILG) uses `ñ, ll`, and the reintegrationist standard uses near-Portuguese spelling (`-çom, nom, umha`).
+- **Barranquenho**, a Portuguese-Spanish contact variety of Barrancos, recognized and protected as intangible cultural heritage by **Lei 97/2021** (not co-official). Its orthography (Univ. de Évora and CM Barrancos, June 2025) is a **draft in public consultation**, not a legally adopted norm, so it is flag-only. Markers: the aspiration grapheme `h` (`maih, ehtá`), betacism (`bê, labá`), and dropped infinitive `-r`.
 
-Sources: [Lei 97/2021 (Diário da República)](https://files.dre.pt/1s/2021/12/25200/0000300004.pdf) ·
-Lei 7/99 · [Língua mirandesa (Wikipedia)](https://pt.wikipedia.org/wiki/L%C3%ADngua_mirandesa) ·
-[Reintegrationism (Wikipedia)](https://en.wikipedia.org/wiki/Reintegrationism)
+Sources: [Lei 97/2021 (Diário da República)](https://files.dre.pt/1s/2021/12/25200/0000300004.pdf) · Lei 7/99 · [Língua mirandesa (Wikipedia)](https://pt.wikipedia.org/wiki/L%C3%ADngua_mirandesa) · [Reintegrationism (Wikipedia)](https://en.wikipedia.org/wiki/Reintegrationism)
 
 ---
-[← API reference](api.md) · [Home](index.md) · [Data files →](data.md)
+[← Conversion features](features.md) · [Home](index.md) · [Data files →](data.md)

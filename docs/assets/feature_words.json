@@ -1,0 +1,154 @@
+{
+ "routes": [
+  "etymological to pt_1973",
+  "pt_1973 to ao1990-pt",
+  "br_1971 to ao1990-br"
+ ],
+ "rows": [
+  3542,
+  3470,
+  3465
+ ],
+ "features": {
+  "1911-accent-restore": [
+   1,
+   0,
+   0
+  ],
+  "1911-digraphs": [
+   56,
+   0,
+   0
+  ],
+  "1911-geminates": [
+   21,
+   0,
+   0
+  ],
+  "1911-word-map": [
+   137,
+   0,
+   0
+  ],
+  "ao-map-consonant": [
+   0,
+   107,
+   0
+  ],
+  "ao-map-diacritic": [
+   0,
+   3,
+   17
+  ],
+  "ao-map-join": [
+   0,
+   11,
+   11
+  ],
+  "ao-map-locution": [
+   0,
+   0,
+   0
+  ],
+  "ao-map-trema": [
+   0,
+   0,
+   12
+  ],
+  "base-iv": [
+   0,
+   0,
+   0
+  ],
+  "differential": [
+   0,
+   2,
+   2
+  ],
+  "differential-1945": [
+   0,
+   0,
+   0
+  ],
+  "differential-1971": [
+   0,
+   0,
+   0
+  ],
+  "diphthong-accent": [
+   0,
+   0,
+   1
+  ],
+  "grave-u": [
+   0,
+   0,
+   0
+  ],
+  "hiatus-accent": [
+   0,
+   2,
+   2
+  ],
+  "hyphen-lexical": [
+   0,
+   0,
+   0
+  ],
+  "initial-sc": [
+   0,
+   0,
+   0
+  ],
+  "months": [
+   3,
+   0,
+   0
+  ],
+  "nasal-vowel": [
+   0,
+   0,
+   0
+  ],
+  "oxytone-em": [
+   0,
+   0,
+   0
+  ],
+  "post-1911-word-map": [
+   0,
+   0,
+   0
+  ],
+  "prefix-rs": [
+   0,
+   17,
+   17
+  ],
+  "ptbr-divergence": [
+   0,
+   0,
+   0
+  ],
+  "silent-cp": [
+   0,
+   1,
+   0
+  ],
+  "subtonic-grave": [
+   0,
+   0,
+   0
+  ],
+  "trema": [
+   0,
+   0,
+   4
+  ],
+  "volp": [
+   0,
+   0,
+   20
+  ]
+ }
+}

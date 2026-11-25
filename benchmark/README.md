@@ -1,5 +1,13 @@
 # Benchmark
 
+<!-- agent-hint
+covers: the silver corpus, how it is built and cleaned, the benchmark scripts, the detection confidence measurement and the committed results
+source: `benchmark/run_benchmark.py`, `benchmark/results.json`, `benchmark/detector_cv.json`, `benchmark/confidence_table.py`
+generated: `results.json`, `results.md` by `run_benchmark.py`; `plots/*.png` by `plot_results.py`; `detector_cv.json` by `train_detector.py`
+verify: python benchmark/run_benchmark.py | tail -5 && git diff --stat -- benchmark/results.json benchmark/results.md
+see: `../docs/index.md`, `../docs/data.md`, `../tools/README.md`
+-->
+
 A parallel silver corpus and an evaluation harness for `desacordo_ortografico`.
 
 Language models wrote the corpus, and no person checked its rows, so it is silver data.
@@ -225,13 +233,13 @@ python benchmark/diagnose.py           # attribute failures (rule vs silver, whe
 
 ![summary](plots/summary.png)
 
-- **Conversion:** ~88% sentence-level exact-match, ~98% token accuracy over ~9.2k
-  directed conversions. The same-line conversions are strongest
-  (`br_1971→ao1990-br` ~99%, `pt_1973→ao1990-pt` ~96%); the cross-variant PT↔BR pairs
-  (~89%) are capped by lexical divergence, and the pre-1911 directions by accent
-  restoration (see limitations).
-- **Detection:** ~94% compatible accuracy (rules) across 6.6k renderings; the learned
-  models reach ~96% (below).
+- **Conversion:** 94% sentence-level exact-match and 99% token accuracy over 9,303
+  directed conversions. The same-line conversions are strongest (`br_1971→ao1990-br` 99.6%,
+  `pt_1973→ao1990-pt` 98.3%). The cross-variant PT↔BR pairs score 90.9% toward pt-BR and
+  81.5% toward pt-PT, where lexical divergence caps them. The pre-1911 directions score
+  between 91.1% and 99.4%, and accent restoration limits them (see limitations).
+- **Detection:** 92.6% compatible accuracy (rules) across 6,645 renderings. The learned
+  models reach 95.4% to 96.4% (below).
 - **Guard:** flags Mirandese / Galician / Barranquenho correctly and leaves Portuguese
   alone, modulo one Astur-Leonese sentence whose only cue is a medial diphthong the
   marker set doesn't cover.
@@ -248,9 +256,9 @@ near-identical rendering leaks across train/test). Both beat the rules on held-o
 
 | detector | strict | compatible |
 |----------|--------|------------|
-| rules | 33.3% | 94.4% |
-| naive bayes | 49.2% | **96.2%** |
-| averaged perceptron | 48.6% | 95.1% |
+| rules | 30.4% | 92.6% |
+| naive bayes | 48.5% | **96.4%** |
+| averaged perceptron | 48.0% | 95.4% |
 
 (Strict accuracy is capped well below 100% because many renderings are spelled
 identically across norms and cannot be told apart; *compatible* is the meaningful
@@ -275,3 +283,6 @@ default for explainability and robustness on short inputs.
   directly.
 - **Reverse (newer→older) conversions** are lexical and lossy by nature, and are
   reported via `ConversionResult.lossless`/`warnings`.
+
+---
+[Documentation index](../docs/index.md)
