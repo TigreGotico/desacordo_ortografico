@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.39a3](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a3) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a2...0.3.39a3)
+
+**Merged pull requests:**
+
+- docs: say the spelling table build needs tugalex 2.x [\#111](https://github.com/TigreGotico/desacordo_ortografico/pull/111) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.39a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.39a2) (2026-11-24)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.39a1...0.3.39a2)
