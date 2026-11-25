@@ -12,7 +12,8 @@ retractar." The VOP has one entry for retratar (lemma 2254) and none for retract
 portray sense, which was always written retratar, is the reading of a bare infinitive.
 
 VOLP: "coletar v." and "colectar v." are two entries without "cf."; the VOP (lemma 60451)
-marks colectar as Brazilian. A pt-BR target writes the form with the consonant of a dual.
+marks colectar as Brazilian. Both forms are valid, so a form that is valid in the source stays
+as written (TigreGotico/desacordo_ortografico#116).
 
 VOP 43650: "decepcionado - adjetivo ... Brasil Masculino Feminino Singular decepcionado
 decepcionada Plural decepcionados decepcionadas ... variante AO de : dececionado ( Portugal)".
@@ -57,9 +58,10 @@ def test_retractar_still_converts_forward():
     assert convert("Ele vai retractar a cena.", "pt_1973", PT) == "Ele vai retratar a cena."
 
 
-@pytest.mark.parametrize("source", [PT, "pt_1973", "br_1971"])
-def test_coletar_gains_the_consonant_toward_pt_br(source):
-    assert convert("Vamos coletar os dados.", source, BR) == "Vamos colectar os dados."
+@pytest.mark.xfail(strict=True, reason="desacordo#116: the volp step writes colectar where coletar is valid")
+@pytest.mark.parametrize("source", [PT, "br_1971"])
+def test_coletar_stays_coletar_toward_pt_br(source):
+    assert convert("Vamos coletar os dados.", source, BR) == "Vamos coletar os dados."
 
 
 @pytest.mark.parametrize("old, new", [
