@@ -121,7 +121,9 @@ its own stress, Base XV 1º: "cujos elementos [...] constituem uma unidade sinta
 semântica e mantêm acento próprio". The oxytone parts of rói-rói and
 ascídia-de-anéis-brancos keep their accent. Base IX 2º a) gives the acute before -l, -n,
 -r, -x and -ps to "as vogais abertas grafadas a, e, o e ainda i ou u" and names no
-diphthong, so the text has no exception for destróier.
+diphthong. The ABL VOLP lists "destróier s.m." (a search for "destroier" returns it), the
+ABL Pequeno Vocabulário of 1943 lists "destróier, s. m.: adapt. do ingl. destroyer" (scan
+page 522), and Priberam heads the entry "destróier". So the word keeps its accent.
 
 The words that no rule reaches are rows of the spelling table (quási, tam, teem, and
 scetro, which 1945 Base VI writes ceptro), each with its clause. The rows apply to each
@@ -760,6 +762,8 @@ def ao1990_drop_accents(word: str) -> str:
 
 
 _RE_OPEN_DIPHTHONG = re.compile("([éó])i")
+# A paroxytone in -r whose accented diphthong the vocabularies keep (see the module docstring).
+_KEEPS_DIPHTHONG_ACCENT = frozenset({"destróier"})
 _RE_VOWEL_RUN = re.compile("[%s]+" % _VOWELS)
 # the post-tonic endings that Base XI 1º b) reads as two syllables
 _RE_RISING_END = re.compile("(?:ea|eo|ia|ie|io|oa|ua|uo)s?$")
@@ -770,6 +774,9 @@ def ao1990_drop_diphthong_accent(word: str) -> str:
     (idéia->ideia, jibóias->jiboias). Oxytones (herói, rói-rói) and proparoxytones
     (alantóideo, einstéinio) keep it."""
     def drop(part: str) -> str:
+        if part.lower() in _KEEPS_DIPHTHONG_ACCENT:
+            return part
+
         def bare(m: re.Match) -> str:
             tail = part[m.end():]
             if len(_RE_VOWEL_RUN.findall(tail)) != 1 or _RE_RISING_END.search(tail):
