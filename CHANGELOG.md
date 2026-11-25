@@ -1,15 +1,29 @@
 # Changelog
 
-## [0.3.42a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.42a1) (2026-11-25)
+## [0.3.43a1](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.43a1) (2026-11-25)
 
-[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a1...0.3.42a1)
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a3...0.3.43a1)
 
 **Merged pull requests:**
 
 - fix: keep apartheid, affaire, hall and byte as written under the 1911 rules [\#124](https://github.com/TigreGotico/desacordo_ortografico/pull/124) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
 - fix: write este, esse, toda, todo, fez, sobre and governo bare at etymological [\#123](https://github.com/TigreGotico/desacordo_ortografico/pull/123) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
 - fix: drop the 1971 circumflex of acêrto, côrte, devêras, colhêr and fôra toward br\_1971 [\#122](https://github.com/TigreGotico/desacordo_ortografico/pull/122) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
+## [0.3.40a3](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.40a3) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a2...0.3.40a3)
+
+**Merged pull requests:**
+
 - fix: keep destróier, leave French spellings out of archaisms\_pt, correct the comnosco note [\#121](https://github.com/TigreGotico/desacordo_ortografico/pull/121) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
+## [0.3.40a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.40a2) (2026-11-25)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.40a1...0.3.40a2)
+
+**Merged pull requests:**
+
 - fix: join euro-região at pt-BR AO1990 [\#120](https://github.com/TigreGotico/desacordo_ortografico/pull/120) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
 - test: strict xfail for \#114 \(1911-geminates drops the mute c of accionistas\) [\#119](https://github.com/TigreGotico/desacordo_ortografico/pull/119) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
 - test: strict xfail for \#113 \(ao1990-br to ao1990-pt keeps mute c/p\) [\#118](https://github.com/TigreGotico/desacordo_ortografico/pull/118) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
