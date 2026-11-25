@@ -257,9 +257,14 @@ def lookup_with_plural(word: str, table: Mapping[str, str]) -> Optional[str]:
 #: -sses, -sse, -ssemos, -sseis, -ssem, and future subjunctive -r, -res, -r, -rmos, -rdes,
 #: -rem (p. 406); future cantarei, cantarás, cantará, cantaremos, cantareis, cantarão and
 #: conditional cantaria, cantarias, cantaria, cantaríamos, cantaríeis, cantariam (p. 407);
-#: personal infinitive (pp. 407-408); gerund canta-ndo and participle canta-do (p. 408).
+#: personal infinitive (pp. 407-408); gerund canta-ndo and participle canta-do (p. 408). The
+#: first person plural of the preterite in -ámos is the European form: Acordo Ortográfico de
+#: 1945, Base 17, "Assinala-se com o acento agudo, nos verbos regulares da primeira
+#: conjugação, a terminação da primeira pessoa do plural do pretérito perfeito do indicativo:
+#: amámos, louvámos, etc., e não amamos, louvamos, etc."; AO1990 Base IX 4 keeps it optional.
+#: The VOP prints "adotamos / adotámos" (lemma 47917) and "detetamos / detetámos" (145642).
 _AR_ENDINGS = frozenset({
-    "o", "as", "a", "amos", "ais", "am",
+    "o", "as", "a", "amos", "ámos", "ais", "am",
     "ei", "aste", "ou", "astes", "aram",
     "ava", "avas", "ávamos", "áveis", "avam",
     "ara", "aras", "áramos", "áreis",
