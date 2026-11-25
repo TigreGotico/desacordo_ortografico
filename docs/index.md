@@ -13,7 +13,8 @@ see: `../README.md`, `../AGENTS.md`
 | Page | You get |
 |---|---|
 | [quickstart.md](quickstart.md) | Install, then detect, convert and read the full result with its warnings, with real output |
-| [api.md](api.md) | Every public name with its signature and default, the conversion features, the detection confidence table and the known limits |
+| [api.md](api.md) | Every public name with its signature and default, the detection confidence table and the known limits |
+| [features.md](features.md) | The 28 conversion features by edge, a chart of the words each one changes, and the rules of the word maps and the 1911 accent guess |
 | [orthographies.md](orthographies.md) | The eight norms, the rules that separate them and the official source of each rule |
 | [data.md](data.md) | Each JSON data file, how rows cite their source, and the Hugging Face datasets |
 
@@ -22,12 +23,13 @@ see: `../README.md`, `../AGENTS.md`
 | You want to | Start with |
 |---|---|
 | Convert or detect text | [quickstart.md](quickstart.md) |
-| Look up a function, a feature or a default | [api.md](api.md) |
+| Look up a function or a default | [api.md](api.md) |
+| Turn one conversion feature on or off, or see what it does | [features.md](features.md) |
 | Know why a form converts the way it does | [orthographies.md](orthographies.md) |
 | Add or correct a word row | [data.md](data.md) |
 | Change the repository | [AGENTS.md](../AGENTS.md) |
 
-The [benchmark README](../benchmark/README.md) describes the silver corpus and the scoring scripts. The [tools README](../tools/README.md) describes the data-building scripts.
+The [benchmark README](../benchmark/README.md) describes the silver corpus and the scoring scripts. The [tools README](../tools/README.md) describes the data-building and chart scripts.
 
 ---
 [Home](../README.md) · [Quickstart →](quickstart.md)

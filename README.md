@@ -58,9 +58,27 @@ desacordo norms
 | `pt_1973` | accent mini-reform, Decreto-Lei 32/73 (Portugal) |
 | `ao1990-pt`, `ao1990-br` | Acordo Ortográfico de 1990, European and Brazilian |
 
+The norms form a graph. Each arrow is one edge, and a conversion runs the edges between its two norms.
+
+```mermaid
+flowchart LR
+    E[etymological] --> R[reforma_1911]
+    R --> P45[pt_1945] --> P73[pt_1973] --> APT[ao1990-pt]
+    R --> B43[br_1943] --> B71[br_1971] --> ABR[ao1990-br]
+    APT <--> ABR
+```
+
 ## Documentation
 
-The documentation starts at [docs/index.md](docs/index.md). [docs/quickstart.md](docs/quickstart.md) walks through detection, conversion and the full result object.
+The documentation starts at [docs/index.md](docs/index.md).
+
+| Page | You get |
+|---|---|
+| [docs/quickstart.md](docs/quickstart.md) | Detection, conversion and the full result object, with real output |
+| [docs/api.md](docs/api.md) | Every public name, its signature and its default |
+| [docs/features.md](docs/features.md) | The 28 conversion features and what each one changes |
+| [docs/orthographies.md](docs/orthographies.md) | The eight norms and the official source of each rule |
+| [docs/data.md](docs/data.md) | The JSON data files and the Hugging Face datasets |
 
 ## License
 
