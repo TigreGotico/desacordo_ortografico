@@ -412,7 +412,8 @@ class OrthographyConverter:
                 table=lex.reform1911_forward, table_feature=word_map_1911, plurals=True,
                 skip=rules.is_foreign_spelling,
             ),
-            _Pass(table=lex.reform1911_new2old, table_feature=word_map_1911),
+            _Pass(steps=[("1911-word-map", lambda w: rules.per_segment(w, get(lex.etymological_bare_backward)))],
+                  table=lex.reform1911_new2old, table_feature=word_map_1911),
             reversible_backward=False,
             note="1911 digraph simplification (ph/th/y) cannot be reversed by rule",
         )
@@ -464,6 +465,7 @@ class OrthographyConverter:
                 ("nasal-vowel", rules.nasal_vowel_to_br),
             ]),
             _Pass(steps=[
+                ("post-1911-word-map", lambda w: rules.per_segment(w, get(lex.reform1911_bare_backward))),
                 ("ptbr-divergence", ptbr_before_ao1990),
                 ("base-iv", ar_step(lex.base_iv_drop_reverse)),
                 ("nasal-vowel", rules.nasal_vowel_to_pt),
