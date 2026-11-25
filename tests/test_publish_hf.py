@@ -285,7 +285,8 @@ def test_spelling_ao1990_map_is_the_table_map(monkeypatch, tmp_path, base, name,
     # pt-BR: a cell with one form takes its VOLP form, as convert() does
     volp = {r["token"]: r["form"] for r in json.loads(VOLP.read_text(encoding="utf-8"))
             if r["rows"] == "*"} if era == "br_1971" else {}
-    # the VOLP has no entry for reta-pronúncia or recta-pronúncia: the pt-BR row waits for a source
+    # Pequeno Vocabulário Ortográfico 1943, scan page 1171: "reta-pronúncia, s. 2 gên." Brazil
+    # wrote reta already, so the pt-BR row records no Brazilian change and stays out
     unsourced = {"recta-pronúncia"} if era == "br_1971" else set()
     cells = {r["form"]: r["value"].split("|") for r in _table(era) if r["form"] not in unsourced}
     assert written == {f: [volp.get(c[0], c[0])] if len(c) == 1 else c for f, c in cells.items()}
@@ -304,7 +305,8 @@ def test_spelling_ao1990_keeps_the_hub_lines(monkeypatch, tmp_path, base):
     assert ["contra-erva", "contra-erva"] in lines
     # a form that the Hub file lacks comes on a line of its own; a dual cell keeps both forms
     assert ["bissector", "bissetor, bissector"] in lines
-    # the VOLP has no entry for reta-pronúncia or recta-pronúncia, so the row waits for a source
+    # Brazil wrote reta-pronúncia in 1943 (Pequeno Vocabulário, scan page 1171), so the pt-BR
+    # row records no change and stays out of the published lines
     assert "recta-pronúncia" in {r["form"] for r in _table("br_1971")}
     assert "recta-pronúncia" not in {old.strip() for olds, _new in lines for old in olds.split(",")}
     pt = _read(tmp_path / "out" / "AO1990_pt-PT" / "acordo_ortografico_pt_PT.csv")
@@ -327,10 +329,19 @@ def test_spelling_archaisms_keep_the_hub_order_and_notes(monkeypatch, tmp_path, 
     assert by_form["architecta"][:2] == ["arquiteta", ""]
     assert all(r[3] for r in rows)
     # kermesse is the French spelling, not a pre-1911 Portuguese form
-    # (knowledge/wiki/plans/desacordo-architecture-fixes.md); the table keeps its row
-    assert "kermesse" in {r["form"] for r in _table("etymological")}
-    assert "kermesse" not in by_form
-    assert set(by_form) == {r["form"] for r in _table("etymological")} - {"kermesse"}
+    # (knowledge/wiki/plans/desacordo-architecture-fixes.md); the table keeps its row. So do
+    # kiosque, wagon, fakir, polka, mazurka and landaw: the TLFi has an entry for each of
+    # kiosque, wagon, fakir ("FAKIR, FAQUIR"), polka, mazurka and landau, and quotes "landaw"
+    # under landau. The TLFi has no entry for rewolver or walsa, and 1911 Base I names "valsa".
+    french = {"kermesse", "kiosque", "wagon", "wagons", "fakir", "polka", "polkas", "mazurka",
+              "mazurkas", "landaw"}
+    table = {r["form"] for r in _table("etymological")}
+    assert french <= table
+    assert not french & set(by_form)
+    assert {"walsa", "walsas", "rewolver"} <= set(by_form)
+    assert set(by_form) == table - french
+    # comnosco -> connosco changes one letter, m -> n
+    assert by_form["comnosco"][2] == "m→n"
 
 
 @pytest.mark.parametrize("name, rows, withdrawn", [
@@ -366,7 +377,8 @@ def test_spelling_refuses_a_hub_form_that_the_table_lacks(monkeypatch, tmp_path,
     ("sciencia", "silent consonant"),
     ("psalmo", "ps→s"),
     ("kilogramma", "k→qu + mm→m"),
-    ("wagon", "w→v"),
+    ("rewolver", "w→v"),
+    ("walsa", "w→v"),
     # ditongo has no f, and pronto has no t to explain alone
     ("phthysica", "phth→t + y→i"),
     ("symphonia", "symph→sinf"),

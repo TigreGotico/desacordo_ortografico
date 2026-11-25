@@ -63,11 +63,17 @@ _ARCHAISM_NOTES = re.compile(r"tugalex archaisms\.csv \((.*)\)")
 #: "the same class as homme", and not a pre-1911 Portuguese form
 #: (knowledge/wiki/plans/desacordo-architecture-fixes.md). Its row stays in the table,
 #: because 1911 Base I respells the French word: "Escreveremos, pois, caleidoscópio, quermes".
-FOREIGN_SPELLINGS = frozenset({"kermesse"})
+#: The same holds for kiosque, wagon, fakir, polka, mazurka and landaw: the TLFi (Trésor de
+#: la langue française) has an entry for kiosque, wagon, fakir ("FAKIR, FAQUIR"), polka,
+#: mazurka and landau, and quotes "landaw" under landau. walsa and rewolver stay: the TLFi
+#: has no entry for either, and 1911 Base I names "valsa" as the Portuguese respelling.
+FOREIGN_SPELLINGS = frozenset({"kermesse", "kiosque", "wagon", "wagons", "fakir", "polka", "polkas",
+                               "mazurka", "mazurkas", "landaw"})
 
-#: pt-BR rows of the table that AO1990_pt-BR leaves out until a source decides them. The VOLP
-#: has no entry for reta-pronúncia or recta-pronúncia, and recta is no spelling of the
-#: Formulário Ortográfico of 1943.
+#: pt-BR rows of the table that AO1990_pt-BR leaves out. Brazil wrote reta-pronúncia already in
+#: 1943 ("reta-pronúncia, s. 2 gên.", Pequeno Vocabulário Ortográfico da Língua Portuguesa,
+#: scan page 1171), so recta is no spelling of the Formulário Ortográfico of 1943 and the row
+#: records no Brazilian change. The VOLP has no entry for either form.
 UNSOURCED_PT_BR = frozenset({"recta-pronúncia"})
 
 #: Old forms of the Hub files that no older norm wrote, by era. The table has no row for
