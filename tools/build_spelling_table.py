@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Build ``desacordo_ortografico/data/spelling.json`` from the tugalex spelling lists.
 
-    python tools/build_spelling_table.py [--curated-json reform_1911_irregular.json] [--out PATH]
+    uv run --no-project --prerelease=allow --with "tugalex>=2.5.10a2,<3" --with-editable . python tools/build_spelling_table.py [--curated-json reform_1911_irregular.json] [--out PATH]
+
+The script needs tugalex 2.x. tugalex 3.0.0 removes the AO1990 and archaism lists that it
+reads. ``--out`` must name an existing table, because the script reads its curated rows.
 
 The table took its rows from four sources, in this order:
 
