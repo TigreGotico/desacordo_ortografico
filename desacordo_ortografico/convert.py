@@ -400,7 +400,8 @@ class OrthographyConverter:
             return w if pt in lex.ao_pt_new2old else pt
 
         # -- 1911: the word maps first; the rules are a fallback for other words. They
-        #    leave a loanword or a foreign name alone (rules.is_foreign_spelling). 1911
+        #    leave a loanword or a foreign name alone (rules.is_foreign_spelling), and the foreign
+        #    words that the VOP or the VOLP lists (data/foreign_words.json). 1911
         #    also introduced graphic accents the rules can't derive; convert() restores
         #    them after this pass, from the word list and the context (fosforo -> fósforo).
         reform_1911 = _Edge(
@@ -410,7 +411,7 @@ class OrthographyConverter:
                     ("1911-geminates", lambda w: rules.reform_1911_geminates(w, lex.wordset)),
                 ],
                 table=lex.reform1911_forward, table_feature=word_map_1911, plurals=True,
-                skip=rules.is_foreign_spelling,
+                skip=lambda w: rules.is_foreign_spelling(w) or w in lex.foreign_words,
             ),
             _Pass(steps=[("1911-word-map", lambda w: rules.per_segment(w, get(lex.etymological_bare_backward)))],
                   table=lex.reform1911_new2old, table_feature=word_map_1911),

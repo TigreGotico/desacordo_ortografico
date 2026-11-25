@@ -631,6 +631,12 @@ class Lexicon:
                 out[row["variety"]][form] = form
         return out
 
+    @cached_property
+    def foreign_words(self) -> FrozenSet[str]:
+        """The foreign words of ``data/foreign_words.json``, which the 1911 rules leave as
+        written (apartheid, hall, byte)."""
+        return frozenset(row["form"] for row in _load("foreign_words.json")["rows"])
+
     # ----------------------------------------------------- PT<->BR divergence
     @cached_property
     def divergence_pt2br(self) -> Dict[str, str]:

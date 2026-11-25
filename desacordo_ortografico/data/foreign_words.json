@@ -1,0 +1,15 @@
+{
+  "_about": "Loanwords that the official vocabularies mark as foreign and that the 1911 digraph and geminate rules would still rewrite (apartheid -> aparteid, hall -> hal, byte -> bite). The 1911 Formulário, Base I, covers \"todas as palavras portuguesas, ou aportuguesadas\", so a listed foreign word keeps its spelling under 1911-digraphs and 1911-geminates. The table is closed: a form is here only when the VOP marks its lemma \"estrangeirismo\" or the VOLP marks it \"Estrangeira\" (Vocabulário de Estrangeirismos), and the rules change it. A spelling mark and the attested-word check both fail on these words: byte gives bite, which the VOLP lists as a Portuguese word and the VOP lists as a form of bitar. A foreign word that the modern word list holds (cheddar, intelligentsia) stays as written already.",
+  "_sources": [
+    "ABL, Vocabulário Ortográfico da Língua Portuguesa, Vocabulário de Estrangeirismos: https://www.academia.org.br/nossa-lingua/busca-no-vocabulario",
+    "Portal da Língua Portuguesa, Vocabulário Ortográfico do Português: https://www.portaldalinguaportuguesa.org/"
+  ],
+  "rows": [
+    {"form": "apartheid", "source": "VOP lemma 89882: \"apartheid - nome masculino\", \"estrangeirismo; língua de origem: neerlandês\"; VOLP: \"apartheid s.m. ing.Estrangeira Este verbete faz parte do Vocabulário de Estrangeirismos\""},
+    {"form": "apartheids", "source": "VOP lemma 89882: \"apartheid - nome masculino ... singular apartheid plural apartheids\", \"estrangeirismo; língua de origem: neerlandês\""},
+    {"form": "affaire", "source": "VOLP: \"affaire s.m. fr.Estrangeira Este verbete faz parte do Vocabulário de Estrangeirismos\""},
+    {"form": "hall", "source": "VOP lemma 13211: \"hall - nome masculino\", \"estrangeirismo; língua de origem: inglês\"; VOLP: \"hall s.m. ing.Estrangeira Este verbete faz parte do Vocabulário de Estrangeirismos\""},
+    {"form": "byte", "source": "VOP lemma 107007: \"byte - nome masculino\", \"estrangeirismo; língua de origem: inglês\", \"variante : baite ( Brasil)\"; VOLP: \"byte s.m. ing.Estrangeira Este verbete faz parte do Vocabulário de Estrangeirismos\""},
+    {"form": "bytes", "source": "VOP lemma 107007: \"byte - nome masculino ... singular byte plural bytes\", \"estrangeirismo; língua de origem: inglês\""}
+  ]
+}
