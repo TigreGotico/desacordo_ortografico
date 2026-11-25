@@ -3,8 +3,8 @@
 The 1943 Formulário, 14.ª, writes the differential circumflex on the closed e or o of a
 word that is a homograph of a word with the open vowel: "sôbre (prep.) e sobre (v.)",
 "fêz (s.m. e v.) e fez (s.f.)", "êle", "aquêles", "dêles". Lei n.º 5.765/1971, Art. 1.º,
-abolished it, so a route back to br_1943 restores it. The map holds no row for a word whose
-bare form is the more frequent reading (corte, deveras, colher), desacordo#70.
+abolished it, so a route back to br_1943 restores it. The map holds no row for a forward-only
+word (corte, deveras, colher), desacordo#70.
 """
 import pytest
 

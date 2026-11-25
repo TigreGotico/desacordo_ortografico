@@ -45,9 +45,8 @@ DROPPED = [
     ("enfêrmas", "enfermas"),
 ]
 
-# The bare form of each of these words is the more frequent reading of the pair (o corte,
-# deveras, a colher; fora is an adverb 45 times and a preposition twice against 7 uses as the
-# verb, in UD Bosque). They are forward-only rows: the accent goes toward br_1971 and
+# These are forward-only rows (corte, deveras, colher, fora; corpus counts in the
+# _forward_only_note of accent_reform_1971_73.json): the accent goes toward br_1971 and
 # ao1990-br, and the bare form stays bare going back.
 FORWARD_ONLY = [
     ("acêrto", "acerto"),
