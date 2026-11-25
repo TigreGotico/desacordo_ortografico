@@ -18,7 +18,9 @@ variante AO : sector" and lemma 47603 "sector ... variante AO de : setor"; lemma
 lemma 35619 "acupuntura - nome feminino ... variante AO : acupunctura" and lemma 106786
 "acupunctura ... variante AO de : acupuntura".
 
-With every feature, convert() writes the c/p form of a dual (the dual ruling).
+With every feature, the volp step writes the c/p form of a dual by a preference for the
+consonant. A form that the vocabulary records as valid in the source should stay as written
+(TigreGotico/desacordo_ortografico#116), and the xfail tests below expect that.
 """
 import pytest
 
@@ -53,22 +55,13 @@ def test_pt_group_keeps_the_bare_dual(bare, _full, source):
     assert convert(bare, source, "ao1990-pt", features=PT_GROUP) == bare
 
 
-@pytest.mark.parametrize("bare, full", BR_DUALS)
-def test_every_feature_writes_the_form_with_the_consonant_toward_pt_br(bare, full):
-    assert convert(bare, "br_1971", "ao1990-br") == full
+@pytest.mark.xfail(strict=True, reason="desacordo#116: the volp step writes facto where fato is valid")
+@pytest.mark.parametrize("bare, _full", BR_DUALS)
+def test_a_valid_bare_dual_stays_with_every_feature_toward_pt_br(bare, _full):
+    assert convert(bare, "br_1971", "ao1990-br") == bare
 
 
-@pytest.mark.parametrize("bare, full", PT_DUALS)
-def test_every_feature_writes_the_form_with_the_consonant_toward_pt_pt(bare, full):
-    assert convert(bare, "pt_1973", "ao1990-pt") == full
-
-
-@pytest.mark.parametrize("bare, full", BR_DUALS)
-def test_the_dual_choice_stays_inside_volp_and_silent_cp_toward_pt_br(bare, full):
-    """Adding `volp` to the group makes the choice, so the pin above is not vacuous."""
-    assert convert(bare, "br_1971", "ao1990-br", features=BR_GROUP | {"volp"}) == full
-
-
-@pytest.mark.parametrize("bare, full", PT_DUALS)
-def test_the_dual_choice_stays_inside_volp_and_silent_cp_toward_pt_pt(bare, full):
-    assert convert(bare, "pt_1973", "ao1990-pt", features=PT_GROUP | {"silent-cp"}) == full
+@pytest.mark.xfail(strict=True, reason="desacordo#116: the dual step writes sector where setor is valid")
+@pytest.mark.parametrize("bare, _full", PT_DUALS)
+def test_a_valid_bare_dual_stays_with_every_feature_toward_pt_pt(bare, _full):
+    assert convert(bare, "pt_1973", "ao1990-pt") == bare
