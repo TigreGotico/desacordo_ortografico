@@ -68,9 +68,9 @@ The word maps do most of the work, and the rules reach the words that no map hol
 - `initial-sc` and `post-1911-word-map` both convert the word sciência. Each one makes the other redundant, so the count is 0 when one of them is off. Each one changes the word when it runs alone.
 - `differential-1971`, `nasal-vowel` and `ptbr-divergence` run on edges that none of the three routes crosses.
 - `base-iv` runs on the route to ao1990-pt, but the AO1990 word map already owns every listed word of the corpus, and the map decides first.
-- `differential-1945`, `grave-u` and `oxytone-em` run on the first route. The only candidate in the etymological words is pêlo, which the 1945 Acordo keeps. The words have no -êm or -êns oxytone and no qù or gù.
-- `subtonic-grave` runs on the first route, and the etymological words have no grave accent.
-- `ao-map-locution` and `hyphen-lexical` find no hyphenated locution or compound in the corpus words, and each word converts alone.
+- `differential-1945`, `grave-u` and `oxytone-em` run on the first route. Its candidates in the etymological words are pêlo, pêra and pôr, which Base XXII keeps, and crêem and lêem, whose hiatus êem stays. The words have no -êm or -êns oxytone and no qù or gù.
+- `subtonic-grave` runs on the first route, and the etymological words have no grave accent on e, i, o or u, the only letters it changes.
+- `ao-map-locution` and `hyphen-lexical` find no row of their lists in the corpus words, and each word converts alone.
 
 The tests under `tests/` exercise each of them.
 

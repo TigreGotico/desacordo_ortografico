@@ -236,7 +236,7 @@ python benchmark/diagnose.py           # attribute failures (rule vs silver, whe
 - **Conversion:** 94% sentence-level exact-match and 99% token accuracy over 9,303
   directed conversions. The same-line conversions are strongest (`br_1971→ao1990-br` 99.6%,
   `pt_1973→ao1990-pt` 98.3%). The cross-variant PT↔BR pairs score 90.9% toward pt-BR and
-  81.5% toward pt-PT. Of the 246 sentences that fail toward pt-PT, 130 keep a VOLP mute c or p
+  81.5% toward pt-PT. Of the 246 sentences that fail toward pt-PT, 130 fail only because they keep a VOLP mute c or p
   that the divergence edge does not drop ([#113](https://github.com/TigreGotico/desacordo_ortografico/issues/113)). The pre-1911 directions score between 91.1% and 99.4%.
 - **Detection:** 92.6% compatible accuracy (rules) across 6,645 renderings. The learned
   models reach 95.4% to 96.4% (below).
