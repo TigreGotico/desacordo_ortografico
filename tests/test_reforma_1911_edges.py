@@ -83,7 +83,7 @@ _SINGULAR_LIMIT = (
     "through 1911 with that plural, so the compounds of ter and vir stay as written")
 
 
-@pytest.mark.xfail(strict=True, reason=_SINGULAR_LIMIT)
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason=_SINGULAR_LIMIT)
 @pytest.mark.parametrize("text,target,expected", [
     # the subject is singular: 1945 Base XIII "convém, mantém"; AO1990 keeps the acute
     ("--Senhor, convêm que me deixeis no Cêrro!", "pt_1945", "--Senhor, convém que me deixeis no Cêrro!"),
@@ -206,14 +206,14 @@ def test_only_the_noun_row_takes_a_plural(target):
     assert plural == (nouns | {"scetro"} if target == "pt_1945" else nouns)
 
 
-@pytest.mark.xfail(strict=True, reason=(
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason=(
     "cote is a Portuguese word, so the letters of Côte cannot tell the French word from a "
     "1911 differential"))
 def test_cote_d_azur_stays():
     assert convert("Passou férias na Côte d'Azur.", "br_1943", "pt_1945") == "Passou férias na Côte d'Azur."
 
 
-@pytest.mark.xfail(strict=True, reason=(
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason=(
     "the initial sc rule reads the word families of 1911 Base XI, and some English words "
     "share their letters"))
 def test_english_sc_words_stay():
@@ -228,7 +228,7 @@ def test_scetro_keeps_the_p_in_portugal(target):
     assert convert("O scetro", "reforma_1911", target) == "O ceptro"
 
 
-@pytest.mark.xfail(strict=True, reason=(
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason=(
     "data/base_iv.json maps cetro to ceptro on the Brazilian edges; the Bases of 1931, § 1.º "
     "1.º, write cetro"))
 def test_scetro_loses_the_s_in_brazil():

@@ -15,7 +15,7 @@ _REDUCED = {
 }
 
 
-@pytest.mark.xfail(
+@pytest.mark.xfail(raises=AssertionError, 
     strict=True,
     reason="https://github.com/TigreGotico/desacordo_ortografico/issues/114: "
            "1911-geminates drops the mute c of accionistas")

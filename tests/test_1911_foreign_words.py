@@ -38,7 +38,7 @@ def test_foreign_name_and_derivative_keep_their_spelling(word, target):
     assert convert(f"o {word}", "etymological", target) == f"o {word}"
 
 
-@pytest.mark.xfail(strict=True, reason=(
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason=(
     "a y inside a word is also pre-1911 Portuguese (Baylão, Froylas), so no spelling rule "
     "keeps the y of Taylor"))
 @pytest.mark.parametrize("word", ["Taylor", "taylorista"])
@@ -47,7 +47,7 @@ def test_y_inside_a_foreign_name_stays(word, target):
     assert convert(f"o {word}", "etymological", target) == f"o {word}"
 
 
-@pytest.mark.xfail(strict=True, reason=(
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason=(
     "a final th is also the Hebrew digraph of AO1990 Base I 4º (Loth) and the end of "
     "Portuguese abbreviations (Math.), so no spelling rule keeps the th of Smith"))
 @pytest.mark.parametrize("target", TARGETS)
@@ -74,7 +74,7 @@ def test_portuguese_final_consonant_still_converts(old, new, target):
 # portuguesas, ou aportuguesadas"; the Formulário of 1943, 9, too. VOLP and VOP write
 # Iara. An initial y before a vowel marks a foreign word: no spelling tells Yara from
 # Yates, and the input set holds 346 foreign tokens of that shape and no Portuguese one.
-@pytest.mark.xfail(strict=True, reason="an initial y before a vowel marks a foreign word")
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason="an initial y before a vowel marks a foreign word")
 @pytest.mark.parametrize("old, new", [("Yara", "Iara"), ("Yemanjá", "Iemanjá")])
 @pytest.mark.parametrize("target", TARGETS)
 def test_portuguese_initial_y_becomes_i(old, new, target):
@@ -83,7 +83,7 @@ def test_portuguese_initial_y_becomes_i(old, new, target):
 
 # The VOP and the VOLP write razia and have no razzia. The zz of jazz, pizza and puzzle
 # marks the word as foreign.
-@pytest.mark.xfail(strict=True, reason="zz marks a foreign word")
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason="zz marks a foreign word")
 @pytest.mark.parametrize("target", TARGETS)
 def test_razzia_becomes_razia(target):
     assert convert("a razzia", "etymological", target) == "a razia"
@@ -91,7 +91,7 @@ def test_razzia_becomes_razia(target):
 
 # AO1990 Base I 4º: "José, Nazaré, em vez de Joseph, Nazareth", "Judite, em vez de
 # Judith". The 1911 rules drop the h of th and ph, and no rule adds the vowel.
-@pytest.mark.xfail(strict=True, reason="the 1911 rules give Josef, Nazaret and Judit")
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason="the 1911 rules give Josef, Nazaret and Judit")
 @pytest.mark.parametrize("old, new", [("Joseph", "José"), ("Nazareth", "Nazaré"),
                                       ("Judith", "Judite")])
 @pytest.mark.parametrize("target", TARGETS)

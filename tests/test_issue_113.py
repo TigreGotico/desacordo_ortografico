@@ -17,7 +17,7 @@ _DROPPED = {
 _KEPT = ["compacto", "adepto", "pacto", "apto", "rapto"]
 
 
-@pytest.mark.xfail(
+@pytest.mark.xfail(raises=AssertionError, 
     strict=True,
     reason="https://github.com/TigreGotico/desacordo_ortografico/issues/113: "
            "ao1990-br to ao1990-pt keeps the mute c or p of óptimo")
