@@ -47,7 +47,7 @@ def _params(cells, xfails=None):
         words = {w.strip(".,;:!?«»").lower() for w in cell.split()}
         for reason, keys in (xfails or {}).items():
             if words & keys:
-                marks = pytest.mark.xfail(strict=True, reason=reason)
+                marks = pytest.mark.xfail(raises=AssertionError, strict=True, reason=reason)
         params.append(pytest.param(cell, id=row_id, marks=marks))
     return params
 

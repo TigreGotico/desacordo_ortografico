@@ -58,7 +58,7 @@ def test_retractar_still_converts_forward():
     assert convert("Ele vai retractar a cena.", "pt_1973", PT) == "Ele vai retratar a cena."
 
 
-@pytest.mark.xfail(strict=True, reason="desacordo#116: the volp step writes colectar where coletar is valid")
+@pytest.mark.xfail(raises=AssertionError, strict=True, reason="desacordo#116: the volp step writes colectar where coletar is valid")
 @pytest.mark.parametrize("source", [PT, "br_1971"])
 def test_coletar_stays_coletar_toward_pt_br(source):
     assert convert("Vamos coletar os dados.", source, BR) == "Vamos coletar os dados."

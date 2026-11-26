@@ -43,9 +43,9 @@ def test_the_hyphen_stays_between_pre_1990_norms(word, source, target):
 
 
 @pytest.mark.parametrize("old,new,source,target", [
-    pytest.param("co-factores", "co-fatores", "pt_1973", "br_1971", marks=pytest.mark.xfail(
+    pytest.param("co-factores", "co-fatores", "pt_1973", "br_1971", marks=pytest.mark.xfail(raises=AssertionError, 
         strict=True, reason="a pivot edge drops no c of an element; origin/dev also writes co-factores")),
-    pytest.param("co-fatores", "co-factores", "br_1971", "pt_1973", marks=pytest.mark.xfail(
+    pytest.param("co-fatores", "co-factores", "br_1971", "pt_1973", marks=pytest.mark.xfail(raises=AssertionError, 
         strict=True, reason="restore_silent_cp does not restore the c of an element")),
 ])
 def test_co_fatores_keeps_the_hyphen(old, new, source, target):
