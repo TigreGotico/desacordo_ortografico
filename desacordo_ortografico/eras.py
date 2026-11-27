@@ -160,7 +160,6 @@ def find_path(src: "str | Norm", dst: "str | Norm") -> List[Tuple[str, str, bool
     return steps
 
 
-# ---------------------------------------------------------------- aliases
 _ALIASES = {
     # canonical ids
     **NORMS,

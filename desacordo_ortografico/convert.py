@@ -133,7 +133,6 @@ class OrthographyConverter:
         self._edges = self._build_edges()
         self._valid_verbs: Dict[str, Dict[str, str]] = {}
 
-    # -------------------------------------------------------------- public API
     def convert(
         self,
         text: str,
