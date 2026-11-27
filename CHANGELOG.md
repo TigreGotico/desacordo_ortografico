@@ -1,8 +1,20 @@
 # Changelog
 
+## [0.3.46a5](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.46a5) (2026-11-27)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.46a4...0.3.46a5)
+
+**Merged pull requests:**
+
+- docs: link the demo Space from the README [\#136](https://github.com/TigreGotico/desacordo_ortografico/pull/136) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.46a4](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.46a4) (2026-11-27)
 
-[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.46a2...0.3.46a4)
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.46a3...0.3.46a4)
+
+## [0.3.46a3](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.46a3) (2026-11-27)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.46a2...0.3.46a3)
 
 **Merged pull requests:**
 
@@ -733,10 +745,6 @@
 ## [0.0.1a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.0.1a2) (2026-07-30)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/abb8f2173ff452c3bbd24ff97593ff3160105479...0.0.1a2)
-
-**Merged pull requests:**
-
-- docs: rewrite README in Simplified Technical English [\#2](https://github.com/TigreGotico/desacordo_ortografico/pull/2) ([JarbasAl](https://github.com/JarbasAl))
 
 
 
