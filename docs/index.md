@@ -10,6 +10,8 @@ see: `../README.md`, `../AGENTS.md`
 
 `desacordo_ortografico` detects and converts Portuguese spelling norms. These pages show how to use it and what each rule rests on.
 
+A conversion is a path through a graph of eight norms, applied edge by edge. Clean rules handle the regular edges (`ph` to `f`, trema, accent drops). Cited word tables handle the lexical ones (which silent consonant drops, which form a norm prefers). Some backward conversions lose information, and the result says so.
+
 | Page | You get |
 |---|---|
 | [quickstart.md](quickstart.md) | Install, then detect, convert and read the full result with its warnings, with real output |
