@@ -16,7 +16,7 @@ This page walks through the three things the package does: detect a norm, conver
 pip install desacordo_ortografico
 ```
 
-It depends only on [`tugalex`](https://github.com/TigreGotico/tugalex) 2.4.9a1 or later, which supplies the word list.
+The package needs Python 3.11 or later. It depends only on [`tugalex`](https://github.com/TigreGotico/tugalex) 2.4.9a1 or later, which supplies the word list. The `test` extra adds `pytest`. The `benchmark` extra adds `matplotlib`, for the plots of the benchmark scripts.
 
 ## Detect
 

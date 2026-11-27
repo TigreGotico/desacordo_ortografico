@@ -10,6 +10,18 @@ see: `api.md`, `quickstart.md`, `index.md`
 
 A reference for the norms this library models, the rules that separate them, and the official sources. The central fact: Portuguese orthography is a **(variant × era) matrix**. From 1911 to the late 2000s two official standards ran in parallel: a European/PALOP line and a Brazilian line. AO1990 permits divergent forms.
 
+| id | norm |
+|----|------|
+| `etymological` | pre-1911 pseudo-etymological spelling |
+| `reforma_1911` | Reforma Ortográfica de 1911 (Portugal) |
+| `br_1943` | Formulário Ortográfico de 1943 (Brazil) |
+| `pt_1945` | Convenção Luso-Brasileira de 1945 (Portugal and PALOP) |
+| `br_1971` | accent mini-reform, Lei 5.765 (Brazil) |
+| `pt_1973` | accent mini-reform, Decreto-Lei 32/73 (Portugal) |
+| `ao1990-pt`, `ao1990-br` | Acordo Ortográfico de 1990, European and Brazilian |
+
+The norms form a graph. Each arrow is one edge, and a conversion runs the edges between its two norms.
+
 ```mermaid
 flowchart LR
     E[etymological] -->|reform_1911| R[reforma_1911]
