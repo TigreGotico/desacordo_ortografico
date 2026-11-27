@@ -186,9 +186,6 @@ def get_detector_model(kind: str = "nb") -> Optional[LinearModel]:
         path = _PATHS.get(kind)
         model = None
         if path and os.path.exists(path):
-            try:
-                model = LinearModel.load(path)
-            except Exception:  # pragma: no cover - a damaged model file falls back to the rules
-                model = None
+            model = LinearModel.load(path)
         _CACHE[kind] = model
     return _CACHE[kind]

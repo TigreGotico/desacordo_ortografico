@@ -64,7 +64,7 @@ def detect_sister(text: str, lexicon: Optional[Lexicon] = None) -> Optional[NotP
     for key, spec in lex.sister_markers.items():
         score = 0
         hits: List[str] = []
-        for marker in spec.get("markers", []):
+        for marker in spec["markers"]:
             if _match(marker, text_low, tokens):
                 score += marker.get("weight", 1)
                 hits.append(marker.get("note") or marker["pattern"])

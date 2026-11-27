@@ -223,7 +223,7 @@ class Lexicon:
 
     @cached_property
     def sister_markers(self) -> dict:
-        return _load("sister_markers.json").get("languages", {})
+        return _load("sister_markers.json")["languages"]
 
     # ------------------------------------------------------------ tugalex
     @cached_property
@@ -570,11 +570,11 @@ class Lexicon:
     # ----------------------------------------------------------- Base IV
     @cached_property
     def base_iv_keep(self) -> Set[str]:
-        return {w.lower() for w in self._base_iv.get("keep", [])}
+        return {w.lower() for w in self._base_iv["keep"]}
 
     @cached_property
     def base_iv_drop(self) -> Dict[str, str]:
-        return {k.lower(): v.lower() for k, v in self._base_iv.get("drop", {}).items()}
+        return {k.lower(): v.lower() for k, v in self._base_iv["drop"].items()}
 
     @cached_property
     def base_iv_drop_reverse(self) -> Dict[str, str]:
@@ -582,7 +582,7 @@ class Lexicon:
 
     @cached_property
     def base_iv_dual(self) -> List[Dict[str, str]]:
-        return self._base_iv.get("dual", [])
+        return self._base_iv["dual"]
 
     @cached_property
     def dual_pt2br(self) -> Dict[str, str]:
@@ -595,20 +595,20 @@ class Lexicon:
     # ------------------------------------------------- differential accents
     @cached_property
     def differential_dropped(self) -> Dict[str, str]:
-        return {k.lower(): v.lower() for k, v in self._differential.get("dropped", {}).items()}
+        return {k.lower(): v.lower() for k, v in self._differential["dropped"].items()}
 
     @cached_property
     def differential_restore(self) -> Dict[str, str]:
-        return {k.lower(): v.lower() for k, v in self._differential.get("restore", {}).items()}
+        return {k.lower(): v.lower() for k, v in self._differential["restore"].items()}
 
     @cached_property
     def differential_kept(self) -> Set[str]:
-        return {w.lower() for w in self._differential.get("kept", [])}
+        return {w.lower() for w in self._differential["kept"]}
 
     # ------------------------------------------------- lexicalized hyphens
     @cached_property
     def hyphen_dropped(self) -> Dict[str, str]:
-        return {k.lower(): v.lower() for k, v in self._hyphens.get("dropped", {}).items()}
+        return {k.lower(): v.lower() for k, v in self._hyphens["dropped"].items()}
 
     @cached_property
     def hyphen_dropped_plural(self) -> Dict[str, str]:
@@ -727,14 +727,14 @@ class Lexicon:
     def accent_71_73_old2new(self) -> Dict[str, str]:
         """The differential circumflex that 1971 drops: the rows of ``differential`` and of
         ``forward_only``. The backward pass reads :attr:`accent_71_73_new2old`."""
-        rows = {**self._accent_71_73.get("differential", {}), **self._accent_71_73.get("forward_only", {})}
+        rows = {**self._accent_71_73["differential"], **self._accent_71_73["forward_only"]}
         return {k.lower(): v.lower() for k, v in rows.items()}
 
     @cached_property
     def accent_71_73_new2old(self) -> Dict[str, str]:
         """The ``differential`` rows inverted. A ``forward_only`` row has no inverse
         (corte, deveras, colher, fora)."""
-        return _invert({k.lower(): v.lower() for k, v in self._accent_71_73.get("differential", {}).items()})
+        return _invert({k.lower(): v.lower() for k, v in self._accent_71_73["differential"].items()})
 
 
 def _clean_ao_map(cells: Dict[str, List[str]]) -> Dict[str, str]:
