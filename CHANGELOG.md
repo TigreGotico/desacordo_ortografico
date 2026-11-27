@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.46a3](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.46a3) (2026-11-27)
+
+[Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.46a2...0.3.46a3)
+
+**Merged pull requests:**
+
+- refactor: round 1 [\#135](https://github.com/TigreGotico/desacordo_ortografico/pull/135) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+- docs: short README [\#134](https://github.com/TigreGotico/desacordo_ortografico/pull/134) ([openvoiceos-bot](https://github.com/openvoiceos-bot))
+
 ## [0.3.46a2](https://github.com/TigreGotico/desacordo_ortografico/tree/0.3.46a2) (2026-11-26)
 
 [Full Changelog](https://github.com/TigreGotico/desacordo_ortografico/compare/0.3.46a1...0.3.46a2)
@@ -728,7 +737,6 @@
 **Merged pull requests:**
 
 - docs: rewrite README in Simplified Technical English [\#2](https://github.com/TigreGotico/desacordo_ortografico/pull/2) ([JarbasAl](https://github.com/JarbasAl))
-- feat: detect and convert between Portuguese orthographies [\#1](https://github.com/TigreGotico/desacordo_ortografico/pull/1) ([JarbasAl](https://github.com/JarbasAl))
 
 
 
