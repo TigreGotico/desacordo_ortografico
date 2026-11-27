@@ -10,6 +10,8 @@ see: `docs/index.md`, `docs/quickstart.md`, `AGENTS.md`
 
 `desacordo_ortografico` converts Portuguese text between spelling norms: the pre-1911 etymological writing, the Reforma de 1911, the Brazilian norms of 1943 and 1971, the European norms of 1945 and 1973, and the Acordo Ortográfico de 1990 (AO1990) in its European and Brazilian forms. It also detects which norm a text follows, and it flags Mirandese, Galician and Barranquenho text instead of converting it.
 
+Try it in your browser: [TigreGotico/desacordo_ortografico on Hugging Face](https://huggingface.co/spaces/TigreGotico/desacordo_ortografico).
+
 ## Install
 
 ```bash
